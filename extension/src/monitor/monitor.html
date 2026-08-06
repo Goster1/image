@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Video kontrola — monitor</title>
+    <link rel="stylesheet" href="./monitor.css" />
+  </head>
+  <body>
+    <header>
+      <h1>🎥 Video kontrola pracovníkov</h1>
+      <div id="status-pill" class="pill pill-off">Kamera vypnutá</div>
+    </header>
+
+    <nav id="tabs">
+      <button class="tab active" data-tab="live">Živý náhľad</button>
+      <button class="tab" data-tab="calibration">Kalibrácia</button>
+      <button class="tab" data-tab="log">Log</button>
+    </nav>
+
+    <main>
+      <section id="video-wrap">
+        <video id="video" playsinline muted></video>
+        <canvas id="overlay"></canvas>
+        <div id="scan-state" class="scan-state" hidden></div>
+      </section>
+
+      <aside id="side-panel">
+        <!-- LIVE TAB -->
+        <div class="tab-panel" data-panel="live">
+          <div class="panel">
+            <h2>Kamera</h2>
+            <label for="camera-select">Zariadenie</label>
+            <select id="camera-select"></select>
+            <button id="start-camera">Spustiť kameru</button>
+            <label class="file-label">
+              alebo testovacie video:
+              <input type="file" id="video-file" accept="video/*" />
+            </label>
+          </div>
+          <div class="panel">
+            <h2>Posledné kontroly</h2>
+            <ul id="recent-results"></ul>
+          </div>
+        </div>
+
+        <!-- CALIBRATION TAB -->
+        <div class="tab-panel" data-panel="calibration" hidden>
+          <div class="panel">
+            <h2>Stanica</h2>
+            <select id="station-select"></select>
+            <div class="btn-row">
+              <button id="station-add">+ Nová</button>
+              <button id="station-rename">Premenovať</button>
+            </div>
+          </div>
+          <div class="panel">
+            <h2>Rozloženie lokácií</h2>
+            <label><input type="radio" name="layout" value="L" /> Len vľavo</label>
+            <label><input type="radio" name="layout" value="LR" /> Vľavo + vpravo</label>
+            <label><input type="radio" name="layout" value="LRB" /> Vľavo + vpravo + za sebou</label>
+            <label class="sep" for="behind-edge">Okraj pre „za sebou“</label>
+            <select id="behind-edge">
+              <option value="bottom">Spodný okraj</option>
+              <option value="left">Ľavý okraj</option>
+              <option value="right">Pravý okraj</option>
+              <option value="top">Horný okraj</option>
+            </select>
+          </div>
+          <div class="panel">
+            <h2>Úprava zón</h2>
+            <label><input type="checkbox" id="edit-zones" /> Upravovať zóny myšou</label>
+            <p class="hint">Ťahaj vrcholy alebo celé polygóny. Zamávaj rukou — zelená bodka ukáže, čo kamera vidí.</p>
+            <button id="reset-zones">Obnoviť predvolené zóny</button>
+          </div>
+          <div class="panel">
+            <h2>Nastavenia detekcie</h2>
+            <label><input type="checkbox" id="mirror-preview" /> Zrkadliť náhľad</label>
+            <label for="detection-mode">Režim detekcie</label>
+            <select id="detection-mode">
+              <option value="hands">Sledovanie rúk (MediaPipe)</option>
+              <option value="motion">Len pohyb v zónach</option>
+            </select>
+            <label for="dwell-ms">Minimálny čas v zóne (ms)</label>
+            <input type="number" id="dwell-ms" min="100" max="3000" step="50" />
+            <label for="timeout-ms">Časový limit po skene (ms)</label>
+            <input type="number" id="timeout-ms" min="3000" max="60000" step="1000" />
+          </div>
+        </div>
+
+        <!-- LOG TAB -->
+        <div class="tab-panel" data-panel="log" hidden>
+          <div class="panel">
+            <h2>História kontrol</h2>
+            <div class="btn-row">
+              <button id="export-csv">Export CSV</button>
+              <button id="clear-log">Vymazať</button>
+            </div>
+            <table id="log-table">
+              <thead>
+                <tr><th>Čas</th><th>Kód</th><th>Očakávané</th><th>Zistené</th><th>Výsledok</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <script type="module" src="./monitor.ts"></script>
+  </body>
+</html>
