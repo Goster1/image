@@ -1,0 +1,36 @@
+.vk-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2147483647;
+  padding: 22px 16px;
+  text-align: center;
+  font-family: system-ui, sans-serif;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  animation: vk-banner-pulse 0.6s ease-in-out 3;
+}
+
+.vk-banner--mismatch {
+  background: #dc2626;
+  color: #fff;
+}
+
+.vk-banner--warning {
+  background: #f59e0b;
+  color: #1f2937;
+  font-size: 24px;
+}
+
+@keyframes vk-banner-pulse {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.35);
+  }
+}
