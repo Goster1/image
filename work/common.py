@@ -188,17 +188,7 @@ def load_json(path):
         return json.load(f)
 
 
-# image regions used for "mapping uncertainty"
-def region_masks(uv):
-    """Classify pixel positions into centre / cart_band / corners (booleans)."""
-    uv = np.asarray(uv, float)
-    x, y = uv[:, 0], uv[:, 1]
-    r = np.hypot(x - W / 2, y - H / 2)
-    centre = r < 150
-    corners = ((x < 200) | (x > W - 200)) & ((y < 150) | (y > H - 150))
-    # the carts occupy roughly x in [150, 900] (left) and [1130, 1720] (right)
-    cart_band = (((x > 150) & (x < 900)) | ((x > 1130) & (x < 1720))) & ~corners
-    return {"centre": centre, "cart_band": cart_band, "corners": corners}
+# image regions for the mapping uncertainty: see evaltools.region_defs (single definition)
 
 
 # ----------------------------------------------------------------------------------------

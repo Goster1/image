@@ -287,6 +287,40 @@ def main():
     mc["uncertainty"]["geometry_note"] = ("f_geometry_shift_px_diag = f(top-plate height freed, diagnostic) - f(drawing), same lens model; "
                                           "f_1sigma_incl_geometry = sqrt(bootstrap^2 + (shift/2)^2) - half the shift as a 1-sigma systematic of the "
                                           "drawing-geometry estimate (the drawing is used unchanged for the value itself)")
+    # independent review of this method (2026-09-27): what was changed and why (kept here so that a re-run reproduces it)
+    g = mc["details"]["grid"]
+    nob_main = mc["details"].get("without_fold_barrier", {}).get("grid", {})
+    rev = [
+        "Independent review; all three scripts re-run in the order fit -> predict -> diag. Changes made in the method's own scripts:",
+        f"* FOLDED LENS (main issue): the original main lens (k1k2_ppfix, f 1327, k1 -0.118, k2 -0.177) has fold margin "
+        f"{nob_main.get('k1k2_ppfix', {}).get('fold_margin', float('nan')):.3f}: r_d(r_u) peaks at 944 px from the centre, so the image corners and the left/right "
+        "border strips are not reachable (not invertible there); 81 % of its bootstrap replicates folded as well. Every k1 / k1k2 grid fit without a barrier "
+        "folds (margins -0.02..-0.21). Fix: fold barrier (fold margin >= 0.03, as in calib.Problem / combined) in CuboidFit, on in every fit incl. LOSO, "
+        "bootstrap, profile and the diagnostics. The pp-fixed k1 / k1k2 solutions then sit ON the barrier: their distortion is set by the validity "
+        "constraint, not by the data (barrier 0.00 / 0.03 / 0.10 moves f 1349 / 1359 / 1376 and k1 -0.223 / -0.210 / -0.183 for k1-only).",
+        "* MAPPING UNCERTAINTY: the original 49 / 51 / 544 px (centre / cart band / corners) were an artefact of the folded reference: evaltools' rotation "
+        "compensation over the whole grid was dominated by the unmappable corners (the same bootstrap compensated on r < 700 px gives 3.5 / 13.7 px). "
+        f"With valid lenses: {', '.join(f'{k} {v:.1f} px' for k, v in mc['mapping_uncertainty_px'].items())} (bootstrap only; k1 follows f along the barrier). "
+        "Not included: the k1 vs k1k2 choice (LOSO tie; mapping difference 1.1 / 7.5 / 25 px) and the geometry bias.",
+        "* MODEL CHOICE: with valid lenses LOSO prefers free-pp variants (" + ", ".join(f"{k.split('|')[0]} {v:.2f}" for k, v in mc["details"].get("loso_all_models", {}).items() if v is not None)
+        + " px), but their pp is not determined (jumps ~100 px between data subsets, pp_stability in the json); the main model is therefore chosen among the "
+        "pp-fixed, fx=fy models: k1_ppfix (LOSO 8.30) and k1k2_ppfix (8.31) tie; k1-only wins by the 0.02 px/parameter rule.",
+        "* COVARIANCE: cov_from used rows - p as dof (every traced point) although the cluster weighting gives only n_eff observations; all formal sigmas were "
+        "1.5-2.4x too small (main f: 8.9 -> 13.3 px for the old model; dz_top: +-1.6 -> +-3.8 mm; dz_E +-4 -> +-10 mm). Fixed (n_eff dof, barrier row dropped).",
+        "* START SELECTION: starts were ranked by the reweighted cost, which is ~n_eff/2 for every converged solution (meaningless); now ranked by the profiled "
+        "likelihood sum n_k log sigma_k^2. No effect found on the grid (all starts converged to the same minimum).",
+        "* UNCERTAINTY HONESTY: the bootstrap sigma of f does not contain the drawing-geometry bias; f_geometry_shift_px_diag (diagnostic dz_top fit, same lens "
+        "model) and f_1sigma_incl_geometry = sqrt(boot^2 + (shift/2)^2) were added to the json.",
+        "* STALE INPUT: the 'edge-only lens' of the prediction check is read from method_lines_joint.json, which was replaced after the original run "
+        "(f 1397 -> 1473); the shelf-anchored numbers changed accordingly (top stickers +60/+55 -> +75/+71 mm above the drawing, back rail -1.8 -> +3.2 px).",
+        "* Author's shared-module remarks: markerdata.load_markers DOES copy side_valid (since commit 2991133) and marker_side_edges honours it (6 sides "
+        "excluded) - not a bug. combined.py already uses forward residuals (distorted image of the orthogonal projection), not r_u/|J^T n| - that remark is "
+        "outdated; its per-point edge weighting remark stands as a design note.",
+        "* Held: exact-edge identity and their misses (-10.4 / -5.1 / -3.8 px now), lip sensitivities, the back-rail misfit (-17 px, joint camera), and the "
+        "diagnostic finding (top-plate surface +65 +- 4 mm vs shelves with a k1k2 lens, +54 +- 4 mm with the barrier-limited k1 lens, +67 +- 3.5 mm pp free).",
+    ]
+    L.md_replace_section(f"{CACHE}/method_cuboid.md", "## Review (independent check)", rev)
+    mc["details"]["review"] = rev
     save_json(mc, f"{CACHE}/method_cuboid.json")
     # plot: chi2_ref per hypothesis (main spec, with / without lips) + freed value
     fig, ax = plt.subplots(1, 3, figsize=(18, 6), dpi=110)

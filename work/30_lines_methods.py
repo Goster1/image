@@ -172,7 +172,7 @@ save_json(lens_json(Kj, dj, method="lines_joint (edges only: straightness + VP o
                     uncertainty={f"{n}_1sigma": float(s) for n, s in zip(lcj.names[: lcj.n_intr], sd)},
                     mapping_uncertainty_px={k: v["rms_median_px"] for k, v in mj.items() if k != "whole_image"} if mj else None,
                     data_used=f"{len(EDGES)} verified straight edges", geometry_assumptions="no dimensions used; only straightness, parallelism and orthogonality of cart axes",
-                    details=out["lines_joint"]), f"{CACHE}/method_lines_joint.json")
+                    details=out["lines_joint"]), f"{CACHE}/method_lines_joint_lc.json")
 # vanishing lens json (f, pp from VP with plumb distortion)
 pv = dict(zip(lcv.names, rv.x))
 fv = pv["f"]
@@ -182,7 +182,7 @@ sdv = rstd(boot["vp"]) if len(boot["vp"]) else [np.nan] * 3
 save_json(lens_json(Kv, dv, method="vanishing_points (f, pp from orthogonal VPs; distortion from plumb-line)", model="fx=fy, pp free; k1,k2 from plumb-line",
                     rms_reprojection_error_px=out["vanishing"]["rms"], uncertainty={"f_1sigma": float(sdv[0]), "cx_1sigma": float(sdv[1]), "cy_1sigma": float(sdv[2])},
                     data_used=f"{len(EDGES)} verified edges (VP groups: cart X/Y/Z of both carts, scene verticals)",
-                    geometry_assumptions="no dimensions; cart axes mutually orthogonal", details=out["vanishing"]), f"{CACHE}/method_vanishing.json")
+                    geometry_assumptions="no dimensions; cart axes mutually orthogonal", details=out["vanishing"]), f"{CACHE}/method_vanishing_lc.json")
 # plumb lens json (distortion; quoted at the VP focal length)
 sdp = rstd(boot["plumb"]) if len(boot["plumb"]) else [np.nan] * 2
 Kp = K_from(fv, fv, (W - 1) / 2, (H - 1) / 2)
@@ -193,6 +193,6 @@ save_json(lens_json(Kp, dpo, method="plumb_line (distortion only, centre = image
                     uncertainty={"k1_1sigma": float(sdp[0] * (fv / F0) ** 2), "k2_1sigma": float(sdp[1] * (fv / F0) ** 4),
                                  "k1_over_f2_px": float(dpx[0]), "k2_over_f4_px": float(dpx[1])},
                     data_used=f"{len(EDGES)} verified straight edges", geometry_assumptions="none (straightness only)",
-                    details={k: v for k, v in out.items() if k.startswith("plumb")}), f"{CACHE}/method_plumbline.json")
+                    details={k: v for k, v in out.items() if k.startswith("plumb")}), f"{CACHE}/method_plumbline_lc.json")
 save_json(dict(out=out, boot={k: v.tolist() for k, v in boot.items()}, mapping_joint=mj), f"{CACHE}/lines_full.json")
 print("done")

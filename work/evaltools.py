@@ -50,33 +50,50 @@ def rays(uv, K, dist):
     return r / np.linalg.norm(r, axis=1, keepdims=True)
 
 
+def valid_pixels(uv, K, dist):
+    """Pixels whose normalised radius lies inside the invertible (non-folded) part of the radial model."""
+    from common import radial_fold
+
+    _, rdmax = radial_fold(dist)
+    x = (uv[:, 0] - K[0, 2]) / K[0, 0]
+    y = (uv[:, 1] - K[1, 2]) / K[1, 1]
+    return np.hypot(x, y) < rdmax * 0.999
+
+
 def mapping_displacement(K1, d1, K2, d2, uv=None, compensate=True, weights=None):
-    """Displacement field (N x 2) of model 2 relative to model 1 at pixels uv (model-1 image)."""
+    """Displacement field (N x 2) of model 2 relative to model 1 at pixels uv (model-1 image).
+
+    Pixels beyond the fold of model 1 (not invertible) get NaN and no weight in the rotation compensation;
+    such models should not be used as references (see common.fold_margin)."""
     if uv is None:
         uv, _ = grid(40)
+    ok = valid_pixels(uv, K1, d1)
     r = rays(uv, K1, d1)
-    ok = r[:, 2] > 0.05
+    ok &= np.isfinite(r).all(1) & (r[:, 2] > 0.05)
+    out = np.full((len(uv), 2), np.nan)
     if not compensate:
-        return project(r, K2, d2) - uv
-    w = np.ones(len(uv)) if weights is None else weights
+        out[ok] = project(r[ok], K2, d2) - uv[ok]
+        return out
+    w = (np.ones(len(uv)) if weights is None else np.asarray(weights, float))[ok]
 
     def res(a):
-        p = project(r @ rodrigues(a).T, K2, d2)
-        return ((p - uv) * np.sqrt(w)[:, None]).ravel()
+        p = project(r[ok] @ rodrigues(a).T, K2, d2)
+        return ((p - uv[ok]) * np.sqrt(w)[:, None]).ravel()
 
     a = least_squares(res, np.zeros(3), x_scale=1e-3).x
-    return project(r @ rodrigues(a).T, K2, d2) - uv
+    out[ok] = project(r[ok] @ rodrigues(a).T, K2, d2) - uv[ok]
+    return out
 
 
 def mapping_stats(disp_samples, uv):
     """disp_samples: S x N x 2 displacement fields of parameter samples vs the reference.
     Returns per-region 1-sigma radial RMS (median over the region's points and max)."""
-    rms = np.sqrt(np.mean(np.sum(disp_samples ** 2, axis=2), axis=0))  # N
+    rms = np.sqrt(np.nanmean(np.sum(disp_samples ** 2, axis=2), axis=0))  # N
     out = {}
     for name, fn in region_defs().items():
         m = fn(uv)
-        out[name] = {"rms_median_px": float(np.median(rms[m])), "rms_max_px": float(np.max(rms[m])), "n_points": int(m.sum())}
-    out["whole_image"] = {"rms_median_px": float(np.median(rms)), "rms_max_px": float(np.max(rms))}
+        out[name] = {"rms_median_px": float(np.nanmedian(rms[m])), "rms_max_px": float(np.nanmax(rms[m])), "n_points": int(m.sum())}
+    out["whole_image"] = {"rms_median_px": float(np.nanmedian(rms)), "rms_max_px": float(np.nanmax(rms))}
     return out, rms
 
 

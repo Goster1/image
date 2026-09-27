@@ -71,9 +71,27 @@ def edge_review_status():
     return st
 
 
+# VP-group policy of the orchestrator (30_lines_methods.py / 50_combined.py, commit d37a155): end-board edges are
+# straightness only (and not exact model lines); the parallel floor lines form horizontal VP groups perpendicular
+# to the vertical.
+FLOOR = {"scene_tapeV_left": "floor_V", "scene_tapeV_right": "floor_V", "scene_tapeH_top": "floor_H",
+         "scene_tapeH_bottom": "floor_H", "scene_blueH_top": "floor_H", "scene_blueL_top": "floor_H", "scene_blueL_bottom": "floor_H"}
+
+
+def apply_policy(E):
+    for e in E:
+        if "board" in e["id"]:
+            e["vp_group"] = None
+            if e.get("model_line"):
+                e["model_line"] = dict(e["model_line"], exact=False)
+        if e["id"] in FLOOR:
+            e["vp_group"] = FLOOR[e["id"]]
+    return E
+
+
 def load_real():
     M = load_markers()
-    E = load_real_edges()
+    E = apply_policy(load_real_edges())
     S = marker_side_edges(M, only_partial=True)
     return M, E, S
 
@@ -85,14 +103,62 @@ def side_owner(e):
 
 
 def edge_block(e, carts=(80, 310)):
-    """Block of an edge in the Combined estimator (L / V / S) and the LineCal VP group."""
+    """Block of an edge in the Combined estimator (L / V / S), same precedence as combined.Combined."""
+    vg = e.get("vp_group", "__none__")
     if model_line_3d(e.get("model_line")) is not None and e.get("cart") in carts:
         return "L"
+    if vg is None:
+        return "S"
+    if isinstance(vg, str) and vg.startswith("floor_"):
+        return "V"
     if e.get("direction") in AXIS and e.get("cart") in carts:
         return "V"
     if e.get("direction") == "world_vertical":
         return "V"
     return "S"
+
+
+def vp_direction(e, rots, wv, floor):
+    """3D direction (camera frame) of the vanishing point of a V-block edge.
+    rots: {cart: R}, wv: vertical, floor: {group: direction}."""
+    vg = e.get("vp_group", "__none__")
+    if isinstance(vg, str) and vg.startswith("floor_"):
+        return floor[vg]
+    if e.get("direction") == "world_vertical":
+        return wv
+    return rots[int(e["cart"])][:, AXIS[e["direction"]]]
+
+
+def floor_basis(v):
+    """same construction as lineselfcal / combined: e1, e2 span the plane perpendicular to v"""
+    e1 = np.cross(v, [1.0, 0.0, 0.0])
+    e1 /= np.linalg.norm(e1)
+    e2 = np.cross(v, e1)
+    return e1, e2
+
+
+def floor_dirs(E, K, d, wv):
+    """Horizontal (perpendicular to wv) direction of each floor group best fitting the undistorted edges."""
+    from scipy.optimize import minimize_scalar
+
+    e1, e2 = floor_basis(wv)
+    out = {}
+    for g in sorted({e.get("vp_group") for e in E if isinstance(e.get("vp_group"), str) and e["vp_group"].startswith("floor_")}):
+        Us = [und_px(e["points"], K, d) for e in E if e.get("vp_group") == g]
+
+        def cost(a):
+            v = K @ (np.cos(a) * e1 + np.sin(a) * e2)
+            c = 0.0
+            for U in Us:
+                l = np.cross(v, np.r_[U.mean(0), 1.0])
+                c += np.sum(((U @ l[:2] + l[2]) / np.hypot(l[0], l[1])) ** 2)
+            return c
+
+        grid_a = np.linspace(0, np.pi, 361)
+        a0 = grid_a[np.argmin([cost(a) for a in grid_a])]
+        a = minimize_scalar(cost, bracket=(a0 - 0.01, a0, a0 + 0.01)).x
+        out[g] = np.cos(a) * e1 + np.sin(a) * e2
+    return out
 
 
 # ----------------------------------------------------------------------------------------------
@@ -182,6 +248,7 @@ class Truth:
         cz = np.mean([rodrigues(self.poses[c][:3])[:, 2] for c in (80, 310)], axis=0)
         if self.wv @ cz < 0:
             self.wv = -self.wv
+        self.floor = floor_dirs(E, self.K, self.d, self.wv)
         self.params = dict(f=f, cx=cx, cy=cy, k1=k1, k2=k2)
 
     def px_units(self):
@@ -234,10 +301,7 @@ def real_edge_stats(E, S, Kref, dref, rots_ref, wv_ref):
         theta = 0.0
         blk = edge_block(e)
         if blk == "V" and rots_ref is not None:
-            if e.get("direction") == "world_vertical":
-                dv = wv_ref
-            else:
-                dv = rots_ref[int(e["cart"])][:, AXIS[e["direction"]]]
+            dv = vp_direction(e, rots_ref, wv_ref, rots_ref)
             v = Kref @ dv
             cU = U.mean(0)
             lv = np.cross(v, np.r_[cU, 1.0])
@@ -278,10 +342,7 @@ def ideal_edges(truth, E, S, side_offsets=None, extra_line_offsets=None):
             b = K @ (R @ D)
             l = np.cross(a, b)
         elif blk == "V":
-            if e.get("direction") == "world_vertical":
-                v = K @ truth.wv
-            else:
-                v = K @ Rs[int(e["cart"])][:, AXIS[e["direction"]]]
+            v = K @ vp_direction(e, Rs, truth.wv, truth.floor)
             l = np.cross(v, np.r_[U.mean(0), 1.0])
         else:
             l = tls_line(U)
@@ -380,11 +441,12 @@ def diagnosed_offsets(M):
 # ----------------------------------------------------------------------------------------------
 
 def cluster_sandwich_pts(r, groups):
-    J = r.jac
-    e = r.fun
-    JTJi = np.linalg.pinv(J.T @ J)
-    meat = np.zeros_like(JTJi)
+    """= 20_markers_ba.cluster_sandwich (fold-barrier row excluded from the meat)"""
     g2 = np.repeat(groups, 2)
+    J = r.jac[: len(g2)]
+    e = r.fun[: len(g2)]
+    JTJi = np.linalg.pinv(r.jac.T @ r.jac)
+    meat = np.zeros_like(JTJi)
     for g in np.unique(groups):
         s = g2 == g
         v = J[s].T @ e[s]
@@ -397,6 +459,7 @@ def fit_markers(spec, pts, K0, d0, P0, carts=(80, 310), multistart=True):
     """= 20_markers_ba.fit (3 starts in f, lowest cost)."""
     m = Model(spec)
     pr = Problem(m, pts, carts=list(carts))
+    pr.fold_barrier = True  # 20_markers_ba default
     x0 = np.r_[m.pack(K0, d0), np.ravel([P0[c] for c in carts])]
     best = None
     for fs in ((1.0, 0.85, 1.15) if multistart else (1.0,)):
@@ -430,7 +493,7 @@ def plumb_estimate(edges, centre_free=False, x0=None, subsample=2):
     return lc, r, Cc[: lc.n_intr, : lc.n_intr], Cs[: lc.n_intr, : lc.n_intr]
 
 
-def vp_estimate(edges, dist_px_units, K0, rots0, subsample=2):
+def vp_estimate(edges, dist_px_units, K0, rots0, subsample=2, x_init=None):
     lc = LineCal(edges, "vp", pp_free=True, subsample=subsample)
 
     def unpack_fixed(x, _orig=lc.unpack):
@@ -440,26 +503,30 @@ def vp_estimate(edges, dist_px_units, K0, rots0, subsample=2):
         return K, d, rots, wv
 
     lc.unpack = unpack_fixed
-    x0 = lc.x0(K0, np.zeros(5), rots0)
+    x0 = lc.x0(K0, np.zeros(5), rots0) if x_init is None else x_init
     r = lc.solve(x0, loss="huber", f_scale=0.5)
     Cs = sandwich(r, lc.edge_groups_index())
     Cc = classic_cov(r)
     return lc, r, Cc[: lc.n_intr, : lc.n_intr], Cs[: lc.n_intr, : lc.n_intr]
 
 
-def joint_estimate(edges, K0, d0, rots0, subsample=2):
+def joint_estimate(edges, K0, d0, rots0, subsample=2, x_init=None):
     lc = LineCal(edges, "joint", dist_free=("k1", "k2"), pp_free=True, subsample=subsample)
-    x0 = lc.x0(K0, d0, rots0)
+    x0 = lc.x0(K0, d0, rots0) if x_init is None else x_init
     r = lc.solve(x0, loss="huber", f_scale=0.5)
     Cs = sandwich(r, lc.edge_groups_index())
     Cc = classic_cov(r)
     return lc, r, Cc[: lc.n_intr, : lc.n_intr], Cs[: lc.n_intr, : lc.n_intr]
 
 
-def combined_estimate(pts, edges, K0, d0, P0, spec=COMBINED_SPEC, sig=None, subsample=2):
+ROBUST_C = 1.5  # 50_combined.py
+
+
+def combined_estimate(pts, edges, K0, d0, P0, spec=COMBINED_SPEC, sig=None, subsample=2, robust=True, x_init=None):
+    """= 50_combined.run: robust=True -> cluster-robust IRLS over stickers (solve_irls, c = 1.5 px), else plain."""
     cb = Combined(pts, edges, spec, sig=sig, subsample=subsample)
-    x0 = cb.x0(K0, d0, P0)
-    r = cb.solve(x0)
+    x0 = cb.x0(K0, d0, P0) if x_init is None else x_init
+    r = cb.solve_irls(x0, c=ROBUST_C) if (robust and len(cb.mp)) else cb.solve(x0)
     J = r.jac
     dof = max(len(r.fun) - len(r.x), 1)
     C = np.linalg.pinv(J.T @ J) * (2 * r.cost / dof)
@@ -470,6 +537,12 @@ def combined_estimate(pts, edges, K0, d0, P0, spec=COMBINED_SPEC, sig=None, subs
 # ----------------------------------------------------------------------------------------------
 # mapping evaluation
 # ----------------------------------------------------------------------------------------------
+
+def rstd(a):
+    """robust 1-sigma used by the orchestrator: half of the 16-84 % range"""
+    a = np.asarray(a, float)
+    return 0.5 * (np.percentile(a, 84, axis=0) - np.percentile(a, 16, axis=0))
+
 
 def valid_mask(K, d, uv=UV, tol=0.05):
     """Pixels whose viewing ray is well defined (undistortion converged and the model is not folded)."""

@@ -107,8 +107,13 @@ def analyse(scen, est):
     if est == "combined_k1k2":
         br = {k: np.median([r["block_rms"][k][0] for r in reps if r["block_rms"][k][0] is not None]) for k in "MLVS"}
         out["block_rms_median"] = {k: fl(v) for k, v in br.items()}
-    if est in ("plumb_fixed",):
-        out["rms_median"] = float(np.median([r["rms"] for r in reps]))
+    _rv = [r["rms"] for r in reps if r.get("rms") is not None]
+    if _rv:
+        out["rms_median"] = float(np.median(_rv))
+    fails = [r for r in reps if r.get("failed_start_rms") is not None or r.get("failed_start") is not None or r.get("failed_start_S_rms") is not None]
+    out["n_failed_from_perturbed_start"] = len(fails)
+    if fails:
+        out["failed_examples"] = [str(r.get("failed_start_rms", r.get("failed_start", r.get("failed_start_S_rms")))) for r in fails][:5]
     return out
 
 
@@ -226,9 +231,10 @@ def plot_params():
                     ax.plot([xpos - 0.05, xpos + 0.05], [b + cl["median"][k]] * 2, "-", color="k", lw=1.2)
                     ax.plot([xpos - 0.05, xpos + 0.05], [b - cl["median"][k]] * 2, "-", color="k", lw=1.2)
         ax.axhline(0, color="gray", lw=0.8)
+        ax.set_xlim(-0.5, len(EST) - 0.5)
         ax.set_xticks(range(len(EST)))
         ax.set_xticklabels([SHORT[e] for e in EST], fontsize=9)
-        ax.set_ylabel(f"{pn}: estimate - truth" + (" [px]" if pn != "k1" else " (plumb: at f_true)"))
+        ax.set_ylabel(f"{pn}: estimate - truth" + (" [px]" if pn != "k1" else "\n(plumb-line: k1 at f0 = 1300)"))
         ax.grid(alpha=0.3)
         if pn in ("f", "cx", "cy"):
             lim = ax.get_ylim()
@@ -251,18 +257,22 @@ def plot_mapping():
                     continue
                 xpos = i + (j - (len(SCEN) - 1) / 2) * 0.15
                 tot = a["mapping"]["total"][rg]["median"]
-                ax.bar(xpos, tot, width=0.14, color=cols[s], label=s if (i == 0 and rg == "centre") else None)
+                ax.bar(xpos, tot, width=0.14, color=cols[s])
                 for ck, mk in (("C", "_"), ("Cs", "x"), ("boot", "^")):
                     c = a["mapping"]["claimed"].get(ck)
                     if c and c[rg]["median"]:
-                        ax.plot(xpos, c[rg]["median"], mk, color="k", ms=5, label={"C": "claimed (cov)", "Cs": "claimed (sandwich)", "boot": "claimed (bootstrap)"}[ck] if (i == 8 and j == 0 and rg == "centre") or (e == "markers_k1k2_ppfix" and j == 0 and rg == "centre" and ck != "C") else None)
+                        ax.plot(xpos, c[rg]["median"], mk, color="k", ms=5)
         ax.set_yscale("log")
         ax.set_xticks(range(len(EST)))
         ax.set_xticklabels([SHORT[e] for e in EST], rotation=60, fontsize=8)
         ax.set_title(f"{rg}: actual RMS mapping error vs truth (bars)")
         ax.grid(alpha=0.3, which="both")
     axs[0].set_ylabel("px (rotation-compensated, median over region)")
-    axs[0].legend(fontsize=7, ncol=2)
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import Patch
+    hd = [Patch(color=cols[s], label=f"actual, {s}") for s in SCEN] + [
+        Line2D([], [], marker=m, ls="", color="k", label=l) for m, l in (("_", "claimed: covariance"), ("x", "claimed: sandwich"), ("^", "claimed: bootstrap"))]
+    axs[0].legend(handles=hd, fontsize=7, ncol=2, loc="upper left")
     fig.suptitle("Synthetic round trip: actual mapping error vs the uncertainty the estimator claims (markers: cov -, sandwich x, bootstrap ^)", fontsize=10)
     fig.tight_layout()
     fig.savefig(f"{RESULTS}/synthetic_mapping.png")
@@ -346,7 +356,7 @@ def stab(kind):
         if key.startswith("frame") and key != "frame0":
             continue
         sz = v.get("perturbation_size")
-        szs = f"rms {sz['rms_px']:.2f} px" if sz else "-"
+        szs = f"rms {sz['rms_px']:.2f} px" if sz else ("0.3 px along the normal" if key.startswith("edge") else "-")
         for e, r in v["result"].items():
             if e in ("markers_k1_ppfree",):
                 continue
@@ -423,6 +433,41 @@ for k, v in SETUP["truths"].items():
               f"(synthetic vs real corners {v['synthetic_vs_real_corner_rms_px']:.1f} px RMS)")
 for k, v in rep_json["noise_models"].items():
     md.append(f"* scenario {k}: {v}")
+def realism():
+    rows = ["| quantity | real data | " + " | ".join(SCEN) + " |", "|---|---|" + "---|" * len(SCEN)]
+    rl = SETUP["real"]
+    q = [("sticker RMS, drawing fit k1k2 ppfree [px]", rl["markers_k1k2_ppfree"]["rms"], lambda s: A[s]["markers_k1k2_ppfree"].get("rms_median")),
+         ("sticker RMS, drawing fit k1 ppfix [px]", rl["markers_k1_ppfix"]["rms"], lambda s: A[s]["markers_k1_ppfix"].get("rms_median")),
+         ("plumb-line (centre fixed) edge RMS [px]", rl["plumb_fixed"]["rms"], lambda s: A[s]["plumb_fixed"].get("rms_median") if A[s].get("plumb_fixed") else None),
+         ("lines joint edge RMS [px]", rl["lines_joint"]["rms"], lambda s: A[s]["lines_joint"].get("rms_median") if A[s].get("lines_joint") else None)]
+    for nm, rv, fn in q:
+        vals = []
+        for s in SCEN:
+            try:
+                v = fn(s)
+            except Exception:
+                v = None
+            vals.append(f"{v:.3f}" if v is not None else "-")
+        rows.append(f"| {nm} | {rv:.3f} | " + " | ".join(vals) + " |")
+    for b in "MLVS":
+        vals = [f"{A[s]['combined_k1k2']['block_rms_median'][b]:.3f}" if A[s]["combined_k1k2"]["block_rms_median"].get(b) is not None else "-" for s in SCEN]
+        rows.append(f"| combined block {b} RMS (per coordinate / per point) [px] | see method_combined | " + " | ".join(vals) + " |")
+    return "\n".join(rows)
+
+
+def failtab():
+    rows = []
+    for s in SCEN:
+        for e in EST:
+            a = A[s].get(e)
+            if a and a.get("n_failed_from_perturbed_start"):
+                rows.append(f"* {s} / {SHORT[e]}: {a['n_failed_from_perturbed_start']} of {a['n']} fits from the perturbed start failed "
+                            f"(edge RMS / result: {'; '.join(a['failed_examples'])}); re-run from the orchestrator's default start, statistics use the re-run.")
+    return "\n".join(rows) if rows else "* none"
+
+
+md += ["", "## Realism check (synthetic residual levels vs the real data; medians over replicates)", "", realism(), "",
+       "## Convergence failures from perturbed starts", "", failtab()]
 md += ["", "## Honesty summary (f, or k1 for the plumb-line; mapping = rotation-compensated error vs truth, median over the region)", "", htab()]
 for s in SCEN:
     md += ["", f"## Round trip {s} ({A[s][EST[0]]['n']} replicates)", "", "Parameters (plumb-line k's are k/f0^2, k/f0^4 at f0 = 1300 in both estimate and truth):", "", ptab(s), "",

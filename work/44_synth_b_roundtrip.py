@@ -27,6 +27,7 @@ from multiprocessing import Pool
 import numpy as np
 
 from common import CACHE, K_from, load_json
+from linedata import stratified_resample
 from markerdata import to_points
 
 L = importlib.import_module("44_synth_lib")
@@ -55,6 +56,7 @@ class _T:  # light-weight truth from the setup file (identical poses in every wo
         self.d = np.array([t["k1"], t["k2"], 0, 0, 0.0])
         self.poses = {int(c): np.array(v) for c, v in t["poses"].items()}
         self.wv = np.array(t["wv"])
+        self.floor = {g: np.array(v) for g, v in t["floor"].items()}
         self.params = {k: t[k] for k in ("f", "cx", "cy", "k1", "k2")}
 
 
@@ -150,42 +152,45 @@ def run_task(task):
                 bx.append(rb["x"])
             bx = np.array(bx)
             extra["boot_x"] = bx
-            extra["sig_boot"] = bx.std(0)
+            extra["sig_boot"] = bx.std(0)  # 20_markers_ba quotes the plain std
+            extra["sig_boot_robust"] = L.rstd(bx)
             # bootstrap mapping claim (displacement of each bootstrap replicate vs the estimate)
             Kx, dx = r["unpack"](r["x"])
             Ds = np.array([L.disp_field(Kx, dx[:5], *[np.asarray(v)[:5] if i else v for i, v in enumerate(r["unpack"](xb))]) for xb in bx[:30]])
             extra["claim_map_boot"] = np.sqrt(np.nanmean(np.sum(Ds ** 2, axis=2), axis=0)).astype(np.float32)
         res["markers_" + name] = rec(r["names"], r["x"], T, "std", C=r["C"], Cs=r["Cs"], extra=extra, g=g, claim_from=("C", "Cs"))
-    # ---------------- combined
-    cb, rc, Cc, Kc, dc = L.combined_estimate(pts, edges, K0, d0, P0)
-    comb_retry = None
-    if cb.block_rms(rc.x)["S"][0] > 1.0:  # failed start (e.g. folded distortion) -> orchestrator's default start
-        comb_retry = float(cb.block_rms(rc.x)["S"][0])
-        cb, rc, Cc, Kc, dc = L.combined_estimate(pts, edges, K_from(1400.0, 1400.0, *L.CEN), np.array([-0.3, 0.06, 0, 0, 0]), P0)
-    extra = dict(block_rms=cb.block_rms(rc.x), sig_blocks=dict(cb.sig), failed_start_S_rms=comb_retry)
-    if rep < NB_COMB[0]:
-        mis = sorted({p["mi"] for p in pts})
-        bx = []
-        for b in range(NB_COMB[1]):
-            pick_m = g.choice(mis, len(mis), replace=True)
-            bp = []
-            for q, mi in enumerate(pick_m):
-                bp += [dict(p, mi=1000 * q + mi) for p in pts if p["mi"] == mi]
-            if len({p["cart"] for p in bp}) < 2:
-                continue
-            pick_e = g.integers(0, len(edges), len(edges))
-            be = [dict(edges[i], id=f"{edges[i]['id']}#{q}") for q, i in enumerate(pick_e)]
-            try:
-                cbb, rb, _, _, _ = L.combined_estimate(bp, be, Kc, dc, {c: rc.x[cb.ni + 6 * i: cb.ni + 6 * i + 6] for i, c in enumerate(cb.carts)}, sig=dict(cb.sig))
-                bx.append(rb.x[: cb.ni])
-            except Exception as ex:  # noqa
-                pass
-        bx = np.array(bx)
-        extra["boot_x"] = bx
-        extra["sig_boot"] = bx.std(0)
-        Ds = np.array([L.disp_field(Kc, dc, *lens_general(cb.inames, xb, T, "std")) for xb in bx])
-        extra["claim_map_boot"] = np.sqrt(np.nanmean(np.sum(Ds ** 2, axis=2), axis=0)).astype(np.float32)
-    res["combined_k1k2"] = rec(cb.inames, rc.x[: cb.ni], T, "std", C=Cc, extra=extra, g=g, claim_from=("C",))
+    # ---------------- combined (50_combined: robust IRLS main result; plain variant for comparison)
+    for cname, robust in (("combined_k1k2", True), ("combined_nonrobust", False)):
+        cb, rc, Cc, Kc, dc = L.combined_estimate(pts, edges, K0, d0, P0, robust=robust)
+        comb_retry = None
+        if cb.block_rms(rc.x)["S"][0] > 1.0:  # failed start -> orchestrator's default start (50_combined.run)
+            comb_retry = float(cb.block_rms(rc.x)["S"][0])
+            cb, rc, Cc, Kc, dc = L.combined_estimate(pts, edges, K_from(1420.0, 1420.0, *L.CEN), np.array([-0.33, 0.09, 0, 0, 0]), P0, robust=robust)
+        extra = dict(block_rms=cb.block_rms(rc.x), sig_blocks=dict(cb.sig), failed_start_S_rms=comb_retry,
+                     sticker_rms=cb.sticker_rms(rc.x) if robust else None)
+        if robust and rep < NB_COMB[0]:
+            mis = sorted({p["mi"] for p in pts})
+            bx = []
+            for b in range(NB_COMB[1]):
+                pick_m = g.choice(mis, len(mis), replace=True)
+                bp = []
+                for q, mi in enumerate(pick_m):
+                    bp += [dict(p, mi=1000 * q + mi) for p in pts if p["mi"] == mi]
+                if len({p["cart"] for p in bp}) < 2:
+                    continue
+                be = stratified_resample(edges[:NE], g) + edges[NE:]  # as 50_combined: lines within VP group, sides follow
+                try:
+                    cbb, rb, _, _, _ = L.combined_estimate(bp, be, None, None, None, sig=dict(cb.sig), x_init=rc.x.copy())
+                    bx.append(rb.x[: cb.ni])
+                except Exception as ex:  # noqa
+                    pass
+            bx = np.array(bx)
+            extra["boot_x"] = bx
+            extra["sig_boot"] = L.rstd(bx)  # 50_combined quotes the robust std
+            extra["sig_boot_std"] = bx.std(0)
+            Ds = np.array([L.disp_field(Kc, dc, *lens_general(cb.inames, xb, T, "std")) for xb in bx])
+            extra["claim_map_boot"] = np.sqrt(np.nanmean(np.sum(Ds ** 2, axis=2), axis=0)).astype(np.float32)
+        res[cname] = rec(cb.inames, rc.x[: cb.ni], T, "std", C=Cc, extra=extra, g=g, claim_from=("C",))
     if kind != "c":
         # ---------------- lines (structural edges only, as 30_lines_methods)
         ed = edges[:NE]
@@ -225,25 +230,26 @@ def run_task(task):
         if rep < NB_LINE[0]:
             bp_, bv_, bj_ = [], [], []
             for b in range(NB_LINE[1]):
-                idx = g.integers(0, len(ed), len(ed))
-                sub = [dict(ed[i], id=f"{ed[i]['id']}#{q}") for q, i in enumerate(idx)]
+                sub = stratified_resample(ed, g)  # as 30_lines_methods: within VP groups, subsample 4
                 try:
-                    _, r1, _, _ = L.plumb_estimate(sub, x0=rp.x.copy())
+                    _, r1, _, _ = L.plumb_estimate(sub, subsample=4)
                     d1 = np.array([r1.x[0] / L.F0 ** 2, r1.x[1] / L.F0 ** 4])
-                    _, r2, _, _ = L.vp_estimate(sub, d1, K_from(rv.x[0], rv.x[0], rv.x[1], rv.x[2]), {c: np.r_[rv.x[3 + 3 * i: 6 + 3 * i], 0, 0, 0] for i, c in enumerate(lcv.carts)})
-                    Kj_, dj_, rots_, _ = lcj.unpack(rj.x)
-                    _, r3, _, _ = L.joint_estimate(sub, Kj_, dj_, {c: np.r_[rj.x[lcj.n_intr + 3 * i: lcj.n_intr + 3 * i + 3], 0, 0, 0] for i, c in enumerate(lcj.carts)})
+                    _, r2, _, _ = L.vp_estimate(sub, d1, None, None, subsample=4, x_init=rv.x.copy())
+                    _, r3, _, _ = L.joint_estimate(sub, None, None, None, subsample=4, x_init=rj.x.copy())
                     bp_.append(r1.x[:2])
                     bv_.append(np.r_[r2.x[:3], d1])
                     bj_.append(r3.x[: lcj.n_intr])
                 except Exception as ex:  # noqa
-                    pass
+                    print("line boot fail", ex, flush=True)
             bp_, bv_, bj_ = np.array(bp_), np.array(bv_), np.array(bj_)
-            res["plumb_fixed"]["sig_boot"] = bp_.std(0)
+            res["plumb_fixed"]["sig_boot"] = L.rstd(bp_)  # 30_lines_methods quotes the robust std
+            res["plumb_fixed"]["sig_boot_std"] = bp_.std(0)
             res["plumb_fixed"]["boot_x"] = bp_
-            res["vp"]["sig_boot"] = bv_[:, :3].std(0)
+            res["vp"]["sig_boot"] = L.rstd(bv_[:, :3])
+            res["vp"]["sig_boot_std"] = bv_[:, :3].std(0)
             res["vp"]["boot_x"] = bv_
-            res["lines_joint"]["sig_boot"] = bj_.std(0)
+            res["lines_joint"]["sig_boot"] = L.rstd(bj_)
+            res["lines_joint"]["sig_boot_std"] = bj_.std(0)
             res["lines_joint"]["boot_x"] = bj_
             # bootstrap mapping claims (each replicate re-estimates everything, like 30_lines_methods)
             Kv, dv = lens_general(lcv.names[:3], rv.x[:3], T, "vp", dpx)
@@ -288,6 +294,8 @@ if __name__ == "__main__":
     if resume:
         done = load_done(parts)
         tasks = [t for t in tasks if t not in done or t in redo]
+        if "--reverse" in sys.argv:  # second helper process working from the end of the task list
+            tasks = tasks[::-1]
         fn = f"{CACHE}/synthetic_roundtrip_raw_part{len(parts) + 1}.pkl"
         print("resume: already done", len(done), "remaining", len(tasks), "->", fn)
     else:

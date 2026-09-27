@@ -66,7 +66,7 @@ for tn, p in TRUTHS.items():
     pts = L.sticker_obs(T, M)
     real_uv = np.array([m["corners_px"][j] for m in M for j in range(4) if m["valid"][j]])
     syn_uv = np.array([q["uv"] for q in pts])
-    TRUTHS[tn].update(poses={str(c): T.poses[c].tolist() for c in (80, 310)}, wv=T.wv.tolist(),
+    TRUTHS[tn].update(poses={str(c): T.poses[c].tolist() for c in (80, 310)}, wv=T.wv.tolist(), floor={g: v.tolist() for g, v in T.floor.items()},
                       synthetic_vs_real_corner_rms_px=float(np.sqrt(np.mean(np.sum((syn_uv - real_uv) ** 2, 1)))))
     print(tn, T.describe(), "synthetic-vs-real corner rms", round(TRUTHS[tn]["synthetic_vs_real_corner_rms_px"], 2))
 

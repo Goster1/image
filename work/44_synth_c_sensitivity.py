@@ -45,6 +45,7 @@ class _T:
         self.d = np.array([t["k1"], t["k2"], 0, 0, 0.0])
         self.poses = {int(c): np.array(v) for c, v in t["poses"].items()}
         self.wv = np.array(t["wv"])
+        self.floor = {g: np.array(v) for g, v in t["floor"].items()}
         self.params = {k: t[k] for k in ("f", "cx", "cy", "k1", "k2")}
 
 
@@ -174,7 +175,7 @@ def perturb(ds, name, val):
 def starts(kind):
     if kind == "real":
         return dict(mk=(K_INIT, D_INIT, P_INIT), ln=(K_from(1300, 1300, *L.CEN), np.array([-0.28, 0.05, 0, 0, 0]), P_INIT),
-                    cb=(K_from(1400, 1400, *L.CEN), np.array([-0.3, 0.06, 0, 0, 0]), P_INIT), f_ref=F_REAL)
+                    cb=(K_from(1420, 1420, *L.CEN), np.array([-0.33, 0.09, 0, 0, 0]), P_INIT), f_ref=F_REAL)
     T = TR[kind]
     return dict(mk=(T.K, T.d, T.poses), ln=(T.K, T.d, T.poses), cb=(T.K, T.d, T.poses), f_ref=T.params["f"])
 

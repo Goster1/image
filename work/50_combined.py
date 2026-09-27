@@ -20,11 +20,19 @@ from evaltools import grid, mapping_displacement, mapping_stats
 from linedata import load_edges, stratified_resample
 from markerdata import load_markers, marker_side_edges, to_points
 
-NBOOT = int(sys.argv[1]) if len(sys.argv) > 1 else 100
-rng = np.random.default_rng(777)
+# usage: python3 50_combined.py fit            -> all fits, variants, f profile (no bootstrap)
+#        python3 50_combined.py boot SEED N   -> N bootstrap replicates -> cache/combined_boot_SEED.json
+#        python3 50_combined.py finalize      -> merge bootstrap files, mapping uncertainty, method files, plots
+import glob
+import os
+
+MODE = sys.argv[1] if len(sys.argv) > 1 else "fit"
+SEED = int(sys.argv[2]) if MODE == "boot" else 777
+NBOOT = int(sys.argv[3]) if MODE == "boot" else 0
+rng = np.random.default_rng(SEED)
 init = load_json(f"{CACHE}/initial_calib.json")
 P0 = {80: np.array(init["poses"]["80"]), 310: np.array(init["poses"]["310"])}
-WHICH = sys.argv[2] if len(sys.argv) > 2 else "final"
+WHICH = os.environ.get("COMBINED_CORNERS", "final")
 TAG = "" if WHICH == "final" else "_" + WHICH
 M = load_markers(which=WHICH)
 PTS = to_points(M)
@@ -50,8 +58,7 @@ SPECS = {
     "k1k2p1p2": dict(f="single", pp="free", dist=["k1", "k2", "p1", "p2"]),
     "k1k2_fxfy": dict(f="fxfy", pp="free", dist=["k1", "k2"]),
     "k1k2_ppfixed": dict(f="single", pp="fixed", dist=["k1", "k2"]),
-    "k1_only": dict(f="single", pp="free", dist=["k1"]),
-}
+}  # k1-only omitted: the plumb-line shows it cannot straighten the edges (RMS 0.51 px, runs into the fold barrier)
 
 
 def run(spec, pts, edges, x0=None, sig=None, use=("M", "L", "V", "S"), loss="linear", robust=True):
@@ -71,73 +78,103 @@ def lens_of(cb, x):
     return K, d[:5]
 
 
-summary = {}
-fits = {}
-xk = None
-for name, spec in SPECS.items():
-    cb, r = run(spec, PTS, EDGES)
-    br = cb.block_rms(r.x)
-    K, d = lens_of(cb, r.x)
-    J = r.jac
-    dof = max(len(r.fun) - len(r.x), 1)
-    C = np.linalg.pinv(J.T @ J) * (2 * r.cost / dof)
-    s = np.sqrt(np.diag(C))[: cb.ni]
-    summary[name] = dict(names=cb.inames, x=r.x[: cb.ni].tolist(), sigma_cov=s.tolist(), block_rms=br, sig=cb.sig,
-                         K=K.tolist(), dist=d.tolist())
-    fits[name] = (cb, r)
-    print(f"{name:14s} " + " ".join(f"{n}={v:.5g}±{e:.2g}" for n, v, e in zip(cb.inames, r.x[: cb.ni], s)),
-          "| blocks", {k: (round(v[0], 3) if v[0] else None, v[1]) for k, v in br.items()})
+if MODE == "fit":
+    summary = {}
+    fits = {}
+    xk = None
+    for name, spec in SPECS.items():
+        cb, r = run(spec, PTS, EDGES)
+        br = cb.block_rms(r.x)
+        K, d = lens_of(cb, r.x)
+        J = r.jac
+        dof = max(len(r.fun) - len(r.x), 1)
+        C = np.linalg.pinv(J.T @ J) * (2 * r.cost / dof)
+        s = np.sqrt(np.diag(C))[: cb.ni]
+        summary[name] = dict(names=cb.inames, x=r.x[: cb.ni].tolist(), sigma_cov=s.tolist(), block_rms=br, sig=cb.sig,
+                             K=K.tolist(), dist=d.tolist())
+        fits[name] = (cb, r)
+        print(f"{name:14s} " + " ".join(f"{n}={v:.5g}±{e:.2g}" for n, v, e in zip(cb.inames, r.x[: cb.ni], s)),
+              "| blocks", {k: (round(v[0], 3) if v[0] else None, v[1]) for k, v in br.items()})
 
-# NON-robust variant (all stickers with full weight, block variance components only)
-cb_r, r_r = run(SPECS["k1k2"], PTS, EDGES, robust=False)
-Kr, dr = lens_of(cb_r, r_r.x)
-summary["k1k2_nonrobust"] = dict(names=cb_r.inames, x=r_r.x[: cb_r.ni].tolist(), block_rms=cb_r.block_rms(r_r.x), K=Kr.tolist(), dist=dr.tolist(),
-                                 sticker_rms=cb_r.sticker_rms(r_r.x))
-print("non-robust k1k2", np.round(r_r.x[: cb_r.ni], 4), "sticker rms", {M[g]['role'] + f"@{M[g]['cart']}": round(v, 2) for g, v in cb_r.sticker_rms(r_r.x).items()})
-# sticker weights / residuals of the main (robust) fit
-cbm, rm = fits["k1k2"]
-srm = cbm.sticker_rms(rm.x)
-sticker_table = [dict(cart=M[g]["cart"], id=M[g]["id"], role=M[g]["role"], rms_px=v, weight=1.0 / (1.0 + (v / ROBUST_C) ** 2)) for g, v in sorted(srm.items())]
-for t in sticker_table:
-    print(f"   sticker {t['cart']}:{t['id']:3d} {t['role']:8s} rms {t['rms_px']:6.2f} px  weight {t['weight']:.3f}")
-# data-subset variants (information content of each source)
-for tag, use in {"edges_only": ("V", "S"), "markers_only_blockM": ("M",), "markers+sides": ("M", "L")}.items():
-    try:
-        cb2, r2 = run(SPECS["k1k2"], PTS, EDGES, use=use, x0=None)
-        summary[f"k1k2_{tag}"] = dict(names=cb2.inames, x=r2.x[: cb2.ni].tolist(), block_rms=cb2.block_rms(r2.x))
-        print(f"subset {tag:20s}", np.round(r2.x[: cb2.ni], 4), {k: v for k, v in cb2.block_rms(r2.x).items() if v[1]})
-    except Exception as ex:  # noqa
-        print("subset", tag, "failed", ex)
+    # NON-robust variant (all stickers with full weight, block variance components only)
+    cb_r, r_r = run(SPECS["k1k2"], PTS, EDGES, robust=False)
+    Kr, dr = lens_of(cb_r, r_r.x)
+    summary["k1k2_nonrobust"] = dict(names=cb_r.inames, x=r_r.x[: cb_r.ni].tolist(), block_rms=cb_r.block_rms(r_r.x), K=Kr.tolist(), dist=dr.tolist(),
+                                     sticker_rms=cb_r.sticker_rms(r_r.x))
+    print("non-robust k1k2", np.round(r_r.x[: cb_r.ni], 4), "sticker rms", {M[g]['role'] + f"@{M[g]['cart']}": round(v, 2) for g, v in cb_r.sticker_rms(r_r.x).items()})
+    # sticker weights / residuals of the main (robust) fit
+    cbm, rm = fits["k1k2"]
+    srm = cbm.sticker_rms(rm.x)
+    sticker_table = [dict(cart=M[g]["cart"], id=M[g]["id"], role=M[g]["role"], rms_px=v, weight=1.0 / (1.0 + (v / ROBUST_C) ** 2)) for g, v in sorted(srm.items())]
+    for t in sticker_table:
+        print(f"   sticker {t['cart']}:{t['id']:3d} {t['role']:8s} rms {t['rms_px']:6.2f} px  weight {t['weight']:.3f}")
+    # data-subset variants (information content of each source)
+    for tag, use in {"edges_only": ("V", "S"), "markers_only_blockM": ("M",), "markers+sides": ("M", "L")}.items():
+        try:
+            cb2, r2 = run(SPECS["k1k2"], PTS, EDGES, use=use, x0=None)
+            summary[f"k1k2_{tag}"] = dict(names=cb2.inames, x=r2.x[: cb2.ni].tolist(), block_rms=cb2.block_rms(r2.x))
+            print(f"subset {tag:20s}", np.round(r2.x[: cb2.ni], 4), {k: v for k, v in cb2.block_rms(r2.x).items() if v[1]})
+        except Exception as ex:  # noqa
+            print("subset", tag, "failed", ex)
 
-# ------------- profile of f for the main model -------------
-cb, r = fits["k1k2"]
-from scipy.optimize import least_squares
+    # ------------- profile of f for the main model -------------
+    cb, r = fits["k1k2"]
+    from scipy.optimize import least_squares
 
-prof = []
-for fv in np.linspace(r.x[0] * 0.85, r.x[0] * 1.15, 25):
-    rr = least_squares(lambda y: cb.residuals(np.r_[fv, y]), r.x[1:], method="trf", x_scale="jac", max_nfev=200)
-    b = cb.blocks(np.r_[fv, rr.x])
-    prof.append([fv, 2 * rr.cost] + [float(np.sqrt(np.mean(b[k] ** 2))) if len(b[k]) else np.nan for k in ("M", "L", "V", "S")])
-prof = np.array(prof)
+    prof = []
+    for fv in np.linspace(r.x[0] * 0.85, r.x[0] * 1.15, 15):
+        rr = least_squares(lambda y: cb.residuals(np.r_[fv, y]), r.x[1:], method="trf", x_scale="jac", max_nfev=200)
+        b = cb.blocks(np.r_[fv, rr.x])
+        prof.append([fv, 2 * rr.cost] + [float(np.sqrt(np.mean(b[k] ** 2))) if len(b[k]) else np.nan for k in ("M", "L", "V", "S")])
+    prof = np.array(prof)
 
-# ------------- cluster bootstrap: resample stickers and edges -------------
-mis = sorted({p["mi"] for p in PTS})
+    cbm, rm = fits["k1k2"]
+    save_json(dict(summary=summary, profile=prof.tolist(), sticker_table=sticker_table, x_main=rm.x.tolist(), sig_main=cbm.sig,
+                   mw=cbm.mw.tolist(), inames=cbm.inames), f"{CACHE}/combined_fit{TAG}.json")
+    print("fit done")
+    sys.exit(0)
+
+FIT = load_json(f"{CACHE}/combined_fit{TAG}.json")
+summary = FIT["summary"]
+prof = np.array(FIT["profile"])
+sticker_table = FIT["sticker_table"]
+cb = Combined(PTS, EDGES, SPECS["k1k2"], sig=FIT["sig_main"])
+cb.mw = np.array(FIT["mw"])
+xmain = np.array(FIT["x_main"])
+
+
+class _R:
+    pass
+
+
+r = _R()
+r.x = xmain
+# ------------- cluster bootstrap: resample stickers and edges (stratified by VP group) -------------
+if MODE == "boot":
+    mis = sorted({p["mi"] for p in PTS})
+    boot = []
+    for bi in range(NBOOT):
+        pick_m = rng.choice(mis, len(mis), replace=True)
+        bp = []
+        for q, mi in enumerate(pick_m):
+            bp += [dict(p, mi=1000 * q + mi) for p in PTS if p["mi"] == mi]
+        if len({p["cart"] for p in bp}) < 2:
+            continue
+        be = stratified_resample(LINES, rng) + SIDES  # edges resampled within their VP group; sticker sides follow stickers
+        try:
+            cbb, rb = run(SPECS["k1k2"], bp, be, x0=xmain.copy(), sig=dict(FIT["sig_main"]))
+            boot.append(rb.x[: cb.ni].tolist())
+        except Exception as ex:  # noqa
+            print("boot fail", ex)
+        print("boot", bi, np.round(boot[-1], 4) if boot else None, flush=True)
+    save_json(dict(seed=SEED, boot=boot), f"{CACHE}/combined_boot{TAG}_{SEED}.json")
+    print("boot done")
+    sys.exit(0)
+
+# finalize
 boot = []
-for bi in range(NBOOT):
-    pick_m = rng.choice(mis, len(mis), replace=True)
-    bp = []
-    for q, mi in enumerate(pick_m):
-        bp += [dict(p, mi=1000 * q + mi) for p in PTS if p["mi"] == mi]
-    if len({p["cart"] for p in bp}) < 2:
-        continue
-    be = stratified_resample(LINES, rng) + SIDES  # edges resampled within their VP group; sticker sides follow stickers
-    try:
-        cbb, rb = run(SPECS["k1k2"], bp, be, x0=r.x.copy(), sig=dict(cb.sig))
-        boot.append(rb.x[: cb.ni])
-    except Exception as ex:  # noqa
-        print("boot fail", ex)
-    if bi % 10 == 0:
-        print("boot", bi, np.round(boot[-1], 4) if boot else None)
+for fn in sorted(glob.glob(f"{CACHE}/combined_boot{TAG}_*.json")):
+    boot += load_json(fn)["boot"]
 boot = np.array(boot)
 K, d = lens_of(cb, r.x)
 uv, _ = grid(40)

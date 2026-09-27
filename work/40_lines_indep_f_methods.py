@@ -30,7 +30,7 @@ SE = load_json(f"{CACHE}/40_lines_indep_sensitivity.json") if os.path.exists(f"{
 RV = load_json(f"{CACHE}/40_lines_indep_review.json") if os.path.exists(f"{CACHE}/40_lines_indep_review.json") else None
 
 
-def apply_review(js, which, f_sys_key=None):
+def apply_review(js, which, f_sys_key=None, lens_key="plumb:k1k2_c", alt=None):
     """Review correction: headline 1-sigma = statistical (+) systematic (half-range over the credible model/assumption
     variants of 40_lines_indep_j_review.py); the statistical values are kept as *_stat, mapping likewise."""
     if RV is None:
@@ -60,15 +60,38 @@ def apply_review(js, which, f_sys_key=None):
                  "blue floor line (one painted line visible left of cart 310 and between the carts): with the main lens the piece between "
                  "the carts lies %+.1f px off the straight line through the left piece and is rotated by %.2f deg; with the pieces merged "
                  "into one straight edge the free distortion centre moves to y ~510 without cost for the other edges (k1k2k3)"
-                 % (ct["plumb:k1k2_c"]["floorline_top"]["offset_px"], ct["plumb:k1k2_c"]["floorline_top"]["angle_deg"]),
+                 % (ct[lens_key]["floorline_top"]["offset_px"], ct[lens_key]["floorline_top"]["angle_deg"]),
                  "focal length is robust to these variants (half-range %.1f px for this method)" % fsys,
                  "stratified leave-one-VP-member-out jackknife (joint): sd f/cx/cy = %s (bootstrap %s); jackknife calibrated on synthetic "
                  "data is ~unbiased but very noisy (8..37 px for a true 21.6 px)" % (np.round(RV["jackknife"]["sd_f_cx_cy"], 1).tolist(),
                                                                                        np.round(RV["jackknife"]["bootstrap_sd"], 1).tolist()),
                  "cart split (joint, common vertical): cart-310 X only f = %.0f, cart-80 X only f = %.0f"
                  % (RV["cart_split"]["cart310_X_only"]["f"], RV["cart_split"]["cart80_X_only"]["f"])],
-        budget=bud, collinearity_tests=ct, not_in_budget_joint=RV.get("not_in_budget_joint"))
+        budget=bud, collinearity_tests=ct, not_in_budget_joint=RV.get("not_in_budget_joint"),
+        alternative_floorline_merged=alt)
     return js
+
+
+def review_alternative(which):
+    """lens-JSON of the variant with the two blue floor-line pieces merged into one straight line (k1k2, centre free)."""
+    if RV is None:
+        return None
+    note = ("ALTERNATIVE (review): as the main model, but the two visible pieces of the blue floor line (left of cart 310 / between the "
+            "carts) are one straight 3D line (assumption: one straight painted line under cart 310)")
+    if which == "lines_joint":
+        v = RV["joint_variants"]["JRE_k1k2|merged"]
+        bsd = RV["joint_merged_bootstrap"]["sd"]
+        f, pp = v["f"], v["pp"]
+        unc = {"fx_px_1sigma": bsd[0], "fy_px_1sigma": bsd[0], "cx_1sigma": bsd[1], "cy_1sigma": bsd[2],
+               "how": f"stratified bootstrap, {RV['joint_merged_bootstrap']['n']} replicates (statistical only)"}
+    else:
+        v = RV["plumb_variants"]["k1k2_c|merged"]
+        f = f_vp if which == "plumbline" else RV["vp_variants"]["k1k2_c|merged"]["f_aligned"]
+        pp = v["centre"]
+        unc = {"how": "no separate bootstrap; see the main entry"}
+    a = v["coeffs"]
+    return lens_json(K_from(f, f, *pp), kvec(a, f), method=which + " (review alternative)", model=note, uncertainty=unc,
+                     coefficients_pixel_units=a)
 
 
 bA = np.load(f"{CACHE}/40_lines_indep_plumb_boot.npz")
@@ -189,7 +212,7 @@ plumb = lens_json(
         sensitivity=SE,
     ),
 )
-plumb = apply_review(plumb, "plumbline", f_sys_key="vanishing")
+plumb = apply_review(plumb, "plumbline", f_sys_key="vanishing", alt=review_alternative("plumbline"))
 save_json(L.jsonable(plumb), f"{CACHE}/method_plumbline.json")
 
 # ============================================================ method_vanishing
@@ -248,7 +271,7 @@ vanish = lens_json(
         comparison_orchestrator_linecal=(CMP.get("linecal_vp_joint") if CMP else None),
     ),
 )
-vanish = apply_review(vanish, "vanishing")
+vanish = apply_review(vanish, "vanishing", alt=review_alternative("vanishing"))
 save_json(L.jsonable(vanish), f"{CACHE}/method_vanishing.json")
 
 # ============================================================ method_lines_joint
@@ -296,7 +319,7 @@ try:
     joint["uncertainty"]["f_profile_1sigma_formal"] = float((hi - lo) / 2)
 except Exception:  # noqa
     pass
-joint = apply_review(joint, "lines_joint")
+joint = apply_review(joint, "lines_joint", lens_key="joint:JRE_k1k2_ppfree", alt=review_alternative("lines_joint"))
 save_json(L.jsonable(joint), f"{CACHE}/method_lines_joint.json")
 
 

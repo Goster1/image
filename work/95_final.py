@@ -22,8 +22,13 @@ from evaltools import grid, mapping_displacement, region_defs
 MAIN = f"{CACHE}/method_combined.json"
 # plausible alternatives (not refuted by the data) that define the systematic part of the uncertainty
 ALTS = [
-    ("lines_joint", f"{CACHE}/method_lines_joint.json", None),          # edges only (no dimensions)
-    ("vanishing", f"{CACHE}/method_vanishing.json", None),              # plumb distortion + VP f/pp
+    ("lines_joint_indep", f"{CACHE}/method_lines_joint_indep.json", None),  # edges only, independent implementation (shared vertical)
+    ("lines_joint_lc", f"{CACHE}/method_lines_joint_lc.json", None),        # edges only, orchestrator implementation (separate cart frames)
+    ("vanishing_indep", f"{CACHE}/method_vanishing_indep.json", None),  # plumb distortion + VP f/pp
+    ("lines_joint_indep_mergedfloor", f"{CACHE}/method_lines_joint_indep_mergedfloor.json", None),  # one straight floor line
+    ("alt_brown_k1k2_joint", f"{CACHE}/method_alt_brown_k1k2.json", None),      # model-choice study, joint data, non-robust
+    ("alt_brown_k1k2k3_joint", f"{CACHE}/method_alt_brown_k1k2k3.json", None),
+    ("alt_division_l1l2", f"{CACHE}/method_alt_division_l1l2.json", None),
     ("combined_k1k2k3", f"{CACHE}/method_combined_alternatives.json", "combined_k1k2k3"),
     ("combined_k1k2p1p2", f"{CACHE}/method_combined_alternatives.json", "combined_k1k2p1p2"),
     ("combined_k1k2_ppfixed", f"{CACHE}/method_combined_alternatives.json", "combined_k1k2_ppfixed"),
@@ -69,7 +74,7 @@ def lens_from_names(x):
 Dstat = np.array([mapping_displacement(K0, d0, *lens_from_names(xb), uv) for xb in boot])
 # robust per-point 1-sigma: 68th percentile of the displacement magnitude over replicates (degenerate replicates
 # of the bootstrap - see REPORT - do not dominate)
-sig_stat_map = np.percentile(np.hypot(Dstat[..., 0], Dstat[..., 1]), 68.3, axis=0)
+sig_stat_map = np.nanpercentile(np.hypot(Dstat[..., 0], Dstat[..., 1]), 68.3, axis=0)
 # ---- systematic part: alternatives
 alts = []
 for name, fn, meth in ALTS + [(os.path.basename(e)[:-5], e, None) for e in EXTRA]:
@@ -87,7 +92,7 @@ for name, fn, meth in ALTS + [(os.path.basename(e)[:-5], e, None) for e in EXTRA
     alts.append(dict(name=name, K=Ka, d=da, disp=disp, raw=raw))
     print(f"alt {name:28s} f={Ka[0,0]:7.1f} pp=({Ka[0,2]:6.1f},{Ka[1,2]:6.1f}) d={np.round(da,4)}  map diff median {np.median(np.hypot(*disp.T)):.2f} max {np.max(np.hypot(*disp.T)):.2f}")
 Dsys = np.array([a["disp"] for a in alts]) if alts else np.zeros((0, len(uv), 2))
-sig_sys_map = np.sqrt(np.mean(np.sum(Dsys ** 2, 2), 0)) if len(alts) else np.zeros(len(uv))
+sig_sys_map = np.sqrt(np.nanmean(np.sum(Dsys ** 2, 2), 0)) if len(alts) else np.zeros(len(uv))
 # ---- sensitivity part (from the synthetic/sensitivity study if available): px per region, added in quadrature
 sens = {}
 if os.path.exists(f"{CACHE}/synthetic_report.json"):
@@ -101,9 +106,9 @@ reg_out = {}
 for n, fn in regs.items():
     m = fn(uv)
     s_sens = float(sens.get(n, 0.0)) if isinstance(sens.get(n, 0.0), (int, float)) else 0.0
-    reg_out[n] = dict(stat_median=float(np.median(sig_stat_map[m])), sys_median=float(np.median(sig_sys_map[m])),
-                      sens=s_sens, total_median=float(np.sqrt(np.median(sig_tot_map[m]) ** 2 + s_sens ** 2)),
-                      total_max=float(np.sqrt(np.max(sig_tot_map[m]) ** 2 + s_sens ** 2)))
+    reg_out[n] = dict(stat_median=float(np.nanmedian(sig_stat_map[m])), sys_median=float(np.nanmedian(sig_sys_map[m])),
+                      sens=s_sens, total_median=float(np.sqrt(np.nanmedian(sig_tot_map[m]) ** 2 + s_sens ** 2)),
+                      total_max=float(np.sqrt(np.nanmax(sig_tot_map[m]) ** 2 + s_sens ** 2)))
 print("mapping 1-sigma per region:", {k: round(v["total_median"], 2) for k, v in reg_out.items()})
 
 # ---- parameter uncertainties

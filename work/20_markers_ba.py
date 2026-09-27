@@ -205,7 +205,7 @@ for name in sorted({best, "k1_ppfix", "k1k2_ppfree"}):
 # ---------------- cluster bootstrap over stickers (best model) ----------------
 m, pr, r, res = fits[best]
 mis = sorted({p["mi"] for p in pts_all})
-B = 200
+B = 100
 boot = []
 for b in range(B):
     pick = rng.choice(mis, size=len(mis), replace=True)

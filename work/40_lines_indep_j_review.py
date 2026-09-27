@@ -358,7 +358,7 @@ ax3 = fig.add_subplot(gs[1, 1])
 names, fs_, cols = [], [], []
 for k, v in vp_var.items():
     names.append("VP, plumb " + k)
-    fs_.append(v["f"])
+    fs_.append(v["f_aligned"])
     cols.append("tab:blue" if k.endswith("|sep") else "tab:green")
 for n in [C["main"], "JRE_k1k2k3_ppfree", "JRE_div2_ppfree", "JRE_k1k2_framesfree", "JRE_k1k2_wvtied", "JPT_k1k2_ppfree"]:
     names.append("joint " + n)
