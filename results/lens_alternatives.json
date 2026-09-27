@@ -1,0 +1,287 @@
+[
+  {
+    "image_width": 1920,
+    "image_height": 1080,
+    "camera_matrix": [
+      [
+        1454.7819074970846,
+        0.0,
+        929.9943413313595
+      ],
+      [
+        0.0,
+        1454.7819074970846,
+        504.445919792087
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "dist_coeffs": [
+      -0.35819618293503735,
+      0.1306619333025223,
+      0.0,
+      0.0,
+      -0.02385788009292965
+    ],
+    "method": "combined_k1k2k3",
+    "model": "k1k2k3",
+    "rms_reprojection_error_px": 10.059530759679667,
+    "uncertainty": {
+      "f_1sigma_cov": 4.274854341319258,
+      "cx_1sigma_cov": 2.386025805403671,
+      "cy_1sigma_cov": 2.7797883844571114,
+      "k1_1sigma_cov": 0.004859015414386463,
+      "k2_1sigma_cov": 0.010040568330504785,
+      "k3_1sigma_cov": 0.006388029995282403
+    },
+    "mapping_uncertainty_px": null,
+    "data_used": null,
+    "geometry_assumptions": null,
+    "note": "k3 free (only consistent with the data)",
+    "fold_margin": 0.08948385190892938
+  },
+  {
+    "image_width": 1920,
+    "image_height": 1080,
+    "camera_matrix": [
+      [
+        1474.8032616971022,
+        0.0,
+        929.8064383256999
+      ],
+      [
+        0.0,
+        1474.8032616971022,
+        504.4256609724738
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "dist_coeffs": [
+      -0.35629170761505874,
+      0.10273679661082336,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "method": "combined_k1k2_robust",
+    "model": "k1k2_robust (stickers cluster-robust IRLS weights, c=1.5 px)",
+    "rms_reprojection_error_px": null,
+    "uncertainty": null,
+    "mapping_uncertainty_px": null,
+    "data_used": null,
+    "geometry_assumptions": null,
+    "note": "same data, stickers with cluster-robust weights (top stickers ~0 weight)",
+    "fold_margin": 85.62414233472062
+  },
+  {
+    "image_width": 1920,
+    "image_height": 1080,
+    "camera_matrix": [
+      [
+        1473.0413211037371,
+        0.0,
+        930.9354072991423
+      ],
+      [
+        0.0,
+        1473.0413211037371,
+        437.7879285226412
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "dist_coeffs": [
+      -0.3485611466513191,
+      0.09495737015448105,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "method": "lines_joint (independent implementation 40_lines_indep: straightness + VP consistency with a random member-direction error)",
+    "model": "fx=fy, zero skew, pp free (= distortion centre), k1,k2; common vertical for both carts' posts, cart X axes _|_ vertical, scene verticals own direction",
+    "rms_reprojection_error_px": 0.20206817757023018,
+    "uncertainty": {
+      "fx_px_1sigma": 21.90701090462185,
+      "fy_px_1sigma": 21.90701090462185,
+      "cx_1sigma": 8.414993606336047,
+      "cy_1sigma": 45.86317759784233,
+      "k1_1sigma": 0.014040771771062893,
+      "k2_1sigma": 0.014113213087904568,
+      "f_1sigma_robust": 21.58334003756454,
+      "cy_1sigma_robust": 22.749337138325217,
+      "f_profile_1sigma_formal": 20.82311201658922,
+      "how": "stratified bootstrap (150 replicates; resampled members + random direction errors, everything re-fitted); formal errors (Gauss-Newton) in details.se_formal; HEADLINE 1-sigma = statistical (+) systematic in quadrature (review): systematic = half-range of the central values over the credible variants (radial model k1k2 / k1k2k3 / division-2; the two visible pieces of the blue floor line treated separately or as one straight line; straightness weighting), see details.review; *_stat / *_sys kept",
+      "fx_px_1sigma_stat": 20.58675418281443,
+      "fx_px_1sigma_sys": 7.490172160344059,
+      "fy_px_1sigma_stat": 20.58675418281443,
+      "fy_px_1sigma_sys": 7.490172160344059,
+      "cx_1sigma_stat": 4.495370173035014,
+      "cx_1sigma_sys": 7.113632293144178,
+      "cy_1sigma_stat": 21.975642051770635,
+      "cy_1sigma_sys": 40.25546193727848,
+      "k1_1sigma_stat": 0.011908894555860427,
+      "k1_1sigma_sys": 0.007437842589385346,
+      "k2_1sigma_stat": 0.011967874844987412,
+      "k2_1sigma_sys": 0.00748015744214775
+    },
+    "mapping_uncertainty_px": {
+      "centre": 3.334,
+      "cart_band": 6.952,
+      "corners": 11.815
+    },
+    "data_used": "58 verified straight_3d edges (mean of the 7 jitter-corrected stills; files edges_cart310/cart80/scene.json, reviewed=True); duplicates removed; rejected as curved: cart80_x_A_front_in, cart80_x_E_front, cart80_x_E_front_in",
+    "geometry_assumptions": "no dimensions; cart X axes _|_ posts; both carts upright on one floor (common vertical)",
+    "note": "edges only, no dimensions (independent implementation, common vertical of both carts)",
+    "fold_margin": 78.12880240040431
+  },
+  {
+    "image_width": 1920,
+    "image_height": 1080,
+    "camera_matrix": [
+      [
+        1479.0133017004798,
+        0.0,
+        938.974892040332
+      ],
+      [
+        0.0,
+        1479.0133017004798,
+        508.8300619874716
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "dist_coeffs": [
+      -0.36214299422724316,
+      0.10862256751954955,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "method": "lines_joint_indep_mergedfloor (edges only; the two pieces of the blue floor line treated as one straight line)",
+    "model": "ALTERNATIVE (review): as the main model, but the two visible pieces of the blue floor line (left of cart 310 / between the carts) are one straight 3D line (assumption: one straight painted line under cart 310)",
+    "rms_reprojection_error_px": null,
+    "uncertainty": {
+      "fx_px_1sigma": 20.944604603528706,
+      "fy_px_1sigma": 20.944604603528706,
+      "cx_1sigma": 6.958414547908235,
+      "cy_1sigma": 42.03094439405763,
+      "how": "stratified bootstrap, 60 replicates (statistical only)"
+    },
+    "mapping_uncertainty_px": null,
+    "data_used": null,
+    "geometry_assumptions": null,
+    "note": "edges only, blue floor line treated as one straight line",
+    "fold_margin": 91.28575326577145
+  },
+  {
+    "image_width": 1920,
+    "image_height": 1080,
+    "camera_matrix": [
+      [
+        1434.4309164810184,
+        0.0,
+        927.4914347105688
+      ],
+      [
+        0.0,
+        1434.4309164810184,
+        501.8125247897005
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "dist_coeffs": [
+      -0.33551287631388144,
+      0.09060369686744625,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "method": "alt_model_brown_k1k2 (lens-model comparison; stickers + edges jointly, same data and weights for every model)",
+    "model": "Brown k1,k2, pp free",
+    "rms_reprojection_error_px": 8.681979813461604,
+    "uncertainty": {
+      "f_1sigma": 43.339841534292056,
+      "cx_1sigma": 9.679548950603033,
+      "cy_1sigma": 42.704924863971854,
+      "k1_1sigma": 0.02126391849788418,
+      "k2_1sigma": 0.01281197826396874,
+      "cy_1sigma_if_floor_lines_parallel": 14.977792147815501,
+      "note": "max(delete-one-cluster jackknife, member-cluster sandwich) of the joint fit; clusters = physical edge members (pair_of merged) and stickers. cy_1sigma is that of the fit WITHOUT the floor-line VP groups (the blue line || white tape assumption carries almost all cy information; without it cy = 477.5 px, shift 24.4 px)"
+    },
+    "mapping_uncertainty_px": {
+      "centre": 4.338,
+      "cart_band": 15.461,
+      "corners": 22.096
+    },
+    "data_used": "62 valid sticker corners of 20 stickers (7-frame means) + 61 verified straight edges (straightness; VP groups: cart X/Z axes without end-board edges, scene verticals, 2 floor-line groups); block sigmas fixed from the Brown k1,k2 variance components",
+    "geometry_assumptions": "drawing dimensions and sticker positions exact (not fitted); edges use no dimensions",
+    "note": "model study: same model, stickers + edges, non-robust sandwich/jackknife uncertainties",
+    "fold_margin": 74.50555116314439
+  },
+  {
+    "image_width": 1920,
+    "image_height": 1080,
+    "camera_matrix": [
+      [
+        1430.924278699525,
+        0.0,
+        934.5902631905145
+      ],
+      [
+        0.0,
+        1430.924278699525,
+        507.976850827177
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "dist_coeffs": [
+      -0.35621697095415655,
+      0.13842579064246802,
+      2.621861608643753e-08,
+      1.0277968970875768e-08,
+      -0.02847153298040513
+    ],
+    "method": "alt_model_division_l1l2 (lens-model comparison; stickers + edges jointly, same data and weights for every model)",
+    "model": "division l1,l2, pp free -> converted to the closest OpenCV Brown [k1,k2,p1,p2,k3] over the full image",
+    "rms_reprojection_error_px": 8.832780071834375,
+    "uncertainty": {
+      "native_f_1sigma": 25.730429686062422,
+      "native_cx_1sigma": 5.602971765616198,
+      "native_cy_1sigma": 3.8646750127036564,
+      "native_l1_1sigma": 0.021355076994247935,
+      "native_l2_1sigma": 0.023006648160100916,
+      "note": "1-sigma of the NATIVE parameters (see details.native_params); the OpenCV coefficients are a conversion"
+    },
+    "mapping_uncertainty_px": {
+      "centre": 1.792,
+      "cart_band": 7.628,
+      "corners": 10.74
+    },
+    "data_used": "62 valid sticker corners of 20 stickers (7-frame means) + 61 verified straight edges (straightness; VP groups: cart X/Z axes without end-board edges, scene verticals, 2 floor-line groups); block sigmas fixed from the Brown k1,k2 variance components",
+    "geometry_assumptions": "drawing dimensions and sticker positions exact (not fitted); edges use no dimensions",
+    "note": "division model l1,l2 converted to OpenCV Brown",
+    "fold_margin": 0.07263535303870616
+  }
+]

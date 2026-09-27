@@ -1,0 +1,67 @@
+{
+  "image_width": 1920,
+  "image_height": 1080,
+  "camera_matrix": [
+    [
+      1424.6375139164827,
+      0.0,
+      927.1859023280036
+    ],
+    [
+      0.0,
+      1424.6375139164827,
+      502.6061910900805
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "dist_coeffs": [
+    -0.3330644555046415,
+    0.08991211474097395,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "method": "lines_joint (edges only: straightness + VP orthogonality)",
+  "model": "fx=fy, pp free, k1,k2",
+  "rms_reprojection_error_px": 0.32364591251091257,
+  "uncertainty": {
+    "f_1sigma": 123.86375615962629,
+    "cx_1sigma": 5.687200842518507,
+    "cy_1sigma": 8.04259978593089,
+    "k1_1sigma": 0.06851067260181987,
+    "k2_1sigma": 0.04706358924303972
+  },
+  "mapping_uncertainty_px": null,
+  "data_used": "61 verified straight edges",
+  "geometry_assumptions": "no dimensions used; only straightness, parallelism and orthogonality of cart axes",
+  "details": {
+    "params": {
+      "f": [
+        1424.6375139164827,
+        17.234429281920452
+      ],
+      "cx": [
+        927.1859023280036,
+        4.8758459347762075
+      ],
+      "cy": [
+        502.6061910900805,
+        3.6448419368222518
+      ],
+      "k1": [
+        -0.3330644555046415,
+        0.0080998021591823
+      ],
+      "k2": [
+        0.08991211474097395,
+        0.004981267140584077
+      ]
+    },
+    "rms": 0.32364591251091257
+  },
+  "uncertainty_note": "stratified edge bootstrap has degenerate replicates (cart-80 Z group = 2 short collinear fragments); robust f sigma = half 16-84 % range = 124 px; mapping statistics not meaningful"
+}

@@ -1,0 +1,62 @@
+{
+  "image_width": 1920,
+  "image_height": 1080,
+  "camera_matrix": [
+    [
+      1418.817105766932,
+      0.0,
+      941.4093279770689
+    ],
+    [
+      0.0,
+      1418.817105766932,
+      512.6681035547169
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "dist_coeffs": [
+    -0.34782592125398976,
+    0.10163794933499412,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "method": "vanishing_points (f, pp from orthogonal VPs; distortion from plumb-line)",
+  "model": "fx=fy, pp free; k1,k2 from plumb-line",
+  "rms_reprojection_error_px": 0.36905205038428396,
+  "uncertainty": {
+    "f_1sigma": 113.96800539105072,
+    "cx_1sigma": 6.5307670659046835,
+    "cy_1sigma": 5.135038600303744
+  },
+  "data_used": "61 verified edges (VP groups: cart X/Y/Z of both carts, scene verticals)",
+  "geometry_assumptions": "no dimensions; cart axes mutually orthogonal",
+  "details": {
+    "params": {
+      "f": [
+        1418.817105766932,
+        16.0766827611608
+      ],
+      "cx": [
+        941.4093279770689,
+        3.9848189073762614
+      ],
+      "cy": [
+        512.6681035547169,
+        2.7561858107404507
+      ]
+    },
+    "rms": 0.36905205038428396,
+    "dist_px_units": [
+      -1.727862234250039e-07,
+      2.5081310848588966e-14,
+      0.0,
+      0.0,
+      0.0
+    ]
+  }
+}

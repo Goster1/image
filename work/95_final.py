@@ -22,9 +22,9 @@ from evaltools import grid, mapping_displacement, region_defs
 MAIN = f"{CACHE}/method_combined.json"
 # plausible alternatives (not refuted by the data) that define the systematic part of the uncertainty
 ALTS = [
-    ("lines_joint_indep", f"{CACHE}/method_lines_joint_indep.json", None),  # edges only, independent implementation (shared vertical)
+    ("lines_joint_indep", f"{CACHE}/method_lines_joint.json", None),  # edges only, independent implementation (shared vertical)
     ("lines_joint_lc", f"{CACHE}/method_lines_joint_lc.json", None),        # edges only, orchestrator implementation (separate cart frames)
-    ("vanishing_indep", f"{CACHE}/method_vanishing_indep.json", None),  # plumb distortion + VP f/pp
+    ("vanishing_indep", f"{CACHE}/method_vanishing.json", None),  # plumb distortion + VP f/pp
     ("lines_joint_indep_mergedfloor", f"{CACHE}/method_lines_joint_indep_mergedfloor.json", None),  # one straight floor line
     ("alt_brown_k1k2_joint", f"{CACHE}/method_alt_brown_k1k2.json", None),      # model-choice study, joint data, non-robust
     ("alt_brown_k1k2k3_joint", f"{CACHE}/method_alt_brown_k1k2k3.json", None),
@@ -111,6 +111,18 @@ for n, fn in regs.items():
     reg_out[n] = dict(stat_median=float(np.nanmedian(sig_stat_map[m])), sys_median=float(np.nanmedian(sig_sys_map[m])),
                       sens=s_sens, total_median=float(np.sqrt(np.nanmedian(sig_tot_map[m]) ** 2 + s_sens ** 2)),
                       total_max=float(np.sqrt(np.nanmax(sig_tot_map[m]) ** 2 + s_sens ** 2)))
+if os.path.exists(f"{CACHE}/synthetic_report.json"):
+    try:
+        rt = load_json(f"{CACHE}/synthetic_report.json")["roundtrip"]["T2_b"]["combined_k1k2"]
+        for n in reg_out:
+            sm = rt["mapping"]["total"].get(n, {}).get("median")
+            reg_out[n]["synthetic_rmse"] = sm
+            reg_out[n]["budget_median"] = reg_out[n]["total_median"]
+            if sm is not None:
+                reg_out[n]["total_median"] = float(max(reg_out[n]["total_median"], sm))
+                reg_out[n]["total_max"] = float(max(reg_out[n]["total_max"], rt["mapping"]["total"][n]["max"]))
+    except Exception as ex:  # noqa
+        print("synthetic mapping not usable:", ex)
 print("mapping 1-sigma per region:", {k: round(v["total_median"], 2) for k, v in reg_out.items()})
 
 # ---- parameter uncertainties
@@ -125,9 +137,22 @@ p0 = pvec(K0, d0)
 pb = np.array([pvec(*lens_from_names(xb)) for xb in boot])
 s_stat = 0.5 * (np.percentile(pb, 84, axis=0) - np.percentile(pb, 16, axis=0))
 s_sys = np.sqrt(np.mean([(pvec(a["K"], a["d"]) - p0) ** 2 for a in alts], 0)) if alts else np.zeros(8)
-s_tot = np.sqrt(s_stat ** 2 + s_sys ** 2)
-for n, v, a, b, c in zip(pnames, p0, s_stat, s_sys, s_tot):
-    print(f"  {n:3s} {v:10.5f}  stat {a:.5f}  sys {b:.5f}  total {c:.5f}")
+s_bud = np.sqrt(s_stat ** 2 + s_sys ** 2)
+# synthetic round trip with a realistic geometry-noise model (scenario T2_b of 44_synth_*): RMSE of the same
+# combined estimator; the final 1-sigma is the LARGER of (budget, synthetic RMSE) - conservative
+syn = {}
+syn_map = {}
+if os.path.exists(f"{CACHE}/synthetic_report.json"):
+    try:
+        rt = load_json(f"{CACHE}/synthetic_report.json")["roundtrip"]["T2_b"]["combined_k1k2"]
+        syn = dict(zip(rt["names"], rt["rmse"]))
+        syn_map = {k: v["median"] for k, v in rt["mapping"]["total"].items()}
+    except Exception as ex:  # noqa
+        print("synthetic report not usable:", ex)
+s_syn = np.array([syn.get(n, 0.0) for n in pnames])
+s_tot = np.maximum(s_bud, s_syn)
+for n, v, a, b, c, e in zip(pnames, p0, s_stat, s_sys, s_syn, s_tot):
+    print(f"  {n:3s} {v:10.5f}  stat {a:.5f}  sys {b:.5f}  synthetic {c:.5f}  final {e:.5f}")
 
 unc = {"fx_px_1sigma": float(s_tot[0]), "fy_px_1sigma": float(s_tot[0]), "cx_px_1sigma": float(s_tot[1]),
        "cy_px_1sigma": float(s_tot[2]), "k1_1sigma": float(s_tot[3]), "k2_1sigma": float(s_tot[4]),
@@ -135,7 +160,8 @@ unc = {"fx_px_1sigma": float(s_tot[0]), "fy_px_1sigma": float(s_tot[0]), "cx_px_
        "note": "1-sigma = statistical (cluster bootstrap over stickers and edges) (+) systematic (RMS deviation of "
                "plausible alternative methods/models from the main estimate); p1=p2=k3=0 are fixed (not determined, "
                "see REPORT.md); parameters are strongly correlated - the mapping uncertainty is the relevant quantity",
-       "components": {n: {"stat": float(a), "sys": float(b)} for n, a, b in zip(pnames, s_stat, s_sys)},
+       "components": {n: {"stat": float(a), "sys": float(b), "budget": float(c), "synthetic_rmse": float(e)} for n, a, b, c, e in zip(pnames, s_stat, s_sys, s_bud, s_syn)},
+       "rule": "final 1-sigma = max(budget = stat (+) sys, synthetic round-trip RMSE under a realistic geometry-noise model)",
        "correlation_bootstrap": np.corrcoef(pb[:, :5].T).round(3).tolist()}
 out = lens_json(K0, d0, model=main["model"], rms_reprojection_error_px=main["rms_reprojection_error_px"],
                 uncertainty=unc,

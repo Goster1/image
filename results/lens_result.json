@@ -1,0 +1,199 @@
+{
+  "image_width": 1920,
+  "image_height": 1080,
+  "camera_matrix": [
+    [
+      1455.680935755212,
+      0.0,
+      927.5865179818798
+    ],
+    [
+      0.0,
+      1455.680935755212,
+      502.32361709285976
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "dist_coeffs": [
+    -0.3450013347994305,
+    0.09554325089687377,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "model": "OpenCV pinhole + Brown-Conrady, fx = fy, principal point free, radial k1, k2; p1 = p2 = k3 = 0 fixed (not determined by the data: k3 only consistent, p1/p2 and fx != fy not determined - REPORT.md ch. 7)",
+  "rms_reprojection_error_px": 7.624921896829414,
+  "uncertainty": {
+    "fx_px_1sigma": 33.88484937455107,
+    "fy_px_1sigma": 33.88484937455107,
+    "cx_px_1sigma": 12.142030809413532,
+    "cy_px_1sigma": 34.899518416596536,
+    "k1_1sigma": 0.02076077405793459,
+    "k2_1sigma": 0.024177334055438388,
+    "p1_1sigma": null,
+    "p2_1sigma": null,
+    "k3_1sigma": null,
+    "note": "1-sigma = statistical (cluster bootstrap over stickers and edges) (+) systematic (RMS deviation of plausible alternative methods/models from the main estimate); p1=p2=k3=0 are fixed (not determined, see REPORT.md); parameters are strongly correlated - the mapping uncertainty is the relevant quantity",
+    "components": {
+      "f": {
+        "stat": 14.074506460780412,
+        "sys": 20.92266040090758,
+        "budget": 25.21605540853398,
+        "synthetic_rmse": 33.88484937455107
+      },
+      "cx": {
+        "stat": 4.922490564853206,
+        "sys": 11.099459392946963,
+        "budget": 12.142030809413532,
+        "synthetic_rmse": 9.71968531869645
+      },
+      "cy": {
+        "stat": 8.865312719100132,
+        "sys": 33.75474212763182,
+        "budget": 34.899518416596536,
+        "synthetic_rmse": 25.44494358372775
+      },
+      "k1": {
+        "stat": 0.008418446561147569,
+        "sys": 0.012600643649032118,
+        "budget": 0.015154090631667436,
+        "synthetic_rmse": 0.02076077405793459
+      },
+      "k2": {
+        "stat": 0.006870357562351631,
+        "sys": 0.023180631332940408,
+        "budget": 0.024177334055438388,
+        "synthetic_rmse": 0.01468946877603491
+      },
+      "p1": {
+        "stat": 0.0,
+        "sys": 8.291054393067269e-09,
+        "budget": 8.291054393067269e-09,
+        "synthetic_rmse": 0.0
+      },
+      "p2": {
+        "stat": 0.0,
+        "sys": 3.250179166850423e-09,
+        "budget": 3.250179166850423e-09,
+        "synthetic_rmse": 0.0
+      },
+      "k3": {
+        "stat": 0.0,
+        "sys": 0.015246688481010417,
+        "budget": 0.015246688481010417,
+        "synthetic_rmse": 0.0
+      }
+    },
+    "rule": "final 1-sigma = max(budget = stat (+) sys, synthetic round-trip RMSE under a realistic geometry-noise model)",
+    "correlation_bootstrap": [
+      [
+        1.0,
+        0.131,
+        0.419,
+        -0.727,
+        0.473
+      ],
+      [
+        0.131,
+        1.0,
+        -0.101,
+        -0.203,
+        0.221
+      ],
+      [
+        0.419,
+        -0.101,
+        1.0,
+        -0.605,
+        0.572
+      ],
+      [
+        -0.727,
+        -0.203,
+        -0.605,
+        1.0,
+        -0.933
+      ],
+      [
+        0.473,
+        0.221,
+        0.572,
+        -0.933,
+        1.0
+      ]
+    ]
+  },
+  "mapping_uncertainty_px": {
+    "centre": 3.157913925651551,
+    "cart_band": 10.881243576399214,
+    "corners": 16.09543055745764,
+    "definition": "1-sigma displacement of the projection of a fixed viewing ray [px], median over the region (centre: r<150 px; cart_band: both cart footprints; corners: 200x150 px corner boxes), rotation-compensated (a pure camera rotation is absorbed by the pose)",
+    "max_in_region": {
+      "centre": 4.413127878885254,
+      "cart_band": 15.872331565777221,
+      "corners": 19.65340718177052
+    },
+    "components": {
+      "centre": {
+        "stat_median": 1.5848899106086025,
+        "sys_median": 2.742748549627611,
+        "sens": 0.0,
+        "total_median": 3.157913925651551,
+        "total_max": 4.413127878885254,
+        "synthetic_rmse": 2.931896520901466,
+        "budget_median": 3.157913925651551
+      },
+      "cart_band": {
+        "stat_median": 5.5017218921104,
+        "sys_median": 7.05323593933033,
+        "sens": 0.0,
+        "total_median": 10.881243576399214,
+        "total_max": 15.872331565777221,
+        "synthetic_rmse": 10.881243576399214,
+        "budget_median": 8.994834699895527
+      },
+      "corners": {
+        "stat_median": 7.874262044130782,
+        "sys_median": 10.988826875791641,
+        "sens": 0.0,
+        "total_median": 16.09543055745764,
+        "total_max": 19.65340718177052,
+        "synthetic_rmse": 16.09543055745764,
+        "budget_median": 13.482439069991305
+      }
+    }
+  },
+  "data_used": "all 7 stills (jitter-compensated 7-frame mean); 20 ArUco stickers (ids 0-8 + 92 on cart 80, 0-8 + 322 on cart 310), 62 valid corners + 13 traced sides of partly hidden stickers; 61 verified straight structural edges (cart 310: 18, cart 80: 17, scene incl. floor lines: 26) as straightness + vanishing-point groups (cart X/Y/Z of both carts, scene verticals, 2 floor-line groups); detections in results/detections.json, edges in results/edges.json",
+  "geometry_assumptions": "Rozmery vozíka, výšky políc a polohy nálepiek sú použité presne podľa spec/cart-marker-layout.json (nie sú fitované). Dáta s nimi nie sú konzistentné (top-nálepky voči policiam ~+60..+80 mm, sklony koncových dosiek 4-13 deg, RMS 5.3 px aj pre všeobecnú kameru) - opísané ako pozorovanie v REPORT.md kap. 5 (kde, koľko px). Hrany nepoužívajú žiadne rozmery, len priamosť, rovnobežnosť a kolmosť osí vozíka.",
+  "method": "combined (ALL stickers with the drawing geometry at full weight + verified edges: VPs incl. floor lines, straightness, sides of partly hidden stickers; block weights by variance components)",
+  "rms_details": {
+    "sticker_corners_px": 7.624921896829414,
+    "sticker_corners_max_px": 13.557692042045739,
+    "sticker_corners_definition": "62 valid corners, drawing geometry, one least-squares pose per cart with the main intrinsics fixed; dominated by the sticker-geometry mismatch (REPORT.md ch. 5), not by noise (~0.1 px)",
+    "sticker_corners_in_joint_fit_px_per_point": 14.081013419007828,
+    "edge_straightness_rms_px": 0.2313962433088552,
+    "edge_vanishing_point_rms_px": 0.362955675031023,
+    "sticker_side_lines_rms_px": 1.7459573558461712,
+    "for_reference_sticker_only_fit_rms_px": 5.34
+  },
+  "determination": {
+    "determined": [
+      "radial distortion profile (k1, k2 jointly; in pixel units k1/f^2 = -1.628e-07, k2/f^4 = 2.128e-14)",
+      "cx (+-12 px)",
+      "f to ~1.7 % (+-25 px), only with stickers + edges together (edges alone: fragile)"
+    ],
+    "consistent_only": [
+      "cy (426-513 px depending on assumptions about the floor lines; +-35 px)",
+      "k3 ~ -0.02 +- 0.02"
+    ],
+    "not_determinable": [
+      "p1, p2 (tangential)",
+      "fx != fy (pixel aspect)",
+      "absolute sticker geometry (top vs shelves offset)"
+    ]
+  }
+}

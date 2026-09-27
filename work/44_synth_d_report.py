@@ -97,6 +97,17 @@ def analyse(scen, est):
             mp["claimed"][ck]["n_rep"] = len(cm)
     out["mapping"] = mp
     out["_fields"] = dict(mean=mean_f, tot=tot)
+    if est.startswith("markers") or est.startswith("combined") or est == "lines_joint":
+        from common import K_from, fold_margin
+
+        fm = []
+        for r in reps:
+            p = dict(zip(names, r["x"]))
+            K = K_from(p["f"], p["f"], p.get("cx", L.CEN[0]), p.get("cy", L.CEN[1]))
+            fm.append(fold_margin(K, np.array([p.get("k1", 0.0), p.get("k2", 0.0), 0, 0, 0])))
+        fm = np.array(fm)
+        out["fold_barrier_active"] = int(np.sum(fm < 0.031))  # barrier: 1000*max(0, 0.03 - margin)
+        out["fold_margin_median"] = float(np.median(fm))
     if est.startswith("markers"):
         xo = np.array([r["x_orchestrator_start"] for r in reps])
         dd = np.abs(xo[:, 0] - X[:, 0])
@@ -134,6 +145,8 @@ def honesty_summary():
                        map_actual={rg: a["mapping"]["total"][rg]["median"] for rg in REG},
                        map_bias={rg: a["mapping"]["bias"][rg]["median"] for rg in REG},
                        map_claimed={ck: {rg: c[rg]["median"] for rg in REG} for ck, c in a["mapping"]["claimed"].items()})
+            row["n"] = a["n"]
+            row["fold_barrier_active"] = a.get("fold_barrier_active")
             row["ratio_rmse_over_claim"] = {k: (row["rmse"] / v if v else None) for k, v in row["claimed"].items()}
             row["ratio_map_cart_band_over_claim"] = {k: (row["map_actual"]["cart_band"] / v["cart_band"] if v["cart_band"] else None)
                                                      for k, v in row["map_claimed"].items()}
@@ -145,8 +158,8 @@ HON = honesty_summary()
 
 
 def htab():
-    lines = ["| scenario | estimator | param | bias | scatter | RMSE | claimed cov / sandwich / boot | RMSE / claim | mapping cart band: actual (bias) | claimed cov / sandwich / boot | corners: actual | claimed |",
-             "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    lines = ["| scenario | estimator | n (at fold barrier) | param | bias | scatter | RMSE | claimed cov / sandwich / boot | RMSE / claim | mapping cart band: actual (bias) | claimed cov / sandwich / boot | corners: actual | claimed |",
+             "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for s, d in HON.items():
         for e, r in d.items():
             nd = 4 if r["param"].startswith("k") else 1
@@ -154,7 +167,8 @@ def htab():
             rt = " / ".join(f"{r['ratio_rmse_over_claim'][k]:.1f}" if r["ratio_rmse_over_claim"].get(k) else "-" for k in ("C", "Cs", "boot"))
             mc = " / ".join(f"{r['map_claimed'][k]['cart_band']:.2f}" if k in r["map_claimed"] and r["map_claimed"][k]["cart_band"] is not None else "-" for k in ("C", "Cs", "boot"))
             mco = " / ".join(f"{r['map_claimed'][k]['corners']:.2f}" if k in r["map_claimed"] and r["map_claimed"][k]["corners"] is not None else "-" for k in ("C", "Cs", "boot"))
-            lines.append(f"| {s} | {SHORT[e]} | {r['param']} | {r['bias']:+.{nd}f} | {r['scatter']:.{nd}f} | {r['rmse']:.{nd}f} | {cl} | {rt} | "
+            fb = f" ({r['fold_barrier_active']})" if r.get("fold_barrier_active") else ""
+            lines.append(f"| {s} | {SHORT[e]} | {r['n']}{fb} | {r['param']} | {r['bias']:+.{nd}f} | {r['scatter']:.{nd}f} | {r['rmse']:.{nd}f} | {cl} | {rt} | "
                          f"{r['map_actual']['cart_band']:.2f} ({r['map_bias']['cart_band']:.2f}) | {mc} | {r['map_actual']['corners']:.2f} | {mco} |")
     return "\n".join(lines)
 
