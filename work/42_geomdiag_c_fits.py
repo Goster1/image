@@ -18,6 +18,8 @@ plumb-line distortion fixed in pixel units (only f, pp free) to see which geomet
 with the straight-edge distortion. Residuals in distorted px, all 62 valid corners.
 Compared: RMS, max, AIC (Gaussian, unknown variance: n ln(RSS/n) + 2k), BIC, implied f / pp / k,
 per-row RMS. Uncertainties: Gauss-Newton covariance scaled by the residual variance.
+Each fitted lens also gets common.fold_margin (> 0 required for a lens that is invertible out to the image
+corners; the free-distortion drawing fits are folded, i.e. not valid lens models near the corners).
 Output: work/cache/geomdiag_fits.json, results/geomdiag_fits.png
 """
 import importlib
@@ -181,7 +183,9 @@ def summarise(ba, r):
         hs.append(float(Cc[2] + 1800.0))
         zs.append(R[:, 2])
     ang = float(np.degrees(np.arccos(np.clip(zs[0] @ zs[1], -1, 1))))
-    return dict(rms=float(np.sqrt(np.mean(np.sum(rr ** 2, 1)))), max=float(np.max(np.hypot(*rr.T))), n=n, k=k, rss=rss,
+    from common import fold_margin
+    fm = float(fold_margin(K, d))  # > 0: radial map monotonic out to the image corners (valid lens); < 0: folded
+    return dict(fold_margin=fm, rms=float(np.sqrt(np.mean(np.sum(rr ** 2, 1)))), max=float(np.max(np.hypot(*rr.T))), n=n, k=k, rss=rss,
                 aic=float(G.aic_gauss(rss, n, k)), bic=float(G.bic_gauss(rss, n, k)), intr=intr, geom=geo, per_row=per_row,
                 per_cart=per_cart, cam_height_mm={80: hs[0], 310: hs[1]}, floor_normal_angle_deg=ang, resid=rr)
 
@@ -223,7 +227,7 @@ def main():
                              for k, (val, sd) in s["geom"].items())
             print(f"[{mode:11s}] {v:30s} rms {s['rms']:.2f} max {s['max']:.2f} k {s['k']:2d} AIC {s['aic']:7.1f} BIC {s['bic']:7.1f} "
                   f"f {it['f'][0]:.0f}+-{it['f'][1]:.0f} pp ({it['cx'][0]:.0f},{it['cy'][0]:.0f})+-({it['cx'][1]:.0f},{it['cy'][1]:.0f}) "
-                  f"k1 {it['k1'][0]:.3f} k2 {it['k2'][0]:.3f} | rows {({kk: round(vv, 2) for kk, vv in s['per_row'].items()})} "
+                  f"k1 {it['k1'][0]:.3f} k2 {it['k2'][0]:.3f} fold {s['fold_margin']:+.3f} | rows {({kk: round(vv, 2) for kk, vv in s['per_row'].items()})} "
                   f"| h {s['cam_height_mm'][80]:.0f}/{s['cam_height_mm'][310]:.0f} ang {s['floor_normal_angle_deg']:.2f} | {gtxt}")
     save_json({m: {v: {k: val for k, val in s.items() if k != "resid"} for v, s in d.items()} for m, d in out.items()},
               f"{CACHE}/geomdiag_fits.json")

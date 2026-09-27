@@ -199,3 +199,34 @@ def region_masks(uv):
     # the carts occupy roughly x in [150, 900] (left) and [1130, 1720] (right)
     cart_band = (((x > 150) & (x < 900)) | ((x > 1130) & (x < 1720))) & ~corners
     return {"centre": centre, "cart_band": cart_band, "corners": corners}
+
+
+# ----------------------------------------------------------------------------------------
+# fold check: a radial Brown model is only usable if r_d(r_u) is monotonic out to the image corners
+# ----------------------------------------------------------------------------------------
+def radial_fold(dist, r_max=4.0, n=4000):
+    """Return (r_u_fold, r_d_max): first radius where d r_d / d r_u <= 0 (or r_max) and the largest
+    distorted radius reachable before it (normalised units). Tangential terms are ignored."""
+    d = np.zeros(8)
+    d[: len(dist)] = dist
+    k1, k2, p1, p2, k3, k4, k5, k6 = d
+    r = np.linspace(0, r_max, n)
+    r2 = r * r
+    rd = r * (1 + k1 * r2 + k2 * r2 ** 2 + k3 * r2 ** 3) / (1 + k4 * r2 + k5 * r2 ** 2 + k6 * r2 ** 3)
+    dr = np.diff(rd)
+    bad = np.nonzero(dr <= 0)[0]
+    i = bad[0] if len(bad) else n - 1
+    return float(r[i]), float(np.max(rd[: i + 1]))
+
+
+def corner_radius_norm(K):
+    c = np.array([[0, 0], [W - 1, 0], [0, H - 1], [W - 1, H - 1]], float)
+    x = (c[:, 0] - K[0, 2]) / K[0, 0]
+    y = (c[:, 1] - K[1, 2]) / K[1, 1]
+    return float(np.max(np.hypot(x, y)))
+
+
+def fold_margin(K, dist):
+    """> 0: model invertible out to the farthest image corner (margin in normalised radius); < 0: folded."""
+    _, rdmax = radial_fold(dist)
+    return rdmax - corner_radius_norm(K)

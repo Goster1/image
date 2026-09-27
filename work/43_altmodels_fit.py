@@ -80,19 +80,27 @@ def P_generic(P):
     return {k: float(v) for k, v in P.items()}
 
 
-def fit_one(name, ds, sig, P_start, poses, wv=None, drop_sticker=None, drop_edges=(), starts=None):
-    """Fit model `name` on data set `ds` (optionally without a sticker / some edges)."""
+def start_variants(P):
+    """Multi-start set for the sticker-only fits (several distinct local minima exist there)."""
+    out = []
+    for fs in (0.9, 1.0, 1.1):
+        for cy in (P["cy"], L.C0[1], 300.0):
+            Pi = dict(P, fx=P["fx"] * fs, fy=P["fy"] * fs, cy=cy)
+            out.append(Pi)
+    return out
+
+
+def fit_one(name, ds, sig, P_start, poses, wv=None, drop_sticker=None, drop_edges=(), starts=None, floor_ang=None):
+    """Fit model `name` on data set `ds` (optionally without a sticker / some edges).
+    starts: list of starting intrinsics dicts (default: P_start only)."""
     Dd = get_data()
     lens = make_lens(name)
     data = L.build(Dd, ds, drop_sticker=drop_sticker, drop_edges=drop_edges)
     est = L.Est(lens, data, sig)
     best = None
-    for fs in (starts or [1.0]):
-        Pi = dict(P_start)
-        Pi["fx"] *= fs
-        Pi["fy"] *= fs
+    for Pi in (starts or [P_start]):
         try:
-            r = est.solve(est.x0(Pi, poses, wv))
+            r = est.solve(est.x0(Pi, poses, wv, floor_ang))
         except Exception as ex:  # noqa
             print("fit fail", name, ds, ex)
             continue
@@ -110,11 +118,19 @@ def summarize_fit(lens, est, r, with_cov=True):
                rss={k: float(np.sum(b[k] ** 2)) for k in ("M", "V", "S") if len(b[k])},
                nblk={k: int(len(b[k])) for k in ("M", "V", "S") if len(b[k])}, monotone=lens.monotone_ok(P),
                poses={str(c): v.tolist() for c, v in est.poses_of(r.x).items()},
-               wv=(est.wv_of(r.x).tolist() if est.has_wv else None), status=int(r.status), nfev=int(r.nfev))
+               wv=(est.wv_of(r.x).tolist() if est.has_wv else None), floor_ang=est.floor_angles(r.x),
+               fold_margin=float(lens.fold_margin(P)), barrier_active=est.barrier_active(r.x),
+               status=int(r.status), nfev=int(r.nfev))
     if with_cov:
         cl = est.clusters()
-        Cs = L.sandwich_cov(r, cl)
-        Cn = L.naive_cov(r)
+        rr = r
+        if est.barrier and not est.barrier_active(r.x):  # inactive barrier: drop its (zero) residual row
+            from types import SimpleNamespace
+
+            rr = SimpleNamespace(jac=r.jac[:-1], fun=r.fun[:-1], x=r.x, cost=r.cost)
+            cl = cl[:-1]
+        Cs = L.sandwich_cov(rr, cl)
+        Cn = L.naive_cov(rr)
         ni = lens.ni
         out["cov_sandwich_intr"] = Cs[:ni, :ni].tolist()
         out["cov_naive_intr"] = Cn[:ni, :ni].tolist()
@@ -145,7 +161,7 @@ def predict_sticker(lens, P, poses, sticker):
     return e.tolist()
 
 
-def predict_edges(lens, P, rots, wv, edge_ids, sig):
+def predict_edges(lens, P, rots, wv, edge_ids, sig, floor_ang=None):
     """Held-out edges: straightness (own line) and VP residual (training direction) in distorted px."""
     Dd = get_data()
     edges = [e for e in Dd["edges"] if e["id"] in set(edge_ids)]
@@ -165,9 +181,11 @@ def predict_edges(lens, P, rots, wv, edge_ids, sig):
         g = L.vp_group(e)
         if g is None:
             continue
-        if g[0] == "wv" and wv is None:
+        if g[0] in ("wv", "floor_V", "floor_H") and wv is None:
             continue
-        if g[0] != "wv" and g[0] not in rots:
+        if str(g[0]).startswith("floor_") and g[0] not in (floor_ang or {}):
+            continue
+        if not isinstance(g[0], str) and g[0] not in rots:
             continue
         vs.append(dict(id=e["id"], P=e["points"], cart=e.get("cart"), info=g, cl=e["id"]))
     if vs:
@@ -175,7 +193,7 @@ def predict_edges(lens, P, rots, wv, edge_ids, sig):
         poses = {c: np.r_[rots[c], np.zeros(3)] for c in rots}
         for c in est.carts:
             poses.setdefault(c, np.zeros(6))
-        x = est.x0(P, poses, wv)
+        x = est.x0(P, poses, wv, floor_ang)
         b = est.blocks(x)["V"]
         for k, e in enumerate(est.E):
             s = slice(est.start[k], est.start[k] + est.cnt[k])
@@ -183,12 +201,12 @@ def predict_edges(lens, P, rots, wv, edge_ids, sig):
     return out
 
 
-def fit_poses_only(lens, P, ds, sig, poses, wv=None):
+def fit_poses_only(lens, P, ds, sig, poses, wv=None, floor_ang=None):
     """Lens fixed, refit poses (cross-data prediction)."""
     Dd = get_data()
     data = L.build(Dd, ds)
-    est = L.Est(lens, data, sig)
-    x0 = est.x0(P, poses, wv)
+    est = L.Est(lens, data, sig, barrier=False)
+    x0 = est.x0(P, poses, wv, floor_ang)
     ni = lens.ni
     th = x0[:ni]
     r = least_squares(lambda y: est.residuals(np.r_[th, y]), x0[ni:], method="trf", x_scale="jac", max_nfev=300)
@@ -202,7 +220,7 @@ def fit_poses_only(lens, P, ds, sig, poses, wv=None):
 def task_full(args):
     name, ds, sig, P_start, poses, wv = args
     t = time.time()
-    starts = [1.0, 0.9, 1.1] if ds == "M" else [1.0]
+    starts = start_variants(P_start) if ds == "M" else None
     lens, est, r = fit_one(name, ds, sig, P_start, {int(k): np.array(v) for k, v in poses.items()}, wv, starts=starts)
     s = summarize_fit(lens, est, r)
     s["time"] = time.time() - t
@@ -215,17 +233,18 @@ def task_cv(args):
     P_start = lens.P(np.array(full["x"][: lens.ni]))
     poses = {int(k): np.array(v) for k, v in full["poses"].items()}
     wv = np.array(full["wv"]) if full["wv"] is not None else None
+    fa = full.get("floor_ang") or {}
     if kind == "loso":
-        lens, est, r = fit_one(name, ds, sig, P_start, poses, wv, drop_sticker=tuple(fold))
+        lens, est, r = fit_one(name, ds, sig, P_start, poses, wv, drop_sticker=tuple(fold), floor_ang=fa)
         P = lens.P(r.x[: lens.ni])
         e = predict_sticker(lens, P, est.poses_of(r.x), tuple(fold))
         return kind, name, ds, str(tuple(fold)), dict(err=e, P=P_generic(P))
     # region-out
     fid, ids = fold
-    lens, est, r = fit_one(name, ds, sig, P_start, poses, wv, drop_edges=ids)
+    lens, est, r = fit_one(name, ds, sig, P_start, poses, wv, drop_edges=ids, floor_ang=fa)
     P = lens.P(r.x[: lens.ni])
     rots = {c: est.poses_of(r.x)[c][:3] for c in est.carts}
-    pred = predict_edges(lens, P, rots, est.wv_of(r.x), ids, sig)
+    pred = predict_edges(lens, P, rots, est.wv_of(r.x), ids, sig, est.floor_angles(r.x))
     return kind, name, ds, fid, dict(pred=pred, P=P_generic(P))
 
 
@@ -240,9 +259,9 @@ def main():
         lens = make_lens(REF)
         data = L.build(Dd, ds)
         best = None
-        for f0 in ([1250.0, 1400.0, 1550.0] if ds == "M" else [1400.0]):
+        P00 = lens.P([1400.0, L.C0[0], L.C0[1], -0.3, 0.07])
+        for P in (start_variants(P00) + start_variants(lens.P([1300.0, L.C0[0], L.C0[1], -0.1, -0.2])) if ds == "M" else [P00]):
             est = L.Est(lens, data, dict(SIG0))
-            P = lens.P([f0, L.C0[0], L.C0[1], -0.3, 0.07])
             r = est.varcomp(est.x0(P))
             if best is None or r.cost < best[1].cost:
                 best = (est, r)
@@ -273,6 +292,8 @@ def main():
     # ---------------- cross-data predictions ----------------
     for name in MODELS:
         lens = make_lens(name)
+        if name not in out["fits"]["E"] or name not in out["fits"]["M"]:
+            continue
         # lens from E -> stickers (poses refit)
         fE = out["fits"]["E"][name]
         PE = lens.P(np.array(fE["x"][: lens.ni]))
@@ -281,7 +302,7 @@ def main():
         # lens from M -> edges (rotations refit)
         fM = out["fits"]["M"][name]
         PM = lens.P(np.array(fM["x"][: lens.ni]))
-        est2, x2 = fit_poses_only(lens, PM, "E", out["sig"]["E"], ref_state["E"][1], ref_state["E"][2])
+        est2, x2 = fit_poses_only(lens, PM, "E", out["sig"]["E"], ref_state["E"][1], ref_state["E"][2], out["fits"]["E"][name]["floor_ang"])
         bs2 = est2.block_stats(x2)
         out["cross"][name] = dict(E_to_M=bs, M_to_E=bs2)
         print(f"  cross {name:18s} lens(E)->stickers RMS {bs['M']['rms_radial']:.2f} px | lens(M)->edges S {bs2['S']['rms']:.3f} V {bs2['V']['rms']:.3f}", flush=True)
@@ -292,6 +313,8 @@ def main():
     tiles = sorted({L.tile_of(e) for e in Dd["edges"]})
     folds_tile = [(f"tile_{t}", [e["id"] for e in Dd["edges"] if L.tile_of(e) == t]) for t in tiles]
     cv_models = list(MODELS) if not QUICK else [REF, "B_k1", "KB_k1k2", "D_l1"]
+    if "--nocv" in sys.argv:
+        cv_models = []
     ctasks = []
     for name in cv_models:
         for ds in ("M", "ME"):

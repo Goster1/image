@@ -41,8 +41,9 @@ def all_edges():
     """Verified straight edges from the final per-region files (explicit list: intermediate files such as
     edges_scene_raw.json also match edges_*.json and must not be used)."""
     out = []
+    base = os.environ.get("GEOMDIAG_EDGES_DIR", CACHE)  # optional frozen snapshot of the edge files
     for fn in EDGE_FILES:
-        p = f"{CACHE}/{fn}"
+        p = f"{base}/{fn}"
         if os.path.exists(p):
             try:
                 out += load_edges(verified_only=True, source=p)

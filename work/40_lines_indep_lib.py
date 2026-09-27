@@ -36,6 +36,7 @@ from scipy.optimize import least_squares
 from common import CACHE, RESULTS, H, W, save_json, load_json  # noqa: F401
 
 S = 1000.0
+FOLD_MIN_SLOPE = 0.2  # barrier: radial map slope d r_d / d r_u (div: d r_u / d r_d) must stay > this up to the far corner
 C0 = np.array([(W - 1) / 2.0, (H - 1) / 2.0])
 EDGE_FILES = [f"{CACHE}/edges_cart310.json", f"{CACHE}/edges_cart80.json", f"{CACHE}/edges_scene.json"]
 
@@ -58,7 +59,8 @@ SAME_OBJECT = [
 # floor lines: aisle direction (runs along the aisle, image-vertical) / cross direction (across the aisle)
 FLOOR_AISLE = {"scene_tapeV_left", "scene_tapeV_right", "scene_jointB_V_left", "scene_jointB_V_right"}
 FLOOR_CROSS = {"scene_tapeH_top", "scene_tapeH_bottom", "scene_blueH_top", "scene_blueL_top", "scene_blueL_bottom",
-               "scene_joint450", "cart310_floor_tape_blue_upper", "cart310_floor_tape_blue_lower"}
+               "cart310_floor_tape_blue_upper", "cart310_floor_tape_blue_lower"}
+FLOOR_JOINT = {"scene_joint450"}  # saw-cut floor joint across the aisle: parallel to the blue line only by assumption
 
 
 def _truthy(v):
@@ -161,6 +163,8 @@ def vp_group(e):
         return "FA"
     if i in FLOOR_CROSS:
         return "FC"
+    if i in FLOOR_JOINT:
+        return "FJ"
     if d == "world_vertical":
         return "WV"
     if c in (80, 310) and d in ("cartX", "cartY", "cartZ"):
@@ -262,6 +266,7 @@ class Dist:
         if self.kind == "div":
             qu, J = self._div_back(qd)
             det = J[0] * J[3] - J[1] * J[2]
+            self.valid = det > 0
             return self.c + S * qu, J, bool(np.all(det > 0))
         # Newton inversion of the forward map
         qu = qd.copy()
@@ -280,7 +285,8 @@ class Dist:
                 break
         qq, (j11, j12, j21, j22) = self.fwd(qu)
         det = j11 * j22 - j12 * j21
-        ok = bool(np.all(det > 1e-6) and np.max(np.abs(qq - qd)) < 1e-8)
+        self.valid = (det > 1e-6) & (np.max(np.abs(qq - qd), axis=1) < 1e-8)
+        ok = bool(np.all(self.valid))
         # inverse Jacobian
         detc = np.where(np.abs(det) < 1e-9, 1e-9, det)
         JU = (j22 / detc, -j12 / detc, -j21 / detc, j11 / detc)
@@ -297,6 +303,40 @@ class Dist:
             return S * (qd[:, 0] - q[:, 0])
         qu, _ = self._div_back(q)
         return S * (q[:, 0] - qu[:, 0])
+
+    def fold_margin(self, min_slope=0.0):
+        """(r_d at which the radial map stops being monotonic) - (distance centre -> farthest image corner), px.
+
+        Must be > 0: otherwise the lens is not invertible inside the image and undistortion-based residuals
+        collapse near the fold.  Radial part only.
+        """
+        corners = np.array([[0, 0], [W - 1, 0], [0, H - 1], [W - 1, H - 1]], float)
+        rc = np.max(np.hypot(*(corners - self.c).T)) / S
+        if self.kind == "poly":
+            ru = np.linspace(0, 3.5, 3501)
+            r2 = ru * ru
+            R = np.ones_like(ru)
+            pw = np.ones_like(ru)
+            for ai in self.a:
+                pw = pw * r2
+                R = R + ai * pw
+            rd = ru * R
+            sl = np.gradient(rd, ru)
+            badi = np.where(sl <= min_slope)[0]
+            rfold = rd[: badi[0]].max() if len(badi) else rd.max()
+            return float(S * (rfold - rc))
+        rd = np.linspace(0, 2.5, 2501)
+        r2 = rd * rd
+        Lr = np.ones_like(rd)
+        pw = np.ones_like(rd)
+        for ai in self.a:
+            pw = pw * r2
+            Lr = Lr + ai * pw
+        ru = rd / np.where(Lr > 1e-9, Lr, 1e-9)
+        sl = np.gradient(ru, rd)
+        badi = np.where((sl <= min_slope) | (Lr <= 1e-6))[0]
+        rfold = rd[badi[0]] if len(badi) else rd.max()
+        return float(S * (rfold - rc))
 
     def opencv(self, f):
         """OpenCV [k1,k2,p1,p2,k3] for focal length f (poly only), pp = centre."""
@@ -507,7 +547,7 @@ class PlumbModel:
         if self.centre_free:
             x += list(self.centre)
         if self.kind == "poly":
-            a0 = [-0.12] if self.nrad == 1 else [-0.18, 0.03, 0.0, 0.0][: self.nrad]
+            a0 = [-0.10] if self.nrad == 1 else [-0.18, 0.03, 0.0, 0.0][: self.nrad]
         else:
             a0 = [-0.2, 0.0, 0.0][: self.nrad]
         if prev is not None:
@@ -528,6 +568,8 @@ def fit_plumb(es, model, x0=None, loss="huber", f_scale=0.3, weights=None, max_n
 
     def fun(x):
         d = model.dist(x)
+        if d.fold_margin(FOLD_MIN_SLOPE) < 0:
+            return bad
         U, JU, ok = d.undistort(es.P)
         if not ok:
             return bad
@@ -542,7 +584,8 @@ def fit_plumb(es, model, x0=None, loss="huber", f_scale=0.3, weights=None, max_n
     w = huber_weights(r, f_scale) if loss == "huber" else np.ones_like(r)
     sw = np.sqrt(w)
     Jw, rw = J * sw[:, None], r * sw
-    out = dict(x=res.x, names=model.names, dist=model.dist(res.x), r=r, J=J, w=w,
+    out = dict(x=res.x, names=model.names, dist=model.dist(res.x), r=r, J=J, w=w, fold_margin_px=model.dist(res.x).fold_margin(),
+               barrier_margin_px=model.dist(res.x).fold_margin(FOLD_MIN_SLOPE),
                rms=float(np.sqrt(np.mean(r ** 2))), cost=float(res.cost), nfev=res.nfev, success=bool(res.success))
     out["cov_classic"] = cov_classic(Jw, rw, npar_extra=2 * es.E)
     cl = np.array([e["cluster"] for e in es.edges])

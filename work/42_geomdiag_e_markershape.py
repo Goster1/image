@@ -12,7 +12,8 @@ combined over the stickers of a cart with the nadir".
 Variants: with / without the nadir, pp free / fixed, top stickers only, shelf stickers only; and a
 diagnostic with a free tilt per sticker (are the shelf-card stickers horizontal?).
 Uncertainty: bootstrap over stickers (resampled within each cart) + residual-scaled covariance.
-Writes work/cache/method_markershape.json (+ .md), results/geomdiag_markershape.png
+Writes work/cache/method_markershape.json (+ .md), results/geomdiag_markershape.png; run 42_geomdiag_h_mapping.py
+afterwards to add mapping_uncertainty_px.
 """
 import importlib
 import sys

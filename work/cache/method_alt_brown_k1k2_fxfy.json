@@ -1,0 +1,230 @@
+{
+  "image_width": 1920,
+  "image_height": 1080,
+  "camera_matrix": [
+    [
+      1439.3311570656087,
+      0.0,
+      927.4734471388684
+    ],
+    [
+      0.0,
+      1435.405865096003,
+      501.0532756870779
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "dist_coeffs": [
+    -0.33629734335773576,
+    0.09117104024741399,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "method": "alt_model_brown_k1k2_fxfy (lens-model comparison; stickers + edges jointly, same data and weights for every model)",
+  "model": "Brown k1,k2, fx!=fy, pp free",
+  "rms_reprojection_error_px": 8.622906991956649,
+  "uncertainty": {
+    "fx_1sigma": 53.74248632304525,
+    "fy_1sigma": 29.28994817187969,
+    "cx_1sigma": 7.2400505370555654,
+    "cy_1sigma": 7.325879772889976,
+    "k1_1sigma": 0.017253761361947388,
+    "k2_1sigma": 0.01170620590657331
+  },
+  "mapping_uncertainty_px": {
+    "centre": 2.221,
+    "cart_band": 11.96,
+    "corners": 20.314
+  },
+  "data_used": "62 valid sticker corners of 20 stickers (7-frame means) + 61 verified straight edges (straightness; VP groups: cart X/Z axes without end-board edges, scene verticals, 2 floor-line groups); block sigmas fixed from the Brown k1,k2 variance components",
+  "geometry_assumptions": "drawing dimensions and sticker positions exact (not fitted); edges use no dimensions",
+  "details": {
+    "native_params": {
+      "fx": 1439.3311570656087,
+      "fy": 1435.405865096003,
+      "cx": 927.4734471388684,
+      "cy": 501.0532756870779,
+      "k1": -0.33629734335773576,
+      "k2": 0.09117104024741399,
+      "p1": 0.0,
+      "p2": 0.0,
+      "k3": 0.0,
+      "k4": 0.0,
+      "k5": 0.0,
+      "k6": 0.0
+    },
+    "native_model": {
+      "kind": "brown",
+      "coef": [
+        "k1",
+        "k2"
+      ],
+      "f": "fxfy",
+      "pp": "free",
+      "pp0": [
+        959.5,
+        539.5
+      ],
+      "fixed": {},
+      "name": "B_k1k2_fxfy"
+    },
+    "conversion_to_opencv": null,
+    "rational_8_coeffs": null,
+    "block_stats_joint": {
+      "M": {
+        "rms": 6.0973160075534425,
+        "rms_radial": 8.622906991956649,
+        "max_radial": 14.454159843665915,
+        "n": 124
+      },
+      "V": {
+        "rms": 0.36070037117815845,
+        "max": 1.5656729785942158,
+        "n": 2103
+      },
+      "S": {
+        "rms": 0.22916532843253293,
+        "max": 1.0907187232961668,
+        "n": 1136
+      }
+    },
+    "block_sigmas": {
+      "M": 6.138386158013621,
+      "L": 1.0,
+      "V": 0.3605840293249921,
+      "S": 0.2291519259971702
+    },
+    "fold_margin": 75.03819803251719,
+    "barrier_active": false,
+    "uncertainty_method": "cluster-robust sandwich covariance (clusters = stickers and edges) of the joint fit; mapping uncertainty = 8 parameter samples, rotation-compensated displacement vs the fit, RMS over samples, median over region",
+    "info_criteria": {
+      "M": {
+        "dAIC_own": 9.3,
+        "dQAIC": 3.8,
+        "dQBIC": 5.5,
+        "dAIC_det": 18913.3
+      },
+      "E": {
+        "dAIC_own": 284.1,
+        "dQAIC": 14.3,
+        "dQBIC": 8.0,
+        "dAIC_det": 3749.6
+      },
+      "ME": {
+        "dAIC_own": 283.7,
+        "dQAIC": 16.6,
+        "dQBIC": 8.6,
+        "dAIC_det": 210901.7
+      }
+    },
+    "cross_validation": {},
+    "other_data_sets": {
+      "M": {
+        "params": {
+          "fx": 1297.620599,
+          "fy": 1314.991971,
+          "cx": 978.778862,
+          "cy": 300.106494,
+          "k1": -0.421334,
+          "k2": 0.35209,
+          "p1": 0.0,
+          "p2": 0.0,
+          "k3": 0.0,
+          "k4": 0.0,
+          "k5": 0.0,
+          "k6": 0.0
+        },
+        "block_stats": {
+          "M": {
+            "rms": 3.716536893672467,
+            "rms_radial": 5.255976880091576,
+            "max_radial": 10.94700443170069,
+            "n": 124
+          }
+        },
+        "fold_margin": 336.61532946121963,
+        "barrier_active": false,
+        "sd_sandwich": {
+          "fx": 21.294639425049585,
+          "fy": 17.811201653553724,
+          "cx": 21.96145517724655,
+          "cy": 23.590990149508677,
+          "k1": 0.07387559860043248,
+          "k2": 0.1154613279560982
+        }
+      },
+      "E": {
+        "params": {
+          "fx": 1382.8115,
+          "fy": 1426.288415,
+          "cx": 927.966354,
+          "cy": 510.547323,
+          "k1": -0.328091,
+          "k2": 0.085079,
+          "p1": 0.0,
+          "p2": 0.0,
+          "k3": 0.0,
+          "k4": 0.0,
+          "k5": 0.0,
+          "k6": 0.0
+        },
+        "block_stats": {
+          "V": {
+            "rms": 0.3595661277486184,
+            "max": 1.5691194527932055,
+            "n": 2103
+          },
+          "S": {
+            "rms": 0.22938626629225292,
+            "max": 1.0768588266160053,
+            "n": 1136
+          }
+        },
+        "fold_margin": 69.30337963876401,
+        "barrier_active": false,
+        "sd_sandwich": {
+          "fx": 91.21246883448168,
+          "fy": 33.502265357848074,
+          "cx": 7.555071735482886,
+          "cy": 13.154517589974976,
+          "k1": 0.022411219698296323,
+          "k2": 0.015086039932063823
+        }
+      }
+    },
+    "mapping_vs_reference_rotcomp_median_px": {
+      "centre": 0.193,
+      "cart_band": 1.357,
+      "corners": 2.706,
+      "whole_image": 1.597
+    },
+    "mapping_vs_reference_raw_median_px": {
+      "centre": 0.781,
+      "cart_band": 1.608,
+      "corners": 2.801,
+      "whole_image": 1.779
+    },
+    "model_choice_mapping_unc_px": {
+      "E": {
+        "centre": 1.922,
+        "cart_band": 6.957,
+        "corners": 13.353
+      },
+      "ME": {
+        "centre": 2.059,
+        "cart_band": 7.052,
+        "corners": 12.014
+      }
+    },
+    "adequate": {
+      "adequate": true,
+      "reasons": []
+    },
+    "recommended_model": "B_k1k2"
+  }
+}

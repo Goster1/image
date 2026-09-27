@@ -18,7 +18,7 @@ from __future__ import annotations
 import numpy as np
 from scipy.optimize import least_squares
 
-from common import H, W, K_from, rodrigues, undistort_points
+from common import H, W, K_from, distort_normalized, fold_margin, rodrigues, undistort_points
 
 DORDER = ["k1", "k2", "p1", "p2", "k3"]
 AXIS = {"cartX": 0, "cartY": 1, "cartZ": 2}
@@ -51,7 +51,7 @@ class LineCal:
         self.allp = np.vstack(self.pts)
         self.idx = np.cumsum([0] + [len(p) for p in self.pts])
         self.chord = np.array([np.hypot(*(p[-1] - p[0])) for p in self.pts])
-        self.resid_mode = "jacobian"  # or "chord" (older approximation, noise-biased)
+        self.resid_mode = "forward"  # "forward" (default, fold-safe) | "jacobian" (1st order) | "chord" (biased)
         if mode == "plumb":
             self.groups = [None] * len(edges)
         else:
@@ -149,6 +149,7 @@ class LineCal:
             U, J = self.undist_jac(K, d)
         else:
             U, J = self.undist_px(K, d), None
+        fwd = self.resid_mode == "forward"
         out = []
         pe = []
         for k in range(len(self.pts)):
@@ -171,14 +172,31 @@ class LineCal:
                 nn = np.hypot(l[0], l[1])
                 r = (P @ l[:2] + l[2]) / nn
                 nv = np.tile(l[:2] / nn, (len(P), 1))
-            if J is not None:
+            if fwd:
+                # forward residual: distance (signed) between the observed point and the DISTORTED image of
+                # its orthogonal projection onto the fitted undistorted line -> well defined even if the
+                # model folds (then it is large), no noise-shrinkage bias
+                q = P - r[:, None] * nv
+                xn = (q[:, 0] - K[0, 2]) / K[0, 0]
+                yn = (q[:, 1] - K[1, 2]) / K[1, 1]
+                xd, yd = distort_normalized(xn, yn, d)
+                Dq = np.column_stack([K[0, 0] * xd + K[0, 2], K[1, 1] * yd + K[1, 2]])
+                e = self.allp[sl] - Dq
+                r = np.sign(r) * np.hypot(e[:, 0], e[:, 1])
+            elif J is not None:
                 jt = np.einsum("nij,ni->nj", J[sl], nv)  # J^T n
                 r = r / np.maximum(np.hypot(jt[:, 0], jt[:, 1]), 1e-9)
             else:
                 r = r * self.chord[k] / max(np.hypot(*(P[-1] - P[0])), 1e-9)
             out.append(r)
             pe.append(float(np.sqrt(np.mean(r ** 2))) if len(r) else np.nan)
-        return pe if per_edge else np.concatenate(out)
+        if per_edge:
+            return pe
+        # barrier: the lens must be invertible (monotonic radial distortion) out to the image corners,
+        # otherwise the undistortion folds and edge residuals near the corners collapse (false minimum)
+        m = fold_margin(K, d)
+        out.append(np.array([1000.0 * max(0.0, 0.03 - m)]))
+        return np.concatenate(out)
 
     def x0(self, K=None, dist=None, poses=None):
         x = []
@@ -225,7 +243,7 @@ class LineCal:
     def edge_groups_index(self):
         """point -> edge index (for cluster-robust covariance)."""
         return np.concatenate([np.full(len(self.pts[k]) if not (self.mode == "vp" and self.groups[k] is None) else 0, k)
-                               for k in range(len(self.pts))])
+                               for k in range(len(self.pts))] + [np.array([-1])])  # last = fold barrier
 
 
 def sandwich(res, groups):

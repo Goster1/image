@@ -10,7 +10,8 @@ the two floor normals (plus its two components: along the camera x axis and y ax
 on the image plane directions). The f at which the carts agree (dh = 0) is found by root finding;
 its uncertainty from (i) the pose covariance (Gauss-Newton, scaled by the residual variance) and
 (ii) a bootstrap over stickers (resampled within each cart, everything refitted).
-Writes work/cache/method_twocart.json (+ .md) and results/geomdiag_twocart.png.
+Writes work/cache/method_twocart.json (+ .md) and results/geomdiag_twocart.png; run 42_geomdiag_h_mapping.py afterwards
+to add mapping_uncertainty_px. Optional: GEOMDIAG_EDGES_DIR = directory with a frozen copy of the edge files.
 """
 import importlib
 import sys

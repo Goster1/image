@@ -269,6 +269,42 @@ def board_tests(ms, und, vh, corners="final"):
     return out
 
 
+def board_distortion_test(ms):
+    """Can ANY radial distortion (k1, k2 at f0 = 1300, centre fixed or free) make the four end boards
+    individually consistent with a plane homography of the drawing layout? (distances in undistorted px)"""
+    from common import K_from, undistort_points
+    boards = []
+    for cart in (80, 310):
+        for end, ids in TOP_IDS[cart].items():
+            XY, uv = [], []
+            for m in ms:
+                if m["cart"] == cart and m["id"] in ids:
+                    XY += [m["corners_3d"][j][:2] for j in range(4)]
+                    uv += [m["corners_px"][j] for j in range(4)]
+            boards.append((f"{cart}_{end}", np.array(XY), np.array(uv)))
+
+    def res(x, free_c):
+        c = x[2:4] if free_c else np.array([959.5, 539.5])
+        K = K_from(G.F0, G.F0, c[0], c[1])
+        out = []
+        for _, XY, uv in boards:
+            U = undistort_points(uv, K, np.array([x[0], x[1], 0, 0, 0]), iters=30) * G.F0 + c
+            H0, _ = cv2.findHomography(XY, U, 0)
+            rh = least_squares(lambda h: (hom_apply(np.append(h, 1).reshape(3, 3), XY) - U).ravel(), (H0 / H0[2, 2]).ravel()[:8], method="lm")
+            out.append(rh.fun)
+        return np.concatenate(out)
+
+    out = {}
+    for free_c in (False, True):
+        x0 = [-0.29, 0.07] + ([959.5, 539.5] if free_c else [])
+        r = least_squares(lambda x: res(x, free_c), x0, diff_step=1e-4)
+        rr = r.fun.reshape(-1, 2)
+        per = [float(np.sqrt(np.mean(np.sum(rr[i * 8:(i + 1) * 8] ** 2, 1)))) for i in range(4)]
+        out["centre_free" if free_c else "centre_fixed"] = dict(x=r.x.tolist(), board_rms=dict(zip([b[0] for b in boards], per)))
+        print("board planarity with the best radial distortion,", "centre free" if free_c else "centre fixed", np.round(r.x, 4), np.round(per, 3))
+    return out
+
+
 def main():
     ms = G.markers()
     edges = G.all_edges()
@@ -315,8 +351,9 @@ def main():
             return d.tolist()
         return d
 
+    out["board_distortion_test"] = board_distortion_test(ms)
     save_json(strip(out), f"{CACHE}/geomdiag_planes.json")
-    for var in out:
+    for var in [v for v in out if v != "board_distortion_test"]:
         print("=====", var, "VP", np.round(out[var]["vp"], 1))
         for nm in ("board_tests", "board_tests_aruco_corners"):
             for k, R in out[var][nm].items():

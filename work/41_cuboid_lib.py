@@ -220,71 +220,81 @@ def undist_px(P, K, d):
     return np.column_stack([K[0, 0] * n[:, 0] + K[0, 2], K[1, 1] * n[:, 1] + K[1, 2]])
 
 
-def line_residuals_px(P, K, d, R, t, A, D, jac=True):
-    """Signed distance (distorted-image px) of traced points P to the projection of the 3D line (A, D).
-
-    Sign convention: positive = to the side of the image-line normal nv (nv = l[:2]/|l[:2]|, with
-    l = (K(RA+t)) x (KRD)); use `oriented_sign` to map to a physical direction.
-    Returns r_d (N), nv (2,), and the undistorted points.
-    """
-    U = undist_px(P, K, d)
-    a = K @ (R @ A + t)
-    b = K @ (R @ D)
-    l = np.cross(a, b)
-    nrm = np.hypot(l[0], l[1])
-    nv = l[:2] / nrm
-    r = (U @ l[:2] + l[2]) / nrm
-    if jac:
-        hh = 0.5
-        Jx = (undist_px(P + [hh, 0.0], K, d) - U) / hh
-        Jy = (undist_px(P + [0.0, hh], K, d) - U) / hh
-        s = np.hypot(Jx @ nv, Jy @ nv)
-        r = r / np.maximum(s, 1e-9)
-    return r, nv, U
+def foot_params(P, K, d, R, t, A, D):
+    """Line parameter t_i (mm) of the point of the 3D line A + t D closest to the viewing ray of
+    each image point P_i (undistorted with (K, d)); camera frame x = R X + t."""
+    n = undistort_points(P, K, d, iters=40)
+    r = np.column_stack([n, np.ones(len(n))])
+    r /= np.linalg.norm(r, axis=1, keepdims=True)
+    Ac = R @ A + t
+    Dc = R @ D
+    # minimise |Ac + s Dc - u r| over s, u  (per point)
+    b = r @ Dc
+    dd = r @ Ac
+    e = Dc @ Ac
+    den = 1.0 - b * b
+    s = (b * dd - e) / np.maximum(den, 1e-12)
+    return s
 
 
-def physical_normal_sign(cam, cart, A, D, P, axis_vec, step=5.0):
-    """+1 if moving the 3D line by +step mm along axis_vec moves its image towards +nv (at the points P)."""
+def tangent_residuals(P, s, K, d, R, t, A, D, h=5.0):
+    """Signed distance (distorted-image px) of the points P from the projected 3D line, evaluated at the
+    fixed line parameters s (foot points): r = (P - p(s)) . n,  n = left normal of the local tangent.
+    Accurate to second order in the foot-point error (projected-line curvature is tiny)."""
+    X0 = A[None] + s[:, None] * D[None]
+    p0 = project(X0, K, d, R=R, tvec=t)
+    p1 = project(X0 + h * D[None], K, d, R=R, tvec=t)
+    tg = p1 - p0
+    tg /= np.linalg.norm(tg, axis=1, keepdims=True)
+    nv = np.column_stack([-tg[:, 1], tg[:, 0]])
+    return np.sum((P - p0) * nv, axis=1), nv
+
+
+def line_offsets(cam, cart, A, D, P):
+    """Signed px distances of P from the projected line (A, D) with camera `cam` (+ normals)."""
     R, t = cam.R(cart), cam.t(cart)
-    r0, nv, _ = line_residuals_px(P, cam.K, cam.dist, R, t, A, D, jac=False)
-    r1, _, _ = line_residuals_px(P, cam.K, cam.dist, R, t, A + step * axis_vec, D, jac=False)
-    # the line moved by +step: residual of the same points changes by -(shift along nv)
-    return -np.sign(np.mean(r1 - r0))
+    s = foot_params(P, cam.K, cam.dist, R, t, A, D)
+    return tangent_residuals(P, s, cam.K, cam.dist, R, t, A, D)
+
+
+def physical_sign(cam, cart, A, D, P, axis_vec, step=5.0):
+    """+1 if the points' residual DEcreases when the 3D line is moved by +step along axis_vec, i.e. if a
+    positive residual means 'the traced edge lies on the +axis side of the predicted line'."""
+    R, t = cam.R(cart), cam.t(cart)
+    s = foot_params(P, cam.K, cam.dist, R, t, A, D)
+    r0, _ = tangent_residuals(P, s, cam.K, cam.dist, R, t, A, D)
+    r1, _ = tangent_residuals(P, s, cam.K, cam.dist, R, t, A + step * axis_vec, D)
+    return float(np.sign(np.mean(r0 - r1)))
 
 
 def implied_shift(cam, cart, A, D, P, axis_vec):
     """Best 1-D shift s (mm) of the 3D line along axis_vec so that it passes through the traced points
-    (camera fixed); returns s, rms after the shift, px per mm (mean sensitivity at the points)."""
+    (camera fixed). Returns shift, rms after the shift [px], sensitivity [px/mm] (mean at the points)."""
     R, t = cam.R(cart), cam.t(cart)
-
-    def res(s):
-        return line_residuals_px(P, cam.K, cam.dist, R, t, A + s[0] * axis_vec, D)[0]
-
-    r0 = res([0.0])
-    r1 = res([1.0])
-    sens = float(np.mean(np.abs(r1 - r0)))
-    rr = least_squares(res, [0.0], x_scale=[10.0])
-    return float(rr.x[0]), float(np.sqrt(np.mean(rr.fun ** 2))), sens
+    s = foot_params(P, cam.K, cam.dist, R, t, A, D)
+    r0, _ = tangent_residuals(P, s, cam.K, cam.dist, R, t, A, D)
+    r1, _ = tangent_residuals(P, s, cam.K, cam.dist, R, t, A + axis_vec, D)
+    g = r1 - r0  # linear in the shift (to high accuracy)
+    k = float(-np.sum(g * r0) / np.sum(g * g))
+    rr = r0 + k * g
+    return k, float(np.sqrt(np.mean(rr ** 2))), float(np.mean(np.abs(g)))
 
 
 def implied_shift_2d(cam, cart, A, D, P, ax1, ax2):
-    """Joint 2-D shift (both non-free axes): returns (s1, s2), their Gauss-Newton sigmas (from the
-    rms of the residual, points treated as independent - optimistic) and the correlation."""
+    """Joint 2-D shift along both non-free axes (linearised, exact to high accuracy): values, formal
+    sigmas (points treated as independent, scaled by the residual rms - optimistic), correlation, rms."""
     R, t = cam.R(cart), cam.t(cart)
-
-    def res(s):
-        return line_residuals_px(P, cam.K, cam.dist, R, t, A + s[0] * ax1 + s[1] * ax2, D)[0]
-
-    rr = least_squares(res, [0.0, 0.0], x_scale=[10.0, 10.0])
-    J = rr.jac
-    dof = max(len(rr.fun) - 2, 1)
-    s2 = 2 * rr.cost / dof
-    try:
-        C = np.linalg.inv(J.T @ J) * s2
-    except np.linalg.LinAlgError:
-        C = np.full((2, 2), np.nan)
+    s = foot_params(P, cam.K, cam.dist, R, t, A, D)
+    r0, _ = tangent_residuals(P, s, cam.K, cam.dist, R, t, A, D)
+    g1 = tangent_residuals(P, s, cam.K, cam.dist, R, t, A + ax1, D)[0] - r0
+    g2 = tangent_residuals(P, s, cam.K, cam.dist, R, t, A + ax2, D)[0] - r0
+    J = np.column_stack([g1, g2])
+    k, *_ = np.linalg.lstsq(J, -r0, rcond=None)
+    rr = r0 + J @ k
+    dof = max(len(rr) - 2, 1)
+    C = np.linalg.pinv(J.T @ J) * np.sum(rr ** 2) / dof
     sd = np.sqrt(np.diag(C))
-    return rr.x, sd, float(C[0, 1] / (sd[0] * sd[1])), float(np.sqrt(np.mean(rr.fun ** 2)))
+    return k, sd, float(C[0, 1] / (sd[0] * sd[1])), float(np.sqrt(np.mean(rr ** 2)))
 
 
 # ------------------------------------------------------------------------------------------------
@@ -294,18 +304,23 @@ class CuboidFit:
     """Intrinsics + one pose per cart from sticker corners and exact 3D lines.
 
     lines: list of dicts(id, cart, points, A, D, level, kind[, nuis]) - `nuis` = list of
-           (param_name, axis_vector) nuisance shifts of the 3D line (e.g. a common lip height).
-    geo:   list of DIAGNOSTIC geometry parameter names; supported:
+           (param_name, axis_vector) nuisance shifts of the 3D line (e.g. a common lip offset).
+    geo:   list of DIAGNOSTIC geometry parameter names (never used in a main estimate):
              'dz_top'        : Z shift of everything at the top plate (top stickers, top lines)
              'dz_<row>'      : Z shift of shelf row <row> (stickers on it and its lines)
              'dz_shelves'    : common Z shift of all shelf rows A..E (relative to the top)
+             'sz_shelves'    : relative scale of the shelf depths below the top (Z -> Z (1 + s/1000))
+             'code_mm'       : sticker code size (default 90) - changes the corner positions
+             'sx', 'sy'      : relative scale (1/1000) of the cart width / depth (sticker centres and lines)
     blocks: 'M' corners, 'S' sticker sides, 'E' exact structure edges, 'X' extra (nuisance) lines.
-    edge weighting: weight_mode 'point' (every traced point = one observation, points subsampled)
-           or 'cluster' (every line counts as n_eff observations).
+    Line residual = signed distance in the DISTORTED image to the projected 3D line (local tangent at
+    the foot point; the foot points are updated between the outer iterations).
+    edge weighting: weight_mode 'point' (every traced point = one observation) or 'cluster' (every line
+    counts as n_eff observations, n_eff = clip(chord / corr_px, 2, 6)).
     """
 
-    def __init__(self, pts, lines, spec, geo=(), nuis=(), subsample=2, weight_mode="point", n_eff=4.0,
-                 carts=(80, 310), sig=None):
+    def __init__(self, pts, lines, spec, geo=(), nuis=(), subsample=2, weight_mode="cluster", corr_px=25.0,
+                 carts=(80, 310), sig=None, markers=None):
         self.f_mode = spec.get("f", "single")
         self.pp_free = spec.get("pp", "free") == "free"
         self.dfree = list(spec.get("dist", ["k1", "k2"]))
@@ -320,25 +335,25 @@ class CuboidFit:
         self.muv = np.array([p["uv"] for p in self.pts], float).reshape(-1, 2)
         self.mci = np.array([self.cidx[p["cart"]] for p in self.pts], int)
         self.mlevel = np.array([{0.0: "top", -195.0: "A", -595.0: "B", -995.0: "C"}.get(float(x[2]), "?") for x in self.mX])
+        # sticker centre per corner (for a code-size diagnostic)
+        from common import marker_center
+        self.mC = np.array([marker_center(p["id"], p["cart"]) for p in self.pts], float).reshape(-1, 3) if self.pts else np.zeros((0, 3))
         self.lines = []
         for ln in lines:
             if ln["cart"] not in self.cidx:
                 continue
             P = np.asarray(ln["points"], float)[::subsample]
             blk = {"sticker_side": "S", "exact_edge": "E"}.get(ln.get("kind"), "X")
-            self.lines.append(dict(ln, P=P, blk=blk))
+            chord = float(np.hypot(*(P[-1] - P[0])))
+            self.lines.append(dict(ln, P=P, blk=blk, chord=chord, s=None))
         self.geo = list(geo)
         self.nuis = list(nuis)
         self.weight_mode = weight_mode
-        self.n_eff = n_eff
-        if self.lines:
-            self.allp = np.vstack([ln["P"] for ln in self.lines])
-            self.lidx = np.cumsum([0] + [len(ln["P"]) for ln in self.lines])
-            w = []
-            for ln in self.lines:
-                n = len(ln["P"])
-                w.append(np.full(n, np.sqrt(self.n_eff / n) if weight_mode == "cluster" else 1.0))
-            self.lw = np.concatenate(w)
+        for ln in self.lines:
+            n = len(ln["P"])
+            neff = float(np.clip(ln["chord"] / corr_px, 2.0, 6.0))
+            ln["neff"] = neff
+            ln["w"] = np.sqrt(neff / n) if weight_mode == "cluster" else 1.0
         self.inames = (["f"] if self.f_mode == "single" else ["fx", "fy"]) + (["cx", "cy"] if self.pp_free else []) + self.dfree
         self.ni = len(self.inames)
         self.names = self.inames + [f"pose{c}_{i}" for c in self.carts for i in range(6)] + self.geo + self.nuis
@@ -368,57 +383,99 @@ class CuboidFit:
         nu = dict(zip(self.nuis, x[j + len(self.geo):]))
         return K_from(fx, fy, cx, cy), d, poses, g, nu
 
-    def _dz(self, g, level):
-        dz = 0.0
+    def _zmap(self, g, Z, level, cart=None):
+        """Diagnostic height changes (drawing: identity). Keys may be cart specific: 'dz_top@80'."""
+        if not self.geo:
+            return Z
+        Z = np.array(Z, float)
+
+        def gg(k):
+            return g.get(k, 0.0) + (g.get(f"{k}@{cart}", 0.0) if cart is not None else 0.0)
+
         if level == "top":
-            dz += g.get("dz_top", 0.0)
+            Z = Z + gg("dz_top")
         elif level in ("A", "B", "C", "D", "E"):
-            dz += g.get(f"dz_{level}", 0.0) + g.get("dz_shelves", 0.0)
-        return dz
+            Z = Z * (1.0 + gg("sz_shelves") / 1000.0) + gg(f"dz_{level}") + gg("dz_shelves")
+        return Z
 
     def camera(self, x):
         K, d, poses, _, _ = self.unpack(x)
         return Camera(K, d, {c: poses[i] for c, i in self.cidx.items()})
+
+    def _line_AD(self, ln, g, nu):
+        A = np.array(ln["A"], float).copy()
+        if self.geo:
+            A[2] = float(self._zmap(g, A[2], ln.get("level", "?"), ln["cart"]))
+            A[0] *= 1.0 + g.get("sx", 0.0) / 1000.0
+            A[1] *= 1.0 + g.get("sy", 0.0) / 1000.0
+        for nm, vec in ln.get("nuis", []):
+            A = A + nu.get(nm, 0.0) * np.asarray(vec, float)
+        return A, np.asarray(ln["D"], float)
+
+    def update_feet(self, x):
+        K, d, poses, g, nu = self.unpack(x)
+        for ln in self.lines:
+            ci = self.cidx[ln["cart"]]
+            A, D = self._line_AD(ln, g, nu)
+            ln["s"] = foot_params(ln["P"], K, d, rodrigues(poses[ci, :3]), poses[ci, 3:], A, D)
+
+    def marker_pred(self, x):
+        K, d, poses, g, nu = self.unpack(x)
+        X = self.mX.copy()
+        if self.geo:
+            if "code_mm" in g:
+                X = self.mC + (X - self.mC) * (g["code_mm"] / 90.0)
+            if "sx" in g or "sy" in g:
+                X[:, 0] += self.mC[:, 0] * g.get("sx", 0.0) / 1000.0
+                X[:, 1] += self.mC[:, 1] * g.get("sy", 0.0) / 1000.0
+            for lv in ("top", "A", "B", "C"):
+                for i, c in enumerate(self.carts):
+                    m = (self.mlevel == lv) & (self.mci == i)
+                    if m.any():
+                        X[m, 2] = self._zmap(g, X[m, 2], lv, c)
+        pred = np.zeros_like(self.muv)
+        for i in range(len(self.carts)):
+            s = self.mci == i
+            if s.any():
+                pred[s] = project(X[s], K, d, rvec=poses[i, :3], tvec=poses[i, 3:])
+        return pred
 
     def blocks(self, x, per_line=False):
         K, d, poses, g, nu = self.unpack(x)
         out = {"M": np.zeros(0), "S": [], "E": [], "X": []}
         wts = {"S": [], "E": [], "X": []}
         if len(self.pts):
-            X = self.mX.copy()
-            if self.geo:
-                for lv in ("top", "A", "B", "C"):
-                    X[self.mlevel == lv, 2] += self._dz(g, lv)
-            pred = np.zeros_like(self.muv)
-            for i in range(len(self.carts)):
-                s = self.mci == i
-                if s.any():
-                    pred[s] = project(X[s], K, d, rvec=poses[i, :3], tvec=poses[i, 3:])
-            out["M"] = (pred - self.muv).ravel()
+            out["M"] = (self.marker_pred(x) - self.muv).ravel()
         perl = []
         if self.lines:
-            U = undist_px(self.allp, K, d)
-            hh = 0.5
-            Jx = (undist_px(self.allp + [hh, 0.0], K, d) - U) / hh
-            Jy = (undist_px(self.allp + [0.0, hh], K, d) - U) / hh
-            Rs = [rodrigues(p[:3]) for p in poses]
-            for k, ln in enumerate(self.lines):
-                sl = slice(self.lidx[k], self.lidx[k + 1])
-                ci = self.cidx[ln["cart"]]
-                A = ln["A"].copy()
-                A[2] += self._dz(g, ln.get("level", "?")) if self.geo else 0.0
-                for nm, vec in ln.get("nuis", []):
-                    A = A + nu.get(nm, 0.0) * np.asarray(vec, float)
-                a = K @ (Rs[ci] @ A + poses[ci, 3:])
-                b = K @ (Rs[ci] @ ln["D"])
-                l = np.cross(a, b)
-                nrm = np.hypot(l[0], l[1])
-                nv = l[:2] / nrm
-                r = (U[sl] @ l[:2] + l[2]) / nrm
-                s = np.hypot(Jx[sl] @ nv, Jy[sl] @ nv)
-                r = r / np.maximum(s, 1e-9)
+            if self.lines[0]["s"] is None:
+                self.update_feet(x)
+            # vectorised over all lines of a cart: foot points and tangents projected in one call
+            AD = [self._line_AD(ln, g, nu) for ln in self.lines]
+            res_l = [None] * len(self.lines)
+            hstep = 5.0
+            for ci, c in enumerate(self.carts):
+                ids = [k for k, ln in enumerate(self.lines) if ln["cart"] == c]
+                if not ids:
+                    continue
+                X0 = np.vstack([AD[k][0][None] + self.lines[k]["s"][:, None] * AD[k][1][None] for k in ids])
+                Dr = np.vstack([np.repeat(AD[k][1][None], len(self.lines[k]["s"]), axis=0) for k in ids])
+                R = rodrigues(poses[ci, :3])
+                pp = project(np.vstack([X0, X0 + hstep * Dr]), K, d, R=R, tvec=poses[ci, 3:])
+                n = len(X0)
+                p0, p1 = pp[:n], pp[n:]
+                tg = p1 - p0
+                tg /= np.linalg.norm(tg, axis=1, keepdims=True)
+                P = np.vstack([self.lines[k]["P"] for k in ids])
+                r_all = (P[:, 0] - p0[:, 0]) * (-tg[:, 1]) + (P[:, 1] - p0[:, 1]) * tg[:, 0]
+                o = 0
+                for k in ids:
+                    m = len(self.lines[k]["s"])
+                    res_l[k] = r_all[o:o + m]
+                    o += m
+            for ln, r in zip(self.lines, res_l):
                 out[ln["blk"]].append(r)
-                wts[ln["blk"]].append(self.lw[sl])
+                wts[ln["blk"]].append(np.full(len(r), ln["w"]))
                 perl.append(r)
         for b in ("S", "E", "X"):
             out[b] = np.concatenate(out[b]) if len(out[b]) else np.zeros(0)
@@ -444,7 +501,10 @@ class CuboidFit:
         x += [dd[DNAMES.index(nm)] for nm in self.dfree]
         for c in self.carts:
             x += list(poses[c])
-        x += [0.0 if geo0 is None else geo0.get(nm, 0.0) for nm in self.geo]
+        g0 = {"code_mm": 90.0}
+        if geo0:
+            g0.update(geo0)
+        x += [g0.get(nm, 0.0) for nm in self.geo]
         x += [0.0 if nuis0 is None else nuis0.get(nm, 0.0) for nm in self.nuis]
         return np.array(x, float)
 
@@ -462,29 +522,43 @@ class CuboidFit:
                               max=float(np.max(np.abs(b[k]))), n=len(b[k]))
         return out
 
-    def solve(self, x0, reweight=True, iters=6, loss="linear", f_scale=3.0, fixed_sig=None, max_nfev=400):
+    def per_line_rms(self, x):
+        _, _, perl = self.blocks(x, per_line=True)
+        return {ln["id"]: dict(rms=float(np.sqrt(np.mean(r ** 2))), mean=float(np.mean(r)), n=len(r)) for ln, r in zip(self.lines, perl)}
+
+    def solve(self, x0, reweight=True, iters=8, loss="linear", f_scale=3.0, fixed_sig=None, max_nfev=200):
+        """Outer loop: foot points -> least squares -> variance components (if reweight)."""
         x = np.asarray(x0, float)
         if fixed_sig is not None:
             self.sig.update(fixed_sig)
         r = None
-        for it in range(iters if reweight else 1):
+        prev = None
+        for it in range(iters):
+            if self.lines:
+                self.update_feet(x)
             r = least_squares(self.residuals, x, method="trf", loss=loss, f_scale=f_scale, x_scale="jac",
                               max_nfev=max_nfev, xtol=1e-10, ftol=1e-10)
             x = r.x
-            if not reweight:
+            changed = False
+            if reweight:
+                b, w = self.blocks(x)
+                new = {}
+                if len(b["M"]) > 10:
+                    new["M"] = max(float(np.sqrt(np.mean(b["M"] ** 2))), 0.05)
+                for k in ("S", "E", "X"):
+                    if len(b[k]) > 5:
+                        ww = w[k] ** 2
+                        new[k] = max(float(np.sqrt(np.sum(ww * b[k] ** 2) / np.sum(ww))), 0.05)
+                changed = any(abs(new[k] / self.sig[k] - 1) > 0.02 for k in new)
+                self.sig.update(new)
+            moved = prev is None or np.max(np.abs(x[:self.ni] - prev[:self.ni]) / np.maximum(np.abs(prev[:self.ni]), 1e-3)) > 1e-5
+            prev = x.copy()
+            if not changed and not moved:
                 break
-            b, w = self.blocks(x)
-            new = {}
-            if len(b["M"]) > 10:
-                new["M"] = max(float(np.sqrt(np.mean(b["M"] ** 2))), 0.05)
-            for k in ("S", "E", "X"):
-                if len(b[k]) > 5:
-                    ww = w[k] ** 2
-                    new[k] = max(float(np.sqrt(np.sum(ww * b[k] ** 2) / np.sum(ww))), 0.05)
-            changed = any(abs(new[k] / self.sig[k] - 1) > 0.03 for k in new)
-            self.sig.update(new)
-            if not changed:
-                break
+        if self.lines:
+            self.update_feet(x)
+            r = least_squares(self.residuals, x, method="trf", loss=loss, f_scale=f_scale, x_scale="jac",
+                              max_nfev=max_nfev, xtol=1e-10, ftol=1e-10)
         return r
 
 

@@ -113,3 +113,24 @@ With this correction the free distortion centre is recoverable in synthetic test
 * Scene: floor_plane lines (white tape, blue line, joints), long rack tube at the far-left border (bow 16 px,
   keeps 0.63 px after correction - may not be straight, downweight/test), wall rods/pipes (horizontal_other,
   not parallel to cart axes). No straight edges along the top border x 700..1200.
+
+## Orchestrator updates (~18:30) - apply in any FINAL runs
+* FOLDED LENS trap: a Brown lens whose radial map r_d(r_u) stops being monotonic before the image corners
+  is not invertible there; undistortion-based edge residuals then collapse near the corners (false minima,
+  e.g. centre ~(850,519), k1~-0.245, k2~0). Check with common.fold_margin(K, dist) (>0 required; margin in
+  normalised radius). lineselfcal/combined now add a barrier residual (last element of the residual vector;
+  lineselfcal.edge_groups_index() has a matching group -1), calib.Problem has an optional `fold_barrier`.
+  All marker-only drawing-geometry fits (k2<0 or k1-only) are FOLDED inside the image (margin -0.03..-0.27):
+  they are not valid lens models near the corners.
+* Duplicates removed (13_edges_dedupe.py): cart310_floor_tape_blue_upper/lower == scene_blueL_top/bottom
+  (cart copies set to 'no'). scene_wall_railA == cart80_x_back_rail_out (scene copy 'no').
+* VP-group policy used by the orchestrator (edge dict key `vp_group`, honoured by LineCal and Combined):
+  end-board edges -> straightness only (vp_group=None); floor groups: floor_V = {scene_tapeV_left/right},
+  floor_H = {scene_tapeH_top/bottom, scene_blueH_top, scene_blueL_top/bottom} (directions constrained
+  perpendicular to the free world vertical). floor_H assumes the blue line and the white tape run parallel.
+* Scene verticals meet ~30 px (~1.4 deg) from the cart-post nadir -> keep world vertical free (not tied).
+* (~18:45) lineselfcal.LineCal and combined.Combined now use FORWARD residuals by default: signed distance in
+  the distorted image between each observed edge point and the distorted image of its orthogonal projection
+  onto the fitted undistorted line. Fold-safe (a folded model gets large residuals) and unbiased in
+  synthetic tests. On all 61 verified edges: plumb (centre free) cx=924, cy=423, k1=-0.270, k2=0.056 @f0=1300
+  (centre fixed: k1=-0.292, k2=0.072), identical for jacobian and forward modes.

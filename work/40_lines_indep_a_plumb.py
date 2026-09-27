@@ -51,12 +51,12 @@ MODELS = {
     "div1_c": L.PlumbModel("div", 1, centre_free=True),
     "div2_c": L.PlumbModel("div", 2, centre_free=True),
 }
-BOOT_MODELS = ["k1", "k1k2", "k1k2k3", "k1k2_c", "k1k2k3_c", "k1k2_t", "div2", "div2_c"]
+BOOT_MODELS = ["k1k2", "k1k2_c", "k1k2k3", "k1k2k3_c", "k1k2_t", "k1k2_c_t", "div1", "div2", "div2_c"]
 F_REF = 1300.0  # only to quote OpenCV-style k's in the tables (k_i at f0 = 1300); invariants are f-free
 
 # ---------------------------------------------------------------- 1. robust rejection
-print("\n[1] robust rejection (k1k2k3 + free centre, fac 2.5, bow floor 0.6 px, rms floor 0.5 px)")
-act, hist, st_all = L.robust_edge_rejection(edges, MODELS["k1k2k3_c"], fac=2.5)
+print("\n[1] robust rejection (k1k2 + free centre, fac 2.5, bow floor 0.6 px, rms floor 0.5 px)")
+act, hist, st_all = L.robust_edge_rejection(edges, MODELS["k1k2_c"], fac=2.5)
 acc = [e for e, a in zip(edges, act) if a]
 rej = [e for e, a in zip(edges, act) if not a]
 print("rejected:", [e["id"] for e in rej])
@@ -89,24 +89,32 @@ for nm, m in MODELS.items():
     table[nm] = summarize(fit)
 # leave-one-cluster-out: fit without the cluster, evaluate the left-out edges' straightness (own lines)
 for nm, m in MODELS.items():
-    sq, n = 0.0, 0
+    sq, n, nfail = 0.0, 0, 0
     per = []
     for c in range(len(cl_names)):
         tr = [e for e, ci in zip(acc, cl_ids) if ci != c]
         te = [e for e, ci in zip(acc, cl_ids) if ci == c]
         f = L.fit_plumb(L.EdgeSet(tr), m, x0=fits[nm]["x"])
         est = L.EdgeSet(te)
-        U, JU, ok = f["dist"].undistort(est.P)
+        dd = f["dist"]
+        U, JU, ok = dd.undistort(est.P)
         r = est.residuals(U, JU)
+        if not ok:  # points beyond the fold of the training fit: count as failed, excluded
+            nfail += int((~dd.valid).sum())
+            r = r[dd.valid]
         sq += float(r @ r)
         n += len(r)
-        per.append(float(np.sqrt(np.mean(r ** 2))))
+        per.append(float(np.sqrt(np.mean(r ** 2))) if len(r) else np.nan)
     table[nm]["loco_cv_rms"] = float(np.sqrt(sq / n))
-    table[nm]["loco_cv_median_cluster_rms"] = float(np.median(per))
+    table[nm]["loco_cv_median_cluster_rms"] = float(np.nanmedian(per))
+    table[nm]["loco_cv_points_beyond_fold"] = nfail
+    table[nm]["fold_margin_px"] = fits[nm]["fold_margin_px"]
+    table[nm]["barrier_margin_px"] = fits[nm]["barrier_margin_px"]
+    table[nm]["at_barrier"] = bool(fits[nm]["barrier_margin_px"] < 5.0)
     t = table[nm]
     print(f"  {nm:9s} rms {t['rms']:.4f}  LOCO-CV {t['loco_cv_rms']:.4f}  ",
           " ".join(f"{a}={v:.5g}±{s:.2g}" for a, v, s in zip(t["names"], t["x"], t["se_cluster"])),
-          " k@1300", np.round(t.get("k_at_f1300", [np.nan] * 5), 4)[[0, 1, 4]])
+          " k@1300", np.round(t.get("k_at_f1300", [np.nan] * 5), 4)[[0, 1, 4]], f"fold margin {t['fold_margin_px']:.0f}px barrier {t['barrier_margin_px']:.0f}px, LOCO fails {nfail}")
 
 # per-edge residual stats for the main models (all edges, incl. rejected, evaluated with the accepted-set fit)
 per_edge = {}
@@ -171,7 +179,7 @@ regions = {}
 REG_BOOT = max(NB * 2 // 3, 150)
 for reg in ["scene", "cart310", "cart80"]:
     sub = [e for e in acc if L.region_of(e) == reg]
-    for nm in ["k1k2", "k1k2_c", "k1k2k3"]:
+    for nm in ["k1k2", "k1k2_c", "div2", "div2_c"]:
         f = L.fit_plumb(L.EdgeSet(sub), MODELS[nm], x0=fits[nm]["x"])
         s = summarize(f)
         xs = bootstrap(sub, MODELS[nm], f["x"], REG_BOOT, rng)
@@ -186,16 +194,16 @@ for reg in ["scene", "cart310", "cart80"]:
 
 # ---------------------------------------------------------------- 5. centre profile
 print("\n[5] distortion-centre profile")
-gx = np.arange(760, 1161, 25.0)
-gy = np.arange(240, 841, 25.0)
+gx = np.arange(760, 1161, 40.0)
+gy = np.arange(220, 861, 40.0)
 prof = {}
-for nm, nrad in [("k1k2", 2), ("k1k2k3", 3)]:
+for nm, kind, nrad in [("k1k2", "poly", 2), ("div2", "div", 2)]:
     Z = np.zeros((len(gy), len(gx)))
     A1 = np.zeros_like(Z)
     x = fits[nm]["x"]
     for iy, cy in enumerate(gy):
         for ix, cx in enumerate(gx):
-            m = L.PlumbModel("poly", nrad, centre=(cx, cy))
+            m = L.PlumbModel(kind, nrad, centre=(cx, cy))
             f = L.fit_plumb(es, m, x0=x, max_nfev=60)
             Z[iy, ix] = f["cost"]
             A1[iy, ix] = f["x"][0]
@@ -229,7 +237,7 @@ for key in [k for k in boot if "_" in k and k.split("_")[0] in ("scene", "cart31
 img = cv2.cvtColor(cv2.imread(f"{CACHE}/mean_aligned_color.png"), cv2.COLOR_BGR2RGB)
 # (a) map of edges coloured by residual bow after correction (main model), rejected edges marked
 fig, ax = plt.subplots(1, 2, figsize=(18, 5.6))
-for a, nm, title in [(ax[0], "none", "no correction"), (ax[1], "k1k2k3_c", "after k1k2k3 + free centre (accepted set)")]:
+for a, nm, title in [(ax[0], "none", "no correction"), (ax[1], "k1k2_c", "after k1k2 + free centre (accepted set)")]:
     a.imshow(img, alpha=0.55)
     for e in edges:
         s = per_edge[nm][e["id"]]
@@ -245,8 +253,8 @@ for a, nm, title in [(ax[0], "none", "no correction"), (ax[1], "k1k2k3_c", "afte
     a.set_xlim(0, 1920)
     a.set_ylim(1080, 0)
     a.set_axis_off()
-if "k1k2k3_c" in fits:
-    c = fits["k1k2k3_c"]["dist"].c
+if "k1k2_c" in fits:
+    c = fits["k1k2_c"]["dist"].c
     ax[1].plot(*c, "m+", ms=16, mew=2)
     ax[1].plot(*L.C0, "gx", ms=10, mew=2)
 plt.tight_layout()
@@ -255,7 +263,7 @@ plt.close()
 
 # (b) displacement curves: models and regions
 fig, ax = plt.subplots(1, 3, figsize=(18, 5))
-for nm, col in zip(["k1", "k1k2", "k1k2k3", "k1k2_c", "k1k2k3_c", "div2", "div2_c", "k1k2_t"], plt.cm.tab10.colors):
+for nm, col in zip(["div1", "k1k2", "k1k2k3", "k1k2_c", "k1k2k3_c", "div2", "div2_c", "k1k2_t", "k1k2_c_t"], plt.cm.tab10.colors):
     cv = curves[nm]
     ax[0].plot(rr, cv["best"], color=col, label=nm)
     ax[0].fill_between(rr, cv["lo"], cv["hi"], color=col, alpha=0.15)
@@ -265,7 +273,7 @@ ax[0].set_title("plumb-line models (bands: bootstrap 16-84 %)")
 ax[0].axvline(np.hypot(960, 540), color="k", ls=":", lw=0.8)
 ax[0].legend(fontsize=8)
 ref = curves["k1k2"]["best"]
-for nm, col in zip(["k1", "k1k2k3", "k1k2_c", "k1k2k3_c", "div2", "div2_c", "k1k2_t"], plt.cm.tab10.colors):
+for nm, col in zip(["div1", "k1k2k3", "k1k2_c", "k1k2k3_c", "div2", "div2_c", "k1k2_t", "k1k2_c_t"], plt.cm.tab10.colors):
     ax[1].plot(rr, curves[nm]["best"] - ref, color=col, label=nm)
 ax[1].fill_between(rr, curves["k1k2"]["lo"] - ref, curves["k1k2"]["hi"] - ref, color="gray", alpha=0.3, label="k1k2 boot band")
 ax[1].set_title("difference to k1k2 (centre fixed)")
@@ -274,7 +282,7 @@ ax[1].set_ylabel("px")
 ax[1].set_ylim(-8, 8)
 ax[1].legend(fontsize=8)
 for reg, col in zip(["scene", "cart310", "cart80"], ["tab:green", "tab:red", "tab:blue"]):
-    for nm, ls in [("k1k2", "-"), ("k1k2_c", "--")]:
+    for nm, ls in [("k1k2", "-"), ("k1k2_c", "--"), ("div2", ":")]:
         cv = curves[f"{reg}_{nm}"]
         ax[2].plot(rr, cv["best"] - ref, ls, color=col, label=f"{reg} {nm}")
         if nm == "k1k2":
@@ -292,7 +300,7 @@ plt.close()
 
 # (c) centre profile + bootstrap centres
 fig, ax = plt.subplots(1, 2, figsize=(16, 5.5))
-for a, nm in zip(ax, ["k1k2", "k1k2k3"]):
+for a, nm in zip(ax, ["k1k2", "div2"]):
     Z = prof[nm]["cost"]
     a.imshow(img, alpha=0.4, extent=(0, 1920, 1080, 0))
     cs = a.contour(gx, gy, Z - Z.min(), levels=[0.5, 2, 4.5, 8, 18, 32, 50, 100], colors="k", linewidths=0.8)
@@ -302,9 +310,9 @@ for a, nm in zip(ax, ["k1k2", "k1k2k3"]):
         xb = boot[bnm]
         a.plot(xb[:, 0], xb[:, 1], ".", color="m", ms=2, alpha=0.5, label=f"bootstrap centres ({bnm})")
     for reg, col in zip(["scene", "cart310", "cart80"], ["tab:green", "tab:red", "tab:blue"]):
-        k = f"{reg}_k1k2_c"
-        if nm == "k1k2" and k in regions:
-            a.plot(*regions[k]["x"][:2], "o", color=col, ms=8, label=f"{reg} only (k1k2_c)")
+        k = f"{reg}_{nm}_c"
+        if k in regions:
+            a.plot(*regions[k]["x"][:2], "o", color=col, ms=8, label=f"{reg} only ({nm}_c)")
     a.plot(*L.C0, "gx", ms=12, mew=2, label="image centre")
     a.set_xlim(0, 1920)
     a.set_ylim(1080, 0)
@@ -315,7 +323,7 @@ plt.savefig(f"{RESULTS}/40_lines_indep_plumb_centre.png", dpi=110)
 plt.close()
 
 # (d) crops of the rejected edges with residuals (after the main model) exaggerated x20
-d_main = fits["k1k2k3_c"]["dist"]
+d_main = fits["k1k2_c"]["dist"]
 n = len(rej)
 if n:
     cols = min(n, 3)
@@ -337,7 +345,7 @@ if n:
         a.plot(P[:, 0], P[:, 1], "c.", ms=2)
         Q = P + 20 * r[:, None] * nrm[None]
         a.plot(Q[:, 0], Q[:, 1], "r-", lw=1.2)
-        st = per_edge["k1k2k3_c"][e["id"]]
+        st = per_edge["k1k2_c"][e["id"]]
         a.set_title(f"{e['id']}\nrms {st['rms']:.2f} px, bow {st['bow']:+.2f} px (red: residual x20)", fontsize=9)
         a.set_axis_off()
     for a in ax.ravel()[n:]:
@@ -350,7 +358,7 @@ if n:
 out = dict(
     edge_files_reviewed=status,
     n_edges_loaded=len(edges), duplicates_dropped=dropped,
-    rejection=dict(model="k1k2k3 + free centre", fac=2.5, bow_floor_px=0.6, rms_floor_px=0.5, history=hist,
+    rejection=dict(model="k1k2 + free centre", fac=2.5, bow_floor_px=0.6, rms_floor_px=0.5, history=hist,
                    rejected=[e["id"] for e in rej]),
     accepted=[e["id"] for e in acc], n_clusters=len(cl_names), clusters=cl_names,
     models=table, regions=regions, per_edge=per_edge,

@@ -421,8 +421,8 @@ def marker_estimate(spec, pts, K0, d0, P0):
                 rms=float(np.sqrt(np.mean(np.sum(res ** 2, 1)))), unpack=m.unpack, full_x=r.x)
 
 
-def plumb_estimate(edges, centre_free=False, x0=None):
-    lc = LineCal(edges, "plumb", dist_free=("k1", "k2"), centre_free=centre_free, f0=F0)
+def plumb_estimate(edges, centre_free=False, x0=None, subsample=2):
+    lc = LineCal(edges, "plumb", dist_free=("k1", "k2"), centre_free=centre_free, f0=F0, subsample=subsample)
     x0 = lc.x0() if x0 is None else x0
     r = lc.solve(x0, loss="huber", f_scale=0.5)
     Cs = sandwich(r, lc.edge_groups_index())
@@ -430,8 +430,8 @@ def plumb_estimate(edges, centre_free=False, x0=None):
     return lc, r, Cc[: lc.n_intr, : lc.n_intr], Cs[: lc.n_intr, : lc.n_intr]
 
 
-def vp_estimate(edges, dist_px_units, K0, rots0):
-    lc = LineCal(edges, "vp", pp_free=True)
+def vp_estimate(edges, dist_px_units, K0, rots0, subsample=2):
+    lc = LineCal(edges, "vp", pp_free=True, subsample=subsample)
 
     def unpack_fixed(x, _orig=lc.unpack):
         K, d, rots, wv = _orig(x)
@@ -447,8 +447,8 @@ def vp_estimate(edges, dist_px_units, K0, rots0):
     return lc, r, Cc[: lc.n_intr, : lc.n_intr], Cs[: lc.n_intr, : lc.n_intr]
 
 
-def joint_estimate(edges, K0, d0, rots0):
-    lc = LineCal(edges, "joint", dist_free=("k1", "k2"), pp_free=True)
+def joint_estimate(edges, K0, d0, rots0, subsample=2):
+    lc = LineCal(edges, "joint", dist_free=("k1", "k2"), pp_free=True, subsample=subsample)
     x0 = lc.x0(K0, d0, rots0)
     r = lc.solve(x0, loss="huber", f_scale=0.5)
     Cs = sandwich(r, lc.edge_groups_index())
@@ -456,8 +456,8 @@ def joint_estimate(edges, K0, d0, rots0):
     return lc, r, Cc[: lc.n_intr, : lc.n_intr], Cs[: lc.n_intr, : lc.n_intr]
 
 
-def combined_estimate(pts, edges, K0, d0, P0, spec=COMBINED_SPEC, sig=None):
-    cb = Combined(pts, edges, spec, sig=sig)
+def combined_estimate(pts, edges, K0, d0, P0, spec=COMBINED_SPEC, sig=None, subsample=2):
+    cb = Combined(pts, edges, spec, sig=sig, subsample=subsample)
     x0 = cb.x0(K0, d0, P0)
     r = cb.solve(x0)
     J = r.jac

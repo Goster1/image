@@ -22,7 +22,7 @@ from evaltools import grid, mapping_displacement, mapping_stats
 from markerdata import load_markers, to_points
 
 rng = np.random.default_rng(12345)
-WHICH = sys.argv[1] if len(sys.argv) > 1 else "final"
+WHICH = sys.argv[1] if len(sys.argv) > 1 and not sys.argv[1].startswith("--") else "final"
 TAG = "" if WHICH == "final" else "_" + WHICH
 markers = load_markers(which=WHICH)
 init = load_json(f"{CACHE}/initial_calib.json")
@@ -41,9 +41,13 @@ SPECS = {
 }
 
 
+FOLD = "--nofold" not in sys.argv  # forbid lenses that fold inside the image (default on)
+
+
 def fit(spec, pts, carts=(80, 310), x0=None, fix=None):
     m = Model(spec)
     pr = Problem(m, pts, carts=list(carts))
+    pr.fold_barrier = FOLD
     if x0 is None:
         x0 = np.r_[m.pack(K0, d0), np.ravel([P0[c] for c in carts])]
     if fix is None:
@@ -75,7 +79,7 @@ def fit(spec, pts, carts=(80, 310), x0=None, fix=None):
         rr.x = x
         r = rr
     res = pr.predict(r.x) - pr.uv
-    return m, pr, r, res
+    return m, pr, r, res  # note: r.fun may carry the extra fold-barrier element
 
 
 def rms(res):
@@ -84,11 +88,11 @@ def rms(res):
 
 def cluster_sandwich(pr, r, res, groups):
     """Cluster-robust covariance: (J'J)^-1 (sum_g J_g' e_g e_g' J_g) (J'J)^-1."""
-    J = r.jac
-    e = r.fun
-    JTJi = np.linalg.pinv(J.T @ J)
-    meat = np.zeros_like(JTJi)
     g2 = np.repeat(groups, 2)
+    J = r.jac[: len(g2)]  # drop the fold-barrier row (last) if present
+    e = r.fun[: len(g2)]
+    JTJi = np.linalg.pinv(r.jac.T @ r.jac)
+    meat = np.zeros_like(JTJi)
     for g in np.unique(groups):
         s = g2 == g
         v = J[s].T @ e[s]
@@ -166,7 +170,8 @@ for name, spec in SPECS.items():
         mk = markers[mi]
         per_marker[f"{mk['cart']}:{mk['id']}({mk['role']})"] = rms(res[s])
     per_cart = {c: rms(res[np.array([p["cart"] == c for p in pts_all])]) for c in (80, 310)}
-    summary[name] = dict(spec=m.describe(), names=m.names, x=r.x[: m.n].tolist(), sigma_cov=np.sqrt(np.diag(C))[: m.n].tolist(),
+    from common import fold_margin
+    summary[name] = dict(spec=m.describe(), names=m.names, fold_margin=fold_margin(*pr.split(r.x)[:2]), x=r.x[: m.n].tolist(), sigma_cov=np.sqrt(np.diag(C))[: m.n].tolist(),
                          sigma_sandwich=np.sqrt(np.diag(Cs))[: m.n].tolist(), rms=rms(res), max=float(np.max(np.linalg.norm(res, axis=1))),
                          n_points=len(pts_all), dof=dof, aic=float(aic), bic=float(bic), loo_marker_rms=loo_rms,
                          loo_row_rms=rows, leave_cart=lco, per_marker_rms=per_marker, per_cart_rms=per_cart,

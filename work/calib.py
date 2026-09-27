@@ -14,7 +14,7 @@ from __future__ import annotations
 import numpy as np
 from scipy.optimize import least_squares
 
-from common import W, H, K_from, project, rodrigues
+from common import W, H, K_from, fold_margin, project, rodrigues
 
 DNAMES = ["k1", "k2", "p1", "p2", "k3", "k4", "k5", "k6"]
 
@@ -100,8 +100,13 @@ class Problem:
                 out[m] = project(self.X[m], K, dist, rvec=poses[i, :3], tvec=poses[i, 3:])
         return out
 
+    fold_barrier = False  # set True to forbid lenses that fold inside the image (non-invertible)
+
     def residuals(self, x):
         r = (self.predict(x) - self.uv) * self.w[:, None]
+        if self.fold_barrier:
+            K, d, _ = self.split(x)
+            return np.r_[r.ravel(), 1000.0 * max(0.0, 0.03 - fold_margin(K, d))]
         return r.ravel()
 
     def solve(self, x0, loss="linear", f_scale=1.0):

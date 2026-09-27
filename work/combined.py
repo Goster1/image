@@ -18,7 +18,7 @@ import numpy as np
 from scipy.optimize import least_squares
 
 from calib import DNAMES
-from common import H, W, K_from, project, rodrigues, undistort_points
+from common import H, W, K_from, distort_normalized, fold_margin, project, rodrigues, undistort_points
 
 AXIS = {"cartX": 0, "cartY": 1, "cartZ": 2}
 
@@ -145,9 +145,6 @@ class Combined:
                 return np.column_stack([K[0, 0] * n[:, 0] + K[0, 1] * n[:, 1] + K[0, 2], K[1, 1] * n[:, 1] + K[1, 2]])
 
             U = und(self.allp)
-            hh = 0.5
-            Jx = (und(self.allp + [hh, 0.0]) - U) / hh
-            Jy = (und(self.allp + [0.0, hh]) - U) / hh
             Rs = [rodrigues(p[:3]) for p in poses]
             for k, e in enumerate(self.E):
                 sl = slice(self.eidx[k], self.eidx[k + 1])
@@ -179,16 +176,23 @@ class Combined:
                     l = np.cross(a, b)
                     r = (P @ l[:2] + l[2]) / np.hypot(l[0], l[1])
                     nv = l[:2] / np.hypot(l[0], l[1])
-                # distance in the DISTORTED image: r_d = r_u / |J^T n|  (no noise-shrinkage bias)
-                jt = np.column_stack([Jx[sl] @ nv, Jy[sl] @ nv])
-                out[e["blk"]].append(r / np.maximum(np.hypot(jt[:, 0], jt[:, 1]), 1e-9) * np.sqrt(e["w"]))
+                # forward residual in the DISTORTED image: observed point vs distorted image of its projection
+                # onto the (undistorted) line; fold-safe, no noise-shrinkage bias
+                q = P - r[:, None] * nv[None, :]
+                xn = (q[:, 0] - K[0, 2]) / K[0, 0]
+                yn = (q[:, 1] - K[1, 2]) / K[1, 1]
+                xd, yd = distort_normalized(xn, yn, d)
+                ee = self.allp[sl] - np.column_stack([K[0, 0] * xd + K[0, 2], K[1, 1] * yd + K[1, 2]])
+                out[e["blk"]].append(np.sign(r) * np.hypot(ee[:, 0], ee[:, 1]) * np.sqrt(e["w"]))
         for b in ("L", "V", "S"):
             out[b] = np.concatenate(out[b]) if len(out[b]) else np.zeros(0)
         return out
 
     def residuals(self, x):
         b = self.blocks(x)
-        return np.concatenate([b[k] / self.sig[k] for k in ("M", "L", "V", "S") if len(b[k])])
+        K, d, _, _ = self.unpack(x)
+        barrier = np.array([1000.0 * max(0.0, 0.03 - fold_margin(K, d))]) if self.E else np.zeros(0)
+        return np.concatenate([b[k] / self.sig[k] for k in ("M", "L", "V", "S") if len(b[k])] + [barrier])
 
     def x0(self, K, dist, poses, wv=None):
         x = [K[0, 0]] if self.f_mode == "single" else [K[0, 0], K[1, 1]]

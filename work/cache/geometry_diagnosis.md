@@ -14,14 +14,18 @@ a proposal for the main result, and "sticker glued elsewhere" is not used as an 
 * 20 stickers, 62 valid corners (edge-based, mean of 7 jitter-corrected stills). Per-frame corner scatter
   0.07-0.33 px (radial); the MC uses sigma = corners_std_px / sqrt 2 per coordinate (per-frame scatter,
   i.e. ~2.6x the std of the 7-frame mean - conservative). Traced side lines: rms / sqrt(n/3) offset.
-* Distortion for all projective tests: plumb-line (LineCal 'plumb') on 72 verified straight edges
-  (cart 310, cart 80, scene), f0 = 1300, in pixel units (so every projective statement is independent of f and pp):
-  centre fixed: k1 = -0.2954, k2 = 0.0732 (edge rms 0.285 px); centre free: (926.5, 467.1) +- (5.5, 23.9),
-  k1 = -0.277, k2 = 0.061; k1-only: -0.2075 (rms 0.58). Variant "none" (no undistortion) as an extreme check.
+* Edges: 61 verified straight edges (cart 310, cart 80, scene; de-duplicated state of ~18:18, frozen in
+  `work/cache/geomdiag_edges_snapshot/` and used for all final runs via GEOMDIAG_EDGES_DIR; without that variable
+  the scripts read the live `work/cache/edges_*.json`).
+* Distortion for all projective tests: plumb-line (LineCal 'plumb', forward residuals + fold barrier), f0 = 1300,
+  in pixel units (so every projective statement is independent of f and pp): centre fixed: k1 = -0.2920,
+  k2 = 0.0716 (edge rms 0.235 px); centre free: (924.3, 422.5) +- (3.8, 21.1), k1 = -0.270, k2 = 0.056;
+  k1-only: -0.193 (rms 0.53; fold margin ~0, borderline). All k1,k2 plumb lenses have fold margin > 0.
+  Variant "none" (no undistortion) as an extreme check.
 * Vertical vanishing point (undistorted px, plumb centre fixed): from the 4 cart-post edges (cart Z axis)
-  (930.6, 47.4) +- (0.2, 0.4) formal (a 3 px floor is used in the MC); from the 6 scene verticals
-  (939.7, 32.5) +- (1.0, 0.9): **17 px apart (~0.6 deg)** - the carts' Z axes and the building verticals are not
-  exactly parallel (floor slope or leaning structure). The cart-post VP is used for the sticker stacks (they run
+  (930.5, 47.5) +- (0.2, 0.4) formal (a 3 px floor is used in the MC); from the 5 scene verticals (932.8, 37.4):
+  10 px apart with the centre-fixed plumb, 22 px with the centre-free one (0.4-1 deg) - the carts' Z axes and the
+  building verticals need not be parallel (floor slope). The cart-post VP is used for the sticker stacks (they run
   along cart Z).
 
 ## 1. Projective invariants of the sticker stacks (independent of f, pp and pose)
@@ -34,19 +38,19 @@ point as the 5th point (Z = infinity), which also gives the affine ratios of the
 
 | cart / end | column XY [mm] | levels: corners (+ side line, angle) | collinearity RMS [px] meas / noise q95 | cart-Z VP off line [px] | CR (exp. 1.1960) | Z_top from A,B,C [mm] | Z_top from A,C + VP | gap top-A / A-B [mm] if B-C = 400 | VP(A,B,C) - VP(posts) along column [px] | Z_top (plumb centre free) |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 80 / X=0 | (127.5, 15) | top,A,B,C | 0.75 / 0.13 | 13.6 | 1.1962 | 0.3 +- 1.6 | 72.9 +- 1.3 | 305 / 511 | -178 +- 4 | 0.1 |
-| 80 / X=0 | (37.5, 15) | top,A,B,C | 0.37 / 0.11 | 7.7 | 1.1904 | -6.9 +- 1.2 | 59.0 +- 1.3 | 288 / 506 | -175 +- 3 | -7.2 |
-| 80 / X=1600 | (1472.5, 105) | top,A,B + C (60 deg) | 0.23 / 0.15 | 9.6 | 1.2335 | 48.7 +- 1.4 | 59.0 +- 0.8 | 258 / 413 | -86 +- 9 | 48.8 |
-| 80 / X=1600 | (1562.5, 105) | top,A,B + C (62 deg) | 0.83 / 0.13 | 4.3 | 1.2398 | 57.3 +- 1.1 | 66.6 +- 0.7 | 265 / 411 | -79 +- 7 | 57.6 |
-| 80 / X=1600 | (1562.5, 15) | top,A,B,C | 1.18 / 0.10 | -1.9 | 1.2444 | 63.7 +- 0.8 | 71.7 +- 0.6 | 270 / 409 | -66 +- 6 | 63.8 |
-| 80 / X=1600 | (1472.5, 15) | top,A,B,C | 1.25 / 0.15 | -3.2 | 1.2346 | 50.2 +- 1.3 | 60.1 +- 0.8 | 259 / 412 | -82 +- 8 | 50.2 |
-| 310 / X=0 | (127.5, 105) | top,A + B (65 deg), C (65 deg) | - | 57.2 (2-pt line) | 1.2442 | 63.4 +- 1.3 | 65.7 +- 0.8 | 262 / 403 | -18 +- 8 | 63.4 |
-| 310 / X=0 | (127.5, 15) | top,A,B,C | 2.55 / 0.16 | 18.2 | 1.2521 | 74.7 +- 1.7 | 58.3 +- 0.8 | 247 / 382 | 154 +- 17 | 74.7 |
-| 310 / X=1600 | (1562.5, 15) | top,A,B,C | 1.33 / 0.20 | 1.1 | 1.2379 | 54.7 +- 3.5 | 72.2 +- 1.4 | 274 / 421 | -58 +- 10 | 57.1 |
-| 310 / X=1600 | (1472.5, 15) | top,A,B,C | 1.87 / 0.11 | 1.2 | 1.2594 | 85.2 +- 2.0 | 82.6 +- 1.3 | 277 / 397 | 9 +- 7 | 88.9 |
-| *unreliable:* 310 / X=0 | (37.5, 15) | top + A,B,C side lines at 29-31 deg, line through VP | - | - | 1.2937 | 137.6 +- 3.6 | 64.7 +- 1.4 | 238 / 334 | - | 137.7 |
-| *unreliable:* 310 / X=1600 | (1472.5, 105) | top,B + A,C side lines at 18 deg | - | -4.3 | 1.2113 | 19.3 +- 5.7 | 50.5 +- 3.7 | 259 / 445 | -108 +- 13 | 18.6 |
-| *unreliable:* 310 / X=1600 | (1562.5, 105) | top,B + A,C side lines at 20-24 deg | - | -6.1 | 1.1546 | -48.8 +- 5.0 | -0.7 +- 4.4 | 220 / 506 | -189 +- 10 | -49.7 |
+| 80 / X=0 | (127.5, 15) | top,A,B,C | 0.75 / 0.13 | 13.5 | 1.1962 | 0.2 +- 1.6 | 72.9 +- 1.3 | 305 / 511 | -178 +- 4 | -0.1 |
+| 80 / X=0 | (37.5, 15) | top,A,B,C | 0.37 / 0.11 | 7.6 | 1.1903 | -6.9 +- 1.2 | 59.0 +- 1.3 | 288 / 506 | -175 +- 3 | -7.4 |
+| 80 / X=1600 | (1472.5, 105) | top,A,B + C (60 deg) | 0.23 / 0.15 | 9.2 | 1.2334 | 48.6 +- 1.4 | 58.9 +- 0.8 | 258 / 413 | -85 +- 9 | 48.8 |
+| 80 / X=1600 | (1562.5, 105) | top,A,B + C (62 deg) | 0.82 / 0.13 | 3.9 | 1.2397 | 57.2 +- 1.1 | 66.4 +- 0.7 | 265 / 411 | -79 +- 7 | 57.6 |
+| 80 / X=1600 | (1562.5, 15) | top,A,B,C | 1.17 / 0.10 | -2.2 | 1.2443 | 63.7 +- 0.8 | 71.5 +- 0.6 | 270 / 409 | -66 +- 6 | 64.0 |
+| 80 / X=1600 | (1472.5, 15) | top,A,B,C | 1.25 / 0.15 | -3.5 | 1.2346 | 50.1 +- 1.3 | 60.0 +- 0.8 | 259 / 412 | -81 +- 8 | 50.3 |
+| 310 / X=0 | (127.5, 105) | top,A + B (65 deg), C (65 deg) | - | 57.3 (2-pt line) | 1.2441 | 63.4 +- 1.3 | 65.6 +- 0.8 | 261 / 403 | -18 +- 8 | 63.5 |
+| 310 / X=0 | (127.5, 15) | top,A,B,C | 2.55 / 0.16 | 18.2 | 1.2521 | 74.7 +- 1.7 | 58.3 +- 0.8 | 247 / 381 | 155 +- 17 | 74.8 |
+| 310 / X=1600 | (1562.5, 15) | top,A,B,C | 1.33 / 0.20 | 1.2 | 1.2379 | 54.8 +- 3.5 | 72.2 +- 1.4 | 274 / 421 | -58 +- 10 | 58.0 |
+| 310 / X=1600 | (1472.5, 15) | top,A,B,C | 1.88 / 0.11 | 1.2 | 1.2595 | 85.3 +- 2.0 | 82.6 +- 1.3 | 277 / 397 | 9 +- 7 | 90.1 |
+| *unreliable:* 310 / X=0 | (37.5, 15) | top + A (31 deg), B (30 deg), C (29 deg), line through VP | - | - | 1.2936 | 137.5 +- 3.6 | 64.5 +- 1.4 | 238 / 334 | - | 137.8 |
+| *unreliable:* 310 / X=1600 | (1472.5, 105) | top,B + A (18 deg), C (18 deg) | - | -4.1 (2-pt line) | 1.2112 | 19.2 +- 5.7 | 50.2 +- 3.7 | 259 / 444 | - | 18.4 |
+| *unreliable:* 310 / X=1600 | (1562.5, 105) | top,B + A (20 deg), C (24 deg) | - | -5.9 (2-pt line) | 1.1545 | -48.8 +- 5.0 | -1.0 +- 4.4 | 220 / 505 | - | -50.1 |
 
 (80 / X=0 columns at Y = 105 have only top and B corners; 310 / X=0 (37.5, 105) only the top corner.
 Grazing side-line intersections turn the 1-3 px lateral misalignment of the column into 5-15 px along the
@@ -73,7 +77,7 @@ Observations (1):
   50-110 mm too far above shelf A.
 * **Vertical VP of the column lines:** the 2-4-point column lines pass 1-24 px beside the cart-post VP
   (MC noise +-3 px): X=1600 ends 1-10 px, 80/X0 8-24 px, 310/X0 18 px. Intersection of each cart's column lines:
-  cart 80 (934.7, 62.3), cart 310 (892.9, 47.2), post edges (930.6, 47.4), scene verticals (939.7, 32.5) - the
+  cart 80 (934.9, 62.2), cart 310 (892.7, 47.2), post edges (930.5, 47.5), scene verticals (932.8, 37.4) - the
   per-cart column VPs are shifted by 15-38 px, consistent with the lateral scatter of the stacks, not with a
   sharper vertical.
 
@@ -83,22 +87,23 @@ In-board test (one end board = 2 stickers on one plate, 8 corners, drawing layou
 
 | board | plain H RMS [px] | + code size: RMS / code [mm] | ArUco-subpixel corners: plain -> code size / code [mm] | equivalent: Y spacing too large by [mm] | + relative in-plane rotation: RMS / deg | + relative height of 2nd sticker: RMS |
 |---|---|---|---|---|---|---|
-| 80 / X=0 | 0.66 | 0.27 / 87.87 | 0.53 -> 0.38 / 88.71 | 8.0 | 0.65 / 0.44 | 0.25 |
-| 80 / X=1600 | 0.62 | 0.37 / 88.02 | 0.58 -> 0.36 / 88.17 | 7.4 | 0.60 / 0.63 | 0.55 |
-| 310 / X=0 | 0.76 | 0.31 / 87.40 | 0.69 -> 0.31 / 87.71 | 9.8 | 0.76 / -0.19 | 0.71 |
-| 310 / X=1600 | 1.03 | 0.21 / 86.57 | 0.81 -> 0.16 / 87.32 | 13.1 | 1.01 / -0.60 | 0.35 |
+| 80 / X=0 | 0.66 | 0.26 / 87.86 | 0.53 -> 0.37 / 88.70 | 8.0 | 0.65 / 0.42 | 0.24 |
+| 80 / X=1600 | 0.63 | 0.38 / 88.01 | 0.59 -> 0.36 / 88.17 | 7.5 | 0.60 / 0.64 | 0.56 |
+| 310 / X=0 | 0.76 | 0.32 / 87.40 | 0.69 -> 0.32 / 87.71 | 9.8 | 0.76 / -0.20 | 0.71 |
+| 310 / X=1600 | 1.03 | 0.20 / 86.57 | 0.81 -> 0.15 / 87.31 | 13.1 | 1.01 / -0.58 | 0.35 |
 
-* Two coplanar squares at the drawing layout should fit a homography to ~0.1 px; they fit to 0.62-1.03 px
-  (plumb centre free: 0.60-1.03; no undistortion 0.89-1.32). **No radial distortion fixes it**: a joint fit of
-  k1, k2 (and a free centre) to the four boards bottoms out at 0.59-0.91 px.
+* Two coplanar squares at the drawing layout should fit a homography to ~0.1 px; they fit to 0.63-1.03 px
+  (plumb centre free: 0.59-1.03; no undistortion 0.89-1.32). **No radial distortion fixes it**: the best joint
+  k1, k2 for the four boards leaves 0.74-1.15 px (centre fixed) / 0.59-0.88 px (centre free, at an absurd
+  lens: k1 = +0.44, k2 = -0.99, centre (985, 348)).
 * One number per board explains most of it: the ratio code size / sticker spacing. Within one board a code of
   86.6-88.0 mm (ArUco corners 87.3-88.7 mm) at 330 mm spacing is indistinguishable from a 90 mm code at
-  337.4-343.1 mm spacing (a homography absorbs the common scale). A relative rotation does not help; a relative
+  337.5-343.1 mm spacing (a homography absorbs the common scale). A relative rotation does not help; a relative
   height helps only at 80/X0.
-* Whole top of a cart (16 corners, one plane, 1435 x 330 mm rectangle of centres): H RMS 2.03 px (cart 80),
-  2.73 px (cart 310); with a vertical shift of the second board along the post-VP direction: 2.00 / 1.87 px.
+* Whole top of a cart (16 corners, one plane, 1435 x 330 mm rectangle of centres): H RMS 2.00 px (cart 80),
+  2.72 px (cart 310); with a vertical shift of the second board along the post-VP direction: 1.98 / 1.86 px.
   The two end boards are **not consistent with one plane in the drawing layout**, and a pure relative height
-  does not explain it either. (Cross-prediction of one board from the other board's homography is off by 43-147 px,
+  does not explain it either. (Cross-prediction of one board from the other board's homography is off by 43-146 px,
   but that is a 1435 mm extrapolation of a 0.6-1 px in-board misfit and not meaningful on its own.)
 
 General projective camera per cart (3x4 P, 11 DoF: arbitrary f, pp, skew, aspect, pose; plumb distortion;
@@ -106,16 +111,17 @@ absorbs any affine change of the 3D coordinates, so only non-affine inconsistenc
 
 | geometry | cart 80 RMS [px] | cart 310 RMS [px] | freed values (cart 80 ; cart 310) |
 |---|---|---|---|
-| drawing | 5.10 | 4.87 | - |
-| end-board heights | 2.30 | 2.48 | X0 +76 +- 1, X1600 +62 +- 5 mm ; X0 +56 +- 8, X1600 +96 +- 12 mm |
-| top-plate height | 2.35 | 2.77 | +64 +- 5 ; +68 +- 8 mm |
-| shelf-stack height per end | 2.29 | 2.61 | -78, -61 ; -60, -90 mm |
-| end-board horizontal offsets | 2.40 | 2.47 | dY +26 / +25 mm, dX +37 mm at X1600 ; dX -38 mm at X0, dY +11 / +26 mm |
-| end-board tilts | 3.33 | 2.78 | 10-20 deg (implausible) |
-| code size | 5.04 | 4.87 | 87.8 ; 89.5 mm |
-| code size + board heights | 2.18 | 2.44 | 87.9 mm, +76, +62 ; 88.9 mm, +57, +96 |
-| board heights + tilts | 1.90 | 1.97 | +92, +73 (tilts 3-11 deg) ; +67, +94 (2-11 deg) |
-| shelf stickers only, drawing | 2.04 | 1.36 | - |
+| drawing | 5.09 | 4.87 | - ; - |
+| end-board heights | 2.29 | 2.47 | dz X0 +76 +- 1 mm, dz X1600 +62 +- 5 mm ; dz X0 +56 +- 8 mm, dz X1600 +97 +- 11 mm |
+| top-plate height | 2.34 | 2.77 | dz top +64 +- 5 mm ; dz top +68 +- 8 mm |
+| shelf-stack height per end | 2.27 | 2.61 | dz stack X0 -79 +- 1 mm, dz stack X1600 -61 +- 5 mm ; dz stack X0 -59 +- 8 mm, dz stack X1600 -90 +- 12 mm |
+| end-board horizontal offsets | 2.39 | 2.46 | dX X0 -4 +- 3 mm, dY X0 +26 +- 3 mm, dX X1600 +37 +- 4 mm, dY X1600 +25 +- 3 mm ; dX X0 -38 +- 5 mm, dY X0 +11 +- 3 mm, dX X1600 +1 +- 4 mm, dY X1600 +26 +- 3 mm |
+| end-board tilts | 3.32 | 2.78 | tilt about X (X0) -16.5 deg, tilt about Y (X0) 10.1 deg, tilt about X (X1600) -16.0 deg, tilt about Y (X1600) -4.6 deg ; tilt about X (X0) -18.3 deg, tilt about Y (X0) 12.8 deg, tilt about X (X1600) -19.7 deg, tilt about Y (X1600) 4.0 deg |
+| code size | 5.03 | 4.86 | code 87.8 mm ; code 89.4 mm |
+| code size + board heights | 2.17 | 2.44 | code 87.9 mm, dz X0 +76 +- 1 mm, dz X1600 +61 +- 5 mm ; code 88.9 mm, dz X0 +57 +- 8 mm, dz X1600 +96 +- 11 mm |
+| board heights + tilts | 1.90 | 1.97 | dz X0 +92 +- 1 mm, dz X1600 +73 +- 4 mm, tilt about X (X0) 5.0 deg, tilt about Y (X0) 11.3 deg, tilt about X (X1600) 4.2 deg, tilt about Y (X1600) -3.1 deg ; dz X0 +66 +- 6 mm, dz X1600 +94 +- 9 mm, tilt about X (X0) 2.3 deg, tilt about Y (X0) 10.7 deg, tilt about X (X1600) 2.7 deg, tilt about Y (X1600) 2.5 deg |
+| code size + board heights + tilts | 1.72 | 1.67 | code 87.5 mm, dz X0 +82 +- 1 mm, dz X1600 +69 +- 4 mm, tilt about X (X0) 2.5 deg, tilt about Y (X0) 11.0 deg, tilt about X (X1600) 2.7 deg, tilt about Y (X1600) -5.5 deg ; code 86.5 mm, dz X0 +64 +- 6 mm, dz X1600 +68 +- 8 mm, tilt about X (X0) -0.9 deg, tilt about Y (X0) 15.7 deg, tilt about X (X1600) -3.5 deg, tilt about Y (X1600) 3.1 deg |
+| shelf stickers only, drawing | 2.04 | 1.36 | - ; - |
 
 The drawing geometry is inconsistent with **every** pinhole camera (5 px, ~40x noise) - this is not an
 intrinsics problem. Freeing the top heights halves the residual, but even the shelf stickers alone (A, B, C)
@@ -126,22 +132,22 @@ are inconsistent at 1.4-2.0 px under a general camera.
 Camera fx = fy = f, pp free, k1, k2 free, one pose per cart; one element freed, rest = drawing. AIC = n ln(RSS/n) + 2k
 (n = 124). Last columns: same fit with the plumb-line distortion fixed in pixel units.
 
-| freed element | k | RMS [px] | AIC | f [px] | pp [px] | k1, k2 scaled to f0 = 1300 (plumb: -0.295, 0.073) | RMS / f with plumb dist. | row RMS top/A/B/C | diagnosed values |
-|---|---|---|---|---|---|---|---|---|---|
-| drawing | 17 | 5.34 | 364 | 1309 +- 20 | (938, 485) | **-0.087, -0.231** | 5.93 / 1294 | 4.9/8.0/3.6/5.4 | - |
-| end-board heights (4) | 21 | 2.88 | 219 | 1440 +- 14 | (939, 390) | -0.319, 0.138 | 2.99 / 1430 | 3.4/1.9/2.5/2.3 | 80/X0 +64 +- 8, 80/X1600 +71 +- 5, 310/X0 +61 +- 6, 310/X1600 +81 +- 8 mm |
-| shelf-row heights A,B,C (3) | 20 | 2.90 | 218 | 1475 +- 27 | (978, 390) | -0.405, 0.286 | 3.13 / 1410 | 3.5/1.8/2.1/2.0 | A -71 +- 5, B -92 +- 12, C -92 +- 19 mm |
-| row heights per cart (6) | 23 | 2.83 | 218 | 1481 +- 27 | (985, 394) | -0.415, 0.302 | 3.08 / 1410 | 3.5/1.6/1.9/1.8 | -71..-102 mm |
-| top-plate height per cart (2) | 19 | 3.01 | 225 | 1434 +- 15 | (972, 382) | -0.373, 0.233 | 3.19 / 1416 | 3.6/2.1/2.3/2.2 | 80: +68 +- 5, 310: +67 +- 6 mm |
-| end-board tilts (8) | 25 | 4.54 | 339 | 1305 +- 20 | (933, 521) | 0.008, -0.328 | 5.48 / 1278 | 3.5/7.1/4.2/4.9 | 4-11 deg |
-| end-board horizontal offsets (8) | 25 | 2.82 | 221 | 1432 +- 17 | (890, 428) | -0.222, 0.025 | 3.39 / 1371 | 3.2/2.3/2.5/2.4 | dY +9..+27 mm, dX up to +-36 mm |
-| shelf-stack height per end (4) | 21 | 2.96 | 225 | 1440 +- 14 | (929, 386) | -0.299, 0.110 | 3.11 / 1422 | 3.5/2.1/2.4/2.1 | -58..-85 mm |
-| every shelf sticker height (12) | 29 | 2.66 | 214 | 1495 +- 34 | (930, 356) | -0.297, 0.110 | 2.86 / 1455 | 3.4/1.3/1.4/1.3 | -68..-154 mm |
-| code size (1) | 18 | 5.21 | 359 | 1309 +- 20 | (937, 483) | -0.065, -0.261 | 5.90 / 1291 | 4.7/8.1/3.2/5.1 | 86.8 +- 1.4 mm |
-| code size + board heights (5) | 22 | 2.74 | **208** | 1442 +- 14 | (939, 392) | **-0.295, 0.105** | 2.89 / 1429 | 3.2/1.9/2.3/2.1 | 87.5 +- 0.8 mm; +66, +70, +60, +82 mm |
-| code size + top height per cart (3) | 20 | 2.88 | 216 | 1435 +- 14 | (973, 385) | -0.361, 0.219 | 3.10 / 1414 | 3.4/2.0/2.2/2.0 | 87.6 mm; +66, +68 mm |
-| board heights + tilts (12) | 29 | 2.32 | 181 | 1434 +- 14 | (915, 370) | -0.265, 0.025 | 2.33 / 1430 | 2.3/2.1/2.5/2.5 | +59..+83 mm, tilts 1-13 deg |
-| code + board heights + tilts (13) | 30 | 1.94 | **138** | 1441 +- 11 | (908, 395) | -0.206, -0.044 | 2.00 / 1428 | 1.6/2.2/2.2/2.3 | 86.2 mm; +54..+82 mm; tilts about Y 5-14 deg |
+| freed element | k | RMS [px] | AIC | f [px] | pp [px] | k1, k2 scaled to f0 = 1300 (plumb: -0.292, 0.072) | fold margin (free dist.) | RMS / f with plumb dist. (dAIC) | row RMS top/A/B/C | diagnosed values (mm unless noted) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| drawing | 17 | 5.34 | 364 | 1309 +- 20 | (938, 485) | -0.087, -0.231 | -0.18 | 5.90 / 1296 (dAIC +20) | 4.9/8.0/3.6/5.4 | - |
+| end-board heights (4) | 21 | 2.88 | 219 | 1440 +- 14 | (939, 390) | -0.319, 0.138 | +191.24 | 2.96 / 1432 (dAIC +3) | 3.4/1.9/2.5/2.3 | 80/X0 +64 +- 8; 80/X1600 +71 +- 5; 310/X0 +61 +- 6; 310/X1600 +81 +- 8 |
+| shelf-row heights A,B,C (3) | 20 | 2.90 | 218 | 1475 +- 27 | (978, 390) | -0.405, 0.286 | +454.99 | 3.10 / 1413 (dAIC +13) | 3.5/1.8/2.1/2.0 | row_A -71 +- 5; row_B -92 +- 12; row_C -92 +- 19 |
+| row heights per cart (6) | 23 | 2.83 | 218 | 1481 +- 27 | (985, 394) | -0.415, 0.302 | +488.44 | 3.05 / 1413 (dAIC +15) | 3.5/1.6/1.9/1.8 | row_80_A -71 +- 6; row_80_B -102 +- 13; row_80_C -100 +- 20; row_310_A -76 +- 7; row_310_B -81 +- 13; row_310_C -91 +- 21 |
+| top-plate height per cart (2) | 19 | 3.01 | 225 | 1434 +- 15 | (972, 382) | -0.373, 0.233 | +327.37 | 3.16 / 1418 (dAIC +8) | 3.6/2.1/2.3/2.2 | top_80 +68 +- 5; top_310 +67 +- 6 |
+| end-board tilts (8) | 25 | 4.54 | 339 | 1305 +- 20 | (933, 521) | 0.008, -0.328 | -0.16 | 5.44 / 1280 (dAIC +41) | 3.5/7.1/4.2/4.9 | tilts about Y -3.7..+10.7 deg |
+| end-board horizontal offsets (8) | 25 | 2.82 | 221 | 1432 +- 17 | (890, 428) | -0.222, 0.025 | +23.75 | 3.33 / 1374 (dAIC +37) | 3.2/2.3/2.5/2.4 | dx_80/X0 +0 +- 3; dy_80/X0 +26 +- 3; dx_80/X1600 +36 +- 3; dy_80/X1600 +27 +- 3; dx_310/X0 -32 +- 4; dy_310/X0 +9 +- 4; dx_310/X1600 +2 +- 3; dy_310/X1600 +27 +- 3 |
+| shelf-stack height per end (4) | 21 | 2.96 | 225 | 1440 +- 14 | (929, 386) | -0.299, 0.110 | +149.94 | 3.08 / 1424 (dAIC +6) | 3.5/2.1/2.4/2.1 | stack_80/X0 -74 +- 11; stack_80/X1600 -68 +- 5; stack_310/X0 -58 +- 7; stack_310/X1600 -85 +- 11 |
+| every shelf sticker height (12) | 29 | 2.66 | 214 | 1495 +- 34 | (930, 356) | -0.297, 0.110 | +175.10 | 2.82 / 1461 (dAIC +11) | 3.4/1.3/1.4/1.3 | card_80_3 -73 +- 15; card_80_4 -73 +- 8; card_80_5 -138 +- 27; card_80_6 -95 +- 16; card_80_7 -110 +- 44; card_80_8 -103 +- 24; card_310_3 -68 +- 8; card_310_4 -98 +- 15; card_310_5 -69 +- 16; card_310_6 -125 +- 25; card_310_7 -89 +- 24; card_310_8 -154 +- 44 |
+| code size (1) | 18 | 5.21 | 359 | 1309 +- 20 | (937, 483) | -0.065, -0.261 | -0.18 | 5.86 / 1294 (dAIC +25) | 4.7/8.1/3.2/5.1 | code 86.8 +- 1.4 mm |
+| code size + board heights (5) | 22 | 2.74 | 208 | 1442 +- 14 | (939, 392) | -0.295, 0.105 | +142.09 | 2.85 / 1431 (dAIC +6) | 3.2/1.9/2.3/2.1 | code 87.5 +- 0.8 mm; 80/X0 +66 +- 8; 80/X1600 +70 +- 5; 310/X0 +60 +- 6; 310/X1600 +82 +- 8 |
+| code size + top height per cart (3) | 20 | 2.88 | 216 | 1435 +- 14 | (973, 385) | -0.361, 0.219 | +308.19 | 3.06 / 1416 (dAIC +11) | 3.4/2.0/2.2/2.0 | code 87.6 +- 0.8 mm; top_80 +66 +- 5; top_310 +68 +- 6 |
+| board heights + tilts (12) | 29 | 2.32 | 181 | 1434 +- 14 | (915, 370) | -0.265, 0.025 | -0.12 | 2.33 / 1431 (dAIC -3) | 2.3/2.1/2.5/2.5 | 80/X0 +72 +- 7; 80/X1600 +79 +- 12; 310/X0 +59 +- 8; 310/X1600 +83 +- 8; tilts about Y -7.7..+13.0 deg |
+| code + board heights + tilts (13) | 30 | 1.94 | 138 | 1441 +- 11 | (908, 395) | -0.206, -0.044 | -0.17 | 1.99 / 1429 (dAIC +3) | 1.6/2.2/2.2/2.3 | code 86.2 +- 0.6 mm; 80/X0 +75 +- 7; 80/X1600 +70 +- 11; 310/X0 +54 +- 6; 310/X1600 +82 +- 7; tilts about Y -8.7..+14.1 deg |
 
 (f / pp uncertainties: Gauss-Newton covariance scaled by the residual variance; they do not contain the
 model error. Camera height above the floor agrees between the carts in every fit (differences < 25 mm, insensitive - see 4);
@@ -157,11 +163,14 @@ Answer to (3):
   from "shelves lower" (row_dz vs top_dz: equal RMS). Horizontal board offsets of ~25 mm fit similarly well
   (2.82 px) but then the distortion disagrees with the edges (see next point) - the height version is preferred.
 * **Consistency with the straight edges (independent evidence):** with the drawing geometry the free distortion
-  is k1 = -0.087, k2 = -0.231 (at f0 = 1300), incompatible with the plumb-line from 72 verified edges (-0.295,
-  0.073); fixing the plumb distortion costs dAIC = +22 for the drawing. With the end-board heights + code size
-  freed, the stickers alone return k1 = -0.295, k2 = 0.105 - the plumb-line distortion - and fixing the plumb
-  distortion costs only dAIC = +9 (board heights alone +5, heights + tilts -3). So the geometry deviation, not the
-  lens, is what distorts the sticker-only lens estimate.
+  is k1 = -0.087, k2 = -0.231 (at f0 = 1300) - a FOLDED lens (fold margin -0.18: not invertible inside the
+  image) and incompatible with the plumb-line from 61 verified edges (-0.292, 0.072); fixing the plumb
+  distortion costs dAIC = +20 for the drawing. With the end-board heights + code size freed, the stickers alone
+  return k1 = -0.295, k2 = 0.105 - essentially the plumb-line distortion, valid (fold margin > 0) - and fixing
+  the plumb distortion costs only dAIC = +6 (board heights alone +3, heights + tilts -3). So the geometry
+  deviation, not the lens, is what distorts the sticker-only lens estimate. (Free-distortion fits with
+  k2 <~ 0 - drawing, code size, board tilts, heights + tilts - are folded; with the plumb distortion fixed every
+  fit is a valid lens.)
 * **Implied intrinsics:** drawing f = 1309 +- 20, pp (938, 485); every variant that frees the top/shelf heights gives
   f = 1430-1495 (+-11-34), pp_y 356-396, pp_x 890-985 - i.e. with the drawing geometry f comes out 120-190 px lower
   and pp_y 90-130 px larger (further down in the image). The code size alone moves nothing (f 1309).
@@ -279,9 +288,9 @@ Files: `work/cache/method_markershape.json` / `.md`, `results/geomdiag_markersha
    cannot remove even the in-board part).
 2. Each sticker individually is consistent with a projected flat square (0.17 px with a free pose per sticker) - detections
    and the local lens model are fine; the inconsistency is in the relative placement / orientation of stickers.
-3. Within every end board the two stickers are inconsistent with the drawing layout by 0.62-1.03 px (5-10x noise);
+3. Within every end board the two stickers are inconsistent with the drawing layout by 0.63-1.03 px (5-10x noise);
    a code/spacing ratio 2.2-3.8 % below nominal (code 86.6-88.0 mm at 330 mm, or spacing 337-343 mm at 90 mm)
-   removes most of it (0.21-0.37 px).
+   removes most of it (0.20-0.38 px).
 4. The stacked corners (top, A, B, C) are not collinear: 0.23-2.55 px RMS vs 0.10-0.20 px noise -> the stacked
    stickers scatter laterally by ~1-6 mm around a vertical line.
 5. The cross ratio of the stacks puts the top stickers 50-85 mm above the drawing (relative to the shelf stickers)
@@ -292,8 +301,8 @@ Files: `work/cache/method_markershape.json` / `.md`, `results/geomdiag_markersha
 6. The most compact single explanation is a +60..+80 mm offset of the top stickers relative to the shelf stickers
    (end boards +61/+64/+71/+81 mm, or per cart +67/+68 mm; equivalently shelves / shelf cards ~70-90 mm lower).
    It halves the RMS (5.3 -> 2.9 px) and makes the sticker-derived distortion agree with the straight-edge
-   distortion (with the code size: k1 = -0.295, k2 = 0.105 vs plumb -0.295, 0.073), while the drawing geometry
-   forces an edge-incompatible distortion (k1 = -0.09, k2 = -0.23).
+   distortion (with the code size: k1 = -0.295, k2 = 0.105 vs plumb -0.292, 0.072), while the drawing geometry
+   forces an edge-incompatible, folded distortion (k1 = -0.09, k2 = -0.23).
 7. The end plates are tilted along the cart X axis, outer end up: 6-14 deg at three plates, 4-5 deg (weak) at
    310/X1600 in the shape diagnostic (f = 1400; ~3 deg per 100 px f-dependent); the metric board-tilt fits agree
    at three plates and give the opposite sign at 310/X1600. Qualitatively consistent with the visibly curled / bent plates.

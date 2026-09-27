@@ -184,6 +184,31 @@ class Lens:
         ok = np.all(np.diff(gd) > 0)
         return bool(ok or gd[np.argmax(np.diff(gd) <= 0)] > rmax)
 
+    def corner_radius(self, P):
+        c = np.array([[0, 0], [W - 1, 0], [0, H - 1], [W - 1, H - 1]], float)
+        return float(np.max(np.hypot((c[:, 0] - P["cx"]) / P["fx"], (c[:, 1] - P["cy"]) / P["fy"])))
+
+    def fold_margin(self, P):
+        """Largest distorted radius reachable on the monotonic branch minus the farthest image-corner radius
+        (normalised units). > 0: invertible over the whole image; < 0: folded (tangential terms ignored).
+        Same definition as common.fold_margin for the Brown model."""
+        rc = self.corner_radius(P)
+        P2 = dict(P, p1=0.0, p2=0.0) if self.kind == "brown" else P
+        if self.kind == "div":
+            rd = np.linspace(0, 3 * rc, 3000)
+            ru = self.h(rd, P2)
+            bad = np.nonzero((np.diff(ru) <= 0) | (ru[1:] <= 0))[0]
+            rdmax = rd[bad[0]] if len(bad) else rd[-1]
+            return float(rdmax - rc)
+        if self.kind == "kb":
+            ru = np.tan(np.linspace(0, np.pi / 2 - 1e-3, 4000))
+        else:
+            ru = np.linspace(0, 4.0, 4000)
+        rd = self.g(ru, P2)
+        bad = np.nonzero(np.diff(rd) <= 0)[0]
+        i = bad[0] if len(bad) else len(ru) - 1
+        return float(np.max(rd[: i + 1]) - rc)
+
 
 # =====================================================================================
 # data
@@ -200,8 +225,19 @@ def model_line_3d(ml):
     return A, D
 
 
+FLOOR = {"scene_tapeV_left": "floor_V", "scene_tapeV_right": "floor_V", "scene_tapeH_top": "floor_H",
+         "scene_tapeH_bottom": "floor_H", "scene_blueH_top": "floor_H", "scene_blueL_top": "floor_H",
+         "scene_blueL_bottom": "floor_H"}
+
+
 def vp_group(e, policy="noboard"):
-    """Direction group of an edge for the V block (None -> straightness only)."""
+    """Direction group of an edge for the V block (None -> straightness only).
+    Policy 'noboard' (= orchestrator policy): end-board edges straightness only; parallel floor lines form
+    horizontal groups floor_V / floor_H whose directions are perpendicular to the (free) world vertical."""
+    if policy in ("noboard", "nofloor") and "board" in e["id"]:
+        return None
+    if policy == "noboard" and e["id"] in FLOOR:
+        return (FLOOR[e["id"]], -1)
     d = e.get("direction")
     if d in AXIS and e.get("cart") in (80, 310):
         if policy == "noboard" and "board" in e["id"]:
@@ -235,7 +271,7 @@ def tile_of(e, nx=3, ny=3):
 
 
 def build(D, dataset, drop_sticker=None, drop_edges=(), policy="noboard"):
-    """dataset: 'M' (stickers: corners + sides), 'E' (edges: V + S), 'ME' (all)."""
+    """dataset: 'M' (stickers: corners [+ sides if loaded]), 'E' (edges: V + S), 'ME' (M + E, same edge roles)."""
     out = dict(M=[], L=[], V=[], S=[])
     drop_edges = set(drop_edges)
     if "M" in dataset:
@@ -249,10 +285,8 @@ def build(D, dataset, drop_sticker=None, drop_edges=(), policy="noboard"):
         for e in D["edges"]:
             if e["id"] in drop_edges:
                 continue
-            ml = model_line_3d(e.get("model_line"))
-            if dataset == "ME" and ml is not None and e.get("cart") in (80, 310):
-                out["L"].append(dict(id=e["id"], P=e["points"], cart=e["cart"], info=ml, cl=e["id"]))
-                continue
+            # exact model lines exist only for end-board edges, whose positions are not reliable (review):
+            # they are used like every other edge (board edges -> straightness only)
             g = vp_group(e, policy)
             if g is not None:
                 out["V"].append(dict(id=e["id"], P=e["points"], cart=e.get("cart"), info=g, cl=e["id"]))
@@ -268,7 +302,7 @@ def build(D, dataset, drop_sticker=None, drop_edges=(), policy="noboard"):
 class Est:
     BLK = ("M", "L", "V", "S")
 
-    def __init__(self, lens: Lens, data, sig, subsample=2, carts=(80, 310)):
+    def __init__(self, lens: Lens, data, sig, subsample=2, carts=(80, 310), barrier=True):
         self.lens = lens
         self.sig = dict(sig)
         self.mp = data["M"]
@@ -294,10 +328,12 @@ class Est:
             self.eblk = np.zeros(0, str)
         # carts / pose layout
         need_t = {c for c in carts if (self.mcart == c).any() or any(e["blk"] == "L" and e["cart"] == c for e in self.E)}
-        need_r = need_t | {e["info"][0] for e in self.E if e["blk"] == "V" and e["info"][0] != "wv"}
+        need_r = need_t | {e["info"][0] for e in self.E if e["blk"] == "V" and not isinstance(e["info"][0], str)}
         self.carts = [c for c in carts if c in need_r]
         self.need_t = need_t
-        self.has_wv = any(e["blk"] == "V" and e["info"][0] == "wv" for e in self.E)
+        self.floor = sorted({e["info"][0] for e in self.E if e["blk"] == "V" and str(e["info"][0]).startswith("floor_")})
+        self.has_wv = any(e["blk"] == "V" and e["info"][0] == "wv" for e in self.E) or len(self.floor) > 0
+        self.barrier = bool(barrier)
         self.pnames = list(lens.names)
         self.poff = {}
         for c in self.carts:
@@ -305,6 +341,7 @@ class Est:
             self.pnames += [f"r{c}_{i}" for i in range(3)] + ([f"t{c}_{i}" for i in range(3)] if c in need_t else [])
         if self.has_wv:
             self.pnames += ["wv_a", "wv_b"]
+        self.pnames += [f"{g}_ang" for g in self.floor]
         self.n = len(self.pnames)
         self._cache = {}
         # per-edge static info
@@ -321,9 +358,17 @@ class Est:
             Rs[c] = rodrigues(x[o:o + 3])
             ts[c] = x[o + 3:o + 6] if c in self.need_t else None
         wv = None
+        nf = len(self.floor)
         if self.has_wv:
-            a, b = x[-2], x[-1]
+            a, b = x[self.n - nf - 2], x[self.n - nf - 1]
             wv = np.array([np.cos(a) * np.sin(b), np.sin(a) * np.sin(b), np.cos(b)])
+            if nf:
+                e1 = np.cross(wv, [1.0, 0.0, 0.0])
+                e1 /= np.linalg.norm(e1)
+                e2 = np.cross(wv, e1)
+                for j, g in enumerate(self.floor):
+                    a = x[self.n - nf + j]
+                    Rs[g] = np.cos(a) * e1 + np.sin(a) * e2
         return P, Rs, ts, wv
 
     def _und(self, x):
@@ -363,7 +408,7 @@ class Est:
             off[s] = -np.sum(nS[s] * c[s], axis=1)
         for k in self.Vidx:
             ci, ax = self.E[k]["info"]
-            dvec = wv if ci == "wv" else Rs[ci][:, ax]
+            dvec = wv if ci == "wv" else (Rs[ci] if isinstance(ci, str) else Rs[ci][:, ax])
             v = K @ dvec
             l = np.cross(v, np.r_[c[k], 1.0])
             nn = np.hypot(l[0], l[1])
@@ -416,7 +461,10 @@ class Est:
         if self.nE:
             sg = {k: self.sig.get(k, 1.0) for k in ("L", "V", "S")}
             parts.append(b["_edges"] / np.array([sg[k] for k in self.eblk])[self.eid])
-        return np.concatenate(parts) if parts else np.zeros(0)
+        if self.barrier:
+            parts.append(np.array([1000.0 * max(0.0, 0.03 - self.lens.fold_margin(self.lens.P(x[: self.lens.ni])))]))
+        out = np.concatenate(parts) if parts else np.zeros(0)
+        return np.nan_to_num(out, nan=1e4, posinf=1e4, neginf=-1e4)
 
     def clusters(self):
         """Cluster label per residual (sticker for corners, edge id for edge points)."""
@@ -424,13 +472,15 @@ class Est:
         for c in self.mcl:
             lab += [c, c]
         lab += [self.E[k]["cl"] for k in self.eid]
+        if self.barrier:
+            lab += ["_barrier"]
         return np.array(lab)
 
     def block_of_resid(self):
-        return np.array(["M"] * (2 * len(self.mp)) + list(self.eblk[self.eid]))
+        return np.array(["M"] * (2 * len(self.mp)) + list(self.eblk[self.eid]) + (["B"] if self.barrier else []))
 
     # ------------------------------------------------------------------------------
-    def x0(self, P, poses=None, wv=None):
+    def x0(self, P, poses=None, wv=None, floor_ang=None):
         x = list(self.lens.pack(P))
         poses = P0 if poses is None else poses
         for c in self.carts:
@@ -441,7 +491,27 @@ class Est:
             z = rodrigues(poses[80][:3])[:, 2] if wv is None else wv
             z = z / np.linalg.norm(z)
             x += [np.arctan2(z[1], z[0]), np.arccos(np.clip(z[2], -1, 1))]
-        return np.array(x, float)
+        x += [0.0] * len(self.floor)
+        x = np.array(x, float)
+        floor_ang = floor_ang or {}
+        for j, g in enumerate(self.floor):  # grid initialisation of each floor direction (others fixed)
+            jj = self.n - len(self.floor) + j
+            if g in floor_ang:
+                x[jj] = floor_ang[g]
+                continue
+            ks = [k for k, e in enumerate(self.E) if e["blk"] == "V" and e["info"][0] == g]
+            best = None
+            for a in np.linspace(0, np.pi, 90, endpoint=False):
+                x[jj] = a
+                bl = self.blocks(x)["_edges"]
+                c = sum(float(np.sum(bl[self.start[k]:self.start[k] + self.cnt[k]] ** 2)) for k in ks)
+                if best is None or c < best[0]:
+                    best = (c, a)
+            x[jj] = best[1]
+        return x
+
+    def floor_angles(self, x):
+        return {g: float(x[self.n - len(self.floor) + j]) for j, g in enumerate(self.floor)}
 
     def poses_of(self, x):
         out = {}
@@ -454,6 +524,9 @@ class Est:
         if not self.has_wv:
             return None
         return self.unpack(x)[3]
+
+    def barrier_active(self, x):
+        return bool(self.barrier and self.lens.fold_margin(self.lens.P(x[: self.lens.ni])) < 0.03)
 
     def solve(self, x0, max_nfev=400, loss="linear", f_scale=1.0):
         return least_squares(self.residuals, x0, method="trf", x_scale="jac", loss=loss, f_scale=f_scale,
@@ -490,12 +563,17 @@ class Est:
         return out
 
 
+def _pinv_scaled(A):
+    d = np.sqrt(np.abs(np.diag(A)))
+    d[d == 0] = 1.0
+    return np.linalg.pinv(A / d / d[:, None], rcond=1e-13) / d / d[:, None]
+
+
 def sandwich_cov(res, clusters):
     J = res.jac
     e = res.fun
     A = J.T @ J
-    Ai = np.linalg.pinv(A)
-    meat = np.zeros_like(A)
+    Ai = _pinv_scaled(A)
     labs, inv = np.unique(clusters, return_inverse=True)
     S = np.zeros((len(labs), J.shape[1]))
     np.add.at(S, inv, J * e[:, None])
@@ -507,8 +585,8 @@ def sandwich_cov(res, clusters):
 def naive_cov(res, sigma2=None):
     J = res.jac
     dof = max(len(res.fun) - len(res.x), 1)
-    s2 = (2 * res.cost / dof) if sigma2 is None else sigma2
-    return np.linalg.pinv(J.T @ J) * s2
+    s2 = (float(np.sum(res.fun ** 2)) / dof) if sigma2 is None else sigma2
+    return _pinv_scaled(J.T @ J) * s2
 
 
 # =====================================================================================
