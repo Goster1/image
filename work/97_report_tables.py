@@ -13,8 +13,13 @@ uv, _ = grid(30)
 regs = region_defs()
 
 ROWS = [  # (label, file, method-name-in-list or None, uses dimensions?, note)
-    ("M6 kombinovaný – HLAVNÝ", "method_combined.json", None, "áno (všetky nálepky, plná váha)", "nálepky + 61 hrán + strany zakrytých nálepiek"),
-    ("M6 kombinovaný, robustné váhy nálepiek", "method_combined_alternatives.json", "combined_k1k2_robust", "áno (top-nálepky ~0 váha)", "Cauchy váhy po nálepkách"),
+    ("**M6 kombinovaný – HLAVNÝ**", "LENS_RESULT", None, "áno (všetky nálepky)", "celková neistota"),
+    ("M6, samostatné váhy top / police", "method_combined_alternatives.json", "combined_k1k2_rowblocks", "áno", "variant"),
+    ("M6, robustné váhy nálepiek", "method_combined_alternatives.json", "combined_k1k2_robust", "áno (top-nálepky ~0 váha)", "variant"),
+    ("M6, stĺpiky ∥ zvislica scény", "method_combined_alternatives.json", "combined_k1k2_common_vertical", "áno", "variant"),
+    ("M6, bez strán 80:3/1, 80:7/3", "method_combined_alternatives.json", "combined_k1k2_no_80_3_7_sides", "áno", "variant"),
+    ("M6, bez lemu E vozíka 80", "method_combined_alternatives.json", "combined_k1k2_no_bent_lip", "áno", "variant"),
+    ("M6, podlahové čiary len na priamosť", "method_combined_alternatives.json", "combined_k1k2_floor_straight_only", "áno", "variant"),
     ("M6 kombinovaný, k1,k2,k3", "method_combined_alternatives.json", "combined_k1k2k3", "áno", "k3 len konzistentné"),
     ("M6 kombinovaný, pp v strede obrazu", "method_combined_alternatives.json", "combined_k1k2_ppfixed", "áno", ""),
     ("M6 kombinovaný, fx≠fy", "method_combined_alternatives.json", "combined_k1k2_fxfy", "áno", "fx≠fy neurčené"),
@@ -32,11 +37,13 @@ ROWS = [  # (label, file, method-name-in-list or None, uses dimensions?, note)
     ("M7 dva vozíky (normály podlahy)", "method_twocart.json", None, "áno", "len konzistencia"),
     ("M8 tvar nálepiek", "method_markershape.json", None, "nie (len štvorce)", "príliš slabé"),
     ("M5 kváder s policami (výkres)", "method_cuboid.json", None, "áno", "vychýlené geometriou"),
-    ("M1 len nálepky (výkres)", "method_markers.json", None, "áno", "vychýlené, prehnuté"),
+    ("M1 len nálepky (výkres)", "method_markers.json", None, "áno", "vychýlené geometriou"),
 ]
 
 
 def load(fn, name):
+    if fn == "LENS_RESULT":
+        return main
     p = f"{CACHE}/{fn}"
     if not os.path.exists(p):
         return None
@@ -59,7 +66,7 @@ def g(u, *keys):
     return None
 
 
-lines = ["| metóda | rozmery z výkresu | f [px] | cx | cy | k1 | k2 | k3 | fold | Δ mapovania vs hlavný: stred / pás / rohy [px] | neistota zobrazenia metódy (stred / pás / rohy) | pozn. |",
+lines = ["| metóda | rozmery z výkresu | f [px] | cx | cy | k1 | k2 | k3 | prehnutie | Δ zobrazenia vs hlavný: stred / pás / rohy [px] | neistota zobrazenia metódy (stred / pás / rohy) | pozn. |",
          "|---|---|---|---|---|---|---|---|---|---|---|---|"]
 for lab, fn, nm, dims, note in ROWS:
     j = load(fn, nm)
@@ -69,7 +76,7 @@ for lab, fn, nm, dims, note in ROWS:
     K = np.array(j["camera_matrix"])
     d = np.array(j["dist_coeffs"], float)
     u = j.get("uncertainty") or {}
-    fs = g(u, "fx_px_1sigma", "f_1sigma", "fx_1sigma")
+    fs = g(u, "fx_px_1sigma", "f_1sigma_incl_geometry", "f_1sigma_bootstrap", "f_1sigma", "fx_1sigma")
     cxs = g(u, "cx_px_1sigma", "cx_1sigma")
     cys = g(u, "cy_px_1sigma", "cy_1sigma")
     fm = fold_margin(K, d)
@@ -85,22 +92,8 @@ for lab, fn, nm, dims, note in ROWS:
     if abs(K[0, 0] - K[1, 1]) > 0.5:
         fstr = f"{K[0,0]:.0f}/{K[1,1]:.0f}"
     lines.append(f"| {lab} | {dims} | {fstr} | {K[0,2]:.0f}" + (f" ± {cxs:.0f}" if cxs else "") + f" | {K[1,2]:.0f}" + (f" ± {cys:.0f}" if cys else "") +
-                 f" | {d[0]:+.3f} | {d[1]:+.3f} | {d[4]:+.3f} | {'ok' if fm > 0 else 'PREHNUTÝ'} | {dm} | {mus} | {note} |")
+                 f" | {d[0]:+.3f} | {d[1]:+.3f} | {d[4]:+.3f} | {'nie' if fm > 0.05 else ('na bariére' if fm > 0 else 'PREHNUTÝ')} | {dm} | {mus} | {note} |")
 out = ["## Tabuľka metód (automaticky, 97_report_tables.py)", "", *lines, ""]
 
-# sticker residual table of the main fit
-if os.path.exists(f"{CACHE}/final_sticker_residuals.json"):
-    sr = load_json(f"{CACHE}/final_sticker_residuals.json")["per_sticker"]
-    out += ["## Reziduá nálepiek s hlavným objektívom (geometria z výkresu, pózy vozíkov robustne)", "",
-            "| vozík | id | poloha | RMS [px] | priemerný posun (x, y) [px] |", "|---|---|---|---|---|"]
-    for s in sr:
-        mo = s["mean_offset_px"]
-        out.append(f"| {s['cart']} | {s['id']} | {s['role']} | {s['rms_px']:.1f} | " + (f"({mo[0]:+.1f}, {mo[1]:+.1f})" if mo else "–") + " |")
-    out.append("")
-bud = load_json(f"{CACHE}/final_budget.json")
-out += ["## Rozpočet neistoty zobrazenia (1σ, px, medián oblasti)", "", "| oblasť | štatistická | systematická | spolu (medián) | spolu (max) |", "|---|---|---|---|---|"]
-for k, v in bud["regions"].items():
-    out.append(f"| {k} | {v['stat_median']:.1f} | {v['sys_median']:.1f} | {v['total_median']:.1f} | {v['total_max']:.1f} |")
-out.append("")
 open(f"{CACHE}/report_tables.md", "w").write("\n".join(out))
 print("\n".join(out))

@@ -34,6 +34,12 @@ ALTS = [
     # combined_k1k2p1p2 NOT in the budget: p1,p2 are not determined by the edges (~0 there); with the drawing geometry
     # they only absorb the sticker-geometry mismatch (f 1389, pp_y 449) - reported in the comparison table instead
     ("combined_k1k2_ppfixed", f"{CACHE}/method_combined_alternatives.json", "combined_k1k2_ppfixed"),
+    # same data / model, different defensible modelling choices (50_combined.py VARIANTS)
+    ("combined_k1k2_common_vertical", f"{CACHE}/method_combined_alternatives.json", "combined_k1k2_common_vertical"),  # posts of both carts || scene vertical
+    ("combined_k1k2_rowblocks", f"{CACHE}/method_combined_alternatives.json", "combined_k1k2_rowblocks"),  # separate weights top / shelf stickers
+    ("combined_k1k2_no_80_3_7_sides", f"{CACHE}/method_combined_alternatives.json", "combined_k1k2_no_80_3_7_sides"),  # two most influential sides out
+    ("combined_k1k2_no_bent_lip", f"{CACHE}/method_combined_alternatives.json", "combined_k1k2_no_bent_lip"),  # possibly bent lip edges of cart 80 out
+    ("combined_k1k2_floor_straight_only", f"{CACHE}/method_combined_alternatives.json", "combined_k1k2_floor_straight_only"),  # floor lines not parallel
 ]
 EXTRA = [a for a in sys.argv[1:]]  # extra method json files (e.g. independent implementations) to include
 
@@ -105,16 +111,27 @@ if os.path.exists(f"{CACHE}/synthetic_report.json"):
         sens = {}
 
 
+SYN_SCEN = "T2_b"  # realistic scenario, truth close to the estimate (T1_b reported in REPORT.md)
+
+
 def synth_rt():
-    """Round-trip block of the synthetic study (scenario T2_b) for the estimator that matches the main method
-    (non-robust combined fit; the older report only has the robust variant 'combined_k1k2')."""
-    t2 = load_json(f"{CACHE}/synthetic_report.json")["roundtrip"]["T2_b"]
-    key = "combined_nonrobust" if os.environ.get("COMBINED_MAIN", "nonrobust") == "nonrobust" and "combined_nonrobust" in t2 else "combined_k1k2"
-    print("synthetic round trip estimator:", key)
-    return t2[key]
+    """Synthetic round trip of the FINAL main estimator (45_synth_main.py, scenario T2_b) in the layout
+    {names, rmse, mapping: {total: {region: {median, max}}}}."""
+    s = load_json(f"{CACHE}/synthetic_main.json")["summary"][SYN_SCEN]
+    print("synthetic round trip: 45_synth_main", SYN_SCEN, "n =", s["n"])
+    return dict(names=s["names"], rmse=s["rmse"], n=s["n"], mapping=dict(total={k: v for k, v in s["mapping_rmse"].items()}))
 
 
 sig_tot_map = np.sqrt(sig_stat_map ** 2 + sig_sys_map ** 2)
+# same budget WITHOUT rotation compensation (a pure camera rotation counted as error; relevant only when rays are
+# compared directly without re-estimating the pose)
+Dstat_raw = np.array([mapping_displacement(K0, d0, *lens_from_names(xb), uv, compensate=False) for xb in boot])
+sig_stat_raw = np.nanpercentile(np.hypot(Dstat_raw[..., 0], Dstat_raw[..., 1]), 68.3, axis=0)
+sig_sys_raw = np.sqrt(np.nanmean(np.sum(np.array([a["raw"] for a in alts]) ** 2, 2), 0)) if alts else np.zeros(len(uv))
+sig_tot_raw = np.sqrt(sig_stat_raw ** 2 + sig_sys_raw ** 2)
+reg_raw = {n: dict(stat_median=float(np.nanmedian(sig_stat_raw[fn(uv)])), sys_median=float(np.nanmedian(sig_sys_raw[fn(uv)])),
+                   total_median=float(np.nanmedian(sig_tot_raw[fn(uv)]))) for n, fn in regs.items()}
+print("mapping WITHOUT rotation compensation:", {k: round(v["total_median"], 1) for k, v in reg_raw.items()})
 reg_out = {}
 for n, fn in regs.items():
     m = fn(uv)
@@ -122,7 +139,7 @@ for n, fn in regs.items():
     reg_out[n] = dict(stat_median=float(np.nanmedian(sig_stat_map[m])), sys_median=float(np.nanmedian(sig_sys_map[m])),
                       sens=s_sens, total_median=float(np.sqrt(np.nanmedian(sig_tot_map[m]) ** 2 + s_sens ** 2)),
                       total_max=float(np.sqrt(np.nanmax(sig_tot_map[m]) ** 2 + s_sens ** 2)))
-if os.path.exists(f"{CACHE}/synthetic_report.json"):
+if os.path.exists(f"{CACHE}/synthetic_main.json"):
     try:
         rt = synth_rt()
         for n in reg_out:
@@ -153,7 +170,7 @@ s_bud = np.sqrt(s_stat ** 2 + s_sys ** 2)
 # combined estimator; the final 1-sigma is the LARGER of (budget, synthetic RMSE) - conservative
 syn = {}
 syn_map = {}
-if os.path.exists(f"{CACHE}/synthetic_report.json"):
+if os.path.exists(f"{CACHE}/synthetic_main.json"):
     try:
         rt = synth_rt()
         syn = dict(zip(rt["names"], rt["rmse"]))
@@ -168,23 +185,44 @@ for n, v, a, b, c, e in zip(pnames, p0, s_stat, s_sys, s_syn, s_tot):
 unc = {"fx_px_1sigma": float(s_tot[0]), "fy_px_1sigma": float(s_tot[0]), "cx_px_1sigma": float(s_tot[1]),
        "cy_px_1sigma": float(s_tot[2]), "k1_1sigma": float(s_tot[3]), "k2_1sigma": float(s_tot[4]),
        "p1_1sigma": None, "p2_1sigma": None, "k3_1sigma": None,
-       "note": "1-sigma = statistical (cluster bootstrap over stickers and edges) (+) systematic (RMS deviation of "
-               "plausible alternative methods/models from the main estimate); p1=p2=k3=0 are fixed (not determined, "
-               "see REPORT.md); parameters are strongly correlated - the mapping uncertainty is the relevant quantity",
-       "components": {n: {"stat": float(a), "sys": float(b), "budget": float(c), "synthetic_rmse": float(e)} for n, a, b, c, e in zip(pnames, s_stat, s_sys, s_bud, s_syn)},
-       "rule": "final 1-sigma = max(budget = stat (+) sys, synthetic round-trip RMSE under a realistic geometry-noise model)",
-       "correlation_bootstrap": np.corrcoef(pb[:, :5].T).round(3).tolist()}
+       "note": "1-sigma = max(stat (+) sys, synthetic round-trip RMSE); p1=p2=k3=0 fixed (not determined); fx=fy fitted as "
+               "one parameter; k1 and k2 are strongly correlated (-0.9) - use uncertainty_details.covariance or the "
+               "mapping uncertainty, not the individual sigmas combined as independent"}
+corr = np.corrcoef(pb[:, :5].T)
+cov = (s_tot[:5, None] * corr * s_tot[None, :5])
+unc_details = {
+    "rule": "final 1-sigma = max(budget = statistical (+) systematic, synthetic round-trip RMSE of the same estimator, scenario "
+            f"{SYN_SCEN}: realistic detection noise + random sticker/row geometry deviations sized to the real sticker RMS + "
+            "edge bows/direction deviations)",
+    "statistical": "cluster bootstrap over stickers and edges (edges resampled within their vanishing-point group), "
+                   f"{len(boot)} replicates, robust 1-sigma = half of the 16-84 % range",
+    "systematic": "RMS deviation of the plausible alternative methods/models/modelling choices from the main estimate: "
+                  + ", ".join(a["name"] for a in alts),
+    "components": {n: {"stat": float(a), "sys": float(b), "budget": float(c), "synthetic_rmse": float(e)} for n, a, b, c, e in zip(pnames, s_stat, s_sys, s_bud, s_syn)},
+    "order": ["f", "cx", "cy", "k1", "k2"],
+    "correlation_bootstrap": corr.round(3).tolist(),
+    "covariance": cov.tolist(),
+    "covariance_note": "final 1-sigma values combined with the bootstrap correlation matrix (order f, cx, cy, k1, k2)",
+}
 out = lens_json(K0, d0, model=main["model"], rms_reprojection_error_px=main["rms_reprojection_error_px"],
                 uncertainty=unc,
                 mapping_uncertainty_px={"centre": reg_out["centre"]["total_median"], "cart_band": reg_out["cart_band"]["total_median"],
-                                        "corners": reg_out["corners"]["total_median"],
-                                        "definition": "1-sigma displacement of the projection of a fixed viewing ray [px], "
-                                                      "median over the region (centre: r<150 px; cart_band: both cart footprints; "
-                                                      "corners: 200x150 px corner boxes), rotation-compensated (a pure camera "
-                                                      "rotation is absorbed by the pose)",
-                                        "max_in_region": {k: v["total_max"] for k, v in reg_out.items()},
-                                        "components": reg_out},
+                                        "corners": reg_out["corners"]["total_median"]},
                 data_used=main.get("data_used"), geometry_assumptions=main.get("geometry_assumptions"))
+out["uncertainty_details"] = unc_details
+out["mapping_uncertainty_details"] = {
+    "definition": "1-sigma displacement of the projection of a fixed viewing ray [px], median over the region (centre: r<150 px "
+                  "around the image centre; cart_band: both cart footprints; corners: 200x150 px corner boxes), "
+                  "rotation-compensated (a pure camera rotation is absorbed by the pose); final value = max(budget median, "
+                  f"synthetic {SYN_SCEN} RMSE median)",
+    "max_in_region": {k: v["total_max"] for k, v in reg_out.items()},
+    "components": reg_out,
+    "without_rotation_compensation": {k: v["total_median"] for k, v in reg_raw.items()},
+    "without_rotation_compensation_components": reg_raw,
+    "without_rotation_compensation_note": "budget (bootstrap (+) alternatives) with a camera rotation counted as error; "
+                                          "dominated by the principal-point / f alternatives; only relevant when rays are "
+                                          "compared without re-estimating the camera pose",
+}
 out["method"] = main["method"]
 save_json(out, f"{RESULTS}/lens_result.json")
 save_json(dict(regions=reg_out, alternatives=[a["name"] for a in alts], params=dict(zip(pnames, p0.tolist())),

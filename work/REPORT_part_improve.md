@@ -1,4 +1,4 @@
-## 11. Čo by meranie najviac spresnilo
+## 12. Čo by meranie najviac spresnilo
 
 Poradie podľa očakávaného prínosu:
 
@@ -12,8 +12,9 @@ Poradie podľa očakávaného prínosu:
    s presnosťou ~±15 px a hlavný bod.
 3. **Pridať priame 3D referencie so známymi rozmermi v rohoch obrazu:** napríklad dlhé rovné latky alebo pásky na podlahe
    v dvoch kolmých smeroch cez celé zorné pole (priamosť + kolmosť = úbežníky) a zvislé tyče pri okrajoch.
-   Dnes sú rohy obrazu pokryté slabo (vľavo hore regál, hore v strede pohyblivá osoba), hlavný bod v y určuje
-   najmä jedna skupina čiar na podlahe.
+   Dnes sú rohy obrazu pokryté slabo (vľavo hore regál, hore v strede pohyblivá osoba), hlavný bod v y určujú
+   najmä úbežníky a jedna skupina čiar na podlahe. Chýba aj úbežník hĺbky vozíka (os Y): dlhá rovná hrana pozdĺž boku vozíka
+   (napr. páska na podlahe rovnobežne s vozíkom) by pridala tretí kolmý smer.
 4. **Nálepky na pevných, rovných podložkách** namiesto papiera na doskách, viac nálepiek na rôznych výškach a
    ďalej od stredu (rohy obrazu); ideálne aj zvisle, aby sa zlepšila kondícia f.
 5. **Viac záberov s pohybom vozíka** (ten istý vozík v rôznych polohách a natočeniach). Každá póza pridá nezávislú

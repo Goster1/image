@@ -298,6 +298,8 @@ if __name__ == "__main__":
         tasks = [t for t in tasks if t not in done or t in redo]
         if "--reverse" in sys.argv:  # second helper process working from the end of the task list
             tasks = tasks[::-1]
+        if "--middle" in sys.argv:  # third helper: start in the middle of the remaining list
+            tasks = tasks[len(tasks) // 2:] + tasks[: len(tasks) // 2]
         fn = f"{CACHE}/synthetic_roundtrip_raw_part{len(parts) + 1}.pkl"
         print("resume: already done", len(done), "remaining", len(tasks), "->", fn)
     else:

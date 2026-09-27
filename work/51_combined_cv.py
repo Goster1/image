@@ -53,6 +53,9 @@ FOLDS = {
     "edges_cart80": dict(edges=lambda e: e["region"] == "cart80"),
     "edges_scene": dict(edges=lambda e: e["region"] == "scene"),
 }
+# leave ONE sticker out (its corners and its traced sides)
+for _mi, _m in enumerate(M):
+    FOLDS[f"sticker_{_m['cart']}_{_m['id']}"] = dict(stickers=(lambda m, _mi=_mi: m is M[_mi]))
 
 
 def run_fold(name):
@@ -66,6 +69,7 @@ def run_fold(name):
     tr_lines = [e for e in LINES if not sel_e(e)]
     te_lines = [e for e in LINES if sel_e(e)]
     cb = Combined(tr_pts, tr_lines + tr_sides, SPEC, sig=dict(FIT["sig_main"]))
+    cb_full = Combined(PTS, LINES + SIDES, SPEC, sig=dict(FIT["sig_main"]))
     # start from the main solution (same parameter layout when both carts keep stickers; else rebuild)
     K0 = K_from(x_main[0], x_main[0], x_main[1], x_main[2])
     d0 = np.array([x_main[3], x_main[4], 0, 0, 0])
@@ -74,7 +78,8 @@ def run_fold(name):
         x0 = x_main.copy()
     r = cb.solve(x0)
     K, d, poses, wv = cb.unpack(r.x)
-    res = dict(fold=name, intrinsics=dict(zip(cb.inames, r.x[: cb.ni].tolist())), n_train_pts=len(tr_pts), n_train_edges=len(tr_lines))
+    res = dict(fold=name, intrinsics=dict(zip(cb.inames, r.x[: cb.ni].tolist())), n_train_pts=len(tr_pts), n_train_edges=len(tr_lines),
+               n_test_pts=len(te_pts), vc_iters=getattr(cb, "vc_iters", None), block_sigmas=dict(cb.sig))
     # held-out stickers
     if te_pts:
         err = []
@@ -91,6 +96,10 @@ def run_fold(name):
                 err.append(project(p["X"][None], K, d, rvec=pz[:3], tvec=pz[3:])[0] - p["uv"])
             e = np.array(err)
             res["heldout_stickers_pred_rms_px"] = float(np.sqrt(np.mean(np.sum(e ** 2, 1))))
+        # the same points in the full (main) joint fit, for comparison
+        Kf, df, posf, _ = cb_full.unpack(x_main)
+        ef = np.array([project(p["X"][None], Kf, df, rvec=posf[cb_full.cidx[p["cart"]]][:3], tvec=posf[cb_full.cidx[p["cart"]]][3:])[0] - p["uv"] for p in te_pts])
+        res["heldout_points_rms_in_main_fit_px"] = float(np.sqrt(np.mean(np.sum(ef ** 2, 1))))
     # held-out edges: straightness under the reduced lens
     if te_lines:
         lc = LineCal(te_lines, "plumb", dist_free=(), f0=K[0, 0], centre_fixed=[K[0, 2], K[1, 2]], dist_fixed=d[:5], subsample=1)

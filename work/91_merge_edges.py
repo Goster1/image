@@ -27,23 +27,42 @@ out = {
 }
 save_json(out, f"{RESULTS}/edges.json")
 
-img = cv2.imread(f"{CACHE}/mean_aligned_color.png")
 col = {"cartX": (0, 0, 255), "cartY": (0, 200, 0), "cartZ": (255, 0, 0), "world_vertical": (255, 0, 255),
        "floor_plane": (0, 215, 255), "horizontal_other": (255, 255, 0), "unknown": (180, 180, 180)}
-n_used = 0
-for blk in regions:
-    for e in blk["edges"]:
-        P = np.array(e["points"], float)
-        if len(P) < 2:
-            continue
-        used = e.get("straight_3d", False) and e.get("verified", "yes") != "no"
-        n_used += used
-        c = col.get(e["direction"], (180, 180, 180)) if used else (90, 90, 90)
-        cv2.polylines(img, [np.round(P * 4).astype(np.int32)], False, c, 2 if used else 1, cv2.LINE_AA, shift=2)
-y = 30
-for k, c in col.items():
-    cv2.putText(img, k, (20, y), cv2.FONT_HERSHEY_SIMPLEX, 0.7, c, 2, cv2.LINE_AA)
-    y += 28
-cv2.putText(img, "grey = not used (bent / duplicate / rejected)", (20, y), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (150, 150, 150), 2, cv2.LINE_AA)
-cv2.imwrite(f"{RESULTS}/edges_all.png", img)
+
+
+def render(blocks, fn, labels=False):
+    """Edges on the mean image; colour = direction class, grey = not used; labels = short edge id + '*' when the
+    edge is used for straightness only (end boards; not in a vanishing-point group)."""
+    img = cv2.imread(f"{CACHE}/mean_aligned_color.png")
+    n_used = 0
+    for blk in blocks:
+        for e in blk["edges"]:
+            P = np.array(e["points"], float)
+            if len(P) < 2:
+                continue
+            used = e.get("straight_3d", False) and e.get("verified", "yes") != "no"
+            n_used += used
+            c = col.get(e["direction"], (180, 180, 180)) if used else (90, 90, 90)
+            cv2.polylines(img, [np.round(P * 4).astype(np.int32)], False, c, 2 if used else 1, cv2.LINE_AA, shift=2)
+            if labels:
+                m = P[len(P) // 2]
+                t = e["id"].replace("cart310_", "").replace("cart80_", "").replace("scene_", "") + ("*" if used and "board" in e["id"] else "")
+                t = t if used else t + " (not used)"
+                cv2.putText(img, t, (int(m[0]) + 4, int(m[1]) - 4), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 0), 3, cv2.LINE_AA)
+                cv2.putText(img, t, (int(m[0]) + 4, int(m[1]) - 4), cv2.FONT_HERSHEY_SIMPLEX, 0.45, c, 1, cv2.LINE_AA)
+    y = 30
+    for k, c in col.items():
+        cv2.putText(img, k, (20, y), cv2.FONT_HERSHEY_SIMPLEX, 0.7, c, 2, cv2.LINE_AA)
+        y += 28
+    cv2.putText(img, "grey = not used (bent / duplicate / rejected)", (20, y), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (150, 150, 150), 2, cv2.LINE_AA)
+    if labels:
+        cv2.putText(img, "* = end board: straightness only (no vanishing point)", (20, y + 28), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (230, 230, 230), 2, cv2.LINE_AA)
+    cv2.imwrite(fn, img)
+    return n_used
+
+
+n_used = render(regions, f"{RESULTS}/edges_all.png")
+for blk in regions:  # per-region views with labels (final status after review and de-duplication)
+    render([blk], f"{RESULTS}/edges_{blk['region']}.png", labels=True)
 print("regions", len(regions), "edges used", n_used)

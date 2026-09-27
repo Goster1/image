@@ -1,7 +1,8 @@
 ## 5. Nesúlad nálepiek s výkresom – pozorovanie (`work/42_geomdiag_*`, `work/41_cuboid_*`)
 
 Podľa zadania sú rozmery vozíka a polohy nálepiek presné. Hlavný výsledok ich preto nemení a všetko nižšie je
-**len pozorovanie**. Zisťuje, kde a o koľko sa dáta s výkresom rozchádzajú; žiadny rozmer tým neupravujem.
+**len pozorovanie**. Zisťuje, kde a o koľko sa dáta s výkresom rozchádzajú; žiadny rozmer tým neupravujem a chybu
+nalepenia nepredpokladám.
 
 **Pozorovanie (nezávisí od ohniska, hlavného bodu ani pózy):**
 
@@ -31,18 +32,25 @@ Podľa zadania sú rozmery vozíka a polohy nálepiek presné. Hlavný výsledok
 | bočný rozptyl nálepiek nad sebou | 0 mm | 1–6 mm | 0,2–3 px | všetky 4 stĺpce |
 | zadná horná tyč vozíka 80 (model s výkresom) | Z = 0 | −56 mm | −17 px | pravý vozík |
 
-* Najkompaktnejšie vysvetlenie je, že **top-nálepky (koncové dosky) sú o +60 až +80 mm vyššie voči nálepkám na policiach**,
-  alebo ekvivalentne, že police sú nižšie. Medzi týmito dvoma možnosťami sa z dát rozhodnúť nedá.
-  Samotný tento prvok zníži RMS z 5,3 na 2,9 px. Keď k tomu uvoľním aj sklony dosiek, klesne na 1,9 px.
-  Žiadny kompaktný prvok nezníži RMS na úroveň šumu, časť nesúladu je nálepka po nálepke (kartičky, ohnuté dosky).
+* Najkompaktnejší opis je, že **top-nálepky (koncové dosky) vychádzajú o +60 až +80 mm vyššie voči nálepkám na policiach**,
+  alebo ekvivalentne, že police vychádzajú nižšie. Samotný tento prvok zníži RMS z 5,3 na 2,9 px. Keď k tomu uvoľním aj
+  sklony dosiek, klesne na 2,3 px (s voľnou veľkosťou kódu na 1,9 px). Žiadny kompaktný prvok nezníži RMS na úroveň šumu;
+  časť nesúladu je nálepka po nálepke (pozorované lokálne nerovnosti podkladu; príčinu z fotiek určiť nemožno).
+* **Top alebo police?** Z nálepiek samých je pozorovateľný len relatívny posun. Jediná nezávislá kontrola je zadná horná tyč
+  vozíka 80 (Z = 0 podľa výkresu, v žiadnom fite nepoužitá, `work/cache/cuboid_diag.md`): sedí na +1,5 px, len ak sa
+  zdvihnú top-dosky (+65 mm); pri hypotézach s nižšími policami zostáva na −17…−19 px. To **naznačuje skôr top-dosky
+  nad úrovňou rámu** než nižšie police. Je to však jedna hrana, teda len náznak.
 * Na výrezoch vidno, že koncové dosky sú tenké (~10 mm) biele dosky s potlačeným hárkom, nie krabice.
   60–90 mm vysoká bočná stena by mala 20–35 px a nie je viditeľná. Zadné rohy dosiek vozíka 80 sú zdvihnuté, doska
   310/X0 má previsnutú chlopňu. Fyzickú príčinu (rám, výšky políc, uchytenie) z fotiek určiť nemožno.
-* **Dôsledok pre objektív:** nálepky s geometriou z výkresu vynútia f ≈ 1300–1360 px, cy ≈ 480 a skreslenie
-  k1 ≈ −0,09, k2 ≈ −0,23 (pri f0 = 1300). Také skreslenie **sa prehne ešte vo vnútri obrazu** (nie je invertovateľné po
-  rohy) a odporuje priamosti 61 hrán. Keď sa uvoľní výška dosiek, nálepky samé dajú k1 = −0,295, k2 = 0,105 (pri 1300),
-  teda prakticky rovnaké skreslenie ako plumb-line (−0,29; 0,07), a f ≈ 1430–1495.
-  **Nálepky a hrany sa teda zhodnú na objektíve, len ak sa pripustí táto odchýlka geometrie.**
+* **Dôsledok pre objektív:** nálepky s geometriou z výkresu vynútia f ≈ 1300–1375 px, hlavný bod podľa modelu
+  (cy 290–540) a skreslenie, ktoré odporuje priamosti 61 hrán. Bez bariéry proti prehnutiu sú tieto fity prehnuté
+  vo vnútri obrazu (fold margin −0,02 … −0,21); s bariérou buď sedia na bariére, alebo prejdú do iného minima
+  (cy ≈ 290 px, k2 ≈ +0,37), ktoré síce nie je prehnuté, ale hrany narovná len na {{mk_ppfree_straight}} px RMS (hlavný objektív {{bS}} px).
+  Keď sa uvoľní výška dosiek, nálepky samé dajú k1 = −0,295, k2 = 0,105 (pri 1300), teda prakticky rovnaké skreslenie
+  ako plumb-line (−0,29; 0,07), a f ≈ 1430–1495.
+  **Nálepky a hrany sa teda zhodnú na objektíve, len ak sa pripustí táto odchýlka geometrie.** Hlavný výsledok ju
+  nepripúšťa (rozmery z výkresu), ale nálepky v ňom majú váhu podľa ich skutočného rozptylu voči modelu.
   Obrázky: `results/geomdiag_*.png`, `results/cuboid_overlay.png`, `results/cuboid_offsets.png`,
   `results/residuals_stickers_main.png`, `results/predicted_stickers_crops.png`; podrobne `work/cache/geometry_diagnosis.md`,
   `work/cache/cuboid_offsets.md`.

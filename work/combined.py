@@ -39,7 +39,7 @@ def model_line_3d(ml):
 
 class Combined:
     def __init__(self, markers_pts, edges, spec, use=("M", "L", "V", "S"), sig=None, subsample=2, tie_wv=None,
-                 carts=(80, 310)):
+                 carts=(80, 310), common_vertical=False):
         self.spec = spec
         self.f_mode = spec.get("f", "single")
         self.pp_free = spec.get("pp", "free") == "free"
@@ -83,8 +83,10 @@ class Combined:
             self.E.append(dict(id=e["id"], P=P, blk=blk[0], info=blk[1], cart=e.get("cart"), chord=np.hypot(*(P[-1] - P[0])),
                                grp=int(e.get("sticker_mi", -1)), w=1.0))
         self.tie_wv = tie_wv
+        # common_vertical: the Z (post) edges of both carts share the scene vertical wv (carts upright on one floor)
+        self.common_vertical = bool(common_vertical)
         self.floor = sorted({e["info"][0] for e in self.E if e["blk"] == "V" and isinstance(e["info"][0], str) and e["info"][0].startswith("floor_")})
-        self.has_wv = (any(e["blk"] == "V" and e["info"][0] == "wv" for e in self.E) or len(self.floor) > 0) and tie_wv is None
+        self.has_wv = (any(e["blk"] == "V" and e["info"][0] == "wv" for e in self.E) or len(self.floor) > 0 or self.common_vertical) and tie_wv is None
         if self.E:
             self.allp = np.vstack([e["P"] for e in self.E])
             self.eidx = np.cumsum([0] + [len(e["P"]) for e in self.E])
@@ -160,6 +162,8 @@ class Combined:
                         dvec = self._floor_dirs[ci]
                     elif ci == "wv":
                         dvec = Rs[self.cidx[self.tie_wv]][:, 2] if self.tie_wv is not None else wv
+                    elif self.common_vertical and ax == 2:
+                        dvec = wv
                     else:
                         dvec = Rs[self.cidx[ci]][:, ax]
                     v = K @ dvec
@@ -220,7 +224,9 @@ class Combined:
             x[n0 + j] = best[1]
         return x
 
-    def solve(self, x0, loss="linear", f_scale=3.0, reweight=True, iters=4, verbose=False):
+    def solve(self, x0, loss="linear", f_scale=3.0, reweight=True, iters=40, vc_tol=0.005, verbose=False):
+        """Least squares with block weights by variance components, iterated to convergence (every block RMS within
+        vc_tol of its sigma); self.vc_iters records the number of iterations used."""
         x = x0
         r = None
         for it in range(iters if reweight else 1):
@@ -236,8 +242,9 @@ class Combined:
                     new[k] = max(float(np.sqrt(np.mean(b[k] ** 2))), 0.05)
             if verbose:
                 print("  block rms:", {k: round(v, 3) for k, v in new.items()})
-            changed = any(abs(new[k] / self.sig[k] - 1) > 0.05 for k in new)
+            changed = any(abs(new[k] / self.sig[k] - 1) > vc_tol for k in new)
             self.sig.update(new)
+            self.vc_iters = it + 1
             if not changed:
                 break
         return r

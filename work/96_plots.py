@@ -1,7 +1,7 @@
 """Report plots for the main lens (results/lens_result.json):
 
   results/residuals_stickers_main.png : detected vs predicted sticker quads (drawing geometry, poses refit per cart
-                                         with the main intrinsics, robust), residual arrows x10, per-sticker RMS
+                                         with the main intrinsics, least squares), residual arrows x10, per-sticker RMS
   results/residuals_edges_main.png     : straightness / VP residual of every edge point under the main lens
   results/predicted_stickers_crops.png : zoomed crops of every sticker: detected (green) vs predicted (red)
   results/f_profiles.png               : RMS / chi2 vs fixed f for stickers only, edges only and combined
@@ -28,7 +28,7 @@ P0 = {80: np.array(init["poses"]["80"]), 310: np.array(init["poses"]["310"])}
 M = load_markers()
 col = cv2.cvtColor(cv2.imread(f"{CACHE}/mean_aligned_color.png"), cv2.COLOR_BGR2RGB)
 
-# ---------- poses per cart with the main intrinsics (robust: soft_l1 over corners, scale 2 px)
+# ---------- poses per cart with the main intrinsics (least squares, same definition as rms_reprojection_error_px)
 poses = {}
 per_sticker = []
 for c in (80, 310):
@@ -39,7 +39,7 @@ for c in (80, 310):
     def res(pz):
         return (project(X, K, d, rvec=pz[:3], tvec=pz[3:]) - uv).ravel()
 
-    r = least_squares(res, P0[c], loss="soft_l1", f_scale=2.0)
+    r = least_squares(res, P0[c])
     poses[c] = r.x
 fig, ax = plt.subplots(figsize=(16, 9), dpi=110)
 ax.imshow(col)
