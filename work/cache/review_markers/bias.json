@@ -1,0 +1,114 @@
+{
+  "per_marker": {
+    "80:0": {
+      "n": 110,
+      "beta_cells": -0.07154468025007923,
+      "beta_se": 0.002035974541374332,
+      "b_px": -0.6772636830863189,
+      "cell_px": 9.466303863809202,
+      "resid_rms_cells": 0.027607445936010375
+    },
+    "80:1": {
+      "n": 100,
+      "beta_cells": -0.0659578458730328,
+      "beta_se": 0.004257535117206127,
+      "b_px": -0.5202125216797087,
+      "cell_px": 7.887045351376464,
+      "resid_rms_cells": 0.055950556126475044
+    },
+    "80:2": {
+      "n": 100,
+      "beta_cells": -0.062370416101027004,
+      "beta_se": 0.0019793782627029427,
+      "b_px": -0.4568985392701324,
+      "cell_px": 7.325565032788181,
+      "resid_rms_cells": 0.026177230752506553
+    },
+    "80:4": {
+      "n": 120,
+      "beta_cells": -0.0743442243753233,
+      "beta_se": 0.0026939020067061805,
+      "b_px": -0.5389689590989862,
+      "cell_px": 7.249641295307984,
+      "resid_rms_cells": 0.03783292437015744
+    },
+    "80:5": {
+      "n": 120,
+      "beta_cells": -0.07541465207030056,
+      "beta_se": 0.0015435453345561381,
+      "b_px": -0.5730360693140178,
+      "cell_px": 7.598471299447767,
+      "resid_rms_cells": 0.022683445797099643
+    },
+    "80:6": {
+      "n": 110,
+      "beta_cells": -0.08654054389143781,
+      "beta_se": 0.0032849189468519687,
+      "b_px": -0.5648909405340676,
+      "cell_px": 6.5274715772841025,
+      "resid_rms_cells": 0.04572741421608294
+    },
+    "80:92": {
+      "n": 90,
+      "beta_cells": -0.062339672293220315,
+      "beta_se": 0.0027403140642219504,
+      "b_px": -0.53240046582239,
+      "cell_px": 8.540315440193462,
+      "resid_rms_cells": 0.033001964983002875
+    },
+    "310:0": {
+      "n": 110,
+      "beta_cells": -0.07712167788821694,
+      "beta_se": 0.0021302843457159317,
+      "b_px": -0.6508800434519251,
+      "cell_px": 8.439650968114764,
+      "resid_rms_cells": 0.028886269797353405
+    },
+    "310:1": {
+      "n": 100,
+      "beta_cells": -0.10336894787221605,
+      "beta_se": 0.001995842390802465,
+      "b_px": -0.992748634132935,
+      "cell_px": 9.603934784749514,
+      "resid_rms_cells": 0.02622843702566342
+    },
+    "310:2": {
+      "n": 100,
+      "beta_cells": -0.14975282414454671,
+      "beta_se": 0.002905062051301653,
+      "b_px": -1.2855272032565486,
+      "cell_px": 8.584326944082953,
+      "resid_rms_cells": 0.038419376983269506
+    },
+    "310:6": {
+      "n": 110,
+      "beta_cells": -0.09571118193030533,
+      "beta_se": 0.0032215348809590586,
+      "b_px": -0.7179881992675752,
+      "cell_px": 7.501612505322498,
+      "resid_rms_cells": 0.044845082115145644
+    },
+    "310:322": {
+      "n": 100,
+      "beta_cells": -0.09004000387454403,
+      "beta_se": 0.0019174430348170425,
+      "b_px": -0.7083340295473993,
+      "cell_px": 7.866881375686596,
+      "resid_rms_cells": 0.02698081508720857
+    }
+  },
+  "note": "Idea: every black/white transition inside a code sits at an integer cell coordinate k (15 mm cells). If the edge criterion used for the corners (gradient maximum of the blurred profile) is displaced by b px towards the white side (black looks dilated; b < 0 = black looks eroded), the four outer sides are displaced outward by the same b, the corners (and the homography built from them) are scaled by 6/(6+2*beta) (beta = b / cell), and an interior transition at k with white on the +u side (s = +1) or on the -u side (s = -1) appears, in the cell coordinates of that homography, displaced towards white by   delta = beta * (1 + s * (1 - k/3)). beta is fitted by least squares over all interior transitions of the fully visible stickers (rows and columns, 5 sample lines per cell row), on the mean image and per still.",
+  "pooled_b_px": -0.6826607608641678,
+  "marker_mean_b_px": -0.6849291073718337,
+  "marker_sem_b_px": 0.06792139974338393,
+  "per_still_b_px": [
+    -0.6793774766310913,
+    -0.6898393533037995,
+    -0.6870239249397541,
+    -0.6796798651465956,
+    -0.6865813622679806,
+    -0.6829853394341999,
+    -0.692458432590695
+  ],
+  "interpretation": "b > 0: the edge criterion places black/white edges towards the white side (black dilated), so edge corners lie outside the true corners by ~b along each side normal (~b*sqrt(2) along the diagonal); b < 0: black eroded, corners inside."
+}

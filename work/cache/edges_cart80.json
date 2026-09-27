@@ -1419,10 +1419,6 @@
       },
       "points": [
         [
-          1334.972,
-          303.164
-        ],
-        [
           1335.116,
           305.186
         ],
@@ -1493,30 +1489,6 @@
         [
           1332.166,
           339.07
-        ],
-        [
-          1327.744,
-          378.842
-        ],
-        [
-          1327.604,
-          380.839
-        ],
-        [
-          1327.559,
-          382.845
-        ],
-        [
-          1327.383,
-          384.838
-        ],
-        [
-          1327.171,
-          386.828
-        ],
-        [
-          1326.906,
-          388.812
         ],
         [
           1326.597,
@@ -1711,10 +1683,6 @@
           484.244
         ],
         [
-          1315.361,
-          486.158
-        ],
-        [
           1315.515,
           488.191
         ],
@@ -1797,22 +1765,6 @@
         [
           1311.155,
           527.971
-        ],
-        [
-          1309.058,
-          553.93
-        ],
-        [
-          1308.32,
-          555.851
-        ],
-        [
-          1308.063,
-          557.836
-        ],
-        [
-          1308.021,
-          559.849
         ],
         [
           1305.847,
@@ -2168,7 +2120,6 @@
         ]
       ],
       "strength": [
-        9.45,
         10.08,
         11.44,
         9.28,
@@ -2187,12 +2138,6 @@
         12.16,
         14.36,
         14.24,
-        23.61,
-        26.28,
-        25.96,
-        28.0,
-        24.87,
-        20.3,
         23.79,
         22.91,
         24.86,
@@ -2241,7 +2186,6 @@
         6.19,
         7.3,
         6.6,
-        7.59,
         8.31,
         9.09,
         9.07,
@@ -2263,10 +2207,6 @@
         12.52,
         11.79,
         11.8,
-        10.27,
-        24.69,
-        23.31,
-        24.57,
         19.19,
         24.45,
         33.19,
@@ -2356,15 +2296,24 @@
         18.24,
         21.58
       ],
-      "chord_dev_rms_px": 1.276,
-      "chord_bow_px": 4.088,
+      "chord_dev_rms_px": 1.235,
+      "chord_bow_px": 3.953,
       "verified": "partly",
-      "verification_note": "weak inner boundary of the lip-top highlight (~7 px right of x_A_front_out); follows the line in most windows but wobbles by ~0.3 px in the upper part; not independent of x_A_front_out",
-      "crop": "work/cache/edgecrops_cart80/cart80_x_A_front_in.png"
+      "verification_note": "weak inner boundary of the lip-top highlight (~7 px right of x_A_front_out); follows the line in most windows but wobbles by ~0.3 px in the upper part; not independent of x_A_front_out [review: other boundary of the same member as x_A_front_out (6-7.5 px away, weaker); its shape is not independent of the partner - do not use both as independent lines]",
+      "crop": "work/cache/edgecrops_cart80/cart80_x_A_front_in.png",
+      "review": {
+        "changes": [
+          "12 px after every interruption > 20 px (mean dip -0.2..-0.25 px there): removed 10 of 187 points",
+          "robust smooth fit (deg 3/4), |res| > max(0.5 px, 3 MAD): removed 2 of 177 points",
+          "pair_of = cart80_x_A_front_out"
+        ],
+        "crop": "work/cache/review_cart80/x_A_front_in_reviewed_strip.png"
+      },
+      "pair_of": "cart80_x_A_front_out"
     },
     {
-      "id": "cart80_x_B_front_top",
-      "what": "shelf B front lip outline, X=0 part of the cart (dark gap / crates of level C on the left, bright lip on the right); beyond y~350 the line is lost behind label holders",
+      "id": "cart80_x_B_front",
+      "what": "shelf B front lip (Y~0) along the cart: outline of the front lip; the two traced pieces (y 100-300 and y 430-646) are interrupted by a plastic crate and merged here",
       "class": "cart_structure",
       "cart": 80,
       "straight_3d": true,
@@ -2380,7 +2329,7 @@
           1600
         ],
         "exact": false,
-        "note": "front lip / front outline of the shelf at this level; the height of the visible outline above the nominal shelf surface and its exact Y are not in the drawing (bent-up lip with a rounded top, label holders) [initial calibration (~5 px): this image line lies at Z = -555 mm if Y = 0]"
+        "note": "front lip / front outline of the shelf at this level; the height of the visible outline above the nominal shelf surface and its exact Y are not in the drawing (bent-up lip with a rounded top, label holders) [the pieces gave Z = -555 / -528 mm at Y=0 with the ~5 px initial calibration; they are collinear after undistortion, see review.merge_test]"
       },
       "points": [
         [
@@ -2679,175 +2628,6 @@
           1270.568,
           273.431
         ],
-        [
-          1264.235,
-          325.066
-        ],
-        [
-          1264.196,
-          327.072
-        ],
-        [
-          1264.101,
-          329.072
-        ],
-        [
-          1264.115,
-          331.083
-        ],
-        [
-          1264.123,
-          333.094
-        ],
-        [
-          1264.124,
-          335.104
-        ],
-        [
-          1264.164,
-          337.118
-        ],
-        [
-          1264.112,
-          339.124
-        ],
-        [
-          1264.073,
-          341.13
-        ],
-        [
-          1263.994,
-          343.133
-        ],
-        [
-          1263.871,
-          345.131
-        ],
-        [
-          1263.814,
-          347.136
-        ],
-        [
-          1263.712,
-          349.137
-        ]
-      ],
-      "strength": [
-        62.98,
-        65.72,
-        56.54,
-        58.75,
-        60.62,
-        62.24,
-        69.07,
-        67.38,
-        58.55,
-        60.49,
-        57.34,
-        40.28,
-        35.02,
-        37.51,
-        40.28,
-        40.27,
-        40.35,
-        48.25,
-        53.85,
-        47.31,
-        29.56,
-        34.27,
-        35.73,
-        38.99,
-        45.27,
-        46.9,
-        52.49,
-        56.76,
-        57.39,
-        66.4,
-        69.27,
-        68.27,
-        60.26,
-        52.51,
-        53.03,
-        54.44,
-        48.65,
-        41.66,
-        40.23,
-        35.53,
-        39.65,
-        43.36,
-        40.67,
-        38.76,
-        30.92,
-        33.24,
-        39.67,
-        40.2,
-        36.94,
-        47.12,
-        50.28,
-        39.54,
-        35.51,
-        38.99,
-        44.8,
-        52.24,
-        47.68,
-        46.9,
-        49.68,
-        54.93,
-        56.89,
-        51.24,
-        37.96,
-        35.05,
-        40.39,
-        37.44,
-        33.81,
-        41.85,
-        52.89,
-        56.29,
-        54.69,
-        55.18,
-        60.71,
-        60.62,
-        44.03,
-        51.44,
-        53.49,
-        55.77,
-        55.38,
-        53.38,
-        50.63,
-        51.94,
-        51.9,
-        50.41,
-        52.02,
-        53.3,
-        52.64
-      ],
-      "chord_dev_rms_px": 0.532,
-      "chord_bow_px": 1.242,
-      "verified": "yes",
-      "verification_note": "checked: clean dark->bright lip outline for y 100..350; background on the left changes (plastic crates standing on level C) but the traced side is the lip; card zone (y<100) excluded; beyond y~350 the tracer drifts to another line, cut",
-      "crop": "work/cache/edgecrops_cart80/cart80_x_B_front_top.png"
-    },
-    {
-      "id": "cart80_x_B_front_bot",
-      "what": "shelf B front lip outline, X=1600 half of the cart (continues past the marker-6 card, card part excluded)",
-      "class": "cart_structure",
-      "cart": 80,
-      "straight_3d": true,
-      "direction": "cartX",
-      "model_line": {
-        "fixed": {
-          "Y": 0,
-          "Z": -595
-        },
-        "free": "X",
-        "range_mm": [
-          0,
-          1600
-        ],
-        "exact": false,
-        "note": "front lip / front outline of the shelf at this level; the height of the visible outline above the nominal shelf surface and its exact Y are not in the drawing (bent-up lip with a rounded top, label holders) [initial calibration (~5 px): this image line lies at Z = -528 mm if Y = 0]"
-      },
-      "points": [
         [
           1255.147,
           429.527
@@ -3150,6 +2930,80 @@
         ]
       ],
       "strength": [
+        62.98,
+        65.72,
+        56.54,
+        58.75,
+        60.62,
+        62.24,
+        69.07,
+        67.38,
+        58.55,
+        60.49,
+        57.34,
+        40.28,
+        35.02,
+        37.51,
+        40.28,
+        40.27,
+        40.35,
+        48.25,
+        53.85,
+        47.31,
+        29.56,
+        34.27,
+        35.73,
+        38.99,
+        45.27,
+        46.9,
+        52.49,
+        56.76,
+        57.39,
+        66.4,
+        69.27,
+        68.27,
+        60.26,
+        52.51,
+        53.03,
+        54.44,
+        48.65,
+        41.66,
+        40.23,
+        35.53,
+        39.65,
+        43.36,
+        40.67,
+        38.76,
+        30.92,
+        33.24,
+        39.67,
+        40.2,
+        36.94,
+        47.12,
+        50.28,
+        39.54,
+        35.51,
+        38.99,
+        44.8,
+        52.24,
+        47.68,
+        46.9,
+        49.68,
+        54.93,
+        56.89,
+        51.24,
+        37.96,
+        35.05,
+        40.39,
+        37.44,
+        33.81,
+        41.85,
+        52.89,
+        56.29,
+        54.69,
+        55.18,
+        60.71,
+        60.62,
         17.86,
         24.81,
         30.63,
@@ -3226,11 +3080,80 @@
         36.02,
         30.7
       ],
-      "chord_dev_rms_px": 0.326,
-      "chord_bow_px": 0.853,
+      "chord_dev_rms_px": 1.266,
+      "chord_bow_px": 4.259,
       "verified": "yes",
-      "verification_note": "checked: lip outline y ~430..700, interrupted by label holders (removed); the part next to the printed label card and the marker-6 card (y > 700) excluded",
-      "crop": "work/cache/edgecrops_cart80/cart80_x_B_front_bot.png"
+      "verification_note": "top piece: checked: clean dark->bright lip outline for y 100..350; background on the left changes (plastic crates standing on level C) but the traced side is the lip; card zone (y<100) excluded; beyond y~350 the tracer drifts to another line, cut || bottom piece: checked: lip outline y ~430..700, interrupted by label holders (removed); the part next to the printed label card and the marker-6 card (y > 700) excluded",
+      "crop": "work/cache/review_cart80/x_B_front_reviewed_strip.png",
+      "review": {
+        "changes": [
+          "fixed trim (y>300: isolated segment after the crate occlusion, tilted inside the segment (+1.2..-0.7 px)): removed 13 of 87 points",
+          "merged from cart80_x_B_front_top + cart80_x_B_front_bot (same lip: one quadratic fits the union with piece mean residuals <= 0.03 px and rms ~0.19 px vs 0.15/0.17 px for the pieces)"
+        ],
+        "merge_test": {
+          "ref_f1290": {
+            "union_bow_px": 0.31,
+            "union_line_rms_px": 0.206,
+            "mean_offset_B_from_line_A_px": 0.87,
+            "union_quad_rms_px": 0.184,
+            "union_mean_res_A_B_px": [
+              -0.017,
+              0.017
+            ],
+            "pieces_quad_rms_px": [
+              0.146,
+              0.172
+            ]
+          },
+          "ref_f1394": {
+            "union_bow_px": 0.52,
+            "union_line_rms_px": 0.241,
+            "mean_offset_B_from_line_A_px": 1.38,
+            "union_quad_rms_px": 0.186,
+            "union_mean_res_A_B_px": [
+              -0.023,
+              0.023
+            ],
+            "pieces_quad_rms_px": [
+              0.143,
+              0.173
+            ]
+          },
+          "ref_plumb": {
+            "union_bow_px": 0.09,
+            "union_line_rms_px": 0.187,
+            "mean_offset_B_from_line_A_px": 0.51,
+            "union_quad_rms_px": 0.185,
+            "union_mean_res_A_B_px": [
+              -0.017,
+              0.017
+            ],
+            "pieces_quad_rms_px": [
+              0.146,
+              0.173
+            ]
+          },
+          "ref_joint": {
+            "union_bow_px": -0.01,
+            "union_line_rms_px": 0.189,
+            "mean_offset_B_from_line_A_px": 0.5,
+            "union_quad_rms_px": 0.189,
+            "union_mean_res_A_B_px": [
+              -0.024,
+              0.024
+            ],
+            "pieces_quad_rms_px": [
+              0.145,
+              0.175
+            ]
+          }
+        },
+        "crop": "work/cache/review_cart80/x_B_front_reviewed_strip.png"
+      },
+      "crop_pieces": [
+        "work/cache/edgecrops_cart80/cart80_x_B_front_top.png",
+        "work/cache/edgecrops_cart80/cart80_x_B_front_bot.png"
+      ]
     },
     {
       "id": "cart80_x_C_front",
@@ -3900,58 +3823,6 @@
         [
           1199.59,
           588.404
-        ],
-        [
-          1198.593,
-          602.381
-        ],
-        [
-          1198.357,
-          604.367
-        ],
-        [
-          1197.749,
-          608.325
-        ],
-        [
-          1197.386,
-          610.297
-        ],
-        [
-          1197.221,
-          612.291
-        ],
-        [
-          1197.149,
-          614.296
-        ],
-        [
-          1196.554,
-          618.255
-        ],
-        [
-          1196.331,
-          620.243
-        ],
-        [
-          1195.946,
-          622.212
-        ],
-        [
-          1195.437,
-          626.181
-        ],
-        [
-          1195.295,
-          628.178
-        ],
-        [
-          1195.224,
-          630.183
-        ],
-        [
-          1195.08,
-          632.179
         ]
       ],
       "strength": [
@@ -4116,26 +3987,19 @@
         41.12,
         44.99,
         38.9,
-        34.2,
-        18.38,
-        13.31,
-        15.43,
-        15.62,
-        15.59,
-        13.65,
-        15.56,
-        20.95,
-        21.28,
-        11.21,
-        17.58,
-        19.73,
-        18.14
+        34.2
       ],
-      "chord_dev_rms_px": 0.967,
-      "chord_bow_px": 3.176,
+      "chord_dev_rms_px": 0.884,
+      "chord_bow_px": 2.852,
       "verified": "yes",
       "verification_note": "checked: one continuous lip outline y 100..637 (three LSD pieces verified to lie on one smooth curve, rms 0.22 px); cards of markers 7 and 8 excluded, label-holder gaps removed",
-      "crop": "work/cache/edgecrops_cart80/cart80_x_C_front.png"
+      "crop": "work/cache/edgecrops_cart80/cart80_x_C_front.png",
+      "review": {
+        "changes": [
+          "fixed trim (y>595: lip against the white crate, strength 11-21 vs median 47, -0.4 px, crop z_Cend.png): removed 13 of 175 points"
+        ],
+        "crop": "work/cache/review_cart80/x_C_front_reviewed_strip.png"
+      }
     },
     {
       "id": "cart80_x_D_front",
@@ -5194,46 +5058,6 @@
       },
       "points": [
         [
-          1192.75,
-          26.995
-        ],
-        [
-          1192.944,
-          29.007
-        ],
-        [
-          1193.329,
-          31.029
-        ],
-        [
-          1193.466,
-          33.039
-        ],
-        [
-          1193.333,
-          35.035
-        ],
-        [
-          1193.243,
-          37.034
-        ],
-        [
-          1193.255,
-          39.037
-        ],
-        [
-          1193.217,
-          41.039
-        ],
-        [
-          1193.16,
-          43.039
-        ],
-        [
-          1193.113,
-          45.039
-        ],
-        [
           1191.041,
           74.976
         ],
@@ -6139,16 +5963,6 @@
         ]
       ],
       "strength": [
-        31.17,
-        44.34,
-        51.86,
-        48.53,
-        60.47,
-        72.59,
-        65.81,
-        71.01,
-        72.83,
-        73.24,
         50.1,
         48.37,
         50.41,
@@ -6376,11 +6190,18 @@
         86.58,
         85.82
       ],
-      "chord_dev_rms_px": 1.222,
-      "chord_bow_px": 4.134,
+      "chord_dev_rms_px": 1.057,
+      "chord_bow_px": 3.424,
       "verified": "yes",
-      "verification_note": "checked in 4 windows: sharp thin-dark-outline -> bright-lip edge of the lowest lip over y 27..600; the bracket at the X=0 corner rejected",
-      "crop": "work/cache/edgecrops_cart80/cart80_x_E_front.png"
+      "verification_note": "checked in 4 windows: sharp thin-dark-outline -> bright-lip edge of the lowest lip over y 27..600; the bracket at the X=0 corner rejected [review: after each of four reference undistortions the chord bow of the E lip exceeds that of x_D_front by +0.54..+0.60 px (both boundaries of the lip agree), although E lies closer to the image centre than D and a radial lens residual would bow it less; the E lip is probably bent by ~0.5 px (~1 mm). Kept straight_3d=true (below the ~1.3 px level used for the divider flanges), but it is the least straight lip: use a low weight or check the plumb-line result without it]",
+      "crop": "work/cache/edgecrops_cart80/cart80_x_E_front.png",
+      "review": {
+        "changes": [
+          "fixed trim (y<50: segment before the first holder at the corner of the X=0 end frame, +0.7..1.0 px off the smooth curve, crop z_Estart.png): removed 10 of 236 points",
+          "straightness caveat added (+0.55 px excess bow relative to x_D_front)"
+        ],
+        "crop": "work/cache/review_cart80/x_E_front_reviewed_strip.png"
+      }
     },
     {
       "id": "cart80_x_E_front_in",
@@ -6403,42 +6224,6 @@
         "note": "front lip / front outline of the shelf at this level; the height of the visible outline above the nominal shelf surface and its exact Y are not in the drawing (bent-up lip with a rounded top, label holders) [initial calibration (~5 px): this image line lies at Z = -1421 mm if Y = 0]"
       },
       "points": [
-        [
-          1195.823,
-          29.38
-        ],
-        [
-          1196.159,
-          31.401
-        ],
-        [
-          1195.891,
-          33.39
-        ],
-        [
-          1195.848,
-          35.391
-        ],
-        [
-          1196.046,
-          37.405
-        ],
-        [
-          1196.117,
-          39.412
-        ],
-        [
-          1195.731,
-          41.394
-        ],
-        [
-          1195.673,
-          43.394
-        ],
-        [
-          1195.526,
-          45.39
-        ],
         [
           1193.893,
           73.347
@@ -6808,30 +6593,6 @@
           254.96
         ],
         [
-          1179.329,
-          284.874
-        ],
-        [
-          1179.06,
-          286.86
-        ],
-        [
-          1179.032,
-          288.864
-        ],
-        [
-          1179.072,
-          290.874
-        ],
-        [
-          1179.047,
-          292.879
-        ],
-        [
-          1178.775,
-          294.864
-        ],
-        [
           1178.378,
           296.838
         ],
@@ -6954,30 +6715,6 @@
         [
           1173.622,
           356.66
-        ],
-        [
-          1171.228,
-          380.546
-        ],
-        [
-          1171.095,
-          382.542
-        ],
-        [
-          1171.081,
-          384.549
-        ],
-        [
-          1171.035,
-          386.554
-        ],
-        [
-          1170.86,
-          388.546
-        ],
-        [
-          1170.766,
-          390.546
         ],
         [
           1170.669,
@@ -7106,30 +6843,6 @@
         [
           1163.814,
           454.184
-        ],
-        [
-          1162.333,
-          486.199
-        ],
-        [
-          1162.005,
-          488.177
-        ],
-        [
-          1161.926,
-          490.179
-        ],
-        [
-          1161.766,
-          492.173
-        ],
-        [
-          1161.302,
-          494.137
-        ],
-        [
-          1160.872,
-          496.105
         ],
         [
           1160.422,
@@ -7341,15 +7054,6 @@
         ]
       ],
       "strength": [
-        42.39,
-        16.27,
-        19.24,
-        30.41,
-        26.7,
-        22.41,
-        25.62,
-        26.57,
-        20.3,
         22.64,
         21.2,
         17.42,
@@ -7442,12 +7146,6 @@
         25.19,
         21.95,
         22.48,
-        24.46,
-        27.82,
-        29.61,
-        27.94,
-        24.22,
-        27.78,
         25.8,
         26.36,
         29.19,
@@ -7479,12 +7177,6 @@
         12.48,
         11.59,
         14.11,
-        24.88,
-        29.01,
-        27.29,
-        25.86,
-        24.72,
-        25.47,
         27.01,
         26.77,
         25.56,
@@ -7517,12 +7209,6 @@
         24.57,
         20.59,
         16.53,
-        15.15,
-        9.95,
-        14.56,
-        16.86,
-        15.98,
-        17.34,
         12.86,
         12.59,
         11.56,
@@ -7576,11 +7262,22 @@
         39.59,
         36.07
       ],
-      "chord_dev_rms_px": 1.262,
-      "chord_bow_px": 4.207,
-      "verified": "yes",
-      "verification_note": "checked: other side of the same bright lip-top highlight (~3 px right of x_E_front), clean; NOT independent of x_E_front (same lip)",
-      "crop": "work/cache/edgecrops_cart80/cart80_x_E_front_in.png"
+      "chord_dev_rms_px": 1.116,
+      "chord_bow_px": 3.542,
+      "verified": "partly",
+      "verification_note": "checked: other side of the same bright lip-top highlight (~3 px right of x_E_front), clean; NOT independent of x_E_front (same lip) [review: other boundary of the same member as x_E_front (2.9 px away, weaker); its shape is not independent of the partner - do not use both as independent lines] [review: after each of four reference undistortions the chord bow of the E lip exceeds that of x_D_front by +0.54..+0.60 px (both boundaries of the lip agree), although E lies closer to the image centre than D and a radial lens residual would bow it less; the E lip is probably bent by ~0.5 px (~1 mm). Kept straight_3d=true (below the ~1.3 px level used for the divider flanges), but it is the least straight lip: use a low weight or check the plumb-line result without it]",
+      "crop": "work/cache/edgecrops_cart80/cart80_x_E_front_in.png",
+      "review": {
+        "changes": [
+          "fixed trim (y<50: same corner segment as x_E_front): removed 9 of 234 points",
+          "12 px after every interruption > 20 px (mean dip -0.2..-0.25 px there): removed 18 of 225 points",
+          "verified yes -> partly",
+          "pair_of = cart80_x_E_front",
+          "straightness caveat added (+0.55 px excess bow relative to x_D_front)"
+        ],
+        "crop": "work/cache/review_cart80/x_E_front_in_reviewed_strip.png"
+      },
+      "pair_of": "cart80_x_E_front"
     },
     {
       "id": "cart80_x_back_rail_out",
@@ -8120,10 +7817,6 @@
           428.161
         ],
         [
-          1605.139,
-          430.087
-        ],
-        [
           1604.949,
           432.082
         ],
@@ -8352,10 +8045,6 @@
           560.575
         ],
         [
-          1583.571,
-          562.467
-        ],
-        [
           1583.695,
           564.523
         ],
@@ -8554,10 +8243,6 @@
         [
           1563.551,
           672.793
-        ],
-        [
-          1562.904,
-          676.751
         ],
         [
           1562.078,
@@ -8942,7 +8627,6 @@
         38.16,
         33.71,
         28.68,
-        29.17,
         27.58,
         26.77,
         33.7,
@@ -9000,7 +8684,6 @@
         30.48,
         28.39,
         20.82,
-        16.74,
         33.31,
         30.17,
         24.5,
@@ -9051,7 +8734,6 @@
         46.03,
         50.94,
         54.27,
-        44.33,
         49.09,
         54.12,
         54.56,
@@ -9116,11 +8798,19 @@
         71.94,
         61.6
       ],
-      "chord_dev_rms_px": 4.032,
-      "chord_bow_px": 13.244,
+      "chord_dev_rms_px": 4.043,
+      "chord_bow_px": 13.259,
       "verified": "yes",
-      "verification_note": "checked in 5 windows: right silhouette of the bright back rail against the wall / background over y 146..802; very clean",
-      "crop": "work/cache/edgecrops_cart80/cart80_x_back_rail_out.png"
+      "verification_note": "checked in 5 windows: right silhouette of the bright back rail against the wall / background over y 146..802; very clean [review: the same image edge is also in edges_scene.json as scene_wall_railA (148 points within 3 px, median 0.82 px), labelled there as a wall conduit. Kept here as the cart's back member: the rod emerges from under the X=0 board corner and runs to the X=1600 board (crops dup_rails_*.png); the scene copy must not be used together with this one]",
+      "crop": "work/cache/edgecrops_cart80/cart80_x_back_rail_out.png",
+      "review": {
+        "changes": [
+          "robust smooth fit (deg 3/4), |res| > max(0.5 px, 3 MAD): removed 3 of 302 points",
+          "duplicate_in_other_region = scene_wall_railA (resolve in the scene set)"
+        ],
+        "crop": "work/cache/review_cart80/x_back_rail_out_reviewed_strip.png"
+      },
+      "duplicate_in_other_region": "scene_wall_railA"
     },
     {
       "id": "cart80_x_back_rail_in",
@@ -9628,10 +9318,6 @@
           650.546
         ],
         [
-          1554.337,
-          652.531
-        ],
-        [
           1553.565,
           654.418
         ],
@@ -9986,7 +9672,6 @@
         27.86,
         29.73,
         36.21,
-        35.29,
         38.26,
         45.85,
         12.52,
@@ -10046,11 +9731,19 @@
         68.1,
         62.35
       ],
-      "chord_dev_rms_px": 3.378,
-      "chord_bow_px": 10.393,
+      "chord_dev_rms_px": 3.384,
+      "chord_bow_px": 10.39,
       "verified": "partly",
-      "verification_note": "left boundary of the back rail face; clean in the lower half, weak and partly rejected in the upper part",
-      "crop": "work/cache/edgecrops_cart80/cart80_x_back_rail_in.png"
+      "verification_note": "left boundary of the back rail face; clean in the lower half, weak and partly rejected in the upper part [review: other boundary of the same member as x_back_rail_out (16-17 px away, weaker); its shape is not independent of the partner - do not use both as independent lines]",
+      "crop": "work/cache/edgecrops_cart80/cart80_x_back_rail_in.png",
+      "review": {
+        "changes": [
+          "robust smooth fit (deg 3/4), |res| > max(0.5 px, 3 MAD): removed 1 of 180 points",
+          "pair_of = cart80_x_back_rail_out"
+        ],
+        "crop": "work/cache/review_cart80/x_back_rail_in_reviewed_strip.png"
+      },
+      "pair_of": "cart80_x_back_rail_out"
     },
     {
       "id": "cart80_x_back_low",
@@ -10408,10 +10101,6 @@
         [
           1554.864,
           362.274
-        ],
-        [
-          1554.392,
-          364.232
         ],
         [
           1548.361,
@@ -10860,54 +10549,6 @@
         [
           1495.96,
           713.775
-        ],
-        [
-          1483.317,
-          772.51
-        ],
-        [
-          1483.057,
-          774.503
-        ],
-        [
-          1482.599,
-          776.453
-        ],
-        [
-          1482.144,
-          778.403
-        ],
-        [
-          1482.189,
-          780.462
-        ],
-        [
-          1481.541,
-          782.371
-        ],
-        [
-          1480.979,
-          784.298
-        ],
-        [
-          1480.845,
-          786.319
-        ],
-        [
-          1480.656,
-          788.327
-        ],
-        [
-          1480.356,
-          790.312
-        ],
-        [
-          1480.134,
-          792.313
-        ],
-        [
-          1479.514,
-          794.228
         ]
       ],
       "strength": [
@@ -10995,7 +10636,6 @@
         63.38,
         64.9,
         56.81,
-        42.09,
         32.43,
         26.47,
         29.92,
@@ -11107,25 +10747,20 @@
         32.18,
         23.21,
         22.41,
-        26.59,
-        21.92,
-        21.5,
-        18.45,
-        15.12,
-        11.35,
-        9.36,
-        11.72,
-        10.77,
-        9.05,
-        8.01,
-        7.13,
-        7.76
+        26.59
       ],
-      "chord_dev_rms_px": 3.469,
-      "chord_bow_px": 10.99,
+      "chord_dev_rms_px": 2.914,
+      "chord_bow_px": 8.597,
       "verified": "yes",
       "verification_note": "checked: left boundary of a darker back-panel member y 147..~800, interrupted by cross members (removed)",
-      "crop": "work/cache/edgecrops_cart80/cart80_x_back_low.png"
+      "crop": "work/cache/edgecrops_cart80/cart80_x_back_low.png",
+      "review": {
+        "changes": [
+          "fixed trim (y>770: strength 7-15 (median 35), curls -0.9 px at the X=1600 end): removed 12 of 209 points",
+          "robust smooth fit (deg 3/4), |res| > max(0.5 px, 3 MAD): removed 1 of 197 points"
+        ],
+        "crop": "work/cache/review_cart80/x_back_low_reviewed_strip.png"
+      }
     },
     {
       "id": "cart80_x_board0_front",
@@ -11145,7 +10780,31 @@
           170
         ],
         "exact": true,
-        "note": "front side of the top plate at the X=0 end (drawing Y=0, Z=0), X ~0..175; check: homography from markers 0/92 gives Y = -1..-3 mm [initial calibration (~5 px): this image line lies at Z = 13 mm if Y = 0]"
+        "note": "front side of the top plate at the X=0 end (drawing Y=0, Z=0), X ~0..175; check: homography from markers 0/92 gives Y = -1..-3 mm [initial calibration (~5 px): this image line lies at Z = 13 mm if Y = 0] [review: kept exact; stickers 0+92: Y = -0.9 mm (-0.7 px); stickers 0: Y = -1.8 mm (-1.3 px)]",
+        "measured_in_sticker_plane": {
+          "0+92": {
+            "coord": "Y",
+            "nominal_mm": 0.0,
+            "value_mm": -0.9,
+            "offset_mm": -0.9,
+            "offset_px": -0.65,
+            "slope_mm_per_100mm": -0.58,
+            "n_points": 48,
+            "n_corners": 8,
+            "homography_rms_px": 0.82
+          },
+          "0": {
+            "coord": "Y",
+            "nominal_mm": 0.0,
+            "value_mm": -1.8,
+            "offset_mm": -1.8,
+            "offset_px": -1.29,
+            "slope_mm_per_100mm": -0.96,
+            "n_points": 43,
+            "n_corners": 4,
+            "homography_rms_px": 0.0
+          }
+        }
       },
       "points": [
         [
@@ -11395,7 +11054,13 @@
       "chord_bow_px": -0.122,
       "verified": "partly",
       "verification_note": "white board front side; in the upper part the shelf-A sticker card (marker 3, lower level) lies directly next to the board edge, local noise 0.4 px",
-      "crop": "work/cache/edgecrops_cart80/cart80_x_board0_front.png"
+      "crop": "work/cache/edgecrops_cart80/cart80_x_board0_front.png",
+      "review": {
+        "changes": [
+          "model_line: independent sticker-plane check added, kept exact"
+        ],
+        "crop": "work/cache/review_cart80/x_board0_front_reviewed_strip.png"
+      }
     },
     {
       "id": "cart80_x_board1600_front",
@@ -11415,7 +11080,31 @@
           1600
         ],
         "exact": true,
-        "note": "front side of the top plate at the X=1600 end (drawing Y=0, Z=0), X ~1445..1600; check: homography from markers 1/2 gives Y = -0.1..-0.7 mm [initial calibration (~5 px): this image line lies at Z = 15 mm if Y = 0]"
+        "note": "front side of the top plate at the X=1600 end (drawing Y=0, Z=0), X ~1445..1600; check: homography from markers 1/2 gives Y = -0.1..-0.7 mm [initial calibration (~5 px): this image line lies at Z = 15 mm if Y = 0] [review: kept exact; stickers 1+2: Y = 0.7 mm (+0.4 px); stickers 1: Y = -0.2 mm (-0.1 px)]",
+        "measured_in_sticker_plane": {
+          "1+2": {
+            "coord": "Y",
+            "nominal_mm": 0.0,
+            "value_mm": 0.7,
+            "offset_mm": 0.7,
+            "offset_px": 0.41,
+            "slope_mm_per_100mm": 0.21,
+            "n_points": 37,
+            "n_corners": 8,
+            "homography_rms_px": 0.77
+          },
+          "1": {
+            "coord": "Y",
+            "nominal_mm": 0.0,
+            "value_mm": -0.2,
+            "offset_mm": -0.2,
+            "offset_px": -0.1,
+            "slope_mm_per_100mm": -0.67,
+            "n_points": 36,
+            "n_corners": 4,
+            "homography_rms_px": 0.0
+          }
+        }
       },
       "points": [
         [
@@ -11610,7 +11299,13 @@
       "chord_bow_px": -0.225,
       "verified": "yes",
       "verification_note": "checked: white board -> darker background boundary over the full board length",
-      "crop": "work/cache/edgecrops_cart80/cart80_x_board1600_front.png"
+      "crop": "work/cache/edgecrops_cart80/cart80_x_board1600_front.png",
+      "review": {
+        "changes": [
+          "model_line: independent sticker-plane check added, kept exact"
+        ],
+        "crop": "work/cache/review_cart80/x_board1600_front_reviewed_strip.png"
+      }
     },
     {
       "id": "cart80_y_board0_outer",
@@ -11630,7 +11325,31 @@
           450
         ],
         "exact": false,
-        "note": "nominally the outer end edge of the top plate at X=0 (drawing X=0, Z=0), but a plane homography from the 8 corners of markers 0 and 92 on this board puts the traced edge at X = -16..-21 mm -> the white board seems to overhang / be bent up at this end; not used as exact [initial calibration (~5 px): X = -15 mm if Z = 0]"
+        "note": "nominally the outer end edge of the top plate at X=0 (drawing X=0, Z=0), but a plane homography from the 8 corners of markers 0 and 92 on this board puts the traced edge at X = -16..-21 mm -> the white board seems to overhang / be bent up at this end; not used as exact [initial calibration (~5 px): X = -15 mm if Z = 0] [review: stickers 0+92: X = -20.3 mm (-15.4 px); stickers 92: X = -18.6 mm (-14.5 px)]",
+        "measured_in_sticker_plane": {
+          "0+92": {
+            "coord": "X",
+            "nominal_mm": 0.0,
+            "value_mm": -20.3,
+            "offset_mm": -20.3,
+            "offset_px": -15.36,
+            "slope_mm_per_100mm": -0.62,
+            "n_points": 64,
+            "n_corners": 8,
+            "homography_rms_px": 0.82
+          },
+          "92": {
+            "coord": "X",
+            "nominal_mm": 0.0,
+            "value_mm": -18.6,
+            "offset_mm": -18.6,
+            "offset_px": -14.49,
+            "slope_mm_per_100mm": -1.19,
+            "n_points": 32,
+            "n_corners": 4,
+            "homography_rms_px": 0.0
+          }
+        }
       },
       "points": [
         [
@@ -11967,8 +11686,8 @@
       "what": "X=0 end white top board: inner edge (towards the cart centre); white board above, grey cart interior below",
       "class": "cart_structure",
       "cart": 80,
-      "straight_3d": true,
-      "direction": "cartY",
+      "straight_3d": false,
+      "direction": "unknown",
       "model_line": {
         "fixed": {
           "X": 170,
@@ -11980,7 +11699,42 @@
           450
         ],
         "exact": false,
-        "note": "board width not in the drawing; homography from markers 0/92: X = 179-182 mm [initial calibration (~5 px): X = 173 mm if Z = 0]"
+        "note": "board width not in the drawing; homography from markers 0/92: X = 179-182 mm [initial calibration (~5 px): X = 173 mm if Z = 0] [review: stickers 0+92: X = 179.4 mm (+6.6 px); stickers 0: X = 185.5 mm (+10.7 px); stickers 92: X = 175.9 mm (+4.0 px) - the edge runs obliquely across the board (~1.7-2 deg off cart Y)]",
+        "measured_in_sticker_plane": {
+          "0+92": {
+            "coord": "X",
+            "nominal_mm": 170.0,
+            "value_mm": 179.4,
+            "offset_mm": 9.4,
+            "offset_px": 6.56,
+            "slope_mm_per_100mm": -3.49,
+            "n_points": 121,
+            "n_corners": 8,
+            "homography_rms_px": 0.82
+          },
+          "0": {
+            "coord": "X",
+            "nominal_mm": 170.0,
+            "value_mm": 185.5,
+            "offset_mm": 15.5,
+            "offset_px": 10.7,
+            "slope_mm_per_100mm": -6.13,
+            "n_points": 44,
+            "n_corners": 4,
+            "homography_rms_px": 0.0
+          },
+          "92": {
+            "coord": "X",
+            "nominal_mm": 170.0,
+            "value_mm": 175.9,
+            "offset_mm": 5.9,
+            "offset_px": 3.98,
+            "slope_mm_per_100mm": 0.33,
+            "n_points": 26,
+            "n_corners": 4,
+            "homography_rms_px": 0.0
+          }
+        }
       },
       "points": [
         [
@@ -12594,15 +12348,21 @@
       "chord_dev_rms_px": 0.944,
       "chord_bow_px": 3.063,
       "verified": "yes",
-      "verification_note": "checked: white board / grey interior boundary over the full width, clean",
-      "crop": "work/cache/edgecrops_cart80/cart80_y_board0_inner.png"
+      "verification_note": "checked: white board / grey interior boundary over the full width, clean [review: straight_3d -> false and direction cartY -> unknown: residual bow ~2 px after any of four rough undistortions (outer edge of the same board 0.0-0.3 px), 1.7-2.0 deg off the cart-Y vanishing direction of the two outer board edges, and X = 176 / 186 mm under the two stickers of this board; the white sheet is visibly curled at this end]",
+      "crop": "work/cache/edgecrops_cart80/cart80_y_board0_inner.png",
+      "review": {
+        "changes": [
+          "straight_3d true -> false, direction cartY -> unknown"
+        ],
+        "crop": "work/cache/review_cart80/y_board0_inner_reviewed_strip.png"
+      }
     },
     {
       "id": "cart80_y_board1600_inner",
       "what": "X=1600 end white top board: inner edge of the white top face (white below, tan inner end face of the board above)",
       "class": "cart_structure",
       "cart": 80,
-      "straight_3d": true,
+      "straight_3d": false,
       "direction": "cartY",
       "model_line": {
         "fixed": {
@@ -12615,7 +12375,42 @@
           450
         ],
         "exact": false,
-        "note": "board width not in the drawing; homography from markers 1/2: X = 1443-1445 mm [initial calibration (~5 px): X = 1446 mm if Z = 0]"
+        "note": "board width not in the drawing; homography from markers 1/2: X = 1443-1445 mm [initial calibration (~5 px): X = 1446 mm if Z = 0] [review: stickers 1+2: X = 1443.7 mm (-0.2 px); stickers 1: X = 1447.0 mm (+1.8 px); stickers 2: X = 1441.4 mm (-1.5 px)]",
+        "measured_in_sticker_plane": {
+          "1+2": {
+            "coord": "X",
+            "nominal_mm": 1444.0,
+            "value_mm": 1443.7,
+            "offset_mm": -0.3,
+            "offset_px": -0.2,
+            "slope_mm_per_100mm": -1.2,
+            "n_points": 115,
+            "n_corners": 8,
+            "homography_rms_px": 0.77
+          },
+          "1": {
+            "coord": "X",
+            "nominal_mm": 1444.0,
+            "value_mm": 1447.0,
+            "offset_mm": 3.0,
+            "offset_px": 1.81,
+            "slope_mm_per_100mm": -3.6,
+            "n_points": 38,
+            "n_corners": 4,
+            "homography_rms_px": 0.0
+          },
+          "2": {
+            "coord": "X",
+            "nominal_mm": 1444.0,
+            "value_mm": 1441.4,
+            "offset_mm": -2.6,
+            "offset_px": -1.52,
+            "slope_mm_per_100mm": 0.04,
+            "n_points": 31,
+            "n_corners": 4,
+            "homography_rms_px": 0.0
+          }
+        }
       },
       "points": [
         [
@@ -13198,9 +12993,15 @@
       ],
       "chord_dev_rms_px": 0.452,
       "chord_bow_px": -0.725,
-      "verified": "yes",
-      "verification_note": "checked: white top face / tan end-face boundary over the full width",
-      "crop": "work/cache/edgecrops_cart80/cart80_y_board1600_inner.png"
+      "verified": "partly",
+      "verification_note": "checked: white top face / tan end-face boundary over the full width [review: straight_3d -> false, verified -> partly: the low-contrast white/tan boundary shows a smooth +-1 px wave along the edge (residual to a quadratic, raw and undistorted), the outer edge of the same board is straight to +-0.2 px; not usable for plumb-line / VP]",
+      "crop": "work/cache/edgecrops_cart80/cart80_y_board1600_inner.png",
+      "review": {
+        "changes": [
+          "straight_3d true -> false, verified yes -> partly (+-1 px wave)"
+        ],
+        "crop": "work/cache/review_cart80/y_board1600_inner_reviewed_strip.png"
+      }
     },
     {
       "id": "cart80_y_board1600_inner_top",
@@ -13220,7 +13021,42 @@
           450
         ],
         "exact": false,
-        "note": "board width and thickness not in the drawing (lower inner edge of the board, homography in the Z=0 plane gives X = 1432-1434 mm) [initial calibration (~5 px): X = 1441 mm if Z = -10]"
+        "note": "board width and thickness not in the drawing (lower inner edge of the board, homography in the Z=0 plane gives X = 1432-1434 mm) [initial calibration (~5 px): X = 1441 mm if Z = -10] [review: stickers 1+2: X = 1432.2 mm (-7.0 px); stickers 1: X = 1437.1 mm (-4.2 px); stickers 2: X = 1429.0 mm (-8.7 px)]",
+        "measured_in_sticker_plane": {
+          "1+2": {
+            "coord": "X",
+            "nominal_mm": 1444.0,
+            "value_mm": 1432.2,
+            "offset_mm": -11.8,
+            "offset_px": -7.04,
+            "slope_mm_per_100mm": -2.09,
+            "n_points": 107,
+            "n_corners": 8,
+            "homography_rms_px": 0.77
+          },
+          "1": {
+            "coord": "X",
+            "nominal_mm": 1444.0,
+            "value_mm": 1437.1,
+            "offset_mm": -6.9,
+            "offset_px": -4.22,
+            "slope_mm_per_100mm": -4.93,
+            "n_points": 37,
+            "n_corners": 4,
+            "homography_rms_px": 0.0
+          },
+          "2": {
+            "coord": "X",
+            "nominal_mm": 1444.0,
+            "value_mm": 1429.0,
+            "offset_mm": -15.0,
+            "offset_px": -8.68,
+            "slope_mm_per_100mm": 1.63,
+            "n_points": 32,
+            "n_corners": 4,
+            "homography_rms_px": 0.0
+          }
+        }
       },
       "points": [
         [
@@ -13428,22 +13264,6 @@
           884.372
         ],
         [
-          1394.477,
-          883.689
-        ],
-        [
-          1396.459,
-          883.279
-        ],
-        [
-          1398.468,
-          883.403
-        ],
-        [
-          1400.474,
-          883.482
-        ],
-        [
           1402.49,
           883.737
         ],
@@ -13464,40 +13284,12 @@
           883.276
         ],
         [
-          1412.454,
-          882.773
-        ],
-        [
-          1414.458,
-          882.795
-        ],
-        [
           1416.468,
           882.949
         ],
         [
           1420.462,
           882.728
-        ],
-        [
-          1422.439,
-          882.211
-        ],
-        [
-          1424.423,
-          881.833
-        ],
-        [
-          1426.432,
-          881.978
-        ],
-        [
-          1428.424,
-          881.75
-        ],
-        [
-          1444.421,
-          881.276
         ],
         [
           1446.43,
@@ -13704,24 +13496,13 @@
         27.79,
         23.93,
         22.1,
-        22.2,
-        22.66,
-        22.81,
-        25.2,
         27.72,
         19.57,
         30.99,
         31.06,
         32.98,
-        34.01,
-        31.27,
         23.78,
         34.68,
-        34.41,
-        32.0,
-        20.69,
-        29.45,
-        46.67,
         32.77,
         16.68,
         27.83,
@@ -13761,11 +13542,17 @@
         51.76,
         49.33
       ],
-      "chord_dev_rms_px": 0.302,
-      "chord_bow_px": -0.087,
+      "chord_dev_rms_px": 0.228,
+      "chord_bow_px": -0.4,
       "verified": "yes",
       "verification_note": "checked: tan end face / dark interior boundary over the full width. raw bow -0.09 px while the parallel edge 5 px away (y_board1600_inner) bows -0.72 px and the lens models predict -1.0..-2.1 px -> the lower inner board edge is not straight (warped board end); straight_3d set false",
-      "crop": "work/cache/edgecrops_cart80/cart80_y_board1600_inner_top.png"
+      "crop": "work/cache/edgecrops_cart80/cart80_y_board1600_inner_top.png",
+      "review": {
+        "changes": [
+          "robust smooth fit (deg 3/4), |res| > max(0.5 px, 3 MAD): removed 11 of 107 points"
+        ],
+        "crop": "work/cache/review_cart80/y_board1600_inner_top_reviewed_strip.png"
+      }
     },
     {
       "id": "cart80_y_board1600_outer",
@@ -13784,8 +13571,43 @@
           0,
           450
         ],
-        "exact": true,
-        "note": "outer end edge of the top plate at X=1600 (drawing X=1600, Z=0); check: plane homography from markers 1 and 2 on this board puts the edge at X = 1602-1603 mm [initial calibration (~5 px): X = 1616 mm if Z = 0]"
+        "exact": false,
+        "note": "nominal outer end edge of the top plate at X=1600 (drawing X=1600, Z=0) - NOT used as exact: plane homographies from the valid edge-based corners of the board's stickers (markers_final.json, rough undistortion ref_f1394) give stickers 1+2: X = 1604.0 mm (+2.3 px); stickers 1: X = 1605.3 mm (+3.0 px); stickers 2: X = 1603.3 mm (+1.9 px); i.e. the visible board edge lies 3-5 mm outside X=1600 (the trace note quoted 1602-1603 mm). Rule: exact only if all homographies agree within 2 mm.",
+        "measured_in_sticker_plane": {
+          "1+2": {
+            "coord": "X",
+            "nominal_mm": 1600.0,
+            "value_mm": 1604.0,
+            "offset_mm": 4.0,
+            "offset_px": 2.28,
+            "slope_mm_per_100mm": -0.1,
+            "n_points": 106,
+            "n_corners": 8,
+            "homography_rms_px": 0.77
+          },
+          "1": {
+            "coord": "X",
+            "nominal_mm": 1600.0,
+            "value_mm": 1605.3,
+            "offset_mm": 5.3,
+            "offset_px": 2.98,
+            "slope_mm_per_100mm": 0.88,
+            "n_points": 36,
+            "n_corners": 4,
+            "homography_rms_px": 0.0
+          },
+          "2": {
+            "coord": "X",
+            "nominal_mm": 1600.0,
+            "value_mm": 1603.3,
+            "offset_mm": 3.3,
+            "offset_px": 1.9,
+            "slope_mm_per_100mm": 0.52,
+            "n_points": 39,
+            "n_corners": 4,
+            "homography_rms_px": 0.0
+          }
+        }
       },
       "points": [
         [
@@ -13959,30 +13781,6 @@
         [
           1363.851,
           969.221
-        ],
-        [
-          1365.848,
-          969.096
-        ],
-        [
-          1367.843,
-          968.928
-        ],
-        [
-          1369.839,
-          968.803
-        ],
-        [
-          1399.822,
-          967.667
-        ],
-        [
-          1401.819,
-          967.557
-        ],
-        [
-          1403.817,
-          967.459
         ],
         [
           1405.813,
@@ -14257,12 +14055,6 @@
         48.22,
         49.32,
         49.25,
-        50.22,
-        49.81,
-        52.6,
-        50.38,
-        54.42,
-        56.08,
         54.42,
         55.34,
         55.83,
@@ -14321,11 +14113,18 @@
         47.7,
         49.79
       ],
-      "chord_dev_rms_px": 0.403,
-      "chord_bow_px": -1.325,
+      "chord_dev_rms_px": 0.401,
+      "chord_bow_px": -1.341,
       "verified": "yes",
       "verification_note": "checked: white board / dark background boundary; curled back corner excluded",
-      "crop": "work/cache/edgecrops_cart80/cart80_y_board1600_outer.png"
+      "crop": "work/cache/edgecrops_cart80/cart80_y_board1600_outer.png",
+      "review": {
+        "changes": [
+          "6 px either side of the occluding stick (points pulled by up to -0.3 px): removed 6 of 106 points",
+          "model_line.exact true -> false (3.3-5.3 mm / +1.9..+3.0 px outside the drawing line per the board's own stickers)"
+        ],
+        "crop": "work/cache/review_cart80/y_board1600_outer_reviewed_strip.png"
+      }
     },
     {
       "id": "cart80_y_div1_top",
@@ -14725,20 +14524,12 @@
           199.677
         ],
         [
-          1545.52,
-          200.528
-        ],
-        [
           1549.649,
           199.384
         ],
         [
           1551.558,
           200.447
-        ],
-        [
-          1553.488,
-          201.271
         ],
         [
           1555.569,
@@ -14860,10 +14651,8 @@
         16.61,
         6.86,
         9.21,
-        6.63,
         17.19,
         23.18,
-        8.84,
         14.31,
         10.26,
         13.12,
@@ -14871,11 +14660,17 @@
         12.47,
         10.32
       ],
-      "chord_dev_rms_px": 0.814,
-      "chord_bow_px": 2.543,
+      "chord_dev_rms_px": 0.779,
+      "chord_bow_px": 2.469,
       "verified": "partly",
       "verification_note": "flange boundary with low contrast against the dusty shelf behind; ok in the front half, noisier (0.27 px) towards the back. raw bow +2.54 px over 212 px vs +0.9..+1.1 px predicted for a straight line by the initial / prototype lens models -> flange edge probably not straight; straight_3d set false",
-      "crop": "work/cache/edgecrops_cart80/cart80_y_div1_top.png"
+      "crop": "work/cache/edgecrops_cart80/cart80_y_div1_top.png",
+      "review": {
+        "changes": [
+          "robust smooth fit (deg 3/4), |res| > max(0.5 px, 3 MAD): removed 2 of 104 points"
+        ],
+        "crop": "work/cache/review_cart80/y_div1_top_reviewed_strip.png"
+      }
     },
     {
       "id": "cart80_y_div4_top",
@@ -16319,130 +16114,6 @@
         [
           1543.706,
           408.501
-        ],
-        [
-          1545.672,
-          408.924
-        ],
-        [
-          1549.596,
-          409.828
-        ],
-        [
-          1551.603,
-          409.878
-        ],
-        [
-          1553.582,
-          410.179
-        ],
-        [
-          1555.573,
-          410.371
-        ],
-        [
-          1557.565,
-          410.559
-        ],
-        [
-          1559.546,
-          410.839
-        ],
-        [
-          1561.552,
-          410.901
-        ],
-        [
-          1563.531,
-          411.207
-        ],
-        [
-          1565.51,
-          411.501
-        ],
-        [
-          1567.507,
-          411.644
-        ],
-        [
-          1569.495,
-          411.868
-        ],
-        [
-          1571.47,
-          412.203
-        ],
-        [
-          1573.458,
-          412.42
-        ],
-        [
-          1575.441,
-          412.69
-        ],
-        [
-          1577.433,
-          412.874
-        ],
-        [
-          1579.428,
-          413.039
-        ],
-        [
-          1581.416,
-          413.254
-        ],
-        [
-          1583.402,
-          413.493
-        ],
-        [
-          1585.391,
-          413.71
-        ],
-        [
-          1587.376,
-          413.958
-        ],
-        [
-          1589.367,
-          414.152
-        ],
-        [
-          1591.357,
-          414.359
-        ],
-        [
-          1595.388,
-          414.327
-        ],
-        [
-          1597.391,
-          414.426
-        ],
-        [
-          1599.36,
-          414.806
-        ],
-        [
-          1601.355,
-          414.975
-        ],
-        [
-          1603.313,
-          415.448
-        ],
-        [
-          1605.371,
-          415.077
-        ],
-        [
-          1609.286,
-          416.039
-        ],
-        [
-          1611.277,
-          416.241
         ]
       ],
       "strength": [
@@ -16534,44 +16205,19 @@
         13.66,
         12.78,
         12.71,
-        12.77,
-        12.98,
-        20.56,
-        18.55,
-        17.04,
-        15.85,
-        15.9,
-        15.33,
-        15.75,
-        16.58,
-        16.6,
-        16.66,
-        18.42,
-        14.08,
-        13.74,
-        13.6,
-        11.24,
-        10.44,
-        13.27,
-        13.47,
-        13.62,
-        14.68,
-        14.9,
-        13.6,
-        21.23,
-        28.79,
-        17.73,
-        10.35,
-        11.51,
-        15.05,
-        20.31,
-        12.94
+        12.77
       ],
-      "chord_dev_rms_px": 0.471,
-      "chord_bow_px": 1.245,
+      "chord_dev_rms_px": 0.293,
+      "chord_bow_px": 0.52,
       "verified": "yes",
       "verification_note": "checked: clean flange lower edge from the label holder to the back post",
-      "crop": "work/cache/edgecrops_cart80/cart80_u_div2_low.png"
+      "crop": "work/cache/edgecrops_cart80/cart80_u_div2_low.png",
+      "review": {
+        "changes": [
+          "fixed trim (x>1545: 0.8 px step where the flange line crosses the back members): removed 31 of 120 points"
+        ],
+        "crop": "work/cache/review_cart80/u_div2_low_reviewed_strip.png"
+      }
     },
     {
       "id": "cart80_z_post1600_sil",
@@ -16633,10 +16279,6 @@
         [
           1159.685,
           652.324
-        ],
-        [
-          1160.953,
-          653.979
         ],
         [
           1168.175,
@@ -16774,7 +16416,6 @@
         20.81,
         29.37,
         28.38,
-        22.32,
         39.96,
         34.92,
         22.54,
@@ -16807,11 +16448,17 @@
         7.46,
         7.27
       ],
-      "chord_dev_rms_px": 0.257,
-      "chord_bow_px": 0.206,
+      "chord_dev_rms_px": 0.245,
+      "chord_bow_px": 0.199,
       "verified": "partly",
       "verification_note": "post silhouette above the handle; short (~100 px), several rungs/brackets interrupt it",
-      "crop": "work/cache/edgecrops_cart80/cart80_z_post1600_sil.png"
+      "crop": "work/cache/edgecrops_cart80/cart80_z_post1600_sil.png",
+      "review": {
+        "changes": [
+          "robust smooth fit (deg 3/4), |res| > max(0.5 px, 3 MAD): removed 1 of 42 points"
+        ],
+        "crop": "work/cache/review_cart80/z_post1600_sil_reviewed_strip.png"
+      }
     },
     {
       "id": "cart80_z_post1600_sil_low",
@@ -16820,19 +16467,7 @@
       "cart": 80,
       "straight_3d": true,
       "direction": "cartZ",
-      "model_line": {
-        "fixed": {
-          "X": 1600,
-          "Y": 0
-        },
-        "free": "Z",
-        "range_mm": [
-          -1800,
-          0
-        ],
-        "exact": false,
-        "note": "post outline, profile not in the drawing [initial calibration (~5 px): X = 1571 mm if Y = 0]"
-      },
+      "model_line": null,
       "points": [
         [
           1217.568,
@@ -16885,14 +16520,6 @@
         [
           1227.287,
           822.304
-        ],
-        [
-          1227.411,
-          824.406
-        ],
-        [
-          1230.28,
-          827.663
         ],
         [
           1230.321,
@@ -16973,34 +16600,6 @@
         [
           1244.915,
           869.605
-        ],
-        [
-          1266.506,
-          928.353
-        ],
-        [
-          1267.07,
-          930.296
-        ],
-        [
-          1267.494,
-          932.291
-        ],
-        [
-          1267.914,
-          934.287
-        ],
-        [
-          1268.366,
-          936.272
-        ],
-        [
-          1268.865,
-          938.239
-        ],
-        [
-          1269.727,
-          940.074
         ]
       ],
       "strength": [
@@ -17017,8 +16616,6 @@
         35.4,
         26.88,
         27.69,
-        29.89,
-        15.87,
         15.71,
         15.73,
         10.38,
@@ -17038,20 +16635,21 @@
         12.33,
         11.6,
         7.11,
-        6.47,
-        25.38,
-        29.31,
-        24.92,
-        23.87,
-        25.19,
-        29.7,
-        19.31
+        6.47
       ],
-      "chord_dev_rms_px": 0.33,
-      "chord_bow_px": -0.169,
+      "chord_dev_rms_px": 0.239,
+      "chord_bow_px": -0.093,
       "verified": "partly",
-      "verification_note": "post silhouette below the handle; short, interrupted; does not lie on one smooth curve with z_post1600_sil (0.6-0.9 px), so kept separate",
-      "crop": "work/cache/edgecrops_cart80/cart80_z_post1600_sil_low.png"
+      "verification_note": "post silhouette below the handle; short, interrupted; does not lie on one smooth curve with z_post1600_sil (0.6-0.9 px), so kept separate [review: model_line (X=1600, Y=0, not exact) removed: this post outline below the push handle is parallel to z_post1600_sil (both point to the nadir) but offset by 4-5 px from it, so the two are different outline lines of the post and at most one can be the X=1600/Y=0 corner line; direction cartZ kept]",
+      "crop": "work/cache/edgecrops_cart80/cart80_z_post1600_sil_low.png",
+      "review": {
+        "changes": [
+          "fixed trim (y>920: last 7 points next to the X=1600 board run at a different angle (-0.65 -> +0.53 px over 12 px)): removed 7 of 42 points",
+          "robust smooth fit (deg 3/4), |res| > max(0.5 px, 3 MAD): removed 2 of 35 points",
+          "model_line removed (4-5 px parallel offset from z_post1600_sil, not the same outline line)"
+        ],
+        "crop": "work/cache/review_cart80/z_post1600_sil_low_reviewed_strip.png"
+      }
     },
     {
       "id": "cart80_s_rail_right",
@@ -18147,9 +17745,16 @@
       ],
       "chord_dev_rms_px": 2.24,
       "chord_bow_px": 7.393,
-      "verified": "partly",
-      "verification_note": "long straight dark steel rail behind the cart (scene, not cart); edge clean except next to the white reflector blob; physical straightness assumed (steel profile)",
-      "crop": "work/cache/edgecrops_cart80/cart80_s_rail_right.png"
+      "verified": "no",
+      "verification_note": "long straight dark steel rail behind the cart (scene, not cart); edge clean except next to the white reflector blob; physical straightness assumed (steel profile) [review: verified -> no: the same image edge is in edges_scene.json as scene_wall_railB (154 of 216 points within 3 px, median 1.68 px); scene lines belong to the scene set; this copy includes the curved rod end (bow 1.6-2.1 px after undistortion vs 0.4-1.3 px on its neighbours)]",
+      "crop": "work/cache/edgecrops_cart80/cart80_s_rail_right.png",
+      "duplicate_of": "scene_wall_railB",
+      "review": {
+        "changes": [
+          "verified -> no (duplicate of scene_wall_railB)"
+        ],
+        "crop": "work/cache/review_cart80/s_rail_right_reviewed_strip.png"
+      }
     },
     {
       "id": "cart80_s_frame",
@@ -18945,9 +18550,15 @@
       ],
       "chord_dev_rms_px": 1.287,
       "chord_bow_px": 4.178,
-      "verified": "partly",
-      "verification_note": "door/wall frame profile edge right of the cart (scene); clean; straightness assumed",
-      "crop": "work/cache/edgecrops_cart80/cart80_s_frame.png"
+      "verified": "no",
+      "verification_note": "door/wall frame profile edge right of the cart (scene); clean; straightness assumed [review: verified -> no: this is the boundary of the dark shadow/gap strip ~2.5 px left of the rod's left edge (scene_rpost_rod / s_frame2), not a physical edge; kink of +0.7/-0.9 px at y~440-460; crop dup_frame_a.png]",
+      "crop": "work/cache/edgecrops_cart80/cart80_s_frame.png",
+      "review": {
+        "changes": [
+          "verified -> no (shadow/gap boundary next to the rod)"
+        ],
+        "crop": "work/cache/review_cart80/s_frame_reviewed_strip.png"
+      }
     },
     {
       "id": "cart80_s_frame2",
@@ -20178,9 +19789,16 @@
       ],
       "chord_dev_rms_px": 2.594,
       "chord_bow_px": 8.668,
-      "verified": "partly",
-      "verification_note": "checked in 4 windows: clean boundary of the frame profile over y 300..800 (scene, not cart); physical straightness assumed (metal frame); not independent of s_frame / s_frame3 (same profile)",
-      "crop": "work/cache/edgecrops_cart80/cart80_s_frame2.png"
+      "verified": "no",
+      "verification_note": "checked in 4 windows: clean boundary of the frame profile over y 300..800 (scene, not cart); physical straightness assumed (metal frame); not independent of s_frame / s_frame3 (same profile) [review: verified -> no: the same image edge is in edges_scene.json as scene_rpost_rod (218 of 243 points within 3 px, median 0.69 px); scene lines belong to the scene set]",
+      "crop": "work/cache/edgecrops_cart80/cart80_s_frame2.png",
+      "duplicate_of": "scene_rpost_rod",
+      "review": {
+        "changes": [
+          "verified -> no (duplicate of scene_rpost_rod)"
+        ],
+        "crop": "work/cache/review_cart80/s_frame2_reviewed_strip.png"
+      }
     },
     {
       "id": "cart80_s_frame3",
@@ -21066,9 +20684,1158 @@
       ],
       "chord_dev_rms_px": 2.733,
       "chord_bow_px": 8.746,
-      "verified": "partly",
-      "verification_note": "checked in 4 windows: clean, a few points next to a screw head rejected (scene, not cart); physical straightness assumed; same profile as s_frame2",
-      "crop": "work/cache/edgecrops_cart80/cart80_s_frame3.png"
+      "verified": "no",
+      "verification_note": "checked in 4 windows: clean, a few points next to a screw head rejected (scene, not cart); physical straightness assumed; same profile as s_frame2 [review: verified -> no: the same image edge is in edges_scene.json as scene_rpost_rodR (137 of 174 points within 3 px, median 0.77 px); scene lines belong to the scene set; this copy also jumps onto other structures below y~630 (+1..3.5 px)]",
+      "crop": "work/cache/edgecrops_cart80/cart80_s_frame3.png",
+      "duplicate_of": "scene_rpost_rodR",
+      "review": {
+        "changes": [
+          "verified -> no (duplicate of scene_rpost_rodR)"
+        ],
+        "crop": "work/cache/review_cart80/s_frame3_reviewed_strip.png"
+      }
     }
-  ]
+  ],
+  "review": {
+    "script": "work/12_review_edges_cart80.py",
+    "observations": [
+      "cart-X pencil: the five shelf lips (A_out, B, C, D, E) meet in one vanishing point to <= 0.15 deg; the three back members form their own pencil (<= 0.07 deg) whose angle to the lip VP is +0.0..+0.6 deg and changes sign between plausible lenses -> lens information for the joint fit, not a label error",
+      "the two board fronts (exact lines x_board0_front / x_board1600_front) deviate from the lip VP by about -2.6 / +3.0 deg (2-3 px at their ends) with every lens tried, in opposite senses at the two ends; in the plane of their own stickers both are parallel to the sticker X axis (0.2-1 mm per 100 mm) -> the top-plate boards (with their stickers) are not parallel to the shelf lips in the image: observation for the top-plate / shelf geometry question, do not put the board fronts into the cart-X VP group together with the lips without a separate check",
+      "relative lip bows after undistortion: C < D < E by ~0.3 and ~0.55 px (monotonic with shelf height, opposite to the radial-lens expectation) -> shelf lips are straight only to ~0.3-0.6 px",
+      "the Z values quoted in the lip model_line notes (Z=-167..-1459 at Y=0) come from the initial calibration (RMS ~5 px, f~1290); they are rough and must not be read as a measured shelf-height mismatch",
+      "not reviewed here: cart-Z coverage stays weak (z_post1600_sil ~100 px, z_post1600_sil_low ~75 px, 4-5 px apart and different outline lines)"
+    ],
+    "input": "work/cache/edges_cart80_prereview.json (output of 10_edges_cart80_trace.py)",
+    "summary": [
+      "fixed trims: x_E_front/_in y<50, x_C_front y>595, x_back_low y>770, x_B_front_top y>300, u_div2_low x>1545, z_post1600_sil_low y>920, y_board1600_outer +-6 px at the occluder",
+      "robust cleaning removed points on 8 edges: {'x_A_front_in': 2, 'x_back_rail_out': 3, 'x_back_rail_in': 1, 'x_back_low': 1, 'y_board1600_inner_top': 11, 'y_div1_top': 2, 'z_post1600_sil': 1, 'z_post1600_sil_low': 2}",
+      "x_B_front_top + x_B_front_bot merged into x_B_front (one lip; one smooth curve fits both pieces, piece mean residuals <= 0.03 px; merge test {'union_bow_px': 0.09, 'union_line_rms_px': 0.187, 'mean_offset_B_from_line_A_px': 0.51, 'union_quad_rms_px': 0.185, 'union_mean_res_A_B_px': [-0.017, 0.017], 'pieces_quad_rms_px': [0.146, 0.173]})",
+      "y_board1600_outer: exact -> false (stickers 1+2: X = 1604.0 mm (+2.3 px); stickers 1: X = 1605.3 mm (+3.0 px); stickers 2: X = 1603.3 mm (+1.9 px))",
+      "y_board0_inner: straight_3d -> false, direction cartY -> unknown (2 px residual bow, ~2 deg oblique)",
+      "y_board1600_inner: straight_3d -> false (+-1 px wave on a low-contrast boundary)",
+      "pairs: x_E_front_in (-> partly), x_A_front_in, x_back_rail_in get pair_of",
+      "s_frame2/s_frame3/s_rail_right: verified -> no (duplicates of scene edges); s_frame: verified -> no (shadow boundary); x_back_rail_out duplicated by scene_wall_railA (flagged, kept here)"
+    ],
+    "changed_edges": [
+      "cart80_x_A_front_in",
+      "cart80_x_B_front",
+      "cart80_x_C_front",
+      "cart80_x_E_front",
+      "cart80_x_E_front_in",
+      "cart80_x_back_rail_out",
+      "cart80_x_back_rail_in",
+      "cart80_x_back_low",
+      "cart80_x_board0_front",
+      "cart80_x_board1600_front",
+      "cart80_y_board0_inner",
+      "cart80_y_board1600_inner",
+      "cart80_y_board1600_inner_top",
+      "cart80_y_board1600_outer",
+      "cart80_y_div1_top",
+      "cart80_u_div2_low",
+      "cart80_z_post1600_sil",
+      "cart80_z_post1600_sil_low",
+      "cart80_s_rail_right",
+      "cart80_s_frame",
+      "cart80_s_frame2",
+      "cart80_s_frame3"
+    ],
+    "board_homography_check": {
+      "y_board0_outer": {
+        "0+92": {
+          "coord": "X",
+          "nominal_mm": 0.0,
+          "value_mm": -20.3,
+          "offset_mm": -20.3,
+          "offset_px": -15.36,
+          "slope_mm_per_100mm": -0.62,
+          "n_points": 64,
+          "n_corners": 8,
+          "homography_rms_px": 0.82
+        },
+        "92": {
+          "coord": "X",
+          "nominal_mm": 0.0,
+          "value_mm": -18.6,
+          "offset_mm": -18.6,
+          "offset_px": -14.49,
+          "slope_mm_per_100mm": -1.19,
+          "n_points": 32,
+          "n_corners": 4,
+          "homography_rms_px": 0.0
+        }
+      },
+      "y_board0_inner": {
+        "0+92": {
+          "coord": "X",
+          "nominal_mm": 170.0,
+          "value_mm": 179.4,
+          "offset_mm": 9.4,
+          "offset_px": 6.56,
+          "slope_mm_per_100mm": -3.49,
+          "n_points": 121,
+          "n_corners": 8,
+          "homography_rms_px": 0.82
+        },
+        "0": {
+          "coord": "X",
+          "nominal_mm": 170.0,
+          "value_mm": 185.5,
+          "offset_mm": 15.5,
+          "offset_px": 10.7,
+          "slope_mm_per_100mm": -6.13,
+          "n_points": 44,
+          "n_corners": 4,
+          "homography_rms_px": 0.0
+        },
+        "92": {
+          "coord": "X",
+          "nominal_mm": 170.0,
+          "value_mm": 175.9,
+          "offset_mm": 5.9,
+          "offset_px": 3.98,
+          "slope_mm_per_100mm": 0.33,
+          "n_points": 26,
+          "n_corners": 4,
+          "homography_rms_px": 0.0
+        }
+      },
+      "x_board0_front": {
+        "0+92": {
+          "coord": "Y",
+          "nominal_mm": 0.0,
+          "value_mm": -0.9,
+          "offset_mm": -0.9,
+          "offset_px": -0.65,
+          "slope_mm_per_100mm": -0.58,
+          "n_points": 48,
+          "n_corners": 8,
+          "homography_rms_px": 0.82
+        },
+        "0": {
+          "coord": "Y",
+          "nominal_mm": 0.0,
+          "value_mm": -1.8,
+          "offset_mm": -1.8,
+          "offset_px": -1.29,
+          "slope_mm_per_100mm": -0.96,
+          "n_points": 43,
+          "n_corners": 4,
+          "homography_rms_px": 0.0
+        }
+      },
+      "y_board1600_outer": {
+        "1+2": {
+          "coord": "X",
+          "nominal_mm": 1600.0,
+          "value_mm": 1604.0,
+          "offset_mm": 4.0,
+          "offset_px": 2.28,
+          "slope_mm_per_100mm": -0.1,
+          "n_points": 106,
+          "n_corners": 8,
+          "homography_rms_px": 0.77
+        },
+        "1": {
+          "coord": "X",
+          "nominal_mm": 1600.0,
+          "value_mm": 1605.3,
+          "offset_mm": 5.3,
+          "offset_px": 2.98,
+          "slope_mm_per_100mm": 0.88,
+          "n_points": 36,
+          "n_corners": 4,
+          "homography_rms_px": 0.0
+        },
+        "2": {
+          "coord": "X",
+          "nominal_mm": 1600.0,
+          "value_mm": 1603.3,
+          "offset_mm": 3.3,
+          "offset_px": 1.9,
+          "slope_mm_per_100mm": 0.52,
+          "n_points": 39,
+          "n_corners": 4,
+          "homography_rms_px": 0.0
+        }
+      },
+      "y_board1600_inner": {
+        "1+2": {
+          "coord": "X",
+          "nominal_mm": 1444.0,
+          "value_mm": 1443.7,
+          "offset_mm": -0.3,
+          "offset_px": -0.2,
+          "slope_mm_per_100mm": -1.2,
+          "n_points": 115,
+          "n_corners": 8,
+          "homography_rms_px": 0.77
+        },
+        "1": {
+          "coord": "X",
+          "nominal_mm": 1444.0,
+          "value_mm": 1447.0,
+          "offset_mm": 3.0,
+          "offset_px": 1.81,
+          "slope_mm_per_100mm": -3.6,
+          "n_points": 38,
+          "n_corners": 4,
+          "homography_rms_px": 0.0
+        },
+        "2": {
+          "coord": "X",
+          "nominal_mm": 1444.0,
+          "value_mm": 1441.4,
+          "offset_mm": -2.6,
+          "offset_px": -1.52,
+          "slope_mm_per_100mm": 0.04,
+          "n_points": 31,
+          "n_corners": 4,
+          "homography_rms_px": 0.0
+        }
+      },
+      "y_board1600_inner_top": {
+        "1+2": {
+          "coord": "X",
+          "nominal_mm": 1444.0,
+          "value_mm": 1432.2,
+          "offset_mm": -11.8,
+          "offset_px": -7.04,
+          "slope_mm_per_100mm": -2.09,
+          "n_points": 107,
+          "n_corners": 8,
+          "homography_rms_px": 0.77
+        },
+        "1": {
+          "coord": "X",
+          "nominal_mm": 1444.0,
+          "value_mm": 1437.1,
+          "offset_mm": -6.9,
+          "offset_px": -4.22,
+          "slope_mm_per_100mm": -4.93,
+          "n_points": 37,
+          "n_corners": 4,
+          "homography_rms_px": 0.0
+        },
+        "2": {
+          "coord": "X",
+          "nominal_mm": 1444.0,
+          "value_mm": 1429.0,
+          "offset_mm": -15.0,
+          "offset_px": -8.68,
+          "slope_mm_per_100mm": 1.63,
+          "n_points": 32,
+          "n_corners": 4,
+          "homography_rms_px": 0.0
+        }
+      },
+      "x_board1600_front": {
+        "1+2": {
+          "coord": "Y",
+          "nominal_mm": 0.0,
+          "value_mm": 0.7,
+          "offset_mm": 0.7,
+          "offset_px": 0.41,
+          "slope_mm_per_100mm": 0.21,
+          "n_points": 37,
+          "n_corners": 8,
+          "homography_rms_px": 0.77
+        },
+        "1": {
+          "coord": "Y",
+          "nominal_mm": 0.0,
+          "value_mm": -0.2,
+          "offset_mm": -0.2,
+          "offset_px": -0.1,
+          "slope_mm_per_100mm": -0.67,
+          "n_points": 36,
+          "n_corners": 4,
+          "homography_rms_px": 0.0
+        }
+      }
+    },
+    "vp_check": {
+      "ref_f1290": {
+        "vp_x_lips": [
+          725.0,
+          4874.0
+        ],
+        "vp_x_back": [
+          287.0,
+          7150.0
+        ],
+        "vp_y_outer_boards": [
+          -723791.0,
+          -18036.0
+        ],
+        "cartX_vs_lip_vp": {
+          "x_A_front_out": {
+            "angle_deg": -0.06,
+            "end_offset_px": -0.39
+          },
+          "x_A_front_in": {
+            "angle_deg": 0.07,
+            "end_offset_px": 0.29
+          },
+          "x_B_front": {
+            "angle_deg": 0.15,
+            "end_offset_px": 0.76
+          },
+          "x_C_front": {
+            "angle_deg": -0.09,
+            "end_offset_px": -0.38
+          },
+          "x_D_front": {
+            "angle_deg": 0.08,
+            "end_offset_px": 0.42
+          },
+          "x_E_front": {
+            "angle_deg": -0.09,
+            "end_offset_px": -0.42
+          },
+          "x_E_front_in": {
+            "angle_deg": -0.06,
+            "end_offset_px": -0.29
+          },
+          "x_back_rail_out": {
+            "angle_deg": 0.4,
+            "end_offset_px": 2.59
+          },
+          "x_back_rail_in": {
+            "angle_deg": 0.21,
+            "end_offset_px": 1.2
+          },
+          "x_back_low": {
+            "angle_deg": 0.05,
+            "end_offset_px": 0.26
+          },
+          "x_board0_front": {
+            "angle_deg": -2.64,
+            "end_offset_px": -3.05
+          },
+          "x_board1600_front": {
+            "angle_deg": 2.96,
+            "end_offset_px": 2.11
+          }
+        },
+        "cartX_vs_back_vp": {
+          "x_A_front_out": {
+            "angle_deg": 1.03,
+            "end_offset_px": 6.86
+          },
+          "x_A_front_in": {
+            "angle_deg": 1.14,
+            "end_offset_px": 4.52
+          },
+          "x_B_front": {
+            "angle_deg": 1.5,
+            "end_offset_px": 7.56
+          },
+          "x_C_front": {
+            "angle_deg": 1.43,
+            "end_offset_px": 6.42
+          },
+          "x_D_front": {
+            "angle_deg": 1.71,
+            "end_offset_px": 8.67
+          },
+          "x_E_front": {
+            "angle_deg": 1.67,
+            "end_offset_px": 8.01
+          },
+          "x_E_front_in": {
+            "angle_deg": 1.68,
+            "end_offset_px": 8.11
+          },
+          "x_back_rail_out": {
+            "angle_deg": 0.05,
+            "end_offset_px": 0.32
+          },
+          "x_back_rail_in": {
+            "angle_deg": -0.07,
+            "end_offset_px": -0.41
+          },
+          "x_back_low": {
+            "angle_deg": 0.02,
+            "end_offset_px": 0.08
+          },
+          "x_board0_front": {
+            "angle_deg": -1.82,
+            "end_offset_px": -2.1
+          },
+          "x_board1600_front": {
+            "angle_deg": 3.9,
+            "end_offset_px": 2.77
+          }
+        },
+        "cartY_vs_outer_board_vp": {
+          "y_board0_outer": {
+            "angle_deg": -0.0,
+            "end_offset_px": -0.0
+          },
+          "y_board0_inner": {
+            "angle_deg": -1.7,
+            "end_offset_px": -4.42
+          },
+          "y_board1600_inner": {
+            "angle_deg": -0.22,
+            "end_offset_px": -0.51
+          },
+          "y_board1600_inner_top": {
+            "angle_deg": -0.66,
+            "end_offset_px": -1.54
+          },
+          "y_board1600_outer": {
+            "angle_deg": 0.0,
+            "end_offset_px": 0.0
+          },
+          "y_div1_top": {
+            "angle_deg": -1.9,
+            "end_offset_px": -4.19
+          },
+          "y_div4_top": {
+            "angle_deg": 0.24,
+            "end_offset_px": 0.29
+          },
+          "y_div5_top": {
+            "angle_deg": 2.55,
+            "end_offset_px": 2.32
+          },
+          "u_div1_low": {
+            "angle_deg": 4.1,
+            "end_offset_px": 10.09
+          },
+          "u_div2_low": {
+            "angle_deg": 2.12,
+            "end_offset_px": 3.75
+          }
+        },
+        "vp_z_posts": [
+          1411.0,
+          1294.0
+        ]
+      },
+      "ref_f1394": {
+        "vp_x_lips": [
+          661.0,
+          6008.0
+        ],
+        "vp_x_back": [
+          -50.0,
+          10497.0
+        ],
+        "vp_y_outer_boards": [
+          46936.0,
+          2941.0
+        ],
+        "cartX_vs_lip_vp": {
+          "x_A_front_out": {
+            "angle_deg": -0.06,
+            "end_offset_px": -0.4
+          },
+          "x_A_front_in": {
+            "angle_deg": 0.03,
+            "end_offset_px": 0.14
+          },
+          "x_B_front": {
+            "angle_deg": 0.15,
+            "end_offset_px": 0.76
+          },
+          "x_C_front": {
+            "angle_deg": -0.09,
+            "end_offset_px": -0.38
+          },
+          "x_D_front": {
+            "angle_deg": 0.09,
+            "end_offset_px": 0.45
+          },
+          "x_E_front": {
+            "angle_deg": -0.09,
+            "end_offset_px": -0.44
+          },
+          "x_E_front_in": {
+            "angle_deg": -0.07,
+            "end_offset_px": -0.31
+          },
+          "x_back_rail_out": {
+            "angle_deg": 0.57,
+            "end_offset_px": 3.66
+          },
+          "x_back_rail_in": {
+            "angle_deg": 0.33,
+            "end_offset_px": 1.85
+          },
+          "x_back_low": {
+            "angle_deg": 0.19,
+            "end_offset_px": 1.04
+          },
+          "x_board0_front": {
+            "angle_deg": -2.46,
+            "end_offset_px": -2.61
+          },
+          "x_board1600_front": {
+            "angle_deg": 2.85,
+            "end_offset_px": 2.14
+          }
+        },
+        "cartX_vs_back_vp": {
+          "x_A_front_out": {
+            "angle_deg": 0.94,
+            "end_offset_px": 6.2
+          },
+          "x_A_front_in": {
+            "angle_deg": 1.01,
+            "end_offset_px": 3.99
+          },
+          "x_B_front": {
+            "angle_deg": 1.44,
+            "end_offset_px": 7.09
+          },
+          "x_C_front": {
+            "angle_deg": 1.37,
+            "end_offset_px": 6.01
+          },
+          "x_D_front": {
+            "angle_deg": 1.66,
+            "end_offset_px": 8.2
+          },
+          "x_E_front": {
+            "angle_deg": 1.61,
+            "end_offset_px": 7.57
+          },
+          "x_E_front_in": {
+            "angle_deg": 1.62,
+            "end_offset_px": 7.67
+          },
+          "x_back_rail_out": {
+            "angle_deg": 0.07,
+            "end_offset_px": 0.46
+          },
+          "x_back_rail_in": {
+            "angle_deg": -0.1,
+            "end_offset_px": -0.58
+          },
+          "x_back_low": {
+            "angle_deg": 0.02,
+            "end_offset_px": 0.12
+          },
+          "x_board0_front": {
+            "angle_deg": -1.71,
+            "end_offset_px": -1.81
+          },
+          "x_board1600_front": {
+            "angle_deg": 3.67,
+            "end_offset_px": 2.74
+          }
+        },
+        "cartY_vs_outer_board_vp": {
+          "y_board0_outer": {
+            "angle_deg": 0.0,
+            "end_offset_px": 0.0
+          },
+          "y_board0_inner": {
+            "angle_deg": 1.95,
+            "end_offset_px": 4.89
+          },
+          "y_board1600_inner": {
+            "angle_deg": 0.3,
+            "end_offset_px": 0.71
+          },
+          "y_board1600_inner_top": {
+            "angle_deg": 0.75,
+            "end_offset_px": 1.78
+          },
+          "y_board1600_outer": {
+            "angle_deg": 0.0,
+            "end_offset_px": 0.0
+          },
+          "y_div1_top": {
+            "angle_deg": 2.35,
+            "end_offset_px": 5.02
+          },
+          "y_div4_top": {
+            "angle_deg": -0.01,
+            "end_offset_px": -0.02
+          },
+          "y_div5_top": {
+            "angle_deg": -2.44,
+            "end_offset_px": -2.25
+          },
+          "u_div1_low": {
+            "angle_deg": -3.68,
+            "end_offset_px": -8.88
+          },
+          "u_div2_low": {
+            "angle_deg": -1.66,
+            "end_offset_px": -2.92
+          }
+        },
+        "vp_z_posts": [
+          1379.0,
+          1209.0
+        ]
+      },
+      "ref_plumb": {
+        "vp_x_lips": [
+          719.0,
+          4883.0
+        ],
+        "vp_x_back": [
+          218.0,
+          7437.0
+        ],
+        "vp_y_outer_boards": [
+          -131979.0,
+          -2983.0
+        ],
+        "cartX_vs_lip_vp": {
+          "x_A_front_out": {
+            "angle_deg": -0.05,
+            "end_offset_px": -0.36
+          },
+          "x_A_front_in": {
+            "angle_deg": 0.11,
+            "end_offset_px": 0.43
+          },
+          "x_B_front": {
+            "angle_deg": 0.14,
+            "end_offset_px": 0.73
+          },
+          "x_C_front": {
+            "angle_deg": -0.09,
+            "end_offset_px": -0.4
+          },
+          "x_D_front": {
+            "angle_deg": 0.08,
+            "end_offset_px": 0.4
+          },
+          "x_E_front": {
+            "angle_deg": -0.08,
+            "end_offset_px": -0.37
+          },
+          "x_E_front_in": {
+            "angle_deg": -0.05,
+            "end_offset_px": -0.25
+          },
+          "x_back_rail_out": {
+            "angle_deg": 0.36,
+            "end_offset_px": 2.34
+          },
+          "x_back_rail_in": {
+            "angle_deg": 0.19,
+            "end_offset_px": 1.08
+          },
+          "x_back_low": {
+            "angle_deg": -0.01,
+            "end_offset_px": -0.07
+          },
+          "x_board0_front": {
+            "angle_deg": -2.78,
+            "end_offset_px": -3.24
+          },
+          "x_board1600_front": {
+            "angle_deg": 3.18,
+            "end_offset_px": 2.27
+          }
+        },
+        "cartX_vs_back_vp": {
+          "x_A_front_out": {
+            "angle_deg": 1.18,
+            "end_offset_px": 7.9
+          },
+          "x_A_front_in": {
+            "angle_deg": 1.33,
+            "end_offset_px": 5.25
+          },
+          "x_B_front": {
+            "angle_deg": 1.66,
+            "end_offset_px": 8.4
+          },
+          "x_C_front": {
+            "angle_deg": 1.61,
+            "end_offset_px": 7.23
+          },
+          "x_D_front": {
+            "angle_deg": 1.89,
+            "end_offset_px": 9.64
+          },
+          "x_E_front": {
+            "angle_deg": 1.87,
+            "end_offset_px": 9.04
+          },
+          "x_E_front_in": {
+            "angle_deg": 1.88,
+            "end_offset_px": 9.13
+          },
+          "x_back_rail_out": {
+            "angle_deg": 0.04,
+            "end_offset_px": 0.26
+          },
+          "x_back_rail_in": {
+            "angle_deg": -0.06,
+            "end_offset_px": -0.33
+          },
+          "x_back_low": {
+            "angle_deg": 0.01,
+            "end_offset_px": 0.07
+          },
+          "x_board0_front": {
+            "angle_deg": -1.83,
+            "end_offset_px": -2.14
+          },
+          "x_board1600_front": {
+            "angle_deg": 4.26,
+            "end_offset_px": 3.04
+          }
+        },
+        "cartY_vs_outer_board_vp": {
+          "y_board0_outer": {
+            "angle_deg": -0.0,
+            "end_offset_px": -0.0
+          },
+          "y_board0_inner": {
+            "angle_deg": -1.81,
+            "end_offset_px": -4.76
+          },
+          "y_board1600_inner": {
+            "angle_deg": -0.22,
+            "end_offset_px": -0.51
+          },
+          "y_board1600_inner_top": {
+            "angle_deg": -0.66,
+            "end_offset_px": -1.55
+          },
+          "y_board1600_outer": {
+            "angle_deg": 0.0,
+            "end_offset_px": 0.0
+          },
+          "y_div1_top": {
+            "angle_deg": -2.01,
+            "end_offset_px": -4.45
+          },
+          "y_div4_top": {
+            "angle_deg": 0.22,
+            "end_offset_px": 0.27
+          },
+          "y_div5_top": {
+            "angle_deg": 2.53,
+            "end_offset_px": 2.31
+          },
+          "u_div1_low": {
+            "angle_deg": 3.97,
+            "end_offset_px": 9.87
+          },
+          "u_div2_low": {
+            "angle_deg": 2.03,
+            "end_offset_px": 3.62
+          }
+        },
+        "vp_z_posts": [
+          1425.0,
+          1328.0
+        ]
+      },
+      "ref_joint": {
+        "vp_x_lips": [
+          603.0,
+          6701.0
+        ],
+        "vp_x_back": [
+          -585.0,
+          14205.0
+        ],
+        "vp_y_outer_boards": [
+          -126328.0,
+          -7232.0
+        ],
+        "cartX_vs_lip_vp": {
+          "x_A_front_out": {
+            "angle_deg": -0.05,
+            "end_offset_px": -0.34
+          },
+          "x_A_front_in": {
+            "angle_deg": 0.11,
+            "end_offset_px": 0.44
+          },
+          "x_B_front": {
+            "angle_deg": 0.14,
+            "end_offset_px": 0.71
+          },
+          "x_C_front": {
+            "angle_deg": -0.1,
+            "end_offset_px": -0.42
+          },
+          "x_D_front": {
+            "angle_deg": 0.08,
+            "end_offset_px": 0.38
+          },
+          "x_E_front": {
+            "angle_deg": -0.07,
+            "end_offset_px": -0.33
+          },
+          "x_E_front_in": {
+            "angle_deg": -0.04,
+            "end_offset_px": -0.21
+          },
+          "x_back_rail_out": {
+            "angle_deg": 0.41,
+            "end_offset_px": 2.62
+          },
+          "x_back_rail_in": {
+            "angle_deg": 0.22,
+            "end_offset_px": 1.24
+          },
+          "x_back_low": {
+            "angle_deg": 0.0,
+            "end_offset_px": 0.01
+          },
+          "x_board0_front": {
+            "angle_deg": -2.91,
+            "end_offset_px": -3.08
+          },
+          "x_board1600_front": {
+            "angle_deg": 3.48,
+            "end_offset_px": 2.67
+          }
+        },
+        "cartX_vs_back_vp": {
+          "x_A_front_out": {
+            "angle_deg": 1.27,
+            "end_offset_px": 8.41
+          },
+          "x_A_front_in": {
+            "angle_deg": 1.4,
+            "end_offset_px": 5.57
+          },
+          "x_B_front": {
+            "angle_deg": 1.77,
+            "end_offset_px": 8.78
+          },
+          "x_C_front": {
+            "angle_deg": 1.73,
+            "end_offset_px": 7.59
+          },
+          "x_D_front": {
+            "angle_deg": 2.03,
+            "end_offset_px": 10.01
+          },
+          "x_E_front": {
+            "angle_deg": 2.03,
+            "end_offset_px": 9.52
+          },
+          "x_E_front_in": {
+            "angle_deg": 2.04,
+            "end_offset_px": 9.62
+          },
+          "x_back_rail_out": {
+            "angle_deg": 0.04,
+            "end_offset_px": 0.28
+          },
+          "x_back_rail_in": {
+            "angle_deg": -0.06,
+            "end_offset_px": -0.36
+          },
+          "x_back_low": {
+            "angle_deg": 0.01,
+            "end_offset_px": 0.08
+          },
+          "x_board0_front": {
+            "angle_deg": -1.87,
+            "end_offset_px": -1.98
+          },
+          "x_board1600_front": {
+            "angle_deg": 4.58,
+            "end_offset_px": 3.51
+          }
+        },
+        "cartY_vs_outer_board_vp": {
+          "y_board0_outer": {
+            "angle_deg": 0.0,
+            "end_offset_px": 0.0
+          },
+          "y_board0_inner": {
+            "angle_deg": -1.75,
+            "end_offset_px": -4.49
+          },
+          "y_board1600_inner": {
+            "angle_deg": -0.4,
+            "end_offset_px": -0.98
+          },
+          "y_board1600_inner_top": {
+            "angle_deg": -0.85,
+            "end_offset_px": -2.07
+          },
+          "y_board1600_outer": {
+            "angle_deg": -0.0,
+            "end_offset_px": -0.0
+          },
+          "y_div1_top": {
+            "angle_deg": -2.15,
+            "end_offset_px": -4.7
+          },
+          "y_div4_top": {
+            "angle_deg": -0.16,
+            "end_offset_px": -0.2
+          },
+          "y_div5_top": {
+            "angle_deg": 2.22,
+            "end_offset_px": 2.12
+          },
+          "u_div1_low": {
+            "angle_deg": 3.72,
+            "end_offset_px": 9.21
+          },
+          "u_div2_low": {
+            "angle_deg": 1.66,
+            "end_offset_px": 2.98
+          }
+        },
+        "vp_z_posts": [
+          1431.0,
+          1330.0
+        ]
+      }
+    },
+    "chord_bows_px": {
+      "x_A_front_out": {
+        "raw": 8.89,
+        "ref_f1290": 0.7,
+        "ref_f1394": 1.08,
+        "ref_plumb": 0.24,
+        "ref_joint": 0.02
+      },
+      "x_A_front_in": {
+        "raw": 3.95,
+        "ref_f1290": 1.02,
+        "ref_f1394": 1.11,
+        "ref_plumb": 0.85,
+        "ref_joint": 0.73
+      },
+      "x_B_front": {
+        "raw": 4.26,
+        "ref_f1290": 0.31,
+        "ref_f1394": 0.52,
+        "ref_plumb": 0.09,
+        "ref_joint": -0.01
+      },
+      "x_C_front": {
+        "raw": 2.85,
+        "ref_f1290": 0.09,
+        "ref_f1394": 0.24,
+        "ref_plumb": -0.06,
+        "ref_joint": -0.17
+      },
+      "x_D_front": {
+        "raw": 3.52,
+        "ref_f1290": 0.4,
+        "ref_f1394": 0.56,
+        "ref_plumb": 0.23,
+        "ref_joint": 0.06
+      },
+      "x_E_front": {
+        "raw": 3.42,
+        "ref_f1290": 0.96,
+        "ref_f1394": 1.04,
+        "ref_plumb": 0.83,
+        "ref_joint": 0.6
+      },
+      "x_E_front_in": {
+        "raw": 3.54,
+        "ref_f1290": 1.03,
+        "ref_f1394": 1.12,
+        "ref_plumb": 0.89,
+        "ref_joint": 0.66
+      },
+      "x_back_rail_out": {
+        "raw": 13.26,
+        "ref_f1290": 0.08,
+        "ref_f1394": 1.39,
+        "ref_plumb": -0.54,
+        "ref_joint": -0.48
+      },
+      "x_back_rail_in": {
+        "raw": 10.39,
+        "ref_f1290": 0.4,
+        "ref_f1394": 1.26,
+        "ref_plumb": -0.12,
+        "ref_joint": -0.12
+      },
+      "x_back_low": {
+        "raw": 8.6,
+        "ref_f1290": -0.34,
+        "ref_f1394": 0.51,
+        "ref_plumb": -0.79,
+        "ref_joint": -0.61
+      },
+      "x_board0_front": {
+        "raw": -0.12,
+        "ref_f1290": -0.43,
+        "ref_f1394": -0.38,
+        "ref_plumb": -0.44,
+        "ref_joint": -0.43
+      },
+      "x_board1600_front": {
+        "raw": -0.23,
+        "ref_f1290": -0.36,
+        "ref_f1394": -0.37,
+        "ref_plumb": -0.37,
+        "ref_joint": -0.41
+      },
+      "y_board0_outer": {
+        "raw": 0.73,
+        "ref_f1290": 0.12,
+        "ref_f1394": 0.29,
+        "ref_plumb": 0.19,
+        "ref_joint": 0.16
+      },
+      "y_board0_inner": {
+        "raw": 3.06,
+        "ref_f1290": 1.93,
+        "ref_f1394": 2.37,
+        "ref_plumb": 1.94,
+        "ref_joint": 2.29
+      },
+      "y_board1600_inner": {
+        "raw": -0.73,
+        "ref_f1290": 0.32,
+        "ref_f1394": 0.56,
+        "ref_plumb": 0.37,
+        "ref_joint": 0.91
+      },
+      "y_board1600_inner_top": {
+        "raw": -0.4,
+        "ref_f1290": 0.72,
+        "ref_f1394": 0.97,
+        "ref_plumb": 0.76,
+        "ref_joint": 1.34
+      },
+      "y_board1600_outer": {
+        "raw": -1.34,
+        "ref_f1290": 0.01,
+        "ref_f1394": 0.2,
+        "ref_plumb": 0.06,
+        "ref_joint": 0.69
+      },
+      "y_div1_top": {
+        "raw": 2.47,
+        "ref_f1290": 1.75,
+        "ref_f1394": 2.07,
+        "ref_plumb": 1.73,
+        "ref_joint": 2.07
+      },
+      "y_div4_top": {
+        "raw": -1.49,
+        "ref_f1290": -1.4,
+        "ref_f1394": -1.37,
+        "ref_plumb": -1.4,
+        "ref_joint": -1.34
+      },
+      "y_div5_top": {
+        "raw": -1.49,
+        "ref_f1290": -1.48,
+        "ref_f1394": -1.5,
+        "ref_plumb": -1.48,
+        "ref_joint": -1.49
+      },
+      "u_div1_low": {
+        "raw": -1.45,
+        "ref_f1290": -2.99,
+        "ref_f1394": -2.36,
+        "ref_plumb": -3.05,
+        "ref_joint": -2.4
+      },
+      "u_div2_low": {
+        "raw": 0.52,
+        "ref_f1290": 0.24,
+        "ref_f1394": 0.46,
+        "ref_plumb": 0.22,
+        "ref_joint": 0.49
+      },
+      "z_post1600_sil": {
+        "raw": 0.2,
+        "ref_f1290": 0.13,
+        "ref_f1394": 0.16,
+        "ref_plumb": 0.13,
+        "ref_joint": 0.14
+      },
+      "z_post1600_sil_low": {
+        "raw": -0.09,
+        "ref_f1290": -0.15,
+        "ref_f1394": -0.14,
+        "ref_plumb": -0.15,
+        "ref_joint": -0.16
+      },
+      "s_rail_right": {
+        "raw": 7.39,
+        "ref_f1290": 1.56,
+        "ref_f1394": 2.13,
+        "ref_plumb": 1.25,
+        "ref_joint": 1.28
+      },
+      "s_frame": {
+        "raw": 4.18,
+        "ref_f1290": 0.43,
+        "ref_f1394": 0.89,
+        "ref_plumb": 0.29,
+        "ref_joint": 0.25
+      },
+      "s_frame2": {
+        "raw": 8.67,
+        "ref_f1290": 0.37,
+        "ref_f1394": 1.29,
+        "ref_plumb": 0.02,
+        "ref_joint": -0.29
+      },
+      "s_frame3": {
+        "raw": 8.75,
+        "ref_f1290": 2.88,
+        "ref_f1394": 3.6,
+        "ref_plumb": 2.65,
+        "ref_joint": 2.56
+      }
+    },
+    "duplicates_with_other_regions": {
+      "x_back_rail_out": {
+        "scene_wall_railA": {
+          "n_within_3px": 148,
+          "n_points": 302,
+          "median_dist_px": 0.82
+        }
+      },
+      "s_rail_right": {
+        "scene_wall_railB": {
+          "n_within_3px": 154,
+          "n_points": 216,
+          "median_dist_px": 1.68
+        }
+      },
+      "s_frame": {
+        "scene_rpost_rod": {
+          "n_within_3px": 74,
+          "n_points": 156,
+          "median_dist_px": 2.8
+        }
+      },
+      "s_frame2": {
+        "scene_rpost_rod": {
+          "n_within_3px": 218,
+          "n_points": 243,
+          "median_dist_px": 0.69
+        }
+      },
+      "s_frame3": {
+        "scene_rpost_rod": {
+          "n_within_3px": 24,
+          "n_points": 174,
+          "median_dist_px": 2.43
+        },
+        "scene_rpost_rodR": {
+          "n_within_3px": 137,
+          "n_points": 174,
+          "median_dist_px": 0.77
+        }
+      }
+    },
+    "crops": "work/cache/review_cart80/*_reviewed_strip.png (red kept, cyan removed); reviewer crops rv_*.png, z_*.png, dup_*.png, ctx_*.png"
+  }
 }

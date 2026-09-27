@@ -17,7 +17,7 @@ def load_edges(min_len=40.0, only_straight=True, verified_only=True, source=None
     elif os.path.exists(f"{RESULTS}/edges.json"):
         files = [f"{RESULTS}/edges.json"]
     else:
-        files = sorted(glob.glob(f"{CACHE}/edges_*.json"))
+        files = [f"{CACHE}/edges_{r}.json" for r in ("cart310", "cart80", "scene") if os.path.exists(f"{CACHE}/edges_{r}.json")]
     out = []
     for fn in files:
         d = load_json(fn)

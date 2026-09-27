@@ -24,6 +24,16 @@ F0 = 1300.0
 init = load_json(f"{CACHE}/initial_calib.json")
 P0 = {80: np.array(init["poses"]["80"]), 310: np.array(init["poses"]["310"])}
 EDGES = load_edges(verified_only=True)
+# VP-group policy (documented in REPORT): end-board edges are straight but not aligned with the cart axes
+# to VP precision -> straightness only; parallel floor lines form horizontal VP groups perpendicular to the
+# vertical (edges of one tape / blue line).
+FLOOR = {"scene_tapeV_left": "floor_V", "scene_tapeV_right": "floor_V", "scene_tapeH_top": "floor_H",
+         "scene_tapeH_bottom": "floor_H", "scene_blueH_top": "floor_H", "scene_blueL_top": "floor_H", "scene_blueL_bottom": "floor_H"}
+for e in EDGES:
+    if "board" in e["id"]:
+        e["vp_group"] = None
+    if e["id"] in FLOOR:
+        e["vp_group"] = FLOOR[e["id"]]
 print("edges:", len(EDGES), "by region:", {r: sum(e["region"] == r for e in EDGES) for r in sorted({e["region"] for e in EDGES})})
 
 

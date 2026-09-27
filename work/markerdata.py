@@ -24,14 +24,17 @@ def load_markers(prefer_final=True, which="final"):
             if which == "aruco" and m.get("aruco_corners_px") is not None:
                 c = np.array(m["aruco_corners_px"], float)
             if which == "edge" and m.get("edge_corners_px") is not None:
-                c = np.array(m["edge_corners_px"], float)
+                c = np.array([p if p is not None else [np.nan, np.nan] for p in m["edge_corners_px"]], float)
+            if which == "biascorr" and m.get("corners_px_bias_corrected") is not None:
+                c = np.array([p if p is not None else [np.nan, np.nan] for p in m["corners_px_bias_corrected"]], float)
             valid = np.array(m.get("corner_valid", [True] * 4), bool)
             if np.any(np.isnan(c)):
                 valid &= ~np.isnan(c).any(1)
             out.append(dict(cart=int(m["cart"]), id=int(m["id"]), role=marker_role(int(m["id"]), int(m["cart"])),
                             row=surface_of(int(m["id"]), int(m["cart"])), rot_k=int(m["rot_k"]), corners_px=c,
                             corners_3d=marker_corners_3d(int(m["id"]), int(m["cart"]), int(m["rot_k"])),
-                            valid=valid, std=np.array(m.get("corners_std_px", [0.2] * 4), float), src="final"))
+                            valid=valid, std=np.array([v if v is not None else 0.3 for v in m.get("corners_std_px", [0.2] * 4)], float),
+                            side_valid=list(m.get("side_valid", [True] * 4)), src="final"))
         return out
     d = load_json(f"{CACHE}/initial_calib.json")
     rot = {tuple(map(int, k.split("_"))): v for k, v in d["rot"].items()}
@@ -71,7 +74,7 @@ def marker_side_edges(markers, only_partial=True, frac=0.18, step=1.5):
     from edgelib import trace_edge, line_fit
 
     out = []
-    for m in markers:
+    for mi, m in enumerate(markers):
         c = m["corners_px"]
         if np.any(np.isnan(c)):
             continue
@@ -100,5 +103,6 @@ def marker_side_edges(markers, only_partial=True, frac=0.18, step=1.5):
             out.append(dict(id=f"marker_{m['cart']}_{m['id']}_side{j}", region=f"cart{m['cart']}", cart=m["cart"],
                             direction="cart" + "XYZ"[ax], what=f"side {j} of sticker {m['id']} (cart {m['cart']})",
                             model_line={"fixed": fixed, "free": "XYZ"[ax], "range_mm": [float(min(A[ax], B[ax])), float(max(A[ax], B[ax]))], "exact": True},
-                            points=tr["points"], length=float(L * (1 - 2 * frac)), cls="marker_side"))
+                            points=tr["points"], length=float(L * (1 - 2 * frac)), cls="marker_side", sticker_mi=mi,
+                            vp_group=None))
     return out

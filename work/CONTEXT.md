@@ -95,3 +95,21 @@ With this correction the free distortion centre is recoverable in synthetic test
   aligned with the cart frame; prefer structural edges (shelf lips, rails, posts) for VP groups.
 * Marker-only BA with all 20 stickers (20_markers_ba.py): every model RMS 5.0-5.7 px, leave-one-sticker-out
   8.2-10.5 px, best by LOO k1k2_ppfix f=1300+-21 (bootstrap f std 34 px); leave-row-out: top 19-80 px.
+
+## Phase-1 review findings (important for all methods)
+* markers_final.json now also has `corners_px_bias_corrected` + `edge_bias_px`: black/white edges are
+  located ~0.66+-0.23 px towards the BLACK side (tone curve / sharpening; measured on the inner cell grid,
+  stable over frames; outer sides similar within 0.12 px). Corrected corners lie ~0.95 px further out along
+  the diagonal. Effect on the joint sticker fit is small (RMS 5.34 -> 5.26, f 1309 -> 1309). Treat this as
+  a systematic of edge localisation (for any dark/bright edge) of ~0.3-0.7 px along the normal.
+* End-board edges: the X=1600 board of cart 310 is at X~1619 mm (not exact); cart 80 X=0 board edge at
+  X~-20 mm (not exact). Board edges are straight but NOT parallel to the cart axes to VP precision
+  (x_board0_front of cart 310 is 5.9 deg off the shelf-front VP) -> do not use board edges in VP groups.
+  With both carts' boards removed from the cartY group, cart-310-only joint lines give f~1429, pp~(956,475),
+  k1~-0.30, k2~0.04.
+* Divider flanges (y_lip*, y_div*, u_div*) are bent -> straight_3d=false. Shelf-front lips of one cart meet
+  at their VP only to ~+-1.5 px (C worst) -> floor on per-line direction error.
+* cart Z lines are few and weak on both carts (2 each); scene world_vertical edges (6, short) exist.
+* Scene: floor_plane lines (white tape, blue line, joints), long rack tube at the far-left border (bow 16 px,
+  keeps 0.63 px after correction - may not be straight, downweight/test), wall rods/pipes (horizontal_other,
+  not parallel to cart axes). No straight edges along the top border x 700..1200.

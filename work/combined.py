@@ -57,14 +57,21 @@ class Combined:
         self.mX = np.array([p["X"] for p in self.mp]).reshape(-1, 3)
         self.muv = np.array([p["uv"] for p in self.mp]).reshape(-1, 2)
         self.mci = np.array([self.cidx[p["cart"]] for p in self.mp], int)
+        self.mgrp = np.array([p.get("mi", -1) for p in self.mp], int)  # sticker index per point
+        self.mw = np.ones(len(self.mp))  # per-point weights (IRLS over stickers), default 1
         # edges -> blocks
         self.E = []
         for e in edges:
             P = e["points"][::subsample]
             ml = model_line_3d(e.get("model_line"))
             blk = None
+            vg = e.get("vp_group", "__none__")
             if ml is not None and e.get("cart") in self.cidx and "L" in self.use:
                 blk = ("L", ml)
+            elif vg is None:  # explicit: straightness only
+                blk = ("S", None) if "S" in self.use else None
+            elif isinstance(vg, str) and vg.startswith("floor_") and "V" in self.use:
+                blk = ("V", (vg, -1))
             elif e.get("direction") in AXIS and e.get("cart") in self.cidx and "V" in self.use:
                 blk = ("V", (e["cart"], AXIS[e["direction"]]))
             elif e.get("direction") == "world_vertical" and "V" in self.use:
@@ -73,16 +80,18 @@ class Combined:
                 blk = ("S", None)
             if blk is None:
                 continue
-            self.E.append(dict(id=e["id"], P=P, blk=blk[0], info=blk[1], cart=e.get("cart"), chord=np.hypot(*(P[-1] - P[0]))))
+            self.E.append(dict(id=e["id"], P=P, blk=blk[0], info=blk[1], cart=e.get("cart"), chord=np.hypot(*(P[-1] - P[0])),
+                               grp=int(e.get("sticker_mi", -1)), w=1.0))
         self.tie_wv = tie_wv
-        self.has_wv = any(e["blk"] == "V" and e["info"][0] == "wv" for e in self.E) and tie_wv is None
+        self.floor = sorted({e["info"][0] for e in self.E if e["blk"] == "V" and isinstance(e["info"][0], str) and e["info"][0].startswith("floor_")})
+        self.has_wv = (any(e["blk"] == "V" and e["info"][0] == "wv" for e in self.E) or len(self.floor) > 0) and tie_wv is None
         if self.E:
             self.allp = np.vstack([e["P"] for e in self.E])
             self.eidx = np.cumsum([0] + [len(e["P"]) for e in self.E])
         # parameter names
         self.inames = (["f"] if self.f_mode == "single" else ["fx", "fy"]) + (["cx", "cy"] if self.pp_free else []) + self.dfree
         self.ni = len(self.inames)
-        self.names = self.inames + [f"pose{c}_{i}" for c in self.carts for i in range(6)] + (["wv_a", "wv_b"] if self.has_wv else [])
+        self.names = self.inames + [f"pose{c}_{i}" for c in self.carts for i in range(6)] + (["wv_a", "wv_b"] if self.has_wv else []) + [f"{g}_ang" for g in self.floor]
 
     # ---------------------------------------------------------------------
     def unpack(self, x):
@@ -104,9 +113,20 @@ class Combined:
             i += 1
         poses = x[self.ni:self.ni + 6 * len(self.carts)].reshape(-1, 6)
         wv = None
+        j = self.ni + 6 * len(self.carts)
         if self.has_wv:
-            a, b = x[-2], x[-1]
+            a, b = x[j], x[j + 1]
             wv = np.array([np.cos(a) * np.sin(b), np.sin(a) * np.sin(b), np.cos(b)])
+            j += 2
+        self._floor_dirs = {}
+        if self.floor:
+            v = rodrigues(poses[self.cidx[self.tie_wv], :3])[:, 2] if self.tie_wv is not None else wv
+            e1 = np.cross(v, [1.0, 0.0, 0.0])
+            e1 /= np.linalg.norm(e1)
+            e2 = np.cross(v, e1)
+            for g in self.floor:
+                self._floor_dirs[g] = np.cos(x[j]) * e1 + np.sin(x[j]) * e2
+                j += 1
         return K_from(fx, fy, cx, cy), d, poses, wv
 
     def blocks(self, x):
@@ -118,7 +138,7 @@ class Combined:
                 s = self.mci == i
                 if s.any():
                     pred[s] = project(self.mX[s], K, d, rvec=poses[i, :3], tvec=poses[i, 3:])
-            out["M"] = (pred - self.muv).ravel()
+            out["M"] = ((pred - self.muv) * np.sqrt(self.mw)[:, None]).ravel()
         if self.E:
             def und(p):
                 n = undistort_points(p, K, d, iters=30)
@@ -139,7 +159,9 @@ class Combined:
                     nv = vt[1]
                 elif e["blk"] == "V":
                     ci, ax = e["info"]
-                    if ci == "wv":
+                    if isinstance(ci, str) and ci.startswith("floor_"):
+                        dvec = self._floor_dirs[ci]
+                    elif ci == "wv":
                         dvec = Rs[self.cidx[self.tie_wv]][:, 2] if self.tie_wv is not None else wv
                     else:
                         dvec = Rs[self.cidx[ci]][:, ax]
@@ -159,7 +181,7 @@ class Combined:
                     nv = l[:2] / np.hypot(l[0], l[1])
                 # distance in the DISTORTED image: r_d = r_u / |J^T n|  (no noise-shrinkage bias)
                 jt = np.column_stack([Jx[sl] @ nv, Jy[sl] @ nv])
-                out[e["blk"]].append(r / np.maximum(np.hypot(jt[:, 0], jt[:, 1]), 1e-9))
+                out[e["blk"]].append(r / np.maximum(np.hypot(jt[:, 0], jt[:, 1]), 1e-9) * np.sqrt(e["w"]))
         for b in ("L", "V", "S"):
             out[b] = np.concatenate(out[b]) if len(out[b]) else np.zeros(0)
         return out
@@ -180,7 +202,19 @@ class Combined:
         if self.has_wv:
             z = rodrigues(poses[self.carts[0]][:3])[:, 2] if wv is None else wv
             x += [np.arctan2(z[1], z[0]), np.arccos(np.clip(z[2], -1, 1))]
-        return np.array(x, float)
+        x += [0.0] * len(self.floor)
+        x = np.array(x, float)
+        n0 = len(x) - len(self.floor)
+        for j, g in enumerate(self.floor):  # grid init of each floor direction angle
+            best = None
+            for a in np.linspace(0, np.pi, 91):
+                x[n0 + j] = a
+                v = self.blocks(x)["V"]
+                c = float(np.sum(v ** 2))
+                if best is None or c < best[0]:
+                    best = (c, a)
+            x[n0 + j] = best[1]
+        return x
 
     def solve(self, x0, loss="linear", f_scale=3.0, reweight=True, iters=4, verbose=False):
         x = x0
@@ -202,6 +236,56 @@ class Combined:
             self.sig.update(new)
             if not changed:
                 break
+        return r
+
+    def sticker_rms(self, x):
+        """Unweighted RMS error per sticker group (corners [px, 2D] + its traced sides [px, normal])."""
+        w = self.mw
+        ew = [e["w"] for e in self.E]
+        self.mw = np.ones(len(self.mp))
+        for e in self.E:
+            e["w"] = 1.0
+        b = self.blocks(x)
+        self.mw = w
+        for e, v in zip(self.E, ew):
+            e["w"] = v
+        r = b["M"].reshape(-1, 2)
+        sq, n = {}, {}
+        for g in np.unique(self.mgrp):
+            s = self.mgrp == g
+            sq[int(g)] = float(np.sum(r[s] ** 2))
+            n[int(g)] = int(s.sum())
+        # L residuals of sticker sides: recompute per edge from block order (L edges in E order)
+        Lr = b["L"]
+        k = 0
+        for e in self.E:
+            if e["blk"] != "L":
+                continue
+            m = len(e["P"])
+            if e["grp"] >= 0:
+                g = e["grp"]
+                sq[g] = sq.get(g, 0.0) + 2 * float(np.sum(Lr[k:k + m] ** 2))  # 1D residual ~ half of a 2D one
+                n[g] = n.get(g, 0) + m
+            k += m
+        return {g: float(np.sqrt(sq[g] / max(n[g], 1))) for g in sq}
+
+    def solve_irls(self, x0, c=1.5, iters=6, verbose=False, **kw):
+        """Cluster-robust fit: sticker weight w = 1/(1+(rms_sticker/c)^2) (Cauchy on the sticker RMS)."""
+        r = self.solve(x0, **kw)
+        for it in range(iters):
+            sr = self.sticker_rms(r.x)
+            w = {g: 1.0 / (1.0 + (v / c) ** 2) for g, v in sr.items()}
+            new = np.array([w[g] for g in self.mgrp])
+            if verbose:
+                print("  irls", it, {g: round(v, 2) for g, v in sr.items()})
+            old_e = np.array([e["w"] for e in self.E]) if self.E else np.zeros(0)
+            new_e = np.array([w.get(e["grp"], 1.0) if e["grp"] >= 0 else 1.0 for e in self.E]) if self.E else np.zeros(0)
+            if np.max(np.abs(new - self.mw), initial=0) < 0.01 and np.max(np.abs(new_e - old_e), initial=0) < 0.01:
+                break
+            self.mw = new
+            for e, v in zip(self.E, new_e):
+                e["w"] = float(v)
+            r = self.solve(r.x, **kw)
         return r
 
     def block_rms(self, x):

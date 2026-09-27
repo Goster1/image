@@ -25,6 +25,8 @@ AXIS = {"cartX": 0, "cartY": 1, "cartZ": 2}
 
 
 def group_of(e):
+    if "vp_group" in e:  # explicit override (None = straightness only)
+        return e["vp_group"]
     d = e["direction"]
     if d in AXIS and e.get("cart") in (80, 310):
         return f"{e['cart']}_{d}"
@@ -59,8 +61,9 @@ class LineCal:
             if vp_groups is not None:
                 self.groups = [g if g in vp_groups else None for g in self.groups]
         self.tie = tie_world_vertical  # e.g. "80" -> world vertical = cart 80 Z
-        self.carts = sorted({int(g.split("_")[0]) for g in self.groups if g and g != "world_vertical"})
-        self.has_wv = any(g == "world_vertical" for g in self.groups) and self.tie is None
+        self.carts = sorted({int(g.split("_")[0]) for g in self.groups if g and g != "world_vertical" and not g.startswith("floor_")})
+        self.floor = sorted({g for g in self.groups if g and g.startswith("floor_")})
+        self.has_wv = (any(g == "world_vertical" for g in self.groups) or len(self.floor) > 0) and self.tie is None
         self.names = []
         if mode in ("vp", "joint"):
             self.names += ["f"] + (["cx", "cy"] if pp_free else [])
@@ -72,6 +75,7 @@ class LineCal:
             self.names += [f"r{c}_{i}" for i in range(3)]
         if self.has_wv:
             self.names += ["wv_a", "wv_b"]
+        self.names += [f"{g}_ang" for g in self.floor]
 
     # ------------------------------------------------------------------
     def unpack(self, x):
@@ -103,9 +107,20 @@ class LineCal:
         if self.has_wv:
             a, b = x[i], x[i + 1]
             wv = np.array([np.cos(a) * np.sin(b), np.sin(a) * np.sin(b), np.cos(b)])
+            i += 2
+        if self.floor:  # horizontal floor directions: in the plane perpendicular to the vertical
+            v = rots[int(self.tie)][:, 2] if self.tie is not None else wv
+            e1 = np.cross(v, [1.0, 0.0, 0.0])
+            e1 /= np.linalg.norm(e1)
+            e2 = np.cross(v, e1)
+            for g in self.floor:
+                rots[g] = np.cos(x[i]) * e1 + np.sin(x[i]) * e2
+                i += 1
         return K_from(f, f, cx, cy), d, rots, wv
 
     def vp(self, g, K, rots, wv):
+        if g.startswith("floor_"):
+            return K @ rots[g]
         if g == "world_vertical":
             d = rots[int(self.tie)][:, 2] if self.tie is not None else wv
         else:
@@ -181,7 +196,25 @@ class LineCal:
             z = rodrigues(poses[self.carts[0]][:3])[:, 2] if poses is not None else np.array([0, 0.3, -0.95])
             z = z / np.linalg.norm(z)
             x += [np.arctan2(z[1], z[0]), np.arccos(np.clip(z[2], -1, 1))]
-        return np.array(x, float)
+        x += [0.0] * len(self.floor)
+        x = np.array(x, float)
+        return self.init_floor_angles(x) if self.floor else x
+
+    def init_floor_angles(self, x):
+        """Grid-search each floor-direction angle (others fixed)."""
+        x = x.copy()
+        n0 = len(x) - len(self.floor)
+        for j, g in enumerate(self.floor):
+            sel = [k for k, gg in enumerate(self.groups) if gg == g]
+            best = None
+            for a in np.linspace(0, np.pi, 181):
+                x[n0 + j] = a
+                pe = self.residuals(x, per_edge=True)
+                c = float(np.nansum([pe[k] ** 2 for k in sel]))
+                if best is None or c < best[0]:
+                    best = (c, a)
+            x[n0 + j] = best[1]
+        return x
 
     def solve(self, x0, loss="huber", f_scale=0.5, bounds=None):
         kw = dict(loss=loss, f_scale=f_scale, x_scale="jac", max_nfev=400, xtol=1e-10, ftol=1e-10)

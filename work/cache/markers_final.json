@@ -95,12 +95,13 @@
         "ncc_expected": 0.9948447005221097,
         "best_other_id": 931,
         "ncc_best_other": 0.9288119079961527,
-        "n_pixels": 2836
+        "n_pixels": 2836,
+        "note": "expected id correlates best"
       },
       "weakest_bit_margin": 0.4741074324620487,
       "rotation_read": 0,
       "min_hamming_other_cart_ids": 6,
-      "verdict": "confirmed: unique in the whole dictionary"
+      "verdict": "confirmed: unique in the whole dictionary on the 16 fully visible bits; other ids used on the carts differ by >= 6 fully visible bits"
     },
     "aruco_corners_px": [
       [
@@ -607,7 +608,43 @@
       true
     ],
     "occlusion": [],
-    "subpix_window_px": 3
+    "subpix_window_px": 3,
+    "corners_px_bias_corrected": [
+      [
+        1466.7182407219104,
+        31.714304816682272
+      ],
+      [
+        1459.4921678944181,
+        89.85740542415726
+      ],
+      [
+        1403.0469710931939,
+        82.91177457956823
+      ],
+      [
+        1409.334652799515,
+        24.05199575810025
+      ]
+    ],
+    "edge_bias_px": {
+      "value": -0.6696144603191025,
+      "se": 0.012249824269767907,
+      "n_transitions": 110,
+      "cell_px": 9.466303863809202
+    },
+    "occluded_sides_aruco": [],
+    "rot_k_check": {
+      "how": "leave-one-sticker-out fit (f, pp, k1, k2, poses) predicts the sticker's valid corners under the 4 rotations",
+      "loo_rms_per_rot_px": [
+        9.223081975543996,
+        60.95796358156632,
+        84.23687980718206,
+        58.86693596374462
+      ],
+      "loo_best": 0,
+      "agrees": true
+    }
   },
   {
     "cart": 80,
@@ -705,12 +742,13 @@
         "ncc_expected": 0.9857141647759463,
         "best_other_id": 446,
         "ncc_best_other": 0.9240973177988074,
-        "n_pixels": 2836
+        "n_pixels": 2836,
+        "note": "expected id correlates best"
       },
       "weakest_bit_margin": 0.4538973260278529,
       "rotation_read": 0,
       "min_hamming_other_cart_ids": 6,
-      "verdict": "confirmed: unique in the whole dictionary"
+      "verdict": "confirmed: unique in the whole dictionary on the 16 fully visible bits; other ids used on the carts differ by >= 6 fully visible bits"
     },
     "aruco_corners_px": [
       [
@@ -1217,7 +1255,43 @@
       true
     ],
     "occlusion": [],
-    "subpix_window_px": 2
+    "subpix_window_px": 2,
+    "corners_px_bias_corrected": [
+      [
+        1344.8021526240902,
+        905.2486877820053
+      ],
+      [
+        1336.715527085878,
+        950.8056608823172
+      ],
+      [
+        1287.5360276012482,
+        952.2610549740384
+      ],
+      [
+        1294.1880057551955,
+        905.3239137284072
+      ]
+    ],
+    "edge_bias_px": {
+      "value": -0.5171746676026343,
+      "se": 0.025593437738147318,
+      "n_transitions": 100,
+      "cell_px": 7.887045351376464
+    },
+    "occluded_sides_aruco": [],
+    "rot_k_check": {
+      "how": "leave-one-sticker-out fit (f, pp, k1, k2, poses) predicts the sticker's valid corners under the 4 rotations",
+      "loo_rms_per_rot_px": [
+        8.760666617798806,
+        47.55824787434529,
+        67.03237700330989,
+        48.052741489609566
+      ],
+      "loo_best": 0,
+      "agrees": true
+    }
   },
   {
     "cart": 80,
@@ -1315,12 +1389,13 @@
         "ncc_expected": 0.9879865719097543,
         "best_other_id": 919,
         "ncc_best_other": 0.9245092068543325,
-        "n_pixels": 2836
+        "n_pixels": 2836,
+        "note": "expected id correlates best"
       },
       "weakest_bit_margin": 0.451712201825337,
       "rotation_read": 0,
       "min_hamming_other_cart_ids": 5,
-      "verdict": "confirmed: unique in the whole dictionary"
+      "verdict": "confirmed: unique in the whole dictionary on the 16 fully visible bits; other ids used on the carts differ by >= 5 fully visible bits"
     },
     "aruco_corners_px": [
       [
@@ -1827,7 +1902,43 @@
       true
     ],
     "occlusion": [],
-    "subpix_window_px": 2
+    "subpix_window_px": 2,
+    "corners_px_bias_corrected": [
+      [
+        1516.2884706954064,
+        898.3206518832754
+      ],
+      [
+        1506.5208106118532,
+        942.5655058146375
+      ],
+      [
+        1462.13443139967,
+        945.7300030330924
+      ],
+      [
+        1471.8024579539854,
+        901.3913694528703
+      ]
+    ],
+    "edge_bias_px": {
+      "value": -0.47594242917179735,
+      "se": 0.020713350605258373,
+      "n_transitions": 100,
+      "cell_px": 7.325565032788181
+    },
+    "occluded_sides_aruco": [],
+    "rot_k_check": {
+      "how": "leave-one-sticker-out fit (f, pp, k1, k2, poses) predicts the sticker's valid corners under the 4 rotations",
+      "loo_rms_per_rot_px": [
+        7.30680830946452,
+        43.88034382388593,
+        62.096115475083046,
+        44.540894788525115
+      ],
+      "loo_best": 0,
+      "agrees": true
+    }
   },
   {
     "cart": 80,
@@ -1925,12 +2036,13 @@
         "ncc_expected": 0.9605378943215157,
         "best_other_id": 317,
         "ncc_best_other": 0.9232101493730932,
-        "n_pixels": 1907
+        "n_pixels": 1907,
+        "note": "expected id correlates best"
       },
       "weakest_bit_margin": 0.25184877007332385,
       "rotation_read": 2,
       "min_hamming_other_cart_ids": 4,
-      "verdict": "confirmed: unique in the whole dictionary"
+      "verdict": "confirmed: unique in the whole dictionary on the 12 fully visible bits; other ids used on the carts differ by >= 4 fully visible bits"
     },
     "aruco_corners_px": [
       [
@@ -2356,10 +2468,44 @@
           1.6648202804247367
         ],
         "margin_dark": 0.925,
-        "kind": "bright occluder"
+        "kind": "bright occluder",
+        "side_aruco": 2,
+        "side_order_note": "'side' = index in the read order of stage 11a; 'side_aruco' = ArUco order (side i joins corners i and i+1)"
       }
     ],
-    "subpix_window_px": 3
+    "subpix_window_px": 3,
+    "corners_px_bias_corrected": [
+      [
+        1353.8354417187572,
+        82.23538622188514
+      ],
+      [
+        1360.2795363417142,
+        28.13953080604325
+      ],
+      null,
+      null
+    ],
+    "edge_bias_px": {
+      "value": -0.48996026858520075,
+      "se": 0.023607462172961637,
+      "n_transitions": 75,
+      "cell_px": 8.940299906576113
+    },
+    "occluded_sides_aruco": [
+      2
+    ],
+    "rot_k_check": {
+      "how": "leave-one-sticker-out fit (f, pp, k1, k2, poses) predicts the sticker's valid corners under the 4 rotations",
+      "loo_rms_per_rot_px": [
+        80.90943399613528,
+        57.38995501232892,
+        4.756519065438817,
+        57.5881273773618
+      ],
+      "loo_best": 2,
+      "agrees": true
+    }
   },
   {
     "cart": 80,
@@ -2457,12 +2603,13 @@
         "ncc_expected": 0.9551479585620192,
         "best_other_id": 631,
         "ncc_best_other": 0.8897552267264389,
-        "n_pixels": 2836
+        "n_pixels": 2836,
+        "note": "expected id correlates best"
       },
       "weakest_bit_margin": 0.35768054748902317,
       "rotation_read": 0,
       "min_hamming_other_cart_ids": 6,
-      "verdict": "confirmed: unique in the whole dictionary"
+      "verdict": "confirmed: unique in the whole dictionary on the 16 fully visible bits; other ids used on the carts differ by >= 6 fully visible bits"
     },
     "aruco_corners_px": [
       [
@@ -2969,7 +3116,43 @@
       true
     ],
     "occlusion": [],
-    "subpix_window_px": 2
+    "subpix_window_px": 2,
+    "corners_px_bias_corrected": [
+      [
+        1256.328975030576,
+        874.7234107702416
+      ],
+      [
+        1263.89028021245,
+        832.9515785661999
+      ],
+      [
+        1310.5963311396877,
+        833.0620047614622
+      ],
+      [
+        1302.490944785156,
+        875.0820131353247
+      ]
+    ],
+    "edge_bias_px": {
+      "value": -0.5070168056184883,
+      "se": 0.01899245829691202,
+      "n_transitions": 120,
+      "cell_px": 7.249641295307984
+    },
+    "occluded_sides_aruco": [],
+    "rot_k_check": {
+      "how": "leave-one-sticker-out fit (f, pp, k1, k2, poses) predicts the sticker's valid corners under the 4 rotations",
+      "loo_rms_per_rot_px": [
+        63.39064516534369,
+        45.389882706322794,
+        13.08895083892444,
+        46.147733565393715
+      ],
+      "loo_best": 2,
+      "agrees": true
+    }
   },
   {
     "cart": 80,
@@ -3067,12 +3250,13 @@
         "ncc_expected": 0.9819907607023275,
         "best_other_id": 869,
         "ncc_best_other": 0.9178993902061043,
-        "n_pixels": 2836
+        "n_pixels": 2836,
+        "note": "expected id correlates best"
       },
       "weakest_bit_margin": 0.41477435746983043,
       "rotation_read": 0,
       "min_hamming_other_cart_ids": 6,
-      "verdict": "confirmed: unique in the whole dictionary"
+      "verdict": "confirmed: unique in the whole dictionary on the 16 fully visible bits; other ids used on the carts differ by >= 6 fully visible bits"
     },
     "aruco_corners_px": [
       [
@@ -3579,7 +3763,43 @@
       true
     ],
     "occlusion": [],
-    "subpix_window_px": 2
+    "subpix_window_px": 2,
+    "corners_px_bias_corrected": [
+      [
+        1289.9271071651547,
+        79.27844422081965
+      ],
+      [
+        1293.4120793236455,
+        32.085846215129706
+      ],
+      [
+        1339.0804328251334,
+        38.29248373079445
+      ],
+      [
+        1335.9502345585288,
+        85.02768699448404
+      ]
+    ],
+    "edge_bias_px": {
+      "value": -0.5323852528194398,
+      "se": 0.012135838919910517,
+      "n_transitions": 120,
+      "cell_px": 7.598471299447767
+    },
+    "occluded_sides_aruco": [],
+    "rot_k_check": {
+      "how": "leave-one-sticker-out fit (f, pp, k1, k2, poses) predicts the sticker's valid corners under the 4 rotations",
+      "loo_rms_per_rot_px": [
+        66.90383127644975,
+        47.17136536059947,
+        8.208213453902314,
+        48.15014887330212
+      ],
+      "loo_best": 2,
+      "agrees": true
+    }
   },
   {
     "cart": 80,
@@ -3677,12 +3897,13 @@
         "ncc_expected": 0.960242375105661,
         "best_other_id": 714,
         "ncc_best_other": 0.8987685341541626,
-        "n_pixels": 2836
+        "n_pixels": 2836,
+        "note": "expected id correlates best"
       },
       "weakest_bit_margin": 0.40997939763417596,
       "rotation_read": 0,
       "min_hamming_other_cart_ids": 4,
-      "verdict": "confirmed: unique in the whole dictionary"
+      "verdict": "confirmed: unique in the whole dictionary on the 16 fully visible bits; other ids used on the carts differ by >= 4 fully visible bits"
     },
     "aruco_corners_px": [
       [
@@ -4189,7 +4410,43 @@
       true
     ],
     "occlusion": [],
-    "subpix_window_px": 2
+    "subpix_window_px": 2,
+    "corners_px_bias_corrected": [
+      [
+        1219.4397730097132,
+        776.2371094768318
+      ],
+      [
+        1224.1737422696726,
+        737.6821389750445
+      ],
+      [
+        1265.609926159587,
+        737.2458683457995
+      ],
+      [
+        1261.2776618966257,
+        775.9119885955308
+      ]
+    ],
+    "edge_bias_px": {
+      "value": -0.542026794884572,
+      "se": 0.018890385345631387,
+      "n_transitions": 110,
+      "cell_px": 6.5274715772841025
+    },
+    "occluded_sides_aruco": [],
+    "rot_k_check": {
+      "how": "leave-one-sticker-out fit (f, pp, k1, k2, poses) predicts the sticker's valid corners under the 4 rotations",
+      "loo_rms_per_rot_px": [
+        55.53544081554458,
+        39.63887488165605,
+        1.3843775532356086,
+        38.9199575253814
+      ],
+      "loo_best": 2,
+      "agrees": true
+    }
   },
   {
     "cart": 80,
@@ -4287,12 +4544,13 @@
         "ncc_expected": 0.953096600508842,
         "best_other_id": 377,
         "ncc_best_other": 0.9075813622789654,
-        "n_pixels": 1956
+        "n_pixels": 1956,
+        "note": "expected id correlates best"
       },
       "weakest_bit_margin": 0.4000451113717409,
       "rotation_read": 0,
       "min_hamming_other_cart_ids": 4,
-      "verdict": "confirmed: unique in the whole dictionary"
+      "verdict": "confirmed: unique in the whole dictionary on the 12 fully visible bits; other ids used on the carts differ by >= 4 fully visible bits"
     },
     "aruco_corners_px": [
       [
@@ -4718,10 +4976,44 @@
           1.539537452318746
         ],
         "margin_dark": 1.0,
-        "kind": "dark occluder / shadow over the margin"
+        "kind": "dark occluder / shadow over the margin",
+        "side_aruco": 2,
+        "side_order_note": "'side' = index in the read order of stage 11a; 'side_aruco' = ArUco order (side i joins corners i and i+1)"
       }
     ],
-    "subpix_window_px": 2
+    "subpix_window_px": 2,
+    "corners_px_bias_corrected": [
+      [
+        1251.91119269422,
+        77.17774546650482
+      ],
+      [
+        1253.7819978969887,
+        35.88054426285817
+      ],
+      null,
+      null
+    ],
+    "edge_bias_px": {
+      "value": -0.35199672936078163,
+      "se": 0.02700011326622824,
+      "n_transitions": 60,
+      "cell_px": 6.689518125844703
+    },
+    "occluded_sides_aruco": [
+      2
+    ],
+    "rot_k_check": {
+      "how": "leave-one-sticker-out fit (f, pp, k1, k2, poses) predicts the sticker's valid corners under the 4 rotations",
+      "loo_rms_per_rot_px": [
+        53.64640031952809,
+        36.3239451649606,
+        8.831221033311769,
+        40.57809574532822
+      ],
+      "loo_best": 2,
+      "agrees": true
+    }
   },
   {
     "cart": 80,
@@ -4819,12 +5111,13 @@
         "ncc_expected": 0.935853377030996,
         "best_other_id": 841,
         "ncc_best_other": 0.935853377030996,
-        "n_pixels": 1956
+        "n_pixels": 1956,
+        "note": "tie: another dictionary code matches the visible part exactly as well"
       },
       "weakest_bit_margin": 0.5157923996725517,
       "rotation_read": 0,
       "min_hamming_other_cart_ids": 2,
-      "verdict": "confirmed within the ids used on the carts (other cart ids differ by >= 2 visible bits); 1 unrelated dictionary code(s) also fit the visible bits"
+      "verdict": "confirmed within the cart ids (other ids used on the carts differ by >= 2 fully visible bits); 1 other dictionary code(s) fit the 12 fully visible bits and 1 the 12 bits incl. partially visible cells (none of them is used on the carts)"
     },
     "aruco_corners_px": [
       [
@@ -5250,10 +5543,44 @@
           1.4109915693475752
         ],
         "margin_dark": 0.0,
-        "kind": "bright occluder"
+        "kind": "bright occluder",
+        "side_aruco": 2,
+        "side_order_note": "'side' = index in the read order of stage 11a; 'side_aruco' = ArUco order (side i joins corners i and i+1)"
       }
     ],
-    "subpix_window_px": 2
+    "subpix_window_px": 2,
+    "corners_px_bias_corrected": [
+      [
+        1191.979113796171,
+        697.8914637497836
+      ],
+      [
+        1196.6820970883118,
+        662.333803978212
+      ],
+      null,
+      null
+    ],
+    "edge_bias_px": {
+      "value": -0.4520915570997264,
+      "se": 0.028677392383372288,
+      "n_transitions": 75,
+      "cell_px": 6.0032132336255435
+    },
+    "occluded_sides_aruco": [
+      2
+    ],
+    "rot_k_check": {
+      "how": "leave-one-sticker-out fit (f, pp, k1, k2, poses) predicts the sticker's valid corners under the 4 rotations",
+      "loo_rms_per_rot_px": [
+        46.18514388882364,
+        36.19059117964086,
+        9.45272267377789,
+        30.218839547003736
+      ],
+      "loo_best": 2,
+      "agrees": true
+    }
   },
   {
     "cart": 80,
@@ -5351,12 +5678,13 @@
         "ncc_expected": 0.9954610994288288,
         "best_other_id": 448,
         "ncc_best_other": 0.9288203227212039,
-        "n_pixels": 2836
+        "n_pixels": 2836,
+        "note": "expected id correlates best"
       },
       "weakest_bit_margin": 0.4587106438876005,
       "rotation_read": 0,
       "min_hamming_other_cart_ids": 5,
-      "verdict": "confirmed: unique in the whole dictionary"
+      "verdict": "confirmed: unique in the whole dictionary on the 16 fully visible bits; other ids used on the carts differ by >= 5 fully visible bits"
     },
     "aruco_corners_px": [
       [
@@ -5863,7 +6191,43 @@
       true
     ],
     "occlusion": [],
-    "subpix_window_px": 3
+    "subpix_window_px": 3,
+    "corners_px_bias_corrected": [
+      [
+        1656.685895194762,
+        62.73527392407026
+      ],
+      [
+        1647.8485225720783,
+        116.97258080143331
+      ],
+      [
+        1600.0937661161456,
+        109.56971668517869
+      ],
+      [
+        1607.8960315832553,
+        53.898924795207655
+      ]
+    ],
+    "edge_bias_px": {
+      "value": -0.5134318495560432,
+      "se": 0.017448914953535656,
+      "n_transitions": 90,
+      "cell_px": 8.540315440193462
+    },
+    "occluded_sides_aruco": [],
+    "rot_k_check": {
+      "how": "leave-one-sticker-out fit (f, pp, k1, k2, poses) predicts the sticker's valid corners under the 4 rotations",
+      "loo_rms_per_rot_px": [
+        9.929411054816544,
+        55.60746918840015,
+        76.45626978997102,
+        53.409449192637915
+      ],
+      "loo_best": 0,
+      "agrees": true
+    }
   },
   {
     "cart": 310,
@@ -5961,12 +6325,13 @@
         "ncc_expected": 0.980300300605921,
         "best_other_id": 499,
         "ncc_best_other": 0.9195063023411415,
-        "n_pixels": 2836
+        "n_pixels": 2836,
+        "note": "expected id correlates best"
       },
       "weakest_bit_margin": 0.2740915286588081,
       "rotation_read": 0,
       "min_hamming_other_cart_ids": 6,
-      "verdict": "confirmed: unique in the whole dictionary"
+      "verdict": "confirmed: unique in the whole dictionary on the 16 fully visible bits; other ids used on the carts differ by >= 6 fully visible bits"
     },
     "aruco_corners_px": [
       [
@@ -6473,7 +6838,43 @@
       true
     ],
     "occlusion": [],
-    "subpix_window_px": 3
+    "subpix_window_px": 3,
+    "corners_px_bias_corrected": [
+      [
+        756.1569388728894,
+        945.1283582001954
+      ],
+      [
+        740.5935172223401,
+        896.5682122463901
+      ],
+      [
+        791.9958114222193,
+        885.1426091015286
+      ],
+      [
+        807.4709090564933,
+        934.1589405013608
+      ]
+    ],
+    "edge_bias_px": {
+      "value": -0.6189248138338638,
+      "se": 0.023530073369666893,
+      "n_transitions": 110,
+      "cell_px": 8.439650968114764
+    },
+    "occluded_sides_aruco": [],
+    "rot_k_check": {
+      "how": "leave-one-sticker-out fit (f, pp, k1, k2, poses) predicts the sticker's valid corners under the 4 rotations",
+      "loo_rms_per_rot_px": [
+        10.566416758655121,
+        51.75266013495105,
+        70.7632112130929,
+        49.40515407928058
+      ],
+      "loo_best": 0,
+      "agrees": true
+    }
   },
   {
     "cart": 310,
@@ -6571,12 +6972,13 @@
         "ncc_expected": 0.9850948754187575,
         "best_other_id": 609,
         "ncc_best_other": 0.917588621532225,
-        "n_pixels": 2836
+        "n_pixels": 2836,
+        "note": "expected id correlates best"
       },
       "weakest_bit_margin": 0.4917936650094848,
       "rotation_read": 0,
       "min_hamming_other_cart_ids": 6,
-      "verdict": "confirmed: unique in the whole dictionary"
+      "verdict": "confirmed: unique in the whole dictionary on the 16 fully visible bits; other ids used on the carts differ by >= 6 fully visible bits"
     },
     "aruco_corners_px": [
       [
@@ -7083,7 +7485,43 @@
       true
     ],
     "occlusion": [],
-    "subpix_window_px": 3
+    "subpix_window_px": 3,
+    "corners_px_bias_corrected": [
+      [
+        426.03913856819327,
+        107.23937506837055
+      ],
+      [
+        409.36393913302993,
+        50.078573435014064
+      ],
+      [
+        465.3703836443873,
+        29.367398596442992
+      ],
+      [
+        481.67174614826195,
+        87.02325299044307
+      ]
+    ],
+    "edge_bias_px": {
+      "value": -0.9812506865435328,
+      "se": 0.02247102261284153,
+      "n_transitions": 100,
+      "cell_px": 9.603934784749514
+    },
+    "occluded_sides_aruco": [],
+    "rot_k_check": {
+      "how": "leave-one-sticker-out fit (f, pp, k1, k2, poses) predicts the sticker's valid corners under the 4 rotations",
+      "loo_rms_per_rot_px": [
+        10.589843631817773,
+        61.68487602505116,
+        85.73220250246541,
+        60.475786001631725
+      ],
+      "loo_best": 0,
+      "agrees": true
+    }
   },
   {
     "cart": 310,
@@ -7181,12 +7619,13 @@
         "ncc_expected": 0.9602416160653449,
         "best_other_id": 998,
         "ncc_best_other": 0.8969907858198346,
-        "n_pixels": 2836
+        "n_pixels": 2836,
+        "note": "expected id correlates best"
       },
       "weakest_bit_margin": 0.5065876595878699,
       "rotation_read": 0,
       "min_hamming_other_cart_ids": 5,
-      "verdict": "confirmed: unique in the whole dictionary"
+      "verdict": "confirmed: unique in the whole dictionary on the 16 fully visible bits; other ids used on the carts differ by >= 5 fully visible bits"
     },
     "aruco_corners_px": [
       [
@@ -7693,7 +8132,43 @@
       true
     ],
     "occlusion": [],
-    "subpix_window_px": 3
+    "subpix_window_px": 3,
+    "corners_px_bias_corrected": [
+      [
+        240.85352556599727,
+        179.88479620490745
+      ],
+      [
+        224.95503763614246,
+        126.20775968437371
+      ],
+      [
+        272.56744506152484,
+        105.55970058887875
+      ],
+      [
+        288.0608396467082,
+        160.43810714277578
+      ]
+    ],
+    "edge_bias_px": {
+      "value": -1.2330472459371895,
+      "se": 0.028922589265138052,
+      "n_transitions": 100,
+      "cell_px": 8.584326944082953
+    },
+    "occluded_sides_aruco": [],
+    "rot_k_check": {
+      "how": "leave-one-sticker-out fit (f, pp, k1, k2, poses) predicts the sticker's valid corners under the 4 rotations",
+      "loo_rms_per_rot_px": [
+        7.134185972100281,
+        54.26322381772679,
+        75.43226410416835,
+        52.88713491113031
+      ],
+      "loo_best": 0,
+      "agrees": true
+    }
   },
   {
     "cart": 310,
@@ -7791,12 +8266,13 @@
         "ncc_expected": 0.9365582388502023,
         "best_other_id": 692,
         "ncc_best_other": 0.9247883791241784,
-        "n_pixels": 1956
+        "n_pixels": 1956,
+        "note": "expected id correlates best"
       },
       "weakest_bit_margin": 0.12097894921594583,
       "rotation_read": 0,
       "min_hamming_other_cart_ids": 3,
-      "verdict": "confirmed: unique in the whole dictionary"
+      "verdict": "confirmed: unique in the whole dictionary on the 12 fully visible bits; other ids used on the carts differ by >= 3 fully visible bits"
     },
     "aruco_corners_px": [
       [
@@ -8222,10 +8698,44 @@
           1.0828050810916716
         ],
         "margin_dark": 0.0,
-        "kind": "bright occluder"
+        "kind": "bright occluder",
+        "side_aruco": 1,
+        "side_order_note": "'side' = index in the read order of stage 11a; 'side_aruco' = ArUco order (side i joins corners i and i+1)"
       }
     ],
-    "subpix_window_px": 2
+    "subpix_window_px": 2,
+    "corners_px_bias_corrected": [
+      [
+        797.7385521506255,
+        809.6186312360569
+      ],
+      null,
+      null,
+      [
+        750.4972915522746,
+        822.1167870871058
+      ]
+    ],
+    "edge_bias_px": {
+      "value": -0.886177152084367,
+      "se": 0.054678262022504344,
+      "n_transitions": 65,
+      "cell_px": 7.360406807641052
+    },
+    "occluded_sides_aruco": [
+      1
+    ],
+    "rot_k_check": {
+      "how": "leave-one-sticker-out fit (f, pp, k1, k2, poses) predicts the sticker's valid corners under the 4 rotations",
+      "loo_rms_per_rot_px": [
+        71.86402355967049,
+        50.40109715581929,
+        11.727414169849414,
+        52.8393953272124
+      ],
+      "loo_best": 2,
+      "agrees": true
+    }
   },
   {
     "cart": 310,
@@ -8323,12 +8833,13 @@
         "ncc_expected": 0.9659622495837273,
         "best_other_id": 805,
         "ncc_best_other": 0.9659622495837273,
-        "n_pixels": 1956
+        "n_pixels": 1956,
+        "note": "tie: another dictionary code matches the visible part exactly as well"
       },
       "weakest_bit_margin": 0.33187260774459965,
       "rotation_read": 2,
       "min_hamming_other_cart_ids": 4,
-      "verdict": "confirmed within the ids used on the carts (other cart ids differ by >= 4 visible bits); 1 unrelated dictionary code(s) also fit the visible bits"
+      "verdict": "confirmed within the cart ids (other ids used on the carts differ by >= 4 fully visible bits); 1 other dictionary code(s) fit the 12 fully visible bits and 1 the 12 bits incl. partially visible cells (none of them is used on the carts)"
     },
     "aruco_corners_px": [
       [
@@ -8736,10 +9247,44 @@
           1.7940713334101166
         ],
         "margin_dark": 0.9,
-        "kind": "bright occluder"
+        "kind": "bright occluder",
+        "side_aruco": 2,
+        "side_order_note": "'side' = index in the read order of stage 11a; 'side_aruco' = ArUco order (side i joins corners i and i+1)"
       }
     ],
-    "subpix_window_px": 3
+    "subpix_window_px": 3,
+    "corners_px_bias_corrected": [
+      [
+        515.7112347005581,
+        28.055828093265568
+      ],
+      [
+        532.2060796399995,
+        78.38661242117232
+      ],
+      null,
+      null
+    ],
+    "edge_bias_px": {
+      "value": -0.8967132616807967,
+      "se": 0.036032785248871026,
+      "n_transitions": 80,
+      "cell_px": 8.843003097232641
+    },
+    "occluded_sides_aruco": [
+      2
+    ],
+    "rot_k_check": {
+      "how": "leave-one-sticker-out fit (f, pp, k1, k2, poses) predicts the sticker's valid corners under the 4 rotations",
+      "loo_rms_per_rot_px": [
+        83.2866770738908,
+        58.86044718665954,
+        8.020844324507962,
+        59.80782715067367
+      ],
+      "loo_best": 2,
+      "agrees": true
+    }
   },
   {
     "cart": 310,
@@ -8837,12 +9382,13 @@
         "ncc_expected": 0.9526201093048648,
         "best_other_id": 381,
         "ncc_best_other": 0.9526201093048648,
-        "n_pixels": 1296
+        "n_pixels": 1296,
+        "note": "tie: another dictionary code matches the visible part exactly as well"
       },
       "weakest_bit_margin": 0.3253504386411249,
       "rotation_read": 2,
       "min_hamming_other_cart_ids": 2,
-      "verdict": "confirmed: unique in the whole dictionary"
+      "verdict": "confirmed within the cart ids (other ids used on the carts differ by >= 2 fully visible bits); on the 9 fully visible bits 7 other dictionary code(s) also fit, unique in the whole dictionary only when the partially visible cells are used (16 bits)"
     },
     "aruco_corners_px": [
       [
@@ -9217,7 +9763,9 @@
           1.0927401562429406
         ],
         "margin_dark": 1.0,
-        "kind": "dark occluder / shadow over the margin"
+        "kind": "dark occluder / shadow over the margin",
+        "side_aruco": 2,
+        "side_order_note": "'side' = index in the read order of stage 11a; 'side_aruco' = ArUco order (side i joins corners i and i+1)"
       },
       {
         "side": 3,
@@ -9234,10 +9782,42 @@
           1.3750885221893547
         ],
         "margin_dark": 0.0,
-        "kind": "bright occluder"
+        "kind": "bright occluder",
+        "side_aruco": 1,
+        "side_order_note": "'side' = index in the read order of stage 11a; 'side_aruco' = ArUco order (side i joins corners i and i+1)"
       }
     ],
-    "subpix_window_px": 2
+    "subpix_window_px": 2,
+    "corners_px_bias_corrected": [
+      [
+        809.9225503029897,
+        716.3191151228964
+      ],
+      null,
+      null,
+      null
+    ],
+    "edge_bias_px": {
+      "value": -0.6058266862803694,
+      "se": 0.024518180180476627,
+      "n_transitions": 55,
+      "cell_px": 6.844692494394546
+    },
+    "occluded_sides_aruco": [
+      1,
+      2
+    ],
+    "rot_k_check": {
+      "how": "leave-one-sticker-out fit (f, pp, k1, k2, poses) predicts the sticker's valid corners under the 4 rotations",
+      "loo_rms_per_rot_px": [
+        51.3834562613956,
+        40.0845922822797,
+        4.865565385080874,
+        37.21380569565573
+      ],
+      "loo_best": 2,
+      "agrees": true
+    }
   },
   {
     "cart": 310,
@@ -9335,12 +9915,13 @@
         "ncc_expected": 0.9505341590993573,
         "best_other_id": 744,
         "ncc_best_other": 0.8834680900841777,
-        "n_pixels": 2836
+        "n_pixels": 2836,
+        "note": "expected id correlates best"
       },
       "weakest_bit_margin": 0.3355217758134496,
       "rotation_read": 2,
       "min_hamming_other_cart_ids": 4,
-      "verdict": "confirmed: unique in the whole dictionary"
+      "verdict": "confirmed: unique in the whole dictionary on the 16 fully visible bits; other ids used on the carts differ by >= 4 fully visible bits"
     },
     "aruco_corners_px": [
       [
@@ -9847,7 +10428,43 @@
       true
     ],
     "occlusion": [],
-    "subpix_window_px": 2
+    "subpix_window_px": 2,
+    "corners_px_bias_corrected": [
+      [
+        573.9069911871354,
+        34.432219696176666
+      ],
+      [
+        587.1618205142828,
+        79.17454749793053
+      ],
+      [
+        544.2291472496955,
+        94.1580568117832
+      ],
+      [
+        529.7770662044377,
+        50.51135781998602
+      ]
+    ],
+    "edge_bias_px": {
+      "value": -0.6298048837094073,
+      "se": 0.025258142506445657,
+      "n_transitions": 110,
+      "cell_px": 7.501612505322498
+    },
+    "occluded_sides_aruco": [],
+    "rot_k_check": {
+      "how": "leave-one-sticker-out fit (f, pp, k1, k2, poses) predicts the sticker's valid corners under the 4 rotations",
+      "loo_rms_per_rot_px": [
+        66.43262264293763,
+        46.953180598763836,
+        3.8081604403376086,
+        47.15356297593034
+      ],
+      "loo_best": 2,
+      "agrees": true
+    }
   },
   {
     "cart": 310,
@@ -9945,12 +10562,13 @@
         "ncc_expected": 0.9413301010305828,
         "best_other_id": 75,
         "ncc_best_other": 0.9413301010305828,
-        "n_pixels": 1296
+        "n_pixels": 1296,
+        "note": "tie: another dictionary code matches the visible part exactly as well"
       },
       "weakest_bit_margin": 0.19143141738110994,
       "rotation_read": 2,
       "min_hamming_other_cart_ids": 3,
-      "verdict": "confirmed within the ids used on the carts (other cart ids differ by >= 3 visible bits); 1 unrelated dictionary code(s) also fit the visible bits"
+      "verdict": "confirmed within the cart ids (other ids used on the carts differ by >= 3 fully visible bits); 8 other dictionary code(s) fit the 9 fully visible bits and 1 the 13 bits incl. partially visible cells (none of them is used on the carts)"
     },
     "aruco_corners_px": [
       [
@@ -10331,7 +10949,9 @@
           1.1086413586194765
         ],
         "margin_dark": 0.0,
-        "kind": "edge not usable"
+        "kind": "edge not usable",
+        "side_aruco": 2,
+        "side_order_note": "'side' = index in the read order of stage 11a; 'side_aruco' = ArUco order (side i joins corners i and i+1)"
       },
       {
         "side": 3,
@@ -10348,10 +10968,42 @@
           1.7444188676626466
         ],
         "margin_dark": 0.0,
-        "kind": "bright occluder"
+        "kind": "bright occluder",
+        "side_aruco": 1,
+        "side_order_note": "'side' = index in the read order of stage 11a; 'side_aruco' = ArUco order (side i joins corners i and i+1)"
       }
     ],
-    "subpix_window_px": 2
+    "subpix_window_px": 2,
+    "corners_px_bias_corrected": [
+      [
+        826.5189445392562,
+        640.0631094717156
+      ],
+      null,
+      null,
+      null
+    ],
+    "edge_bias_px": {
+      "value": -0.5405690037593976,
+      "se": 0.025760014438557112,
+      "n_transitions": 50,
+      "cell_px": 6.148693351703606
+    },
+    "occluded_sides_aruco": [
+      1,
+      2
+    ],
+    "rot_k_check": {
+      "how": "leave-one-sticker-out fit (f, pp, k1, k2, poses) predicts the sticker's valid corners under the 4 rotations",
+      "loo_rms_per_rot_px": [
+        45.20482513705585,
+        29.992526752422812,
+        4.648314476038952,
+        37.059938134260705
+      ],
+      "loo_best": 2,
+      "agrees": true
+    }
   },
   {
     "cart": 310,
@@ -10449,12 +11101,13 @@
         "ncc_expected": 0.9300881199099268,
         "best_other_id": 841,
         "ncc_best_other": 0.9300881199099268,
-        "n_pixels": 1956
+        "n_pixels": 1956,
+        "note": "tie: another dictionary code matches the visible part exactly as well"
       },
       "weakest_bit_margin": 0.35038605051514704,
       "rotation_read": 0,
       "min_hamming_other_cart_ids": 2,
-      "verdict": "confirmed: unique in the whole dictionary"
+      "verdict": "confirmed within the cart ids (other ids used on the carts differ by >= 2 fully visible bits); on the 12 fully visible bits 1 other dictionary code(s) also fit, unique in the whole dictionary only when the partially visible cells are used (14 bits)"
     },
     "aruco_corners_px": [
       [
@@ -10886,10 +11539,44 @@
           1.0799999999999996
         ],
         "margin_dark": 0.75,
-        "kind": "bright occluder"
+        "kind": "bright occluder",
+        "side_aruco": 2,
+        "side_order_note": "'side' = index in the read order of stage 11a; 'side_aruco' = ArUco order (side i joins corners i and i+1)"
       }
     ],
-    "subpix_window_px": 2
+    "subpix_window_px": 2,
+    "corners_px_bias_corrected": [
+      [
+        616.8343528582355,
+        36.07045284043746
+      ],
+      [
+        629.7946548605036,
+        74.61849839853886
+      ],
+      null,
+      null
+    ],
+    "edge_bias_px": {
+      "value": -0.5037208033179343,
+      "se": 0.026844166896851523,
+      "n_transitions": 75,
+      "cell_px": 6.626827674305747
+    },
+    "occluded_sides_aruco": [
+      2
+    ],
+    "rot_k_check": {
+      "how": "leave-one-sticker-out fit (f, pp, k1, k2, poses) predicts the sticker's valid corners under the 4 rotations",
+      "loo_rms_per_rot_px": [
+        55.56002054845929,
+        41.82722234489577,
+        6.453159227092382,
+        37.27504575823857
+      ],
+      "loo_best": 2,
+      "agrees": true
+    }
   },
   {
     "cart": 310,
@@ -10987,12 +11674,13 @@
         "ncc_expected": 0.9747317151300815,
         "best_other_id": 455,
         "ncc_best_other": 0.9115030379433363,
-        "n_pixels": 2836
+        "n_pixels": 2836,
+        "note": "expected id correlates best"
       },
       "weakest_bit_margin": 0.43736647130108375,
       "rotation_read": 0,
       "min_hamming_other_cart_ids": 3,
-      "verdict": "confirmed: unique in the whole dictionary"
+      "verdict": "confirmed: unique in the whole dictionary on the 16 fully visible bits; other ids used on the carts differ by >= 3 fully visible bits"
     },
     "aruco_corners_px": [
       [
@@ -11499,6 +12187,42 @@
       true
     ],
     "occlusion": [],
-    "subpix_window_px": 2
+    "subpix_window_px": 2,
+    "corners_px_bias_corrected": [
+      [
+        579.1503415272488,
+        977.9336524244155
+      ],
+      [
+        562.5193838426765,
+        930.6843276628547
+      ],
+      [
+        609.031656258464,
+        922.6016513789599
+      ],
+      [
+        625.315195974376,
+        970.070401482063
+      ]
+    ],
+    "edge_bias_px": {
+      "value": -0.6793665987906093,
+      "se": 0.02315510357264326,
+      "n_transitions": 100,
+      "cell_px": 7.866881375686596
+    },
+    "occluded_sides_aruco": [],
+    "rot_k_check": {
+      "how": "leave-one-sticker-out fit (f, pp, k1, k2, poses) predicts the sticker's valid corners under the 4 rotations",
+      "loo_rms_per_rot_px": [
+        4.5114856297545805,
+        48.49579494448814,
+        66.174744246769,
+        45.25234616588535
+      ],
+      "loo_best": 0,
+      "agrees": true
+    }
   }
 ]

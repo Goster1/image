@@ -20,7 +20,7 @@
           450
         ],
         "exact": true,
-        "note": "outer end edge of the top plate at the X=0 end (drawing: X=0, Z=0); edge slightly rounded. Check: a plane homography from the 8 corners of markers 0 and 322 on this board puts the traced edge at X = -3..-4 mm (~2 px from X=0) -> consistent"
+        "note": "outer end edge of the top plate at the X=0 end (drawing: X=0, Z=0); edge slightly rounded. Check: a plane homography from the 8 corners of markers 0 and 322 on this board puts the traced edge at X = -3..-4 mm (~2 px from X=0) -> consistent [review: re-checked with the edge-based corners of markers_final.json: X = -4.6 mm raw, -3.6 / -3.4 mm after rough undistortions (-2.5 px), homography rms 1.01 px -> kept exact]"
       },
       "points": [
         [
@@ -658,6 +658,12 @@
         "X": 79.58,
         "Y": 0.42,
         "Z": 63.23
+      },
+      "review": {
+        "changes": [
+          "model_line.note: independent homography re-check added (kept exact)"
+        ],
+        "crop": "work/cache/review_cart310/board0_outer_reviewed_strip.png"
       }
     },
     {
@@ -677,8 +683,8 @@
           0,
           450
         ],
-        "exact": true,
-        "note": "outer end edge of the top plate at X=1600 per the drawing (end face invisible, camera X~1414); visible part ~Y 80..400, rounded back corner not included. SUSPECT: a plane homography from the 8 corners of markers 1 and 2 on this board puts the traced edge at X = 1618-1620 mm (12-15 px beyond the X=1600 line; same with/without a rough undistortion) -> the board seems to overhang ~18 mm at this end"
+        "exact": false,
+        "note": "nominal outer end edge of the top plate (drawing X=1600, Z=0) - NOT used as exact: a plane homography from the valid edge-based corners of markers 1 and 2 (markers_final.json) puts the traced edge at X = 1619.7 mm raw / 1618.3-1618.6 mm after two rough undistortions (+12..+16 px beyond the X=1600 line); the visible board edge overhangs ~19 mm (compare cart80_y_board0_outer, -20 mm, also not exact). The same homography puts x_board1600_front at Y = -0.7..-1.1 mm, i.e. the board and its stickers agree in Y."
       },
       "points": [
         [
@@ -1171,6 +1177,12 @@
         "X": 82.11,
         "Y": 1.96,
         "Z": 12.74
+      },
+      "review": {
+        "changes": [
+          "model_line.exact true -> false (edge 12-16 px / ~19 mm off the drawing line X=1600 per the board's own stickers)"
+        ],
+        "crop": "work/cache/review_cart310/board1600_outer_reviewed_strip.png"
       }
     },
     {
@@ -1191,7 +1203,7 @@
           450
         ],
         "exact": false,
-        "note": "board width is not in the drawing (165 mm only assumed from the centred markers at X=1517.5); the camera (X~1414) sees the inner end face almost edge-on"
+        "note": "board width is not in the drawing (165 mm only assumed from the centred markers at X=1517.5); the camera (X~1414) sees the inner end face almost edge-on [review: homography of the board's stickers puts this edge at X = 1427.5 mm (1426.3 mm undistorted), not 1435; not exact anyway]"
       },
       "points": [
         [
@@ -1719,6 +1731,12 @@
         "X": 86.84,
         "Y": 3.41,
         "Z": 4.91
+      },
+      "review": {
+        "changes": [
+          "model_line.note: measured X from the board homography added (nominal 1435 is only assumed)"
+        ],
+        "crop": "work/cache/review_cart310/board1600_inner_reviewed_strip.png"
       }
     },
     {
@@ -1739,7 +1757,7 @@
           450
         ],
         "exact": false,
-        "note": "board width not in the drawing (165 mm assumed from the centred markers at X=82.5)"
+        "note": "board width not in the drawing (165 mm assumed from the centred markers at X=82.5) [review: homography of the board's stickers puts this edge at X = 151.0 mm (152.1 mm undistorted), not 165; not exact anyway]"
       },
       "points": [
         [
@@ -2422,6 +2440,12 @@
         "X": 81.6,
         "Y": 0.97,
         "Z": 59.29
+      },
+      "review": {
+        "changes": [
+          "model_line.note: measured X from the board homography added (nominal 165 is only assumed)"
+        ],
+        "crop": "work/cache/review_cart310/board0_inner_top_reviewed_strip.png"
       }
     },
     {
@@ -2805,78 +2829,6 @@
           142.783
         ],
         [
-          561.624,
-          144.716
-        ],
-        [
-          562.347,
-          146.584
-        ],
-        [
-          562.933,
-          148.497
-        ],
-        [
-          563.562,
-          150.396
-        ],
-        [
-          564.155,
-          152.306
-        ],
-        [
-          564.79,
-          154.203
-        ],
-        [
-          580.886,
-          201.547
-        ],
-        [
-          581.427,
-          203.476
-        ],
-        [
-          582.125,
-          205.351
-        ],
-        [
-          582.788,
-          207.238
-        ],
-        [
-          583.384,
-          209.149
-        ],
-        [
-          584.109,
-          211.014
-        ],
-        [
-          584.903,
-          212.857
-        ],
-        [
-          585.505,
-          214.765
-        ],
-        [
-          586.093,
-          216.678
-        ],
-        [
-          586.828,
-          218.54
-        ],
-        [
-          587.422,
-          220.451
-        ],
-        [
-          587.986,
-          222.372
-        ],
-        [
           588.77,
           224.218
         ],
@@ -3093,78 +3045,6 @@
           324.472
         ],
         [
-          623.83,
-          326.382
-        ],
-        [
-          624.622,
-          328.223
-        ],
-        [
-          625.245,
-          330.125
-        ],
-        [
-          625.811,
-          332.046
-        ],
-        [
-          626.613,
-          333.884
-        ],
-        [
-          627.196,
-          335.8
-        ],
-        [
-          644.924,
-          384.691
-        ],
-        [
-          645.426,
-          386.636
-        ],
-        [
-          646.133,
-          388.508
-        ],
-        [
-          646.916,
-          390.352
-        ],
-        [
-          647.421,
-          392.296
-        ],
-        [
-          648.09,
-          394.181
-        ],
-        [
-          648.836,
-          396.038
-        ],
-        [
-          649.375,
-          397.97
-        ],
-        [
-          650.076,
-          399.844
-        ],
-        [
-          650.958,
-          401.652
-        ],
-        [
-          651.437,
-          403.605
-        ],
-        [
-          652.174,
-          405.466
-        ],
-        [
           652.919,
           407.324
         ],
@@ -3349,78 +3229,6 @@
           492.054
         ],
         [
-          684.076,
-          493.9
-        ],
-        [
-          684.747,
-          495.784
-        ],
-        [
-          685.344,
-          497.696
-        ],
-        [
-          686.08,
-          499.556
-        ],
-        [
-          686.879,
-          501.393
-        ],
-        [
-          687.448,
-          503.315
-        ],
-        [
-          706.795,
-          553.741
-        ],
-        [
-          707.327,
-          555.678
-        ],
-        [
-          708.009,
-          557.558
-        ],
-        [
-          708.8,
-          559.398
-        ],
-        [
-          709.447,
-          561.292
-        ],
-        [
-          710.18,
-          563.153
-        ],
-        [
-          710.94,
-          565.004
-        ],
-        [
-          711.489,
-          566.934
-        ],
-        [
-          712.263,
-          568.78
-        ],
-        [
-          713.042,
-          570.625
-        ],
-        [
-          713.472,
-          572.6
-        ],
-        [
-          714.251,
-          574.444
-        ],
-        [
           715.013,
           576.294
         ],
@@ -3585,24 +3393,6 @@
         81.45,
         84.51,
         79.38,
-        84.18,
-        84.87,
-        81.42,
-        87.77,
-        82.48,
-        81.73,
-        69.73,
-        69.0,
-        65.63,
-        75.49,
-        78.64,
-        73.66,
-        78.35,
-        80.69,
-        76.67,
-        83.7,
-        83.37,
-        77.97,
         78.92,
         79.8,
         75.96,
@@ -3657,24 +3447,6 @@
         67.86,
         69.37,
         72.33,
-        69.9,
-        66.88,
-        74.28,
-        68.44,
-        71.26,
-        75.27,
-        51.25,
-        54.33,
-        46.72,
-        49.53,
-        54.33,
-        45.67,
-        54.59,
-        56.01,
-        47.97,
-        48.63,
-        56.51,
-        47.84,
         55.27,
         57.02,
         52.15,
@@ -3721,24 +3493,6 @@
         43.85,
         45.07,
         48.81,
-        42.25,
-        46.96,
-        46.95,
-        39.76,
-        43.25,
-        45.55,
-        35.45,
-        42.0,
-        36.02,
-        36.69,
-        41.39,
-        37.05,
-        39.29,
-        41.14,
-        37.96,
-        41.64,
-        44.34,
-        42.92,
         44.41,
         39.54,
         38.26,
@@ -3775,18 +3529,24 @@
         28.88,
         30.39
       ],
-      "chord_dev_rms_px": 1.125,
-      "chord_bow_px": -3.473,
+      "chord_dev_rms_px": 1.211,
+      "chord_bow_px": -3.509,
       "verified": "yes",
-      "verification_note": "crop checked: follows the lip outline between the label holders (interruptions removed, 12 px trimmed at each); parts along the marker cards at both ends excluded (card border runs ~2 px from the lip). Straight to ~0.18 px rms after a rough reference undistortion; ~0.4 px local dips right after the holders (clip bends the lip?).",
+      "verification_note": "crop checked: follows the lip outline between the label holders (interruptions removed, 12 px trimmed at each); parts along the marker cards at both ends excluded (card border runs ~2 px from the lip). Straight to ~0.18 px rms after a rough reference undistortion; ~0.4 px local dips right after the holders (clip bends the lip?). [review: a further 24 px after / 12 px before each holder interruption removed: residuals after rough undistortion showed 0.3-0.7 px dips extending ~30 px beyond the 12 px trim]",
       "crop": "work/cache/edgecrops_cart310/cart310_x_A_front_fall.png",
       "length_px": 572.0,
-      "n_points": 212,
+      "n_points": 158,
       "polarity": 1,
       "angle_to_initial_vp_deg": {
-        "X": 0.64,
-        "Y": 85.55,
-        "Z": 58.37
+        "X": 0.62,
+        "Y": 85.52,
+        "Z": 58.17
+      },
+      "review": {
+        "changes": [
+          "holder trim (further 24 px after / 12 px before each interruption > 20 px; lip dips 0.3-0.7 px up to ~30 px after the holders): removed 54 of 212 points"
+        ],
+        "crop": "work/cache/review_cart310/x_A_front_fall_reviewed_strip.png"
       }
     },
     {
@@ -3959,78 +3719,6 @@
           161.833
         ],
         [
-          621.549,
-          163.761
-        ],
-        [
-          622.366,
-          165.597
-        ],
-        [
-          622.836,
-          167.548
-        ],
-        [
-          623.394,
-          169.471
-        ],
-        [
-          623.94,
-          171.397
-        ],
-        [
-          624.716,
-          173.247
-        ],
-        [
-          639.298,
-          214.769
-        ],
-        [
-          639.824,
-          216.702
-        ],
-        [
-          640.401,
-          218.618
-        ],
-        [
-          640.96,
-          220.54
-        ],
-        [
-          641.481,
-          222.475
-        ],
-        [
-          642.212,
-          224.339
-        ],
-        [
-          643.028,
-          226.175
-        ],
-        [
-          643.441,
-          228.146
-        ],
-        [
-          643.996,
-          230.07
-        ],
-        [
-          644.745,
-          231.928
-        ],
-        [
-          645.383,
-          233.824
-        ],
-        [
-          645.903,
-          235.759
-        ],
-        [
           646.615,
           237.63
         ],
@@ -4199,78 +3887,6 @@
           315.42
         ],
         [
-          673.003,
-          317.385
-        ],
-        [
-          673.696,
-          319.262
-        ],
-        [
-          674.513,
-          321.097
-        ],
-        [
-          674.979,
-          323.051
-        ],
-        [
-          675.518,
-          324.98
-        ],
-        [
-          676.326,
-          326.818
-        ],
-        [
-          692.149,
-          372.139
-        ],
-        [
-          692.852,
-          374.013
-        ],
-        [
-          693.216,
-          376.003
-        ],
-        [
-          693.983,
-          377.854
-        ],
-        [
-          694.694,
-          379.724
-        ],
-        [
-          695.122,
-          381.692
-        ],
-        [
-          695.667,
-          383.62
-        ],
-        [
-          696.427,
-          385.474
-        ],
-        [
-          697.06,
-          387.372
-        ],
-        [
-          697.981,
-          389.169
-        ],
-        [
-          698.638,
-          391.059
-        ],
-        [
-          699.1,
-          393.015
-        ],
-        [
           699.684,
           394.93
         ],
@@ -4421,78 +4037,6 @@
         [
           724.404,
           464.685
-        ],
-        [
-          725.018,
-          466.589
-        ],
-        [
-          725.539,
-          468.526
-        ],
-        [
-          726.623,
-          470.265
-        ],
-        [
-          727.303,
-          472.146
-        ],
-        [
-          727.963,
-          474.034
-        ],
-        [
-          728.642,
-          475.916
-        ],
-        [
-          744.735,
-          521.139
-        ],
-        [
-          745.201,
-          523.096
-        ],
-        [
-          745.866,
-          524.983
-        ],
-        [
-          746.609,
-          526.841
-        ],
-        [
-          747.143,
-          528.774
-        ],
-        [
-          747.673,
-          530.709
-        ],
-        [
-          748.526,
-          532.528
-        ],
-        [
-          748.991,
-          534.486
-        ],
-        [
-          749.534,
-          536.416
-        ],
-        [
-          750.491,
-          538.198
-        ],
-        [
-          751.049,
-          540.122
-        ],
-        [
-          751.74,
-          541.999
         ],
         [
           752.625,
@@ -4677,24 +4221,6 @@
         41.05,
         46.41,
         44.94,
-        43.85,
-        40.7,
-        48.45,
-        42.96,
-        34.33,
-        42.77,
-        42.86,
-        47.34,
-        43.46,
-        42.57,
-        42.33,
-        35.61,
-        43.58,
-        46.82,
-        42.14,
-        40.38,
-        42.55,
-        38.14,
         39.1,
         45.22,
         45.94,
@@ -4737,24 +4263,6 @@
         38.69,
         35.25,
         38.35,
-        41.38,
-        34.73,
-        31.54,
-        34.11,
-        31.53,
-        29.33,
-        19.87,
-        23.13,
-        24.66,
-        21.26,
-        28.16,
-        26.93,
-        20.22,
-        19.25,
-        20.66,
-        23.05,
-        32.4,
-        33.17,
         29.47,
         27.51,
         24.08,
@@ -4793,24 +4301,6 @@
         33.7,
         23.47,
         16.43,
-        19.33,
-        17.47,
-        18.11,
-        18.42,
-        24.3,
-        28.7,
-        19.39,
-        18.51,
-        16.5,
-        18.01,
-        18.63,
-        16.73,
-        18.26,
-        19.15,
-        16.08,
-        15.58,
-        19.49,
-        16.98,
         22.99,
         22.52,
         24.08,
@@ -4848,18 +4338,24 @@
         14.95,
         19.18
       ],
-      "chord_dev_rms_px": 0.861,
-      "chord_bow_px": -2.606,
+      "chord_dev_rms_px": 0.934,
+      "chord_bow_px": -2.659,
       "verified": "yes",
-      "verification_note": "crop checked: follows the lip outline between the label holders (interruptions removed, 12 px trimmed at each); parts along the marker cards at both ends excluded (card border runs ~2 px from the lip).",
+      "verification_note": "crop checked: follows the lip outline between the label holders (interruptions removed, 12 px trimmed at each); parts along the marker cards at both ends excluded (card border runs ~2 px from the lip). [review: a further 24 px after / 12 px before each holder interruption removed: residuals after rough undistortion showed 0.3-0.7 px dips extending ~30 px beyond the 12 px trim]",
       "crop": "work/cache/edgecrops_cart310/cart310_x_B_front_fall.png",
       "length_px": 552.0,
-      "n_points": 207,
+      "n_points": 153,
       "polarity": 1,
       "angle_to_initial_vp_deg": {
-        "X": 0.62,
+        "X": 0.61,
         "Y": 86.28,
-        "Z": 55.07
+        "Z": 55.39
+      },
+      "review": {
+        "changes": [
+          "holder trim (further 24 px after / 12 px before each interruption > 20 px; lip dips 0.3-0.7 px up to ~30 px after the holders): removed 54 of 207 points"
+        ],
+        "crop": "work/cache/review_cart310/x_B_front_fall_reviewed_strip.png"
       }
     },
     {
@@ -4996,78 +4492,6 @@
           158.082
         ],
         [
-          623.157,
-          159.99
-        ],
-        [
-          623.639,
-          161.937
-        ],
-        [
-          624.442,
-          163.778
-        ],
-        [
-          625.061,
-          165.68
-        ],
-        [
-          625.55,
-          167.625
-        ],
-        [
-          626.242,
-          169.503
-        ],
-        [
-          654.786,
-          254.862
-        ],
-        [
-          655.326,
-          256.791
-        ],
-        [
-          655.914,
-          258.703
-        ],
-        [
-          656.748,
-          260.533
-        ],
-        [
-          657.174,
-          262.5
-        ],
-        [
-          657.744,
-          264.418
-        ],
-        [
-          658.563,
-          266.253
-        ],
-        [
-          659.097,
-          268.184
-        ],
-        [
-          659.891,
-          270.027
-        ],
-        [
-          660.606,
-          271.896
-        ],
-        [
-          661.082,
-          273.847
-        ],
-        [
-          661.525,
-          275.808
-        ],
-        [
           662.442,
           277.609
         ],
@@ -5150,78 +4574,6 @@
         [
           675.2,
           315.523
-        ],
-        [
-          675.919,
-          317.391
-        ],
-        [
-          676.598,
-          319.273
-        ],
-        [
-          677.203,
-          321.18
-        ],
-        [
-          677.637,
-          323.145
-        ],
-        [
-          678.547,
-          324.948
-        ],
-        [
-          679.137,
-          326.86
-        ],
-        [
-          692.391,
-          364.604
-        ],
-        [
-          693.197,
-          366.441
-        ],
-        [
-          693.721,
-          368.377
-        ],
-        [
-          694.39,
-          370.261
-        ],
-        [
-          695.197,
-          372.099
-        ],
-        [
-          695.712,
-          374.037
-        ],
-        [
-          696.356,
-          375.93
-        ],
-        [
-          697.016,
-          377.819
-        ],
-        [
-          697.539,
-          379.754
-        ],
-        [
-          698.197,
-          381.643
-        ],
-        [
-          698.971,
-          383.491
-        ],
-        [
-          699.525,
-          385.416
         ],
         [
           700.306,
@@ -5332,78 +4684,6 @@
           436.393
         ],
         [
-          718.05,
-          438.267
-        ],
-        [
-          718.79,
-          440.126
-        ],
-        [
-          719.23,
-          442.092
-        ],
-        [
-          719.899,
-          443.977
-        ],
-        [
-          720.634,
-          445.838
-        ],
-        [
-          721.157,
-          447.775
-        ],
-        [
-          749.286,
-          526.93
-        ],
-        [
-          749.787,
-          528.875
-        ],
-        [
-          750.716,
-          530.667
-        ],
-        [
-          751.222,
-          532.61
-        ],
-        [
-          751.765,
-          534.541
-        ],
-        [
-          752.818,
-          536.288
-        ],
-        [
-          753.325,
-          538.231
-        ],
-        [
-          753.897,
-          540.15
-        ],
-        [
-          754.824,
-          541.943
-        ],
-        [
-          755.266,
-          543.91
-        ],
-        [
-          755.966,
-          545.783
-        ],
-        [
-          756.643,
-          547.665
-        ],
-        [
           757.391,
           549.522
         ],
@@ -5509,24 +4789,6 @@
         24.79,
         25.36,
         22.67,
-        25.87,
-        23.68,
-        23.62,
-        28.09,
-        25.95,
-        27.62,
-        23.74,
-        23.81,
-        22.03,
-        22.6,
-        23.29,
-        22.94,
-        19.92,
-        23.14,
-        21.14,
-        20.57,
-        22.1,
-        22.2,
         20.86,
         20.95,
         19.71,
@@ -5548,24 +4810,6 @@
         17.81,
         18.03,
         19.0,
-        20.35,
-        19.83,
-        20.15,
-        21.29,
-        18.99,
-        19.64,
-        12.86,
-        11.61,
-        15.95,
-        18.15,
-        18.39,
-        18.23,
-        17.99,
-        20.69,
-        21.69,
-        21.13,
-        22.15,
-        21.76,
         22.45,
         24.35,
         24.71,
@@ -5593,24 +4837,6 @@
         24.49,
         19.93,
         21.82,
-        20.15,
-        21.19,
-        24.53,
-        22.16,
-        21.63,
-        20.62,
-        18.34,
-        18.14,
-        16.42,
-        16.19,
-        16.26,
-        15.05,
-        16.47,
-        14.4,
-        15.67,
-        14.21,
-        14.08,
-        16.15,
         18.07,
         15.49,
         15.26,
@@ -5631,19 +4857,27 @@
         39.6,
         39.89
       ],
-      "chord_dev_rms_px": 0.766,
-      "chord_bow_px": -2.076,
-      "verified": "yes",
-      "verification_note": "crop checked: follows the lip outline between the label holders (interruptions removed, 12 px trimmed at each); parts along the marker cards at both ends excluded (card border runs ~2 px from the lip). Other side of the same ~3 px dark outline as x_B_front_fall.",
+      "chord_dev_rms_px": 0.834,
+      "chord_bow_px": -2.116,
+      "verified": "partly",
+      "verification_note": "crop checked: follows the lip outline between the label holders (interruptions removed, 12 px trimmed at each); parts along the marker cards at both ends excluded (card border runs ~2 px from the lip). Other side of the same ~3 px dark outline as x_B_front_fall. [review: a further 24 px after / 12 px before each holder interruption removed: residuals after rough undistortion showed 0.3-0.7 px dips extending ~30 px beyond the 12 px trim] [review: weak side (strength ~20 vs 30 of the fall side) of the same ~2.5 px dark outline line as x_B_front_fall; its sub-pixel position depends on the profile window (C: 0.35 px systematic shift over y 261-409 between 0.25 and 0.125 px profile sampling) and the rise/fall chord bows differ by ~0.5 px. Downgraded to 'partly'; do NOT use it together with its fall partner as an independent line]",
       "crop": "work/cache/edgecrops_cart310/cart310_x_B_front_rise.png",
       "length_px": 504.0,
-      "n_points": 149,
+      "n_points": 95,
       "polarity": -1,
       "angle_to_initial_vp_deg": {
-        "X": 0.6,
-        "Y": 86.31,
-        "Z": 55.52
-      }
+        "X": 0.61,
+        "Y": 86.37,
+        "Z": 56.77
+      },
+      "review": {
+        "changes": [
+          "holder trim (further 24 px after / 12 px before each interruption > 20 px; lip dips 0.3-0.7 px up to ~30 px after the holders): removed 54 of 149 points",
+          "verified yes -> partly; pair_of added"
+        ],
+        "crop": "work/cache/review_cart310/x_B_front_rise_reviewed_strip.png"
+      },
+      "pair_of": "cart310_x_B_front_fall"
     },
     {
       "id": "cart310_x_C_front_fall",
@@ -5761,158 +4995,6 @@
         [
           657.614,
           139.512
-        ],
-        [
-          658.39,
-          141.361
-        ],
-        [
-          658.863,
-          143.313
-        ],
-        [
-          659.456,
-          145.223
-        ],
-        [
-          660.252,
-          147.066
-        ],
-        [
-          660.846,
-          148.976
-        ],
-        [
-          661.402,
-          150.899
-        ],
-        [
-          682.537,
-          213.427
-        ],
-        [
-          683.021,
-          215.374
-        ],
-        [
-          683.603,
-          217.289
-        ],
-        [
-          684.374,
-          219.14
-        ],
-        [
-          684.98,
-          221.046
-        ],
-        [
-          685.518,
-          222.976
-        ],
-        [
-          686.205,
-          224.854
-        ],
-        [
-          686.869,
-          226.741
-        ],
-        [
-          687.413,
-          228.669
-        ],
-        [
-          687.601,
-          230.718
-        ],
-        [
-          688.542,
-          232.51
-        ],
-        [
-          689.594,
-          234.265
-        ],
-        [
-          690.206,
-          236.169
-        ],
-        [
-          690.804,
-          238.079
-        ],
-        [
-          691.355,
-          240.004
-        ],
-        [
-          691.817,
-          241.959
-        ],
-        [
-          692.656,
-          243.787
-        ],
-        [
-          693.333,
-          245.669
-        ],
-        [
-          693.983,
-          247.56
-        ],
-        [
-          694.605,
-          249.461
-        ],
-        [
-          717.295,
-          313.57
-        ],
-        [
-          717.897,
-          315.478
-        ],
-        [
-          718.62,
-          317.345
-        ],
-        [
-          719.249,
-          319.244
-        ],
-        [
-          719.74,
-          321.19
-        ],
-        [
-          720.439,
-          323.064
-        ],
-        [
-          721.115,
-          324.947
-        ],
-        [
-          721.618,
-          326.889
-        ],
-        [
-          722.16,
-          328.817
-        ],
-        [
-          722.899,
-          330.679
-        ],
-        [
-          723.459,
-          332.601
-        ],
-        [
-          724.039,
-          334.517
         ],
         [
           724.691,
@@ -6041,78 +5123,6 @@
         [
           744.58,
           395.135
-        ],
-        [
-          745.046,
-          397.091
-        ],
-        [
-          745.726,
-          398.972
-        ],
-        [
-          746.554,
-          400.802
-        ],
-        [
-          747.145,
-          402.714
-        ],
-        [
-          747.821,
-          404.596
-        ],
-        [
-          748.608,
-          406.44
-        ],
-        [
-          770.864,
-          468.579
-        ],
-        [
-          771.463,
-          470.488
-        ],
-        [
-          772.172,
-          472.359
-        ],
-        [
-          772.831,
-          474.248
-        ],
-        [
-          773.42,
-          476.161
-        ],
-        [
-          774.103,
-          478.041
-        ],
-        [
-          774.795,
-          479.917
-        ],
-        [
-          775.377,
-          481.833
-        ],
-        [
-          776.109,
-          483.696
-        ],
-        [
-          776.851,
-          485.555
-        ],
-        [
-          777.415,
-          487.476
-        ],
-        [
-          778.128,
-          489.346
         ],
         [
           778.815,
@@ -6328,44 +5338,6 @@
         61.81,
         63.67,
         62.39,
-        61.63,
-        62.53,
-        54.55,
-        50.47,
-        56.47,
-        51.21,
-        48.17,
-        52.06,
-        55.57,
-        52.84,
-        57.9,
-        56.7,
-        51.76,
-        56.36,
-        58.14,
-        24.56,
-        40.82,
-        72.74,
-        71.96,
-        69.89,
-        65.95,
-        52.56,
-        61.51,
-        66.17,
-        63.99,
-        71.14,
-        69.37,
-        63.86,
-        62.71,
-        67.87,
-        56.76,
-        51.91,
-        52.61,
-        48.11,
-        41.84,
-        47.78,
-        47.45,
-        41.36,
         39.9,
         40.35,
         34.19,
@@ -6398,24 +5370,6 @@
         55.38,
         44.88,
         48.3,
-        46.85,
-        44.6,
-        47.78,
-        53.13,
-        49.41,
-        55.63,
-        40.55,
-        38.7,
-        35.9,
-        41.03,
-        39.63,
-        37.65,
-        43.04,
-        43.21,
-        37.96,
-        41.61,
-        42.04,
-        35.47,
         41.59,
         38.01,
         36.34,
@@ -6464,18 +5418,24 @@
         45.96,
         43.32
       ],
-      "chord_dev_rms_px": 0.68,
-      "chord_bow_px": -1.878,
+      "chord_dev_rms_px": 0.749,
+      "chord_bow_px": -2.028,
       "verified": "yes",
-      "verification_note": "crop checked: follows the lip outline between the label holders (interruptions removed, 12 px trimmed at each); parts along the marker cards at both ends excluded (card border runs ~2 px from the lip). Section next to a purple label (y 262-300) removed.",
+      "verification_note": "crop checked: follows the lip outline between the label holders (interruptions removed, 12 px trimmed at each); parts along the marker cards at both ends excluded (card border runs ~2 px from the lip). Section next to a purple label (y 262-300) removed. [review: a further 24 px after / 12 px before each holder interruption removed: residuals after rough undistortion showed 0.3-0.7 px dips extending ~30 px beyond the 12 px trim]",
       "crop": "work/cache/edgecrops_cart310/cart310_x_C_front_fall.png",
       "length_px": 510.0,
-      "n_points": 159,
+      "n_points": 103,
       "polarity": 1,
       "angle_to_initial_vp_deg": {
         "X": 0.08,
-        "Y": 86.12,
-        "Z": 49.36
+        "Y": 86.02,
+        "Z": 46.71
+      },
+      "review": {
+        "changes": [
+          "holder trim (further 24 px after / 12 px before each interruption > 20 px; lip dips 0.3-0.7 px up to ~30 px after the holders): removed 56 of 159 points"
+        ],
+        "crop": "work/cache/review_cart310/x_C_front_fall_reviewed_strip.png"
       }
     },
     {
@@ -6596,138 +5556,6 @@
           139.669
         ],
         [
-          660.82,
-          141.56
-        ],
-        [
-          661.186,
-          143.547
-        ],
-        [
-          661.865,
-          145.429
-        ],
-        [
-          662.733,
-          147.247
-        ],
-        [
-          663.226,
-          149.191
-        ],
-        [
-          663.641,
-          151.162
-        ],
-        [
-          700.654,
-          261.107
-        ],
-        [
-          701.13,
-          263.058
-        ],
-        [
-          701.871,
-          264.918
-        ],
-        [
-          702.523,
-          266.809
-        ],
-        [
-          703.205,
-          268.69
-        ],
-        [
-          703.674,
-          270.643
-        ],
-        [
-          704.481,
-          272.481
-        ],
-        [
-          705.093,
-          274.386
-        ],
-        [
-          705.636,
-          276.314
-        ],
-        [
-          706.467,
-          278.143
-        ],
-        [
-          707.054,
-          280.057
-        ],
-        [
-          707.313,
-          282.082
-        ],
-        [
-          708.322,
-          283.851
-        ],
-        [
-          708.928,
-          285.758
-        ],
-        [
-          709.254,
-          287.76
-        ],
-        [
-          732.731,
-          353.716
-        ],
-        [
-          733.304,
-          355.634
-        ],
-        [
-          733.957,
-          357.525
-        ],
-        [
-          734.582,
-          359.425
-        ],
-        [
-          735.157,
-          361.342
-        ],
-        [
-          735.709,
-          363.268
-        ],
-        [
-          736.615,
-          365.071
-        ],
-        [
-          737.139,
-          367.006
-        ],
-        [
-          737.764,
-          368.907
-        ],
-        [
-          738.84,
-          370.651
-        ],
-        [
-          739.381,
-          372.58
-        ],
-        [
-          739.989,
-          374.486
-        ],
-        [
           740.853,
           376.303
         ],
@@ -6780,78 +5608,6 @@
           399.133
         ],
         [
-          749.022,
-          400.991
-        ],
-        [
-          749.602,
-          402.907
-        ],
-        [
-          750.508,
-          404.71
-        ],
-        [
-          751.072,
-          406.632
-        ],
-        [
-          751.637,
-          408.553
-        ],
-        [
-          752.617,
-          410.329
-        ],
-        [
-          772.875,
-          466.81
-        ],
-        [
-          773.461,
-          468.725
-        ],
-        [
-          774.053,
-          470.637
-        ],
-        [
-          774.829,
-          472.484
-        ],
-        [
-          775.414,
-          474.398
-        ],
-        [
-          776.158,
-          476.256
-        ],
-        [
-          776.92,
-          478.109
-        ],
-        [
-          777.397,
-          480.061
-        ],
-        [
-          777.883,
-          482.011
-        ],
-        [
-          778.848,
-          483.791
-        ],
-        [
-          779.433,
-          485.706
-        ],
-        [
-          780.015,
-          487.622
-        ],
-        [
           780.8,
           489.465
         ],
@@ -6890,90 +5646,6 @@
         [
           786.977,
           506.374
-        ],
-        [
-          787.518,
-          508.304
-        ],
-        [
-          788.383,
-          510.119
-        ],
-        [
-          788.935,
-          512.045
-        ],
-        [
-          789.615,
-          513.927
-        ],
-        [
-          790.421,
-          515.762
-        ],
-        [
-          790.966,
-          517.692
-        ],
-        [
-          801.83,
-          547.792
-        ],
-        [
-          802.677,
-          549.613
-        ],
-        [
-          803.217,
-          551.544
-        ],
-        [
-          803.691,
-          553.499
-        ],
-        [
-          804.695,
-          555.263
-        ],
-        [
-          805.409,
-          557.132
-        ],
-        [
-          805.786,
-          559.122
-        ],
-        [
-          806.712,
-          560.915
-        ],
-        [
-          807.47,
-          562.767
-        ],
-        [
-          807.862,
-          564.752
-        ],
-        [
-          809.352,
-          568.467
-        ],
-        [
-          809.773,
-          570.441
-        ],
-        [
-          810.625,
-          572.26
-        ],
-        [
-          811.132,
-          574.204
-        ],
-        [
-          811.594,
-          576.164
         ]
       ],
       "strength": [
@@ -7001,39 +5673,6 @@
         25.85,
         28.17,
         26.94,
-        27.5,
-        26.0,
-        22.15,
-        22.86,
-        23.47,
-        23.4,
-        24.14,
-        24.97,
-        18.97,
-        19.12,
-        20.31,
-        17.12,
-        17.39,
-        22.7,
-        20.73,
-        17.31,
-        17.85,
-        22.72,
-        16.82,
-        16.81,
-        18.51,
-        12.02,
-        17.94,
-        14.66,
-        16.78,
-        22.12,
-        17.34,
-        18.55,
-        22.49,
-        19.9,
-        16.11,
-        21.24,
-        18.84,
         19.88,
         24.47,
         20.98,
@@ -7047,24 +5686,6 @@
         30.49,
         29.67,
         27.94,
-        29.76,
-        23.4,
-        26.32,
-        26.04,
-        24.84,
-        24.3,
-        15.64,
-        17.26,
-        14.3,
-        16.06,
-        20.51,
-        18.04,
-        18.42,
-        21.45,
-        19.98,
-        19.59,
-        21.49,
-        18.2,
         19.84,
         24.15,
         18.63,
@@ -7074,42 +5695,29 @@
         16.68,
         18.3,
         17.21,
-        15.91,
-        18.19,
-        12.21,
-        14.5,
-        16.96,
-        16.39,
-        14.51,
-        15.82,
-        11.42,
-        12.61,
-        10.69,
-        13.05,
-        11.9,
-        12.63,
-        10.03,
-        9.69,
-        11.46,
-        14.55,
-        22.9,
-        35.83,
-        61.3,
-        70.9
+        15.91
       ],
-      "chord_dev_rms_px": 0.831,
-      "chord_bow_px": -2.367,
-      "verified": "yes",
-      "verification_note": "crop checked: follows the lip outline between the label holders (interruptions removed, 12 px trimmed at each); parts along the marker cards at both ends excluded (card border runs ~2 px from the lip). Other side of the dark outline of x_C_front_fall; two short jumpy sections removed.",
+      "chord_dev_rms_px": 0.534,
+      "chord_bow_px": -1.728,
+      "verified": "partly",
+      "verification_note": "crop checked: follows the lip outline between the label holders (interruptions removed, 12 px trimmed at each); parts along the marker cards at both ends excluded (card border runs ~2 px from the lip). Other side of the dark outline of x_C_front_fall; two short jumpy sections removed. [review: a further 24 px after / 12 px before each holder interruption removed: residuals after rough undistortion showed 0.3-0.7 px dips extending ~30 px beyond the 12 px trim] [review: weak side (strength ~20 vs 43 of the fall side) of the same ~2.5 px dark outline line as x_C_front_fall; its sub-pixel position depends on the profile window (C: 0.35 px systematic shift over y 261-409 between 0.25 and 0.125 px profile sampling) and the rise/fall chord bows differ by ~0.5 px. Downgraded to 'partly'; do NOT use it together with its fall partner as an independent line]",
       "crop": "work/cache/edgecrops_cart310/cart310_x_C_front_rise.png",
-      "length_px": 508.0,
-      "n_points": 119,
+      "length_px": 434.0,
+      "n_points": 47,
       "polarity": -1,
       "angle_to_initial_vp_deg": {
-        "X": 0.1,
-        "Y": 86.15,
-        "Z": 49.95
-      }
+        "X": 0.06,
+        "Y": 86.61,
+        "Z": 59.79
+      },
+      "review": {
+        "changes": [
+          "holder trim (further 24 px after / 12 px before each interruption > 20 px; lip dips 0.3-0.7 px up to ~30 px after the holders): removed 72 of 119 points",
+          "verified yes -> partly; pair_of added"
+        ],
+        "crop": "work/cache/review_cart310/x_C_front_rise_reviewed_strip.png"
+      },
+      "pair_of": "cart310_x_C_front_fall"
     },
     {
       "id": "cart310_x_D_front_fall",
@@ -7333,78 +5941,6 @@
           127.059
         ],
         [
-          680.181,
-          128.916
-        ],
-        [
-          680.867,
-          130.796
-        ],
-        [
-          681.437,
-          132.714
-        ],
-        [
-          682.067,
-          134.612
-        ],
-        [
-          682.861,
-          136.456
-        ],
-        [
-          683.453,
-          138.367
-        ],
-        [
-          697.161,
-          180.178
-        ],
-        [
-          697.697,
-          182.107
-        ],
-        [
-          698.409,
-          183.979
-        ],
-        [
-          699.072,
-          185.866
-        ],
-        [
-          699.567,
-          187.809
-        ],
-        [
-          700.286,
-          189.677
-        ],
-        [
-          700.932,
-          191.57
-        ],
-        [
-          701.437,
-          193.51
-        ],
-        [
-          702.034,
-          195.419
-        ],
-        [
-          702.801,
-          197.272
-        ],
-        [
-          703.266,
-          199.225
-        ],
-        [
-          703.807,
-          201.152
-        ],
-        [
           704.597,
           202.998
         ],
@@ -7525,78 +6061,6 @@
           258.167
         ],
         [
-          723.036,
-          260.098
-        ],
-        [
-          723.635,
-          262.006
-        ],
-        [
-          724.534,
-          263.815
-        ],
-        [
-          725.405,
-          265.633
-        ],
-        [
-          726.136,
-          267.498
-        ],
-        [
-          726.911,
-          269.348
-        ],
-        [
-          738.479,
-          305.548
-        ],
-        [
-          739.004,
-          307.482
-        ],
-        [
-          739.531,
-          309.414
-        ],
-        [
-          740.315,
-          311.261
-        ],
-        [
-          740.904,
-          313.173
-        ],
-        [
-          741.444,
-          315.101
-        ],
-        [
-          742.221,
-          316.95
-        ],
-        [
-          742.837,
-          318.853
-        ],
-        [
-          743.276,
-          320.815
-        ],
-        [
-          743.996,
-          322.684
-        ],
-        [
-          744.731,
-          324.547
-        ],
-        [
-          745.298,
-          326.466
-        ],
-        [
           745.872,
           328.383
         ],
@@ -7679,78 +6143,6 @@
         [
           758.748,
           366.256
-        ],
-        [
-          759.144,
-          368.233
-        ],
-        [
-          759.804,
-          370.121
-        ],
-        [
-          760.629,
-          371.954
-        ],
-        [
-          761.125,
-          373.897
-        ],
-        [
-          761.768,
-          375.791
-        ],
-        [
-          762.583,
-          377.627
-        ],
-        [
-          777.534,
-          421.131
-        ],
-        [
-          778.174,
-          423.026
-        ],
-        [
-          778.82,
-          424.919
-        ],
-        [
-          779.279,
-          426.875
-        ],
-        [
-          779.914,
-          428.772
-        ],
-        [
-          780.641,
-          430.637
-        ],
-        [
-          781.169,
-          432.57
-        ],
-        [
-          781.966,
-          434.412
-        ],
-        [
-          782.672,
-          436.284
-        ],
-        [
-          783.212,
-          438.213
-        ],
-        [
-          783.746,
-          440.144
-        ],
-        [
-          784.635,
-          441.954
         ],
         [
           785.262,
@@ -7888,24 +6280,6 @@
         46.62,
         53.56,
         57.83,
-        49.96,
-        54.21,
-        60.51,
-        51.57,
-        50.35,
-        52.01,
-        58.18,
-        64.72,
-        60.38,
-        70.07,
-        67.23,
-        62.01,
-        68.36,
-        66.38,
-        62.07,
-        64.97,
-        72.79,
-        65.88,
         68.39,
         68.94,
         64.66,
@@ -7936,24 +6310,6 @@
         61.17,
         55.27,
         52.49,
-        52.08,
-        48.37,
-        45.6,
-        49.61,
-        56.57,
-        56.14,
-        29.82,
-        43.06,
-        38.64,
-        41.31,
-        43.92,
-        42.15,
-        39.25,
-        44.77,
-        48.95,
-        41.22,
-        49.84,
-        50.46,
         41.25,
         43.33,
         45.68,
@@ -7975,24 +6331,6 @@
         47.41,
         37.87,
         43.99,
-        38.43,
-        30.88,
-        35.8,
-        33.04,
-        32.17,
-        31.25,
-        22.56,
-        26.94,
-        24.48,
-        30.52,
-        27.37,
-        27.84,
-        28.56,
-        28.87,
-        28.82,
-        27.83,
-        27.32,
-        27.81,
         30.49,
         33.3,
         28.77,
@@ -8015,18 +6353,24 @@
         36.02,
         31.5
       ],
-      "chord_dev_rms_px": 0.387,
-      "chord_bow_px": -1.03,
+      "chord_dev_rms_px": 0.419,
+      "chord_bow_px": -1.137,
       "verified": "yes",
-      "verification_note": "crop checked: follows the lip outline between the label holders (interruptions removed, 12 px trimmed at each); parts along the marker cards at both ends excluded (card border runs ~2 px from the lip). No marker cards on D; lower end (y>550, bright patch near the post) removed.",
+      "verification_note": "crop checked: follows the lip outline between the label holders (interruptions removed, 12 px trimmed at each); parts along the marker cards at both ends excluded (card border runs ~2 px from the lip). No marker cards on D; lower end (y>550, bright patch near the post) removed. [review: a further 24 px after / 12 px before each holder interruption removed: residuals after rough undistortion showed 0.3-0.7 px dips extending ~30 px beyond the 12 px trim]",
       "crop": "work/cache/edgecrops_cart310/cart310_x_D_front_fall.png",
       "length_px": 472.0,
-      "n_points": 176,
+      "n_points": 122,
       "polarity": 1,
       "angle_to_initial_vp_deg": {
-        "X": 0.26,
-        "Y": 87.18,
-        "Z": 60.19
+        "X": 0.25,
+        "Y": 87.25,
+        "Z": 63.4
+      },
+      "review": {
+        "changes": [
+          "holder trim (further 24 px after / 12 px before each interruption > 20 px; lip dips 0.3-0.7 px up to ~30 px after the holders): removed 54 of 176 points"
+        ],
+        "crop": "work/cache/review_cart310/x_D_front_fall_reviewed_strip.png"
       }
     },
     {
@@ -8179,78 +6523,6 @@
           107.543
         ],
         [
-          700.787,
-          109.382
-        ],
-        [
-          701.25,
-          111.334
-        ],
-        [
-          701.803,
-          113.257
-        ],
-        [
-          702.496,
-          115.135
-        ],
-        [
-          703.154,
-          117.024
-        ],
-        [
-          703.647,
-          118.967
-        ],
-        [
-          716.512,
-          158.95
-        ],
-        [
-          717.247,
-          160.814
-        ],
-        [
-          717.768,
-          162.748
-        ],
-        [
-          718.434,
-          164.634
-        ],
-        [
-          719.104,
-          166.52
-        ],
-        [
-          719.629,
-          168.452
-        ],
-        [
-          720.187,
-          170.374
-        ],
-        [
-          720.921,
-          172.238
-        ],
-        [
-          721.45,
-          174.169
-        ],
-        [
-          722.057,
-          176.075
-        ],
-        [
-          722.713,
-          177.965
-        ],
-        [
-          723.284,
-          179.883
-        ],
-        [
           723.876,
           181.793
         ],
@@ -8329,78 +6601,6 @@
         [
           735.574,
           217.95
-        ],
-        [
-          736.321,
-          219.81
-        ],
-        [
-          736.957,
-          221.706
-        ],
-        [
-          737.516,
-          223.627
-        ],
-        [
-          738.198,
-          225.509
-        ],
-        [
-          738.846,
-          227.401
-        ],
-        [
-          739.393,
-          229.327
-        ],
-        [
-          752.663,
-          269.177
-        ],
-        [
-          753.211,
-          271.102
-        ],
-        [
-          753.696,
-          273.048
-        ],
-        [
-          754.412,
-          274.918
-        ],
-        [
-          755.034,
-          276.819
-        ],
-        [
-          755.538,
-          278.759
-        ],
-        [
-          756.15,
-          280.663
-        ],
-        [
-          756.893,
-          282.524
-        ],
-        [
-          757.412,
-          284.459
-        ],
-        [
-          758.008,
-          286.369
-        ],
-        [
-          758.723,
-          288.239
-        ],
-        [
-          759.319,
-          290.149
         ],
         [
           759.764,
@@ -8507,78 +6707,6 @@
           339.495
         ],
         [
-          776.445,
-          341.363
-        ],
-        [
-          777.023,
-          343.279
-        ],
-        [
-          777.558,
-          345.209
-        ],
-        [
-          778.221,
-          347.096
-        ],
-        [
-          779.003,
-          348.944
-        ],
-        [
-          779.642,
-          350.839
-        ],
-        [
-          794.881,
-          396.358
-        ],
-        [
-          795.499,
-          398.26
-        ],
-        [
-          795.975,
-          400.21
-        ],
-        [
-          796.753,
-          402.058
-        ],
-        [
-          797.295,
-          403.986
-        ],
-        [
-          798.146,
-          405.811
-        ],
-        [
-          798.853,
-          407.683
-        ],
-        [
-          799.373,
-          409.618
-        ],
-        [
-          799.844,
-          411.57
-        ],
-        [
-          800.734,
-          413.381
-        ],
-        [
-          801.101,
-          415.367
-        ],
-        [
-          801.58,
-          417.317
-        ],
-        [
           802.366,
           419.163
         ],
@@ -8609,78 +6737,6 @@
         [
           807.052,
           432.357
-        ],
-        [
-          807.697,
-          434.251
-        ],
-        [
-          808.38,
-          436.131
-        ],
-        [
-          808.913,
-          438.062
-        ],
-        [
-          809.547,
-          439.959
-        ],
-        [
-          810.245,
-          441.834
-        ],
-        [
-          811.069,
-          443.667
-        ],
-        [
-          825.227,
-          485.328
-        ],
-        [
-          825.906,
-          487.21
-        ],
-        [
-          826.619,
-          489.08
-        ],
-        [
-          827.189,
-          490.999
-        ],
-        [
-          827.778,
-          492.911
-        ],
-        [
-          828.516,
-          494.772
-        ],
-        [
-          829.135,
-          496.674
-        ],
-        [
-          829.675,
-          498.604
-        ],
-        [
-          830.34,
-          500.49
-        ],
-        [
-          831.147,
-          502.328
-        ],
-        [
-          831.669,
-          504.263
-        ],
-        [
-          832.354,
-          506.142
         ],
         [
           833.072,
@@ -8852,24 +6908,6 @@
         64.99,
         69.06,
         66.72,
-        68.27,
-        75.32,
-        67.12,
-        71.69,
-        78.45,
-        74.09,
-        66.44,
-        74.22,
-        77.17,
-        71.02,
-        74.46,
-        76.87,
-        72.77,
-        75.71,
-        80.37,
-        72.24,
-        68.57,
-        73.76,
         66.76,
         62.91,
         75.49,
@@ -8890,24 +6928,6 @@
         57.26,
         61.36,
         61.4,
-        54.8,
-        55.04,
-        58.22,
-        53.92,
-        60.29,
-        63.16,
-        48.75,
-        54.57,
-        52.35,
-        52.61,
-        53.59,
-        55.69,
-        51.37,
-        53.12,
-        55.62,
-        49.89,
-        49.64,
-        57.94,
         54.69,
         54.7,
         55.14,
@@ -8934,24 +6954,6 @@
         40.1,
         45.19,
         44.58,
-        37.31,
-        39.23,
-        41.35,
-        40.98,
-        39.53,
-        44.42,
-        35.03,
-        37.29,
-        28.89,
-        31.53,
-        31.9,
-        30.97,
-        33.1,
-        32.9,
-        34.5,
-        34.14,
-        34.68,
-        33.39,
         32.65,
         34.59,
         34.25,
@@ -8960,24 +6962,6 @@
         34.76,
         32.69,
         32.11,
-        32.66,
-        28.53,
-        26.93,
-        28.75,
-        23.5,
-        25.68,
-        44.8,
-        38.19,
-        37.25,
-        39.2,
-        35.64,
-        34.44,
-        39.25,
-        41.7,
-        37.72,
-        44.61,
-        45.27,
-        43.17,
         48.04,
         45.33,
         41.84,
@@ -9013,18 +6997,24 @@
         86.78,
         59.7
       ],
-      "chord_dev_rms_px": 0.604,
-      "chord_bow_px": -1.771,
+      "chord_dev_rms_px": 0.66,
+      "chord_bow_px": -1.772,
       "verified": "yes",
-      "verification_note": "crop checked: follows the lip outline between the label holders (interruptions removed, 12 px trimmed at each); parts along the marker cards at both ends excluded (card border runs ~2 px from the lip). Outer silhouette of the cart front against the floor (dark floor on the aisle side); no cards on E.",
+      "verification_note": "crop checked: follows the lip outline between the label holders (interruptions removed, 12 px trimmed at each); parts along the marker cards at both ends excluded (card border runs ~2 px from the lip). Outer silhouette of the cart front against the floor (dark floor on the aisle side); no cards on E. [review: a further 24 px after / 12 px before each holder interruption removed: residuals after rough undistortion showed 0.3-0.7 px dips extending ~30 px beyond the 12 px trim]",
       "crop": "work/cache/edgecrops_cart310/cart310_x_E_front_fall.png",
       "length_px": 552.0,
-      "n_points": 192,
+      "n_points": 120,
       "polarity": 1,
       "angle_to_initial_vp_deg": {
-        "X": 0.04,
-        "Y": 86.99,
-        "Z": 48.12
+        "X": 0.05,
+        "Y": 87.0,
+        "Z": 48.83
+      },
+      "review": {
+        "changes": [
+          "holder trim (further 24 px after / 12 px before each interruption > 20 px; lip dips 0.3-0.7 px up to ~30 px after the holders): removed 72 of 192 points"
+        ],
+        "crop": "work/cache/review_cart310/x_E_front_fall_reviewed_strip.png"
       }
     },
     {
@@ -9574,78 +7564,6 @@
           321.814
         ],
         [
-          665.22,
-          323.747
-        ],
-        [
-          666.062,
-          325.572
-        ],
-        [
-          666.617,
-          327.496
-        ],
-        [
-          667.158,
-          329.425
-        ],
-        [
-          667.88,
-          331.292
-        ],
-        [
-          668.622,
-          333.151
-        ],
-        [
-          682.569,
-          372.768
-        ],
-        [
-          683.344,
-          374.615
-        ],
-        [
-          684.101,
-          376.469
-        ],
-        [
-          684.57,
-          378.424
-        ],
-        [
-          685.236,
-          380.31
-        ],
-        [
-          685.705,
-          382.266
-        ],
-        [
-          686.583,
-          384.076
-        ],
-        [
-          687.276,
-          385.953
-        ],
-        [
-          688.095,
-          387.785
-        ],
-        [
-          688.601,
-          389.727
-        ],
-        [
-          689.094,
-          391.674
-        ],
-        [
-          689.747,
-          393.564
-        ],
-        [
           690.36,
           395.469
         ],
@@ -9866,24 +7784,6 @@
         15.89,
         16.45,
         16.68,
-        22.0,
-        27.39,
-        28.43,
-        32.5,
-        29.61,
-        30.45,
-        12.02,
-        10.89,
-        11.96,
-        12.54,
-        12.13,
-        10.52,
-        9.25,
-        12.38,
-        10.63,
-        9.52,
-        10.71,
-        9.64,
         8.59,
         7.5,
         8.5,
@@ -9937,18 +7837,24 @@
         27.93,
         21.57
       ],
-      "chord_dev_rms_px": 0.177,
-      "chord_bow_px": -0.048,
+      "chord_dev_rms_px": 0.189,
+      "chord_bow_px": -0.107,
       "verified": "partly",
-      "verification_note": "soft, low-contrast fold/shading line (strength ~18); straight within ~0.2 px but lower reliability",
+      "verification_note": "soft, low-contrast fold/shading line (strength ~18); straight within ~0.2 px but lower reliability [review: a further 24 px after / 12 px before each holder interruption removed: residuals after rough undistortion showed 0.3-0.7 px dips extending ~30 px beyond the 12 px trim]",
       "crop": "work/cache/edgecrops_cart310/cart310_x_B_inner_fall.png",
       "length_px": 200.0,
-      "n_points": 81,
+      "n_points": 63,
       "polarity": 1,
       "angle_to_initial_vp_deg": {
-        "X": 0.52,
-        "Y": 85.82,
-        "Z": 50.55
+        "X": 0.53,
+        "Y": 85.78,
+        "Z": 49.36
+      },
+      "review": {
+        "changes": [
+          "holder trim (further 24 px after / 12 px before each interruption > 20 px; lip dips 0.3-0.7 px up to ~30 px after the holders): removed 18 of 81 points"
+        ],
+        "crop": "work/cache/review_cart310/x_B_inner_fall_reviewed_strip.png"
       }
     },
     {
@@ -9968,7 +7874,7 @@
           165
         ],
         "exact": false,
-        "note": "expected to be the lower edge of the visible board front face (a cart-X line) but it deviates 4 deg from the initial cart-X vanishing direction -> 'unknown'"
+        "note": "expected to be the lower edge of the visible board front face (a cart-X line) but it deviates 4 deg from the initial cart-X vanishing direction -> 'unknown' [review: in the plane of markers 0/322 this edge lies at Y = -1.1 mm (spread 0.8 mm), i.e. parallel to the sticker X axis, but it deviates ~5.9 deg (4.6 px at its ends) from the cart-X vanishing point of the five shelf fronts; the shelf-X direction appears ~5.7 deg rotated in the frame of this board -> the X=0 end board (with its stickers) is not parallel to the shelves in the image (tilted/raised board?) - observation, kept 'unknown']"
       },
       "points": [
         [
@@ -10196,6 +8102,12 @@
         "X": 4.11,
         "Y": 86.5,
         "Z": 25.14
+      },
+      "review": {
+        "changes": [
+          "model_line.note: board-frame Y and angle to the data-driven cart-X vanishing point added"
+        ],
+        "crop": "work/cache/review_cart310/x_board0_front_reviewed_strip.png"
       }
     },
     {
@@ -10375,7 +8287,7 @@
       "what": "first divider below the X=1600 board: top flange edge across the cart depth (light flange above, darker shelf below)",
       "class": "cart_structure",
       "cart": 310,
-      "straight_3d": true,
+      "straight_3d": false,
       "direction": "unknown",
       "model_line": null,
       "points": [
@@ -10875,7 +8787,7 @@
       "chord_dev_rms_px": 0.648,
       "chord_bow_px": -2.019,
       "verified": "yes",
-      "verification_note": "crop checked: clean straight flange edge. divider cross flange edge spanning the cart depth (label holder at its front end); a straight sheet-metal edge (usable for plumb-line) but probably NOT exactly parallel to cart Y: the lower dividers deviate 4-6 deg from the cart-Y vanishing direction of the initial calibration (as if rising ~10 deg towards the back), so it is labelled 'unknown'",
+      "verification_note": "crop checked: clean straight flange edge. divider cross flange edge spanning the cart depth (label holder at its front end); a straight sheet-metal edge (usable for plumb-line) but probably NOT exactly parallel to cart Y: the lower dividers deviate 4-6 deg from the cart-Y vanishing direction of the initial calibration (as if rising ~10 deg towards the back), so it is labelled 'unknown' [review: straight_3d -> false. Chord bow +2.02 px raw, +1.28 / +1.53 px after two rough undistortions. Lens distortion is a function of image position and orientation only; board1600_inner (same orientation, ~90 px away, same length) goes from +1.30 to +0.06 / +0.45 px, so the ~1.3-1.5 px left on this flange is not lens distortion: the flange (or its shading boundary) is curved; not usable for plumb-line]",
       "crop": "work/cache/edgecrops_cart310/cart310_y_lip1.png",
       "length_px": 194.0,
       "n_points": 98,
@@ -10884,6 +8796,12 @@
         "X": 86.2,
         "Y": 2.54,
         "Z": 4.67
+      },
+      "review": {
+        "changes": [
+          "straight_3d true -> false (non-lens curvature, see verification_note)"
+        ],
+        "crop": "work/cache/review_cart310/y_lip1_reviewed_strip.png"
       }
     },
     {
@@ -10891,7 +8809,7 @@
       "what": "second divider: top flange edge across the cart depth",
       "class": "cart_structure",
       "cart": 310,
-      "straight_3d": true,
+      "straight_3d": false,
       "direction": "unknown",
       "model_line": null,
       "points": [
@@ -11366,7 +9284,7 @@
       "chord_dev_rms_px": 0.567,
       "chord_bow_px": -1.785,
       "verified": "yes",
-      "verification_note": "crop checked: clean. divider cross flange edge spanning the cart depth (label holder at its front end); a straight sheet-metal edge (usable for plumb-line) but probably NOT exactly parallel to cart Y: the lower dividers deviate 4-6 deg from the cart-Y vanishing direction of the initial calibration (as if rising ~10 deg towards the back), so it is labelled 'unknown'",
+      "verification_note": "crop checked: clean. divider cross flange edge spanning the cart depth (label holder at its front end); a straight sheet-metal edge (usable for plumb-line) but probably NOT exactly parallel to cart Y: the lower dividers deviate 4-6 deg from the cart-Y vanishing direction of the initial calibration (as if rising ~10 deg towards the back), so it is labelled 'unknown' [review: straight_3d -> false. Chord bow +1.78 px raw, +1.38 / +1.62 px after two rough undistortions. Lens distortion is a function of image position and orientation only; board1600_inner (same orientation, ~90 px away, same length) goes from +1.30 to +0.06 / +0.45 px, so the ~1.3-1.5 px left on this flange is not lens distortion: the flange (or its shading boundary) is curved; not usable for plumb-line]",
       "crop": "work/cache/edgecrops_cart310/cart310_y_lip2.png",
       "length_px": 196.0,
       "n_points": 93,
@@ -11375,6 +9293,12 @@
         "X": 84.0,
         "Y": 1.2,
         "Z": 27.67
+      },
+      "review": {
+        "changes": [
+          "straight_3d true -> false (non-lens curvature, see verification_note)"
+        ],
+        "crop": "work/cache/review_cart310/y_lip2_reviewed_strip.png"
       }
     },
     {
@@ -11382,118 +9306,10 @@
       "what": "divider near the X=0 end: flange edge across the cart depth (lower boundary of the light flange line)",
       "class": "cart_structure",
       "cart": 310,
-      "straight_3d": true,
+      "straight_3d": false,
       "direction": "unknown",
       "model_line": null,
       "points": [
-        [
-          733.915,
-          760.266
-        ],
-        [
-          731.964,
-          760.721
-        ],
-        [
-          730.011,
-          761.17
-        ],
-        [
-          728.011,
-          761.463
-        ],
-        [
-          726.107,
-          762.083
-        ],
-        [
-          724.178,
-          762.621
-        ],
-        [
-          722.303,
-          763.335
-        ],
-        [
-          720.282,
-          763.574
-        ],
-        [
-          718.405,
-          764.282
-        ],
-        [
-          716.517,
-          764.951
-        ],
-        [
-          714.577,
-          765.456
-        ],
-        [
-          712.608,
-          765.872
-        ],
-        [
-          710.719,
-          766.539
-        ],
-        [
-          708.826,
-          767.192
-        ],
-        [
-          706.91,
-          767.774
-        ],
-        [
-          704.988,
-          768.341
-        ],
-        [
-          703.106,
-          769.025
-        ],
-        [
-          701.185,
-          769.594
-        ],
-        [
-          699.363,
-          770.459
-        ],
-        [
-          697.484,
-          771.153
-        ],
-        [
-          695.547,
-          771.672
-        ],
-        [
-          693.664,
-          772.355
-        ],
-        [
-          691.817,
-          773.139
-        ],
-        [
-          689.915,
-          773.762
-        ],
-        [
-          688.018,
-          774.402
-        ],
-        [
-          686.203,
-          775.275
-        ],
-        [
-          684.335,
-          775.998
-        ],
         [
           682.492,
           776.79
@@ -11733,64 +9549,9 @@
         [
           570.765,
           814.864
-        ],
-        [
-          567.016,
-          816.307
-        ],
-        [
-          565.184,
-          817.183
-        ],
-        [
-          563.294,
-          817.86
-        ],
-        [
-          561.362,
-          818.39
-        ],
-        [
-          559.398,
-          818.8
-        ],
-        [
-          557.49,
-          819.418
-        ],
-        [
-          555.531,
-          819.84
         ]
       ],
       "strength": [
-        9.73,
-        9.37,
-        8.63,
-        7.97,
-        9.1,
-        7.07,
-        6.92,
-        7.33,
-        7.48,
-        7.83,
-        7.19,
-        5.9,
-        7.11,
-        7.67,
-        8.29,
-        7.29,
-        8.68,
-        7.56,
-        8.14,
-        8.66,
-        8.53,
-        8.07,
-        9.36,
-        8.7,
-        8.11,
-        9.95,
-        9.93,
         9.83,
         10.52,
         11.34,
@@ -11850,27 +9611,27 @@
         13.66,
         15.07,
         17.73,
-        9.89,
-        4.95,
-        4.76,
-        5.82,
-        5.45,
-        6.15,
-        4.68,
-        5.79
+        9.89
       ],
-      "chord_dev_rms_px": 0.471,
-      "chord_bow_px": 0.77,
+      "chord_dev_rms_px": 0.296,
+      "chord_bow_px": 0.868,
       "verified": "partly",
-      "verification_note": "crop checked: thin, weak light flange line (strength ~11), lower boundary traced; end at the holder removed; +-0.6 px waviness. divider cross flange edge spanning the cart depth (label holder at its front end); a straight sheet-metal edge (usable for plumb-line) but probably NOT exactly parallel to cart Y: the lower dividers deviate 4-6 deg from the cart-Y vanishing direction of the initial calibration (as if rising ~10 deg towards the back), so it is labelled 'unknown'",
+      "verification_note": "crop checked: thin, weak light flange line (strength ~11), lower boundary traced; end at the holder removed; +-0.6 px waviness. divider cross flange edge spanning the cart depth (label holder at its front end); a straight sheet-metal edge (usable for plumb-line) but probably NOT exactly parallel to cart Y: the lower dividers deviate 4-6 deg from the cart-Y vanishing direction of the initial calibration (as if rising ~10 deg towards the back), so it is labelled 'unknown' [review: bent holder end and very weak far end removed; remaining part still wavy ~0.3 px] [review: straight_3d -> false. Chord bow -0.87 px raw, -0.80 / -0.75 px after two rough undistortions. Lens distortion is a function of image position and orientation only; y_lip4 and y_lip4b are parallel neighbours ~60 px apart with OPPOSITE bows (~-0.8 / +0.8 px) that the undistortion hardly changes -> the flange lines are curved at the 0.8 px level; not usable for plumb-line]",
       "crop": "work/cache/edgecrops_cart310/cart310_y_lip4.png",
-      "length_px": 188.1,
-      "n_points": 94,
+      "length_px": 118.0,
+      "n_points": 60,
       "polarity": 1,
       "angle_to_initial_vp_deg": {
-        "X": 86.77,
-        "Y": 5.6,
-        "Z": 49.91
+        "X": 86.22,
+        "Y": 5.38,
+        "Z": 49.13
+      },
+      "review": {
+        "changes": [
+          "trimmed x>683 (flange bends up to 0.7 px towards the holder, visible on the crop) and x<570 (strength ~5): removed 34 of 94 points",
+          "straight_3d true -> false (non-lens curvature, see verification_note)"
+        ],
+        "crop": "work/cache/review_cart310/y_lip4_reviewed_strip.png"
       }
     },
     {
@@ -11878,7 +9639,7 @@
       "what": "divider near the X=0 end: upper flange line across the cart depth",
       "class": "cart_structure",
       "cart": 310,
-      "straight_3d": true,
+      "straight_3d": false,
       "direction": "unknown",
       "model_line": null,
       "points": [
@@ -12218,7 +9979,7 @@
       "chord_dev_rms_px": 0.292,
       "chord_bow_px": -0.724,
       "verified": "yes",
-      "verification_note": "crop checked: thin light line, lower boundary traced. divider cross flange edge spanning the cart depth (label holder at its front end); a straight sheet-metal edge (usable for plumb-line) but probably NOT exactly parallel to cart Y: the lower dividers deviate 4-6 deg from the cart-Y vanishing direction of the initial calibration (as if rising ~10 deg towards the back), so it is labelled 'unknown'",
+      "verification_note": "crop checked: thin light line, lower boundary traced. divider cross flange edge spanning the cart depth (label holder at its front end); a straight sheet-metal edge (usable for plumb-line) but probably NOT exactly parallel to cart Y: the lower dividers deviate 4-6 deg from the cart-Y vanishing direction of the initial calibration (as if rising ~10 deg towards the back), so it is labelled 'unknown' [review: straight_3d -> false. Chord bow +0.72 px raw, +0.80 / +0.90 px after two rough undistortions. Lens distortion is a function of image position and orientation only; y_lip4 and y_lip4b are parallel neighbours ~60 px apart with OPPOSITE bows (~-0.8 / +0.8 px) that the undistortion hardly changes -> the flange lines are curved at the 0.8 px level; not usable for plumb-line]",
       "crop": "work/cache/edgecrops_cart310/cart310_y_lip4b.png",
       "length_px": 132.0,
       "n_points": 66,
@@ -12227,6 +9988,12 @@
         "X": 86.86,
         "Y": 4.38,
         "Z": 51.9
+      },
+      "review": {
+        "changes": [
+          "straight_3d true -> false (non-lens curvature, see verification_note)"
+        ],
+        "crop": "work/cache/review_cart310/y_lip4b_reviewed_strip.png"
       }
     },
     {
@@ -12319,10 +10086,6 @@
           813.803
         ],
         [
-          835.504,
-          811.871
-        ],
-        [
           835.551,
           809.862
         ],
@@ -12353,10 +10116,6 @@
         [
           836.709,
           795.9
-        ],
-        [
-          836.12,
-          793.815
         ],
         [
           841.251,
@@ -12411,14 +10170,6 @@
           736.326
         ],
         [
-          845.034,
-          734.452
-        ],
-        [
-          845.141,
-          732.451
-        ],
-        [
           845.013,
           730.422
         ],
@@ -12431,10 +10182,6 @@
           726.375
         ],
         [
-          847.426,
-          716.609
-        ],
-        [
           846.983,
           714.543
         ],
@@ -12445,18 +10192,6 @@
         [
           846.98,
           710.515
-        ],
-        [
-          846.841,
-          708.485
-        ],
-        [
-          846.604,
-          706.443
-        ],
-        [
-          847.086,
-          702.472
         ],
         [
           848.526,
@@ -12509,30 +10244,6 @@
         [
           851.895,
           672.831
-        ],
-        [
-          852.354,
-          670.871
-        ],
-        [
-          852.245,
-          668.844
-        ],
-        [
-          851.501,
-          666.742
-        ],
-        [
-          851.595,
-          664.739
-        ],
-        [
-          852.979,
-          662.889
-        ],
-        [
-          853.582,
-          660.947
         ],
         [
           853.588,
@@ -12647,10 +10358,6 @@
           605.298
         ],
         [
-          860.93,
-          603.415
-        ],
-        [
           860.383,
           601.332
         ]
@@ -12673,7 +10380,6 @@
         26.1,
         24.42,
         17.26,
-        20.55,
         28.12,
         28.15,
         26.42,
@@ -12682,7 +10388,6 @@
         33.58,
         33.85,
         28.8,
-        14.88,
         47.2,
         41.46,
         31.72,
@@ -12696,18 +10401,12 @@
         39.43,
         29.53,
         13.81,
-        14.61,
-        19.49,
         19.75,
         20.74,
         15.78,
-        51.08,
         49.97,
         41.89,
         36.39,
-        34.03,
-        26.35,
-        16.35,
         23.93,
         24.82,
         28.95,
@@ -12721,12 +10420,6 @@
         69.21,
         52.53,
         32.06,
-        20.82,
-        55.66,
-        81.95,
-        68.91,
-        57.17,
-        42.35,
         42.42,
         45.08,
         49.11,
@@ -12755,21 +10448,26 @@
         72.44,
         65.77,
         26.59,
-        14.54,
         18.94
       ],
-      "chord_dev_rms_px": 0.339,
-      "chord_bow_px": 0.06,
+      "chord_dev_rms_px": 0.176,
+      "chord_bow_px": -0.045,
       "verified": "partly",
-      "verification_note": "orange handle runs parallel next to the lower half, a reflective screw at y~668 and the castor bracket at the top end; residual ~0.35 px with ~1 px steps between segments",
+      "verification_note": "orange handle runs parallel next to the lower half, a reflective screw at y~668 and the castor bracket at the top end; residual ~0.35 px with ~1 px steps between segments [review: isolated ~1 px jumps (handle behind the post, reflective screw) removed]",
       "crop": "work/cache/edgecrops_cart310/cart310_z_post_front_left_right.png",
       "length_px": 250.0,
-      "n_points": 101,
+      "n_points": 86,
       "polarity": 1,
       "angle_to_initial_vp_deg": {
-        "X": 25.96,
-        "Y": 69.32,
+        "X": 25.98,
+        "Y": 69.33,
         "Z": 0.98
+      },
+      "review": {
+        "changes": [
+          "robust cubic fit |res|>0.5 px (1 px jumps at the orange handle behind the post) + screw y 660-672: removed 15 of 101 points"
+        ],
+        "crop": "work/cache/review_cart310/z_post_front_left_right_reviewed_strip.png"
       }
     },
     {
@@ -12793,26 +10491,6 @@
         "note": "identification inferred from its end points (board corner -> castor) and from its direction pointing at the nadir (~(930,60)); post section unknown"
       },
       "points": [
-        [
-          668.739,
-          26.247
-        ],
-        [
-          666.477,
-          27.633
-        ],
-        [
-          664.575,
-          26.889
-        ],
-        [
-          662.547,
-          26.903
-        ],
-        [
-          660.661,
-          26.047
-        ],
         [
           658.773,
           25.19
@@ -12918,10 +10596,6 @@
           18.836
         ],
         [
-          607.291,
-          17.682
-        ],
-        [
           603.143,
           18.751
         ],
@@ -13024,30 +10698,9 @@
         [
           553.564,
           12.147
-        ],
-        [
-          547.518,
-          12.278
-        ],
-        [
-          543.545,
-          11.811
-        ],
-        [
-          541.545,
-          11.703
-        ],
-        [
-          539.553,
-          11.525
         ]
       ],
       "strength": [
-        36.29,
-        18.54,
-        16.58,
-        16.02,
-        10.3,
         9.87,
         14.56,
         14.74,
@@ -13074,7 +10727,6 @@
         19.31,
         19.29,
         22.44,
-        31.48,
         18.46,
         16.18,
         13.38,
@@ -13100,24 +10752,27 @@
         8.07,
         10.96,
         15.41,
-        17.36,
-        6.61,
-        6.99,
-        6.89,
-        7.08
+        17.36
       ],
-      "chord_dev_rms_px": 0.472,
-      "chord_bow_px": -0.974,
+      "chord_dev_rms_px": 0.277,
+      "chord_bow_px": -0.244,
       "verified": "partly",
-      "verification_note": "thin bar near the image border, wire mesh below, crossed by a thin rod; moderate contrast",
+      "verification_note": "thin bar near the image border, wire mesh below, crossed by a thin rod; moderate contrast [review: knob end and weak far end trimmed. Identity check: the intersections of this line with the five shelf-front lines (A-D) have the cross ratio 1.272-1.281 vs 1.276 expected for Z=-195,-595,-995,-1300 on one vertical line -> it is a vertical (cart-Z) line in the plane Y~0; with E included 1.42-1.46 vs 1.40]",
       "crop": "work/cache/edgecrops_cart310/cart310_z_post_front_right.png",
-      "length_px": 130.0,
-      "n_points": 62,
+      "length_px": 106.0,
+      "n_points": 52,
       "polarity": 1,
       "angle_to_initial_vp_deg": {
-        "X": 62.6,
-        "Y": 24.78,
-        "Z": 11.5
+        "X": 62.73,
+        "Y": 24.64,
+        "Z": 11.32
+      },
+      "review": {
+        "changes": [
+          "end trims: x>660 (points slide onto the dark knob at the castor end, -1.6 px) and x<550 (beyond the crossing rod, strength ~7, -0.6 px): removed 9 of 62 points",
+          "robust cubic fit |res|>0.5 px: removed 1 of 53 points"
+        ],
+        "crop": "work/cache/review_cart310/z_post_front_right_reviewed_strip.png"
       }
     },
     {
@@ -13734,8 +11389,8 @@
       ],
       "chord_dev_rms_px": 0.266,
       "chord_bow_px": 0.659,
-      "verified": "yes",
-      "verification_note": "clean; small disturbances where the cart's back rails cross; tape straightness only ~mm (hand-laid)",
+      "verified": "partly",
+      "verification_note": "clean; small disturbances where the cart's back rails cross; tape straightness only ~mm (hand-laid) [review: the two edges of the same ~14 px wide tape have chord bows +0.14 and -0.37 px after a rough undistortion (-0.66 / -1.20 raw), and the tape width varies non-monotonically by ~0.4 px -> the hand-laid tape is straight only to ~0.5 px; downgraded to 'partly' (low weight / sensitivity check only)]",
       "crop": "work/cache/edgecrops_cart310/cart310_floor_tape_blue_upper.png",
       "length_px": 256.0,
       "n_points": 120,
@@ -13744,6 +11399,12 @@
         "X": 65.35,
         "Y": 12.3,
         "Z": 42.42
+      },
+      "review": {
+        "changes": [
+          "verified yes -> partly (tape not straight to ~0.5 px)"
+        ],
+        "crop": "work/cache/review_cart310/floor_tape_blue_upper_reviewed_strip.png"
       }
     },
     {
@@ -14405,8 +12066,8 @@
       ],
       "chord_dev_rms_px": 0.397,
       "chord_bow_px": -1.196,
-      "verified": "yes",
-      "verification_note": "clean; tape straightness only ~mm (hand-laid)",
+      "verified": "partly",
+      "verification_note": "clean; tape straightness only ~mm (hand-laid) [review: the two edges of the same ~14 px wide tape have chord bows +0.14 and -0.37 px after a rough undistortion (-0.66 / -1.20 raw), and the tape width varies non-monotonically by ~0.4 px -> the hand-laid tape is straight only to ~0.5 px; downgraded to 'partly' (low weight / sensitivity check only)]",
       "crop": "work/cache/edgecrops_cart310/cart310_floor_tape_blue_lower.png",
       "length_px": 258.0,
       "n_points": 129,
@@ -14415,7 +12076,483 @@
         "X": 65.34,
         "Y": 12.21,
         "Z": 43.16
+      },
+      "review": {
+        "changes": [
+          "verified yes -> partly (tape not straight to ~0.5 px)"
+        ],
+        "crop": "work/cache/review_cart310/floor_tape_blue_lower_reviewed_strip.png"
       }
     }
-  ]
+  ],
+  "review": {
+    "script": "work/12_review_edges_cart310.py",
+    "input": "work/cache/edges_cart310_prereview.json (output of 10_edges_cart310_trace.py)",
+    "summary": [
+      "board1600_outer: exact -> false (X=1618-1620 mm by the homography of markers 1/2)",
+      "shelf fronts A-E (+B/C rise, B inner): extra 24/12 px trimmed at every holder interruption",
+      "x_B_front_rise, x_C_front_rise: verified -> partly, pair_of = the fall trace (same physical dark line)",
+      "z posts: ~1 px jumps and bad ends removed",
+      "y_lip1, y_lip2, y_lip4, y_lip4b: straight_3d -> false (curvature not explainable by any lens: 1.3-1.5 px residual bow next to the straight board1600_inner; lip4/lip4b opposite bows)",
+      "floor tape edges: verified -> partly (edges of the same tape bow differently by ~0.5 px)"
+    ],
+    "changed_edges": [
+      "cart310_board0_outer",
+      "cart310_board1600_outer",
+      "cart310_board1600_inner",
+      "cart310_board0_inner_top",
+      "cart310_x_A_front_fall",
+      "cart310_x_B_front_fall",
+      "cart310_x_B_front_rise",
+      "cart310_x_C_front_fall",
+      "cart310_x_C_front_rise",
+      "cart310_x_D_front_fall",
+      "cart310_x_E_front_fall",
+      "cart310_x_B_inner_fall",
+      "cart310_x_board0_front",
+      "cart310_y_lip1",
+      "cart310_y_lip2",
+      "cart310_y_lip4",
+      "cart310_y_lip4b",
+      "cart310_z_post_front_left_right",
+      "cart310_z_post_front_right",
+      "cart310_floor_tape_blue_upper",
+      "cart310_floor_tape_blue_lower"
+    ],
+    "board_homography_check": {
+      "board0_outer": {
+        "raw": {
+          "markers": [
+            0,
+            322
+          ],
+          "n_corners": 8,
+          "homography_rms_px": 1.01,
+          "coord": "X",
+          "value_mm": -4.6,
+          "spread_p10_p90_mm": 3.4,
+          "nominal_mm": 0.0,
+          "offset_px": -2.5
+        },
+        "ref_f1290": {
+          "markers": [
+            0,
+            322
+          ],
+          "n_corners": 8,
+          "homography_rms_px": 0.86,
+          "coord": "X",
+          "value_mm": -3.6,
+          "spread_p10_p90_mm": 2.4,
+          "nominal_mm": 0.0,
+          "offset_px": -2.1
+        },
+        "ref_f1394": {
+          "markers": [
+            0,
+            322
+          ],
+          "n_corners": 8,
+          "homography_rms_px": 0.86,
+          "coord": "X",
+          "value_mm": -3.4,
+          "spread_p10_p90_mm": 2.4,
+          "nominal_mm": 0.0,
+          "offset_px": -2.1
+        }
+      },
+      "board0_inner_top": {
+        "raw": {
+          "markers": [
+            0,
+            322
+          ],
+          "n_corners": 8,
+          "homography_rms_px": 1.01,
+          "coord": "X",
+          "value_mm": 151.0,
+          "spread_p10_p90_mm": 11.5,
+          "nominal_mm": 165.0,
+          "offset_px": -7.8
+        },
+        "ref_f1290": {
+          "markers": [
+            0,
+            322
+          ],
+          "n_corners": 8,
+          "homography_rms_px": 0.86,
+          "coord": "X",
+          "value_mm": 151.9,
+          "spread_p10_p90_mm": 11.3,
+          "nominal_mm": 165.0,
+          "offset_px": -7.8
+        },
+        "ref_f1394": {
+          "markers": [
+            0,
+            322
+          ],
+          "n_corners": 8,
+          "homography_rms_px": 0.86,
+          "coord": "X",
+          "value_mm": 152.1,
+          "spread_p10_p90_mm": 11.1,
+          "nominal_mm": 165.0,
+          "offset_px": -8.0
+        }
+      },
+      "x_board0_front": {
+        "raw": {
+          "markers": [
+            0,
+            322
+          ],
+          "n_corners": 8,
+          "homography_rms_px": 1.01,
+          "coord": "Y",
+          "value_mm": -1.1,
+          "spread_p10_p90_mm": 0.8,
+          "nominal_mm": 0.0,
+          "offset_px": -0.6
+        },
+        "ref_f1290": {
+          "markers": [
+            0,
+            322
+          ],
+          "n_corners": 8,
+          "homography_rms_px": 0.86,
+          "coord": "Y",
+          "value_mm": -0.8,
+          "spread_p10_p90_mm": 0.7,
+          "nominal_mm": 0.0,
+          "offset_px": -0.5
+        },
+        "ref_f1394": {
+          "markers": [
+            0,
+            322
+          ],
+          "n_corners": 8,
+          "homography_rms_px": 0.86,
+          "coord": "Y",
+          "value_mm": -0.8,
+          "spread_p10_p90_mm": 0.8,
+          "nominal_mm": 0.0,
+          "offset_px": -0.5
+        }
+      },
+      "board1600_outer": {
+        "raw": {
+          "markers": [
+            1,
+            2
+          ],
+          "n_corners": 8,
+          "homography_rms_px": 1.32,
+          "coord": "X",
+          "value_mm": 1619.7,
+          "spread_p10_p90_mm": 1.4,
+          "nominal_mm": 1600.0,
+          "offset_px": 12.3
+        },
+        "ref_f1290": {
+          "markers": [
+            1,
+            2
+          ],
+          "n_corners": 8,
+          "homography_rms_px": 1.28,
+          "coord": "X",
+          "value_mm": 1618.3,
+          "spread_p10_p90_mm": 2.0,
+          "nominal_mm": 1600.0,
+          "offset_px": 15.6
+        },
+        "ref_f1394": {
+          "markers": [
+            1,
+            2
+          ],
+          "n_corners": 8,
+          "homography_rms_px": 1.25,
+          "coord": "X",
+          "value_mm": 1618.6,
+          "spread_p10_p90_mm": 1.8,
+          "nominal_mm": 1600.0,
+          "offset_px": 14.1
+        }
+      },
+      "board1600_inner": {
+        "raw": {
+          "markers": [
+            1,
+            2
+          ],
+          "n_corners": 8,
+          "homography_rms_px": 1.32,
+          "coord": "X",
+          "value_mm": 1427.5,
+          "spread_p10_p90_mm": 13.7,
+          "nominal_mm": 1435.0,
+          "offset_px": -4.7
+        },
+        "ref_f1290": {
+          "markers": [
+            1,
+            2
+          ],
+          "n_corners": 8,
+          "homography_rms_px": 1.28,
+          "coord": "X",
+          "value_mm": 1425.9,
+          "spread_p10_p90_mm": 13.3,
+          "nominal_mm": 1435.0,
+          "offset_px": -7.2
+        },
+        "ref_f1394": {
+          "markers": [
+            1,
+            2
+          ],
+          "n_corners": 8,
+          "homography_rms_px": 1.25,
+          "coord": "X",
+          "value_mm": 1426.3,
+          "spread_p10_p90_mm": 13.2,
+          "nominal_mm": 1435.0,
+          "offset_px": -6.3
+        }
+      },
+      "x_board1600_front": {
+        "raw": {
+          "markers": [
+            1,
+            2
+          ],
+          "n_corners": 8,
+          "homography_rms_px": 1.32,
+          "coord": "Y",
+          "value_mm": -1.1,
+          "spread_p10_p90_mm": 0.7,
+          "nominal_mm": 0.0,
+          "offset_px": -0.7
+        },
+        "ref_f1290": {
+          "markers": [
+            1,
+            2
+          ],
+          "n_corners": 8,
+          "homography_rms_px": 1.28,
+          "coord": "Y",
+          "value_mm": -0.7,
+          "spread_p10_p90_mm": 0.9,
+          "nominal_mm": 0.0,
+          "offset_px": -0.6
+        },
+        "ref_f1394": {
+          "markers": [
+            1,
+            2
+          ],
+          "n_corners": 8,
+          "homography_rms_px": 1.25,
+          "coord": "Y",
+          "value_mm": -0.7,
+          "spread_p10_p90_mm": 0.9,
+          "nominal_mm": 0.0,
+          "offset_px": -0.5
+        }
+      }
+    },
+    "data_driven_vp_check": {
+      "ref_f1290": {
+        "vp_x": [
+          2216.0,
+          4507.0
+        ],
+        "vp_y": [
+          -23020.0,
+          7134.0
+        ],
+        "edges": {
+          "board0_outer": {
+            "ang_to_vpy_deg": 0.89,
+            "end_offset_px": 2.1
+          },
+          "board1600_outer": {
+            "ang_to_vpy_deg": 1.09,
+            "end_offset_px": 2.19
+          },
+          "board1600_inner": {
+            "ang_to_vpy_deg": 1.16,
+            "end_offset_px": 2.44
+          },
+          "board0_inner_top": {
+            "ang_to_vpy_deg": 0.74,
+            "end_offset_px": 1.89
+          },
+          "board0_inner_bottom": {
+            "ang_to_vpy_deg": 0.8,
+            "end_offset_px": 0.67
+          },
+          "x_A_front_fall": {
+            "ang_to_vpx_deg": 0.03,
+            "end_offset_px": 0.17
+          },
+          "x_B_front_fall": {
+            "ang_to_vpx_deg": 0.19,
+            "end_offset_px": 0.96
+          },
+          "x_B_front_rise": {
+            "ang_to_vpx_deg": 0.14,
+            "end_offset_px": 0.64
+          },
+          "x_C_front_fall": {
+            "ang_to_vpx_deg": 0.26,
+            "end_offset_px": 1.25
+          },
+          "x_C_front_rise": {
+            "ang_to_vpx_deg": 0.25,
+            "end_offset_px": 1.01
+          },
+          "x_D_front_fall": {
+            "ang_to_vpx_deg": 0.02,
+            "end_offset_px": 0.07
+          },
+          "x_E_front_fall": {
+            "ang_to_vpx_deg": 0.07,
+            "end_offset_px": 0.37
+          },
+          "x_back_inner": {
+            "ang_to_vpx_deg": 0.24,
+            "end_offset_px": 0.54
+          },
+          "x_B_inner_fall": {
+            "ang_to_vpx_deg": 0.12,
+            "end_offset_px": 0.23
+          },
+          "x_board0_front": {
+            "ang_to_vpx_deg": 5.94,
+            "end_offset_px": 4.64
+          },
+          "x_board1600_front": {
+            "ang_to_vpx_deg": 1.0,
+            "end_offset_px": 0.68
+          },
+          "y_lip1": {
+            "ang_to_vpy_deg": 0.57,
+            "end_offset_px": 1.1
+          },
+          "y_lip2": {
+            "ang_to_vpy_deg": 1.37,
+            "end_offset_px": 2.6
+          },
+          "y_lip4": {
+            "ang_to_vpy_deg": 4.86,
+            "end_offset_px": 5.48
+          },
+          "y_lip4b": {
+            "ang_to_vpy_deg": 3.72,
+            "end_offset_px": 4.53
+          }
+        }
+      },
+      "ref_f1394": {
+        "vp_x": [
+          2570.0,
+          5592.0
+        ],
+        "vp_y": [
+          -17309.0,
+          5954.0
+        ],
+        "edges": {
+          "board0_outer": {
+            "ang_to_vpy_deg": 0.84,
+            "end_offset_px": 2.04
+          },
+          "board1600_outer": {
+            "ang_to_vpy_deg": 1.04,
+            "end_offset_px": 2.01
+          },
+          "board1600_inner": {
+            "ang_to_vpy_deg": 1.07,
+            "end_offset_px": 2.18
+          },
+          "board0_inner_top": {
+            "ang_to_vpy_deg": 0.74,
+            "end_offset_px": 1.9
+          },
+          "board0_inner_bottom": {
+            "ang_to_vpy_deg": 0.91,
+            "end_offset_px": 0.78
+          },
+          "x_A_front_fall": {
+            "ang_to_vpx_deg": 0.03,
+            "end_offset_px": 0.17
+          },
+          "x_B_front_fall": {
+            "ang_to_vpx_deg": 0.19,
+            "end_offset_px": 0.95
+          },
+          "x_B_front_rise": {
+            "ang_to_vpx_deg": 0.14,
+            "end_offset_px": 0.64
+          },
+          "x_C_front_fall": {
+            "ang_to_vpx_deg": 0.27,
+            "end_offset_px": 1.23
+          },
+          "x_C_front_rise": {
+            "ang_to_vpx_deg": 0.26,
+            "end_offset_px": 1.03
+          },
+          "x_D_front_fall": {
+            "ang_to_vpx_deg": 0.01,
+            "end_offset_px": 0.03
+          },
+          "x_E_front_fall": {
+            "ang_to_vpx_deg": 0.08,
+            "end_offset_px": 0.4
+          },
+          "x_back_inner": {
+            "ang_to_vpx_deg": 0.26,
+            "end_offset_px": 0.59
+          },
+          "x_B_inner_fall": {
+            "ang_to_vpx_deg": 0.12,
+            "end_offset_px": 0.21
+          },
+          "x_board0_front": {
+            "ang_to_vpx_deg": 5.94,
+            "end_offset_px": 4.86
+          },
+          "x_board1600_front": {
+            "ang_to_vpx_deg": 1.27,
+            "end_offset_px": 0.77
+          },
+          "y_lip1": {
+            "ang_to_vpy_deg": 0.75,
+            "end_offset_px": 1.44
+          },
+          "y_lip2": {
+            "ang_to_vpy_deg": 1.61,
+            "end_offset_px": 3.04
+          },
+          "y_lip4": {
+            "ang_to_vpy_deg": 4.84,
+            "end_offset_px": 5.55
+          },
+          "y_lip4b": {
+            "ang_to_vpy_deg": 3.45,
+            "end_offset_px": 4.25
+          }
+        }
+      }
+    },
+    "crops": "work/cache/review_cart310/*_reviewed_strip.png"
+  }
 }
