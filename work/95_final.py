@@ -103,6 +103,17 @@ if os.path.exists(f"{CACHE}/synthetic_report.json"):
         sens = sr.get("mapping_sensitivity_total_px", {}) or {}
     except Exception:  # noqa
         sens = {}
+
+
+def synth_rt():
+    """Round-trip block of the synthetic study (scenario T2_b) for the estimator that matches the main method
+    (non-robust combined fit; the older report only has the robust variant 'combined_k1k2')."""
+    t2 = load_json(f"{CACHE}/synthetic_report.json")["roundtrip"]["T2_b"]
+    key = "combined_nonrobust" if os.environ.get("COMBINED_MAIN", "nonrobust") == "nonrobust" and "combined_nonrobust" in t2 else "combined_k1k2"
+    print("synthetic round trip estimator:", key)
+    return t2[key]
+
+
 sig_tot_map = np.sqrt(sig_stat_map ** 2 + sig_sys_map ** 2)
 reg_out = {}
 for n, fn in regs.items():
@@ -113,7 +124,7 @@ for n, fn in regs.items():
                       total_max=float(np.sqrt(np.nanmax(sig_tot_map[m]) ** 2 + s_sens ** 2)))
 if os.path.exists(f"{CACHE}/synthetic_report.json"):
     try:
-        rt = load_json(f"{CACHE}/synthetic_report.json")["roundtrip"]["T2_b"]["combined_k1k2"]
+        rt = synth_rt()
         for n in reg_out:
             sm = rt["mapping"]["total"].get(n, {}).get("median")
             reg_out[n]["synthetic_rmse"] = sm
@@ -144,7 +155,7 @@ syn = {}
 syn_map = {}
 if os.path.exists(f"{CACHE}/synthetic_report.json"):
     try:
-        rt = load_json(f"{CACHE}/synthetic_report.json")["roundtrip"]["T2_b"]["combined_k1k2"]
+        rt = synth_rt()
         syn = dict(zip(rt["names"], rt["rmse"]))
         syn_map = {k: v["median"] for k, v in rt["mapping"]["total"].items()}
     except Exception as ex:  # noqa
