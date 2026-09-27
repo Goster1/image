@@ -67,3 +67,31 @@ normal of the fitted line in the undistorted image). lineselfcal.py and combined
 With this correction the free distortion centre is recoverable in synthetic tests (+-20..50 px with
 0.2-0.4 px per-edge bows). On the prototype automatic chains (unverified) the free centre goes to
 ~(926, 834), i.e. ~300 px below the image centre - to be checked with the verified edges.
+
+## Phase-1 results (markers) and first geometry findings (orchestrator, 2026-09-27 ~17:10)
+* `work/cache/markers_final.json` / `results/detections.json`: all 20 stickers found, ids confirmed from image
+  content; 62/80 corners valid (edge-based, mean of 7 jitter-corrected stills, frame std ~0.13 px).
+  corners_px of INVALID corners are completions (never use them); side_lines/side_valid give traced sides.
+  rot_k: top stickers 0, shelf stickers 2. Edge corners sit 0.16 px inward along the diagonal vs ArUco rule.
+* Joint drawing-geometry fit, all 62 corners: RMS 5.34 px (f~1309). Subsets (f single, pp free, k1,k2):
+  shelf stickers only (A,B,C; 30 corners) RMS 1.88 px, f~1440; cart-310 shelves only 1.37 px f~1523;
+  cart-80 shelves only 2.06 px f~1455; top stickers only 2.52 px f~1794(!). Even shelf-only is 10x noise.
+* CROSS-RATIO test (projective invariant, independent of f/pp/pose, distortion barely matters): corresponding
+  corners of the 4 stickers stacked at the same (X,Y) (top, A, B, C) lie on a vertical 3D line. Expected
+  CR(Z=0,-195,-595,-995)=1.1960. Measured -> implied Z of the TOP sticker (others kept at drawing):
+    cart 80 X=0 end (ids 0,3,5,7): -7 / 0 mm   (consistent with the drawing)
+    cart 80 X=1600 end (1,4,6,8): +50 / +64 mm
+    cart 310 X=0 end (0,3,5,7): +73 / +75 mm   (collinearity deviations up to 3 px - check 310:5/310:7!)
+    cart 310 X=1600 end (1,4,6,8): +55 / +86 mm
+  Visual impression: the end boards of cart 310 look like thick boxes (brown side faces), the cart-80 X=0 end
+  board looks like a thin sheet. Needs careful verification (this is an OBSERVATION, not a model change).
+* Edge-only (cart 310 edges only, interim): plumb-line k1=-0.272, k2=0.046 @ f0=1300 (centre fixed),
+  free centre (947, 501)+-30; VP (plumb distortion fixed): f~1410-1418, pp~(947,467); joint lines f~1393.
+* Edge-only with cart310+cart80 edges (orchestrator 30_lines_methods.py, interim): plumb (centre fixed)
+  k1=-0.310, k2=0.097 @f0=1300; free centre (937, 515)+-(9,42); VP with plumb distortion: f=1394+-15,
+  pp=(951, 416); VP with pp fixed at image centre: f=1433; joint lines: f=1397, pp=(913, 387).
+  Per-edge VP-consistency: the END-BOARD edges (cartY inner edges, short cartX board fronts) violate the
+  cart-axis VPs by 1.3-2.1 px while being straight (0.2-0.5 px) -> the boards are probably not exactly
+  aligned with the cart frame; prefer structural edges (shelf lips, rails, posts) for VP groups.
+* Marker-only BA with all 20 stickers (20_markers_ba.py): every model RMS 5.0-5.7 px, leave-one-sticker-out
+  8.2-10.5 px, best by LOO k1k2_ppfix f=1300+-21 (bootstrap f std 34 px); leave-row-out: top 19-80 px.

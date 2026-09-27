@@ -50,8 +50,8 @@ def detection_stats(M):
             dfr = B[:, i] - A[:, i]
             rows.append(dict(cart=m["cart"], id=m["id"], corner=i, dx=d[0], dy=d[1], dist=float(np.linalg.norm(d)),
                              radial=float(d @ u), a_std=float(np.sqrt(np.mean(np.sum((A[:, i] - am[i]) ** 2, 1)))),
-                             b_std=float(np.sqrt(np.mean(np.sum((B[:, i] - bm[i]) ** 2, 1)))),
-                             diff_frame_std=float(np.sqrt(np.mean(np.sum((dfr - dfr.mean(0)) ** 2, 1)))),
+                             b_std=float(np.sqrt(np.nanmean(np.sum((B[:, i] - bm[i]) ** 2, 1)))),
+                             diff_frame_std=float(np.sqrt(np.nanmean(np.sum((dfr - np.nanmean(dfr, 0)) ** 2, 1)))),
                              mean_vs_framemean_a=float(np.linalg.norm(np.array(m["aruco_mean_image"])[i] - am[i])),
                              mean_vs_framemean_b=float(np.linalg.norm(np.array(m["edge_mean_image"], float)[i] - bm[i])),
                              curved_minus_straight=float(np.linalg.norm(np.nanmean(np.array(m["edge_curved_frames"], float), 0)[i] - bm[i]))))
@@ -262,6 +262,7 @@ def draw_rect_views(M, path):
     while len(tiles) % 5:
         tiles.append(np.zeros_like(tiles[0]))
     out = np.vstack([np.hstack(tiles[i:i + 5]) for i in range(0, len(tiles), 5)])
+    out = cv2.copyMakeBorder(out, 0, 26, 0, 0, cv2.BORDER_CONSTANT, value=(255, 255, 255))
     cv2.putText(out, "rectified views: expected code bits (green = read equal, orange = read on partly visible cell, x = hidden)",
                 (5, out.shape[0] - 6), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 1, cv2.LINE_AA)
     cv2.imwrite(path, out)

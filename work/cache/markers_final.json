@@ -6,13 +6,13 @@
     "rot_k": 0,
     "rot_k_fit": {
       "marker_rms_per_rot": [
-        4.9908857223823615,
-        59.4092062925444,
-        82.04034806428503,
-        57.02763053387525
+        4.9902799308222985,
+        59.41058955029056,
+        82.04815358943746,
+        57.031778037815705
       ],
-      "marker_rms_gap_second_minus_best": 52.03674481149289,
-      "delta_chi2_second_minus_best": 13208.129039174124
+      "marker_rms_gap_second_minus_best": 52.04149810699341,
+      "delta_chi2_second_minus_best": 13207.079419356874
     },
     "found_by": "plain ArUco detection (mean of jitter-aligned frames), re-verified",
     "corners_px": [
@@ -34,10 +34,10 @@
       ]
     ],
     "corners_std_px": [
-      0.06726763524838826,
-      0.06475059363411864,
-      0.11983275284308732,
-      0.07341950468576233
+      0.07265735023998082,
+      0.06993863456845026,
+      0.12943416639207436,
+      0.07930212867899443
     ],
     "corner_valid": [
       true,
@@ -616,13 +616,13 @@
     "rot_k": 0,
     "rot_k_fit": {
       "marker_rms_per_rot": [
-        5.268870132665786,
-        46.53566158205049,
-        66.00082681404966,
-        47.07351805621915
+        5.270314440311841,
+        46.54207416888882,
+        66.00197351602463,
+        47.076193361220305
       ],
-      "marker_rms_gap_second_minus_best": 41.2667914493847,
-      "delta_chi2_second_minus_best": 8694.30092496441
+      "marker_rms_gap_second_minus_best": 41.271759728576974,
+      "delta_chi2_second_minus_best": 8693.902000914011
     },
     "found_by": "plain ArUco detection (mean of jitter-aligned frames), re-verified",
     "corners_px": [
@@ -644,10 +644,10 @@
       ]
     ],
     "corners_std_px": [
-      0.12809251744762404,
-      0.1856040790981075,
-      0.13699050959338246,
-      0.1269438334436292
+      0.13835573183072267,
+      0.2004753182002695,
+      0.14796666180291101,
+      0.13711501130167275
     ],
     "corner_valid": [
       true,
@@ -1226,13 +1226,13 @@
     "rot_k": 0,
     "rot_k_fit": {
       "marker_rms_per_rot": [
-        3.2545785163823666,
-        43.45107867231013,
-        61.18348857250014,
-        44.044781805040614
+        3.2668727291210904,
+        43.45123907651007,
+        61.18104143355522,
+        44.04444696792586
       ],
-      "marker_rms_gap_second_minus_best": 40.196500155927765,
-      "delta_chi2_second_minus_best": 7518.658596793757
+      "marker_rms_gap_second_minus_best": 40.18436634738898,
+      "delta_chi2_second_minus_best": 7518.335054516343
     },
     "found_by": "plain ArUco detection (mean of jitter-aligned frames), re-verified",
     "corners_px": [
@@ -1254,10 +1254,10 @@
       ]
     ],
     "corners_std_px": [
-      0.14312597458604606,
-      0.1848935109247268,
-      0.12625894752554087,
-      0.11576708748424205
+      0.15459372141651295,
+      0.1997078168535659,
+      0.13637524996115252,
+      0.12504274589921177
     ],
     "corner_valid": [
       true,
@@ -1836,13 +1836,13 @@
     "rot_k": 2,
     "rot_k_fit": {
       "marker_rms_per_rot": [
-        73.85445017401945,
-        50.18389487348444,
-        4.153379754273009,
-        53.513322405178
+        73.8476076367827,
+        50.19061085425589,
+        4.154196254454817,
+        53.52305186482712
       ],
-      "marker_rms_gap_second_minus_best": 46.03051511921143,
-      "delta_chi2_second_minus_best": 5495.832234415453
+      "marker_rms_gap_second_minus_best": 46.03641459980107,
+      "delta_chi2_second_minus_best": 5489.520312700814
     },
     "found_by": "guided: predicted position + neighbour shape, code search in rectified patch",
     "corners_px": [
@@ -1864,8 +1864,8 @@
       ]
     ],
     "corners_std_px": [
-      0.1400056080066644,
-      0.1639066075406712,
+      0.15122334030235457,
+      0.1770393703711321,
       null,
       null
     ],
@@ -2368,13 +2368,13 @@
     "rot_k": 2,
     "rot_k_fit": {
       "marker_rms_per_rot": [
-        62.20771624632733,
-        44.160601484022465,
-        9.089271555949013,
-        44.90365601371113
+        62.213047933950406,
+        44.16688125914883,
+        9.097092683125492,
+        44.90571262450505
       ],
-      "marker_rms_gap_second_minus_best": 35.07132992807345,
-      "delta_chi2_second_minus_best": 7513.114238912438
+      "marker_rms_gap_second_minus_best": 35.06978857602334,
+      "delta_chi2_second_minus_best": 7514.6019050343
     },
     "found_by": "plain ArUco detection (mean of jitter-aligned frames), re-verified",
     "corners_px": [
@@ -2396,10 +2396,10 @@
       ]
     ],
     "corners_std_px": [
-      0.09399136420538,
-      0.18977629164538845,
-      0.19814993842688614,
-      0.13727233855102267
+      0.10152227655078032,
+      0.20498182280986477,
+      0.2140263950583554,
+      0.14827107186887248
     ],
     "corner_valid": [
       true,
@@ -2978,13 +2978,13 @@
     "rot_k": 2,
     "rot_k_fit": {
       "marker_rms_per_rot": [
-        65.22053247227556,
-        45.96835838440088,
-        5.266615458332057,
-        47.50379133115457
+        65.22245251589176,
+        45.9719438023813,
+        5.273865107194551,
+        47.50200623176051
       ],
-      "marker_rms_gap_second_minus_best": 40.701742926068825,
-      "delta_chi2_second_minus_best": 8540.526545252955
+      "marker_rms_gap_second_minus_best": 40.698078695186744,
+      "delta_chi2_second_minus_best": 8538.874180572131
     },
     "found_by": "plain ArUco detection (mean of jitter-aligned frames), re-verified",
     "corners_px": [
@@ -3006,10 +3006,10 @@
       ]
     ],
     "corners_std_px": [
-      0.13064301567132033,
-      0.06737819265145152,
-      0.07567797704803617,
-      0.09749628712421944
+      0.14111058477064362,
+      0.07277676588357121,
+      0.08174155763806398,
+      0.1053080259849312
     ],
     "corner_valid": [
       true,
@@ -3588,13 +3588,13 @@
     "rot_k": 2,
     "rot_k_fit": {
       "marker_rms_per_rot": [
-        55.20567473653787,
-        39.41512557838413,
-        1.0733068909679266,
-        38.820214313815306
+        55.21112498891082,
+        39.42022347341924,
+        1.0769620327085963,
+        38.82230114708065
       ],
-      "marker_rms_gap_second_minus_best": 37.74690742284738,
-      "delta_chi2_second_minus_best": 6036.444200022186
+      "marker_rms_gap_second_minus_best": 37.74533911437206,
+      "delta_chi2_second_minus_best": 6037.1333479764335
     },
     "found_by": "plain ArUco detection (mean of jitter-aligned frames), re-verified",
     "corners_px": [
@@ -3616,10 +3616,10 @@
       ]
     ],
     "corners_std_px": [
-      0.08022580781777709,
-      0.11810142635108113,
-      0.15912554435016588,
-      0.11951451103690125
+      0.08665377629788591,
+      0.12756412004891166,
+      0.17187523190440415,
+      0.12909042595452688
     ],
     "corner_valid": [
       true,
@@ -4198,13 +4198,13 @@
     "rot_k": 2,
     "rot_k_fit": {
       "marker_rms_per_rot": [
-        45.79651838349141,
-        31.773740119750887,
-        5.850556273359768,
-        32.897073766568276
+        45.80806409558298,
+        31.780029348847595,
+        5.836550017858481,
+        32.896635844012586
       ],
-      "marker_rms_gap_second_minus_best": 25.92318384639112,
-      "delta_chi2_second_minus_best": 2144.4427070316747
+      "marker_rms_gap_second_minus_best": 25.943479330989113,
+      "delta_chi2_second_minus_best": 2146.350681851155
     },
     "found_by": "guided: predicted position + neighbour shape, code search in rectified patch",
     "corners_px": [
@@ -4226,8 +4226,8 @@
       ]
     ],
     "corners_std_px": [
-      0.1657412716639548,
-      0.09481043277134686,
+      0.17902103411307754,
+      0.10240697171582165,
       null,
       null
     ],
@@ -4730,13 +4730,13 @@
     "rot_k": 2,
     "rot_k_fit": {
       "marker_rms_per_rot": [
-        40.043364394192146,
-        29.60186670119506,
-        6.669529845168522,
-        28.37649131809235
+        40.0415140893697,
+        29.601110553251537,
+        6.673649306190187,
+        28.377209104734902
       ],
-      "marker_rms_gap_second_minus_best": 21.706961472923826,
-      "delta_chi2_second_minus_best": 1573.8811535593654
+      "marker_rms_gap_second_minus_best": 21.703559798544717,
+      "delta_chi2_second_minus_best": 1573.8188276819158
     },
     "found_by": "guided: predicted position + neighbour shape, code search in rectified patch",
     "corners_px": [
@@ -4758,8 +4758,8 @@
       ]
     ],
     "corners_std_px": [
-      0.13934977187548628,
-      0.19778884358151816,
+      0.15051495631788583,
+      0.21363636804829517,
       null,
       null
     ],
@@ -5262,13 +5262,13 @@
     "rot_k": 0,
     "rot_k_fit": {
       "marker_rms_per_rot": [
-        4.039891937506372,
-        51.54723386159626,
-        68.67145176581501,
-        49.50460845123744
+        4.036868360957855,
+        51.55030035975387,
+        68.69429165809066,
+        49.506037181498016
       ],
-      "marker_rms_gap_second_minus_best": 45.46471651373106,
-      "delta_chi2_second_minus_best": 9888.01485472451
+      "marker_rms_gap_second_minus_best": 45.46916882054016,
+      "delta_chi2_second_minus_best": 9889.770851310597
     },
     "found_by": "plain ArUco detection (mean of jitter-aligned frames), re-verified",
     "corners_px": [
@@ -5290,10 +5290,10 @@
       ]
     ],
     "corners_std_px": [
-      0.08813437402834869,
-      0.09820356561391412,
-      0.07637304456997472,
-      0.09129366998396553
+      0.09519600411570334,
+      0.10607197406714333,
+      0.08249231636765877,
+      0.09860843376201692
     ],
     "corner_valid": [
       true,
@@ -5872,13 +5872,13 @@
     "rot_k": 0,
     "rot_k_fit": {
       "marker_rms_per_rot": [
-        6.3110421354025235,
-        50.54585752862825,
-        69.49652586584537,
-        48.54302223700408
+        6.317428631392718,
+        50.54804949769169,
+        69.50163147055021,
+        48.544063622918955
       ],
-      "marker_rms_gap_second_minus_best": 42.23198010160156,
-      "delta_chi2_second_minus_best": 9293.938950850625
+      "marker_rms_gap_second_minus_best": 42.22663499152624,
+      "delta_chi2_second_minus_best": 9294.27684717491
     },
     "found_by": "plain ArUco detection (mean of jitter-aligned frames), re-verified",
     "corners_px": [
@@ -5900,10 +5900,10 @@
       ]
     ],
     "corners_std_px": [
-      0.10551110358376106,
-      0.11747476629701956,
-      0.1509279823484747,
-      0.08031003895984108
+      0.11396501718820129,
+      0.12688724982950778,
+      0.16302085295572386,
+      0.08674475632962717
     ],
     "corner_valid": [
       true,
@@ -6482,13 +6482,13 @@
     "rot_k": 0,
     "rot_k_fit": {
       "marker_rms_per_rot": [
-        6.02503535062968,
-        58.44398312597563,
-        81.96633153834165,
-        58.44001556515659
+        5.971977508219621,
+        58.441353279177896,
+        81.96136605279294,
+        58.43156851810651
       ],
-      "marker_rms_gap_second_minus_best": 52.41498021452691,
-      "delta_chi2_second_minus_best": 13779.0582230484
+      "marker_rms_gap_second_minus_best": 52.459591009886886,
+      "delta_chi2_second_minus_best": 13777.659739769613
     },
     "found_by": "plain ArUco detection (mean of jitter-aligned frames), re-verified",
     "corners_px": [
@@ -6510,10 +6510,10 @@
       ]
     ],
     "corners_std_px": [
-      0.09300689396183179,
-      0.15698455984907095,
-      0.16070896898623405,
-      0.10089702586165727
+      0.10045892715515793,
+      0.1695627043392531,
+      0.17358552598470892,
+      0.10898124364165879
     ],
     "corner_valid": [
       true,
@@ -7092,13 +7092,13 @@
     "rot_k": 0,
     "rot_k_fit": {
       "marker_rms_per_rot": [
-        4.115558242492001,
-        52.47297657081192,
-        70.49756392158618,
-        51.43588848886718
+        4.158037626482597,
+        52.486295897609104,
+        70.53737024884956,
+        51.454112491553715
       ],
-      "marker_rms_gap_second_minus_best": 47.32033024637518,
-      "delta_chi2_second_minus_best": 10680.517998562755
+      "marker_rms_gap_second_minus_best": 47.29607486507112,
+      "delta_chi2_second_minus_best": 10686.103709094725
     },
     "found_by": "plain ArUco detection (mean of jitter-aligned frames), re-verified",
     "corners_px": [
@@ -7120,10 +7120,10 @@
       ]
     ],
     "corners_std_px": [
-      0.10415225518474978,
-      0.2240083517400836,
-      0.16696749610613984,
-      0.1402447032737863
+      0.11249729316779485,
+      0.2419566736508705,
+      0.18034550788771941,
+      0.1514815927070935
     ],
     "corner_valid": [
       true,
@@ -7702,13 +7702,13 @@
     "rot_k": 2,
     "rot_k_fit": {
       "marker_rms_per_rot": [
-        63.862919295160964,
-        44.74233689317309,
-        9.49672549304571,
-        47.00081708540478
+        63.86475324645888,
+        44.7403243784986,
+        9.497064629848301,
+        47.0063433346847
       ],
-      "marker_rms_gap_second_minus_best": 35.24561140012738,
-      "delta_chi2_second_minus_best": 4265.494691170406
+      "marker_rms_gap_second_minus_best": 35.243259748650296,
+      "delta_chi2_second_minus_best": 4265.100247352171
     },
     "found_by": "plain ArUco detection (mean of jitter-aligned frames), re-verified",
     "corners_px": [
@@ -7730,10 +7730,10 @@
       ]
     ],
     "corners_std_px": [
-      0.14969863970050554,
+      0.16169301113389345,
       null,
       null,
-      0.15230634025033163
+      0.16450964964764656
     ],
     "corner_valid": [
       true,
@@ -8234,19 +8234,19 @@
     "rot_k": 2,
     "rot_k_fit": {
       "marker_rms_per_rot": [
-        77.22392456470367,
-        54.672087660397295,
-        6.724922265773189,
-        53.94810680643946
+        76.6382087931278,
+        54.151182758167565,
+        6.919739499507594,
+        53.68036900324045
       ],
-      "marker_rms_gap_second_minus_best": 47.223184540666274,
-      "delta_chi2_second_minus_best": 6326.862372626292
+      "marker_rms_gap_second_minus_best": 46.76062950373286,
+      "delta_chi2_second_minus_best": 6253.9202493590965
     },
     "found_by": "guided: predicted position + neighbour shape, code search in rectified patch",
     "corners_px": [
       [
-        515.1012805048969,
-        27.87310505918378
+        515.1414613339094,
+        29.19793525009197
       ],
       [
         531.0952215206039,
@@ -8262,8 +8262,8 @@
       ]
     ],
     "corners_std_px": [
-      0.20337403924966688,
-      0.11677444343421194,
+      0.16155400430396755,
+      0.12613081468300397,
       null,
       null
     ],
@@ -8296,7 +8296,7 @@
       ]
     ],
     "method_per_corner": [
-      "aruco_subpix",
+      "edge",
       "edge",
       "none",
       "none"
@@ -8367,7 +8367,7 @@
       null
     ],
     "edge_corner_valid": [
-      false,
+      true,
       true,
       false,
       false
@@ -8375,8 +8375,8 @@
     "per_frame": [
       [
         [
-          515.089445770315,
-          28.14820412739041
+          515.1197386649064,
+          29.18361125765077
         ],
         [
           531.1547268554273,
@@ -8386,10 +8386,7 @@
         null
       ],
       [
-        [
-          515.1032969378929,
-          27.692367770146976
-        ],
+        null,
         [
           531.1213175878925,
           77.82681786093656
@@ -8399,8 +8396,8 @@
       ],
       [
         [
-          514.8726755497688,
-          27.84142986742821
+          515.2180586660983,
+          29.39887876895877
         ],
         [
           531.080490275278,
@@ -8410,10 +8407,7 @@
         null
       ],
       [
-        [
-          515.0982406231533,
-          27.769314383182376
-        ],
+        null,
         [
           530.9152632631636,
           77.82312820722143
@@ -8423,8 +8417,8 @@
       ],
       [
         [
-          515.0290558002175,
-          27.941914831319583
+          515.0498240723357,
+          29.05872184558436
         ],
         [
           531.2249401068202,
@@ -8434,10 +8428,7 @@
         null
       ],
       [
-        [
-          515.3749682261971,
-          27.982036875817816
-        ],
+        null,
         [
           531.0767795148237,
           77.86176932509747
@@ -8447,8 +8438,8 @@
       ],
       [
         [
-          515.1412806267331,
-          27.73646755900105
+          515.1782239322971,
+          29.150529128173975
         ],
         [
           531.0930330408224,
@@ -8757,13 +8748,13 @@
     "rot_k": 2,
     "rot_k_fit": {
       "marker_rms_per_rot": [
-        43.32643419233363,
-        32.31250333079765,
-        4.089225215120063,
-        31.470757229383995
+        43.33237063392148,
+        32.321308454330484,
+        4.093098768821846,
+        31.469392331154943
       ],
-      "marker_rms_gap_second_minus_best": 27.381532014263932,
-      "delta_chi2_second_minus_best": 1152.5230013318687
+      "marker_rms_gap_second_minus_best": 27.376293562333096,
+      "delta_chi2_second_minus_best": 1152.3619918949091
     },
     "found_by": "guided: predicted position + neighbour shape, code search in rectified patch",
     "corners_px": [
@@ -8785,7 +8776,7 @@
       ]
     ],
     "corners_std_px": [
-      0.2133727862559546,
+      0.2304689499702744,
       null,
       null,
       null
@@ -9255,13 +9246,13 @@
     "rot_k": 2,
     "rot_k_fit": {
       "marker_rms_per_rot": [
-        64.22952571933577,
-        45.79975423104878,
-        3.1394410041126983,
-        46.81353836604693
+        64.22750457371082,
+        45.7984990756262,
+        3.110018950188974,
+        46.80931169273909
       ],
-      "marker_rms_gap_second_minus_best": 42.66031322693608,
-      "delta_chi2_second_minus_best": 8608.729069545878
+      "marker_rms_gap_second_minus_best": 42.68848012543722,
+      "delta_chi2_second_minus_best": 8605.723029792127
     },
     "found_by": "guided: predicted position + neighbour shape, code search in rectified patch",
     "corners_px": [
@@ -9283,10 +9274,10 @@
       ]
     ],
     "corners_std_px": [
-      0.3028614795941985,
-      0.10134217465299014,
-      0.12463428373470478,
-      0.2018116156318584
+      0.327127786131024,
+      0.10946205928979845,
+      0.13462041250273568,
+      0.21798145847280476
     ],
     "corner_valid": [
       true,
@@ -9865,13 +9856,13 @@
     "rot_k": 2,
     "rot_k_fit": {
       "marker_rms_per_rot": [
-        34.38710249506881,
-        20.513959289866648,
-        3.3178642023540807,
-        26.366303379724442
+        34.38657840304926,
+        20.526524115107296,
+        3.3165879508484943,
+        26.35389507832993
       ],
-      "marker_rms_gap_second_minus_best": 17.196095087512568,
-      "delta_chi2_second_minus_best": 593.8502681055543
+      "marker_rms_gap_second_minus_best": 17.209936164258803,
+      "delta_chi2_second_minus_best": 594.5564083914858
     },
     "found_by": "guided: predicted position + neighbour shape, code search in rectified patch",
     "corners_px": [
@@ -9893,7 +9884,7 @@
       ]
     ],
     "corners_std_px": [
-      0.10458013146574226,
+      0.11295945237248005,
       null,
       null,
       null
@@ -10369,13 +10360,13 @@
     "rot_k": 2,
     "rot_k_fit": {
       "marker_rms_per_rot": [
-        46.909827996549694,
-        33.66916864154262,
-        4.1600866319766485,
-        31.880187183437023
+        46.92007424129936,
+        33.69242525338172,
+        4.174041613846983,
+        31.87024047243898
       ],
-      "marker_rms_gap_second_minus_best": 27.720100551460376,
-      "delta_chi2_second_minus_best": 2257.1911075949242
+      "marker_rms_gap_second_minus_best": 27.696198858592,
+      "delta_chi2_second_minus_best": 2254.395936262863
     },
     "found_by": "guided: predicted position + neighbour shape, code search in rectified patch",
     "corners_px": [
@@ -10397,8 +10388,8 @@
       ]
     ],
     "corners_std_px": [
-      0.1283020612474269,
-      0.15722937148756555,
+      0.13858206500263626,
+      0.16982713113075906,
       null,
       null
     ],
@@ -10907,13 +10898,13 @@
     "rot_k": 0,
     "rot_k_fit": {
       "marker_rms_per_rot": [
-        4.008998494986293,
-        47.98798126946088,
-        65.36694726923291,
-        44.88197193835966
+        4.002992761133096,
+        47.98559882711086,
+        65.36577221463187,
+        44.88226876840323
       ],
-      "marker_rms_gap_second_minus_best": 40.87297344337337,
-      "delta_chi2_second_minus_best": 8041.446299340645
+      "marker_rms_gap_second_minus_best": 40.879276007270136,
+      "delta_chi2_second_minus_best": 8041.863722475056
     },
     "found_by": "plain ArUco detection (mean of jitter-aligned frames), re-verified",
     "corners_px": [
@@ -10935,10 +10926,10 @@
       ]
     ],
     "corners_std_px": [
-      0.13802139814083952,
-      0.10957849182616965,
-      0.29416892073250334,
-      0.09783799966114701
+      0.14908014869708228,
+      0.11835829860800179,
+      0.31773874946630837,
+      0.10567711770913497
     ],
     "corner_valid": [
       true,

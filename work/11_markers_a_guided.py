@@ -57,6 +57,9 @@ def plain_quads():
     return {tuple(k): np.array(c) for k, c in zip(d["keys"], d["corners_mean"])}
 
 
+_RENDER_CACHE = {}
+
+
 def _render_weights(C, scale, ang, margin, ss):
     """Per template pixel: fraction of its ss x ss supersamples falling in each of the 36 cells
     (index 36 = white margin / outside); cached per geometry."""
