@@ -1,0 +1,70 @@
+{
+  "image_width": 1920,
+  "image_height": 1080,
+  "camera_matrix": [
+    [
+      1393.4099433127024,
+      0.0,
+      951.5205329193094
+    ],
+    [
+      0.0,
+      1393.4099433127024,
+      624.1512104037724
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "dist_coeffs": [
+    -0.457675803906348,
+    0.31810488038470014,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "method": "lines_joint (edges only: straightness + VP orthogonality)",
+  "model": "fx=fy, pp free, k1,k2",
+  "rms_reprojection_error_px": 0.5311032783046686,
+  "uncertainty": {
+    "f_1sigma": 76.71758414794,
+    "cx_1sigma": 8.093049796096421,
+    "cy_1sigma": 121.66123533833576,
+    "k1_1sigma": 0.10522024712825354,
+    "k2_1sigma": 0.1625142930127862
+  },
+  "mapping_uncertainty_px": {
+    "centre": 12.17720141981251,
+    "cart_band": 41.675074854254675,
+    "corners": 71.152965784922
+  },
+  "data_used": "24 verified straight edges",
+  "geometry_assumptions": "no dimensions used; only straightness, parallelism and orthogonality of cart axes",
+  "details": {
+    "params": {
+      "f": [
+        1393.4099433127024,
+        16.33369505844163
+      ],
+      "cx": [
+        951.5205329193094,
+        8.683205746232852
+      ],
+      "cy": [
+        624.1512104037724,
+        12.731241885626986
+      ],
+      "k1": [
+        -0.457675803906348,
+        0.016428284375710235
+      ],
+      "k2": [
+        0.31810488038470014,
+        0.027647871407895274
+      ]
+    },
+    "rms": 0.5311032783046686
+  }
+}
