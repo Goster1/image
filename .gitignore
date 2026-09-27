@@ -9,3 +9,4 @@ work/cache/*.npy
 work/cache/mean_*.png
 work/cache/edgecrops_*/
 work/cache/log_*.txt
+work/boot_res_*.json
