@@ -283,7 +283,7 @@ for name in SPECS:
                           uncertainty={f"{n}_1sigma_cov": v for n, v in zip(s["names"], s["sigma_cov"])},
                           details=dict(block_rms=s["block_rms"])))
 for name, sv in summary.items():  # modelling-choice variants of the main model (VARIANTS in fit mode)
-    if name.startswith("k1k2_") and "K" in sv and name not in ("k1k2_robust", "k1k2_nonrobust"):
+    if name.startswith("k1k2_") and "K" in sv and name not in ("k1k2_robust", "k1k2_nonrobust") and name not in SPECS:
         alts.append(lens_json(np.array(sv["K"]), sv["dist"], method=f"combined_{name}", model="k1k2, fx=fy, pp free (" + name[5:] + ")",
                               rms_reprojection_error_px=None, details=dict(block_rms=sv["block_rms"], block_sigmas=sv.get("sig"),
                                                                            rowblock_rms=sv.get("rowblock_rms"))))
