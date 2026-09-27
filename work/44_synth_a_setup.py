@@ -56,8 +56,9 @@ print(f"edge white sigma median {np.median(sig):.3f} (IQR {np.percentile(sig,25)
 # ------------------------------------------------------------------ true lenses
 TRUTHS = {
     "T1": dict(f=1250.0, cx=955.0, cy=530.0, k1=-0.26, k2=0.06, note="prescribed test lens"),
-    "T2": dict(f=1400.0, cx=935.0, cy=410.0, k1=-0.32, k2=0.08,
-               note="near the current edge-based estimates (lines joint f~1397, pp~(913,387); VP f~1394, pp~(951,416); plumb k1~-0.30..-0.34 at f 1400)"),
+    "T2": dict(f=1420.0, cx=935.0, cy=505.0, k1=-0.33, k2=0.09,
+               note="near the current edge-based estimates (commit d37a155 pipeline on the reviewed edges: lines joint f 1425, pp (927,503), "
+                    "k1 -0.333, k2 0.090; VP f 1419, pp (941,513))"),
 }
 truth_obj = {}
 for tn, p in TRUTHS.items():

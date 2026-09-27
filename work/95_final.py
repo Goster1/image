@@ -31,7 +31,8 @@ ALTS = [
     ("alt_division_l1l2", f"{CACHE}/method_alt_division_l1l2.json", None),
     ("combined_k1k2_robust", f"{CACHE}/method_combined_alternatives.json", "combined_k1k2_robust"),  # top stickers ~0 weight
     ("combined_k1k2k3", f"{CACHE}/method_combined_alternatives.json", "combined_k1k2k3"),
-    ("combined_k1k2p1p2", f"{CACHE}/method_combined_alternatives.json", "combined_k1k2p1p2"),
+    # combined_k1k2p1p2 NOT in the budget: p1,p2 are not determined by the edges (~0 there); with the drawing geometry
+    # they only absorb the sticker-geometry mismatch (f 1389, pp_y 449) - reported in the comparison table instead
     ("combined_k1k2_ppfixed", f"{CACHE}/method_combined_alternatives.json", "combined_k1k2_ppfixed"),
 ]
 EXTRA = [a for a in sys.argv[1:]]  # extra method json files (e.g. independent implementations) to include

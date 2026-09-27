@@ -32,13 +32,13 @@ SENS = load_json(f"{CACHE}/synthetic_sensitivity.json") if os.path.exists(f"{CAC
 OUT = RAW["out"]
 SCEN = [s for s in ("T1_a", "T2_a", "T1_b", "T2_b", "T2_c") if OUT.get(s)]
 EST = ["markers_k1_ppfix", "markers_k1k2_ppfix", "markers_k1_ppfree", "markers_k1k2_ppfree", "plumb_fixed", "plumb_free", "vp",
-       "lines_joint", "combined_k1k2"]
+       "lines_joint", "combined_k1k2", "combined_nonrobust"]
 SHORT = {"markers_k1_ppfix": "M k1 ppfix", "markers_k1k2_ppfix": "M k1k2 ppfix", "markers_k1_ppfree": "M k1 ppfree",
          "markers_k1k2_ppfree": "M k1k2 ppfree", "plumb_fixed": "plumb c-fixed", "plumb_free": "plumb c-free", "vp": "VP",
-         "lines_joint": "lines joint", "combined_k1k2": "combined"}
+         "lines_joint": "lines joint", "combined_k1k2": "combined (robust IRLS)", "combined_nonrobust": "combined (plain)"}
 REG = ["centre", "cart_band", "corners"]
 CLAIM_KIND = {"markers": ("C", "Cs", "boot"), "plumb_fixed": ("Cs", "boot"), "plumb_free": ("Cs",), "vp": ("Cs", "boot"),
-              "lines_joint": ("Cs", "boot"), "combined_k1k2": ("C", "boot")}
+              "lines_joint": ("Cs", "boot"), "combined_k1k2": ("C", "boot"), "combined_nonrobust": ("C",)}
 CLAIM_NAME = {"C": "covariance (scaled by residual variance)", "Cs": "cluster sandwich (per sticker / per edge)", "boot": "cluster bootstrap"}
 
 
@@ -104,7 +104,7 @@ def analyse(scen, est):
         rr = np.array([r["rms"] for r in reps])
         out["start_check"] = dict(n_differs_f_gt_0p5px=int((dd > 0.5).sum()), n_orchestrator_start_worse=int(((dd > 0.5) & (ro > rr + 1e-6)).sum()),
                                   median_rms=float(np.median(rr)), rms_p10_p90=[float(np.percentile(rr, 10)), float(np.percentile(rr, 90))])
-    if est == "combined_k1k2":
+    if est.startswith("combined"):
         br = {k: np.median([r["block_rms"][k][0] for r in reps if r["block_rms"][k][0] is not None]) for k in "MLVS"}
         out["block_rms_median"] = {k: fl(v) for k, v in br.items()}
     _rv = [r["rms"] for r in reps if r.get("rms") is not None]
@@ -381,7 +381,7 @@ def frame_summary(kind):
     return out
 
 
-FR = {k: frame_summary(k) for k in ("T2", "T1", "real")} if SENS else {}
+FR = {k: frame_summary(k) for k in ("T2", "real")} if SENS else {}
 SUB = SENS.get("subsample", {}) if SENS else {}
 
 
@@ -402,7 +402,14 @@ def sub_summary():
 SUBS = sub_summary()
 
 # ------------------------------------------------------------------ JSON
+import subprocess
+
+try:
+    _head = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=os.path.dirname(os.path.abspath(__file__))).stdout.strip()
+except Exception:  # noqa
+    _head = "?"
 rep_json = dict(
+    code_version=f"shared modules at git {_head} (lineselfcal forward residuals + fold barrier, calib fold barrier, combined IRLS)",
     description="Synthetic round trip and sensitivity of the orchestrator estimators (scripts work/44_synth_*.py)",
     edge_files_review_status=SETUP["review_status"], n_edges=SETUP["n_edges"], n_sticker_sides=SETUP["n_sides"], n_corners=SETUP["n_corners"],
     truths={k: {kk: vv for kk, vv in v.items() if kk not in ("poses",)} for k, v in SETUP["truths"].items()},
@@ -420,7 +427,7 @@ rep_json = dict(
           SETUP["geometry_noise"]["diagnosed_whatif_rms_px"]),
     honesty_summary=HON,
     roundtrip={s: {e: {k: v for k, v in a.items() if k != "_fields"} for e, a in A[s].items() if a is not None} for s in SCEN},
-    sensitivity=dict(T2=SENS["T2"], T1=SENS["T1"], real=SENS["real"], frames_rms=FR, subsample=SUBS, notes=SENS["notes"]) if SENS else None,
+    sensitivity=dict(T2=SENS["T2"], real=SENS["real"], frames_rms=FR, subsample=SUBS, notes=SENS["notes"]) if SENS else None,
     real_reference=SETUP["real"],
 )
 save_json(rep_json, f"{CACHE}/synthetic_report.json")

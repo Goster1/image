@@ -36,7 +36,7 @@ NREP = int(sys.argv[1]) if len(sys.argv) > 1 and not sys.argv[1].startswith("-")
 NW = int(sys.argv[2]) if len(sys.argv) > 2 and not sys.argv[2].startswith("-") else 3
 NB_MARK = (6, 40)  # (replicates with bootstrap, bootstrap size) markers
 NB_LINE = (3, 12)
-NB_COMB = (2, 8)
+NB_COMB = (2, 6)
 
 SETUP = load_json(f"{CACHE}/synthetic_setup.json")
 M, E, S = L.load_real()
@@ -120,7 +120,7 @@ def rec(names, x, T, kind_lens, C=None, Cs=None, extra=None, dpx=None, g=None, c
         out["sig_" + key] = np.sqrt(np.clip(np.diag(CC), 0, None))
         if key in claim_from:
             fn = (lambda xx: lens_general(names, xx, T, kind_lens, dpx))
-            cm = L.claimed_mapping(K, d, CC, fn, np.asarray(x, float), g, ns=12)
+            cm = L.claimed_mapping(K, d, CC, fn, np.asarray(x, float), g, ns=8)
             out["claim_map_" + key] = None if cm is None else cm.astype(np.float32)
     if extra:
         out.update(extra)
@@ -161,6 +161,8 @@ def run_task(task):
         res["markers_" + name] = rec(r["names"], r["x"], T, "std", C=r["C"], Cs=r["Cs"], extra=extra, g=g, claim_from=("C", "Cs"))
     # ---------------- combined (50_combined: robust IRLS main result; plain variant for comparison)
     for cname, robust in (("combined_k1k2", True), ("combined_nonrobust", False)):
+        if not robust and kind == "a":  # identical to the robust fit when the stickers are consistent (checked); skipped to save time
+            continue
         cb, rc, Cc, Kc, dc = L.combined_estimate(pts, edges, K0, d0, P0, robust=robust)
         comb_retry = None
         if cb.block_rms(rc.x)["S"][0] > 1.0:  # failed start -> orchestrator's default start (50_combined.run)

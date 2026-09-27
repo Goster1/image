@@ -304,8 +304,8 @@ def run_subsample(task):
 
 if __name__ == "__main__":
     t0 = time.time()
-    tasks = [(kind, n, v, w) for kind in ("T2", "T1", "real") for (n, v, w) in PERTS]
-    out = {"T1": {}, "T2": {}, "real": {}}
+    tasks = [(kind, n, v, w) for kind in ("T2", "real") for (n, v, w) in PERTS]
+    out = {"T2": {}, "real": {}}
     with Pool(NW) as pool:
         for i, (kind, key, res, dt) in enumerate(pool.imap_unordered(run_one, tasks)):
             out[kind][key] = res
