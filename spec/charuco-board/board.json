@@ -1,0 +1,40 @@
+{
+  "name": "CamCheck ChArUco A4 10x7",
+  "dictionary": "DICT_5X5_50",
+  "squares_x": 10,
+  "squares_y": 7,
+  "square_length_mm": 27.685999999999996,
+  "marker_length_mm": 20.743333333333332,
+  "marker_to_square_ratio": 0.7492354740061162,
+  "marker_border_bits": 1,
+  "num_markers": 35,
+  "marker_ids": [
+    0,
+    34
+  ],
+  "num_charuco_corners": 54,
+  "legacy_pattern": false,
+  "legacy_pattern_note": "squares_y is odd: the OpenCV >= 4.6 and legacy layouts are identical (top-left square black)",
+  "corner_object_point_mm": "id -> x = ((id % 9) + 1) * 27.685999999999996, y = (floor(id / 9) + 1) * 27.685999999999996, z = 0; origin = outer top-left corner of the board, x right, y down",
+  "page": {
+    "paper": "A4 landscape",
+    "dpi": 300,
+    "png_px": [
+      3508,
+      2480
+    ],
+    "board_origin_px": [
+      119,
+      95
+    ],
+    "board_origin_mm": [
+      10.075333333333333,
+      8.043333333333333
+    ],
+    "board_size_mm": [
+      276.85999999999996,
+      193.80199999999996
+    ],
+    "sheet_contents": "board only - no printed text and no scale bar; this board leaves 8.0 / 8.1 mm above and below it, inside the unprintable margin of a normal printer. The wording is on print-charuco-a4.html and in the PDF Title / Subject."
+  }
+}

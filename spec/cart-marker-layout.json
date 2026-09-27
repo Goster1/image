@@ -1,0 +1,116 @@
+{
+  "description": "Physical ArUco sticker layout on the warehouse carts. The cart and all shelves are built EXACTLY to the drawing (confirmed 100 % by the operator): width, depth, top-plate height and every shelf height are exact values, not estimates.",
+  "dictionary": "DICT_4X4_1000 (OpenCV aruco)",
+  "stickerMm": 110,
+  "codeMm": 90,
+  "whiteBorderPerSideMm": 10,
+  "codeMmNote": "codeMm is the black square code incl. its black outer border bit (the 4x4 data bits + 1-bit black frame = 6x6 cells of 15 mm).",
+  "stickerMounting": "every sticker lies flat, face up, horizontal, on a horizontal surface (the top plate or a shelf surface). In-plane rotation of each sticker is NOT specified (may be glued rotated by 90/180/270 deg).",
+  "cartFrame": "origin at the TOP front-left corner of the cart; X along the 1600 mm front (0..1600), Y into the cart (0 = front edge, 450 = back), Z up, Z = 0 at the top plate, negative downwards.",
+  "cart": {
+    "widthMm": 1600,
+    "depthMm": 450,
+    "heightAboveFloorMm_topPlate": 1800.0,
+    "shelfSurfaceHeightAboveFloorMm": {
+      "A": 1605,
+      "B": 1205,
+      "C": 805,
+      "D": 500,
+      "E": 195
+    },
+    "note": "EXACT dimensions (cart built to the drawing, confirmed). Shelf sticker Z = -(heightAboveFloorMm_topPlate - shelfSurfaceHeightAboveFloorMm[row]). Rows D and E carry no stickers."
+  },
+  "markers": {
+    "0": {
+      "role": "TOP-TL",
+      "centerMm": [
+        82.5,
+        60,
+        0
+      ]
+    },
+    "1": {
+      "role": "TOP-TR",
+      "centerMm": [
+        1517.5,
+        60,
+        0
+      ]
+    },
+    "2": {
+      "role": "TOP-BR",
+      "centerMm": [
+        1517.5,
+        390,
+        0
+      ]
+    },
+    "3": {
+      "role": "A-LEFT",
+      "centerMm": [
+        82.5,
+        60,
+        -195.0
+      ]
+    },
+    "4": {
+      "role": "A-RIGHT",
+      "centerMm": [
+        1517.5,
+        60,
+        -195.0
+      ]
+    },
+    "5": {
+      "role": "B-LEFT",
+      "centerMm": [
+        82.5,
+        60,
+        -595.0
+      ]
+    },
+    "6": {
+      "role": "B-RIGHT",
+      "centerMm": [
+        1517.5,
+        60,
+        -595.0
+      ]
+    },
+    "7": {
+      "role": "C-LEFT",
+      "centerMm": [
+        82.5,
+        60,
+        -995.0
+      ]
+    },
+    "8": {
+      "role": "C-RIGHT",
+      "centerMm": [
+        1517.5,
+        60,
+        -995.0
+      ]
+    }
+  },
+  "uniqueMarker": {
+    "role": "TOP-BL",
+    "centerMm": [
+      82.5,
+      390,
+      0
+    ],
+    "idFormula": "id = 12 + cartNumber"
+  },
+  "cartsInStills": {
+    "80": {
+      "uniqueId": 92
+    },
+    "310": {
+      "uniqueId": 322
+    }
+  },
+  "sharedIdsNote": "ids 0-8 are the same on every cart; only the unique id tells the carts apart.",
+  "stickerPlacementCertainty": "100 % certain: every sticker is glued exactly at its described position on its described surface (confirmed by the operator). Do not assume or fit sticker placement errors. Only the in-plane rotation of a sticker is unspecified."
+}
