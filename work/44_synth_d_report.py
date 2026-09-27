@@ -17,7 +17,9 @@ from common import CACHE, RESULTS, load_json, save_json
 L = importlib.import_module("44_synth_lib")
 SETUP = load_json(f"{CACHE}/synthetic_setup.json")
 RAW = pickle.load(open(f"{CACHE}/synthetic_roundtrip_raw.pkl", "rb"))
-SENS = load_json(f"{CACHE}/synthetic_sensitivity.json")
+import os
+
+SENS = load_json(f"{CACHE}/synthetic_sensitivity.json") if os.path.exists(f"{CACHE}/synthetic_sensitivity.json") else None
 OUT = RAW["out"]
 SCEN = [s for s in ("T1_a", "T2_a", "T1_b", "T2_b", "T2_c") if OUT.get(s)]
 EST = ["markers_k1_ppfix", "markers_k1k2_ppfix", "markers_k1_ppfree", "markers_k1k2_ppfree", "plumb_fixed", "plumb_free", "vp",
@@ -103,6 +105,45 @@ def analyse(scen, est):
 
 A = {s: {e: analyse(s, e) for e in EST} for s in SCEN}
 
+
+def honesty_summary():
+    """compact: per scenario / estimator: f (or k1) actual RMSE vs each claim, mapping cart band / corners actual vs claims."""
+    out = {}
+    for s in SCEN:
+        for e in EST:
+            a = A[s].get(e)
+            if a is None:
+                continue
+            j = a["names"].index("f") if "f" in a["names"] else a["names"].index("k1")
+            row = dict(param=a["names"][j], truth=a["truth"][j], bias=a["bias"][j], scatter=a["scatter"][j], rmse=a["rmse"][j],
+                       claimed={k: v["median"][j] for k, v in a["claimed"].items()},
+                       map_actual={rg: a["mapping"]["total"][rg]["median"] for rg in REG},
+                       map_bias={rg: a["mapping"]["bias"][rg]["median"] for rg in REG},
+                       map_claimed={ck: {rg: c[rg]["median"] for rg in REG} for ck, c in a["mapping"]["claimed"].items()})
+            row["ratio_rmse_over_claim"] = {k: (row["rmse"] / v if v else None) for k, v in row["claimed"].items()}
+            row["ratio_map_cart_band_over_claim"] = {k: (row["map_actual"]["cart_band"] / v["cart_band"] if v["cart_band"] else None)
+                                                     for k, v in row["map_claimed"].items()}
+            out.setdefault(s, {})[e] = row
+    return out
+
+
+HON = honesty_summary()
+
+
+def htab():
+    lines = ["| scenario | estimator | param | bias | scatter | RMSE | claimed cov / sandwich / boot | RMSE / claim | mapping cart band: actual (bias) | claimed cov / sandwich / boot | corners: actual | claimed |",
+             "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    for s, d in HON.items():
+        for e, r in d.items():
+            nd = 4 if r["param"].startswith("k") else 1
+            cl = " / ".join(f"{r['claimed'][k]:.{nd}f}" if k in r["claimed"] else "-" for k in ("C", "Cs", "boot"))
+            rt = " / ".join(f"{r['ratio_rmse_over_claim'][k]:.1f}" if r["ratio_rmse_over_claim"].get(k) else "-" for k in ("C", "Cs", "boot"))
+            mc = " / ".join(f"{r['map_claimed'][k]['cart_band']:.2f}" if k in r["map_claimed"] and r["map_claimed"][k]["cart_band"] is not None else "-" for k in ("C", "Cs", "boot"))
+            mco = " / ".join(f"{r['map_claimed'][k]['corners']:.2f}" if k in r["map_claimed"] and r["map_claimed"][k]["corners"] is not None else "-" for k in ("C", "Cs", "boot"))
+            lines.append(f"| {s} | {SHORT[e]} | {r['param']} | {r['bias']:+.{nd}f} | {r['scatter']:.{nd}f} | {r['rmse']:.{nd}f} | {cl} | {rt} | "
+                         f"{r['map_actual']['cart_band']:.2f} ({r['map_bias']['cart_band']:.2f}) | {mc} | {r['map_actual']['corners']:.2f} | {mco} |")
+    return "\n".join(lines)
+
 # ------------------------------------------------------------------ tables (markdown)
 def fmt(v, nd=1):
     if v is None:
@@ -113,8 +154,8 @@ def fmt(v, nd=1):
 
 
 def ptab(scen):
-    lines = [f"| estimator | param | truth | bias +- se | scatter (robust) | claimed: " + " / ".join(CLAIM_NAME[k].split(" ")[0] for k in ("C", "Cs", "boot")) +
-             " | RMS z (C / Cs) | cover68 (C / Cs) |", "|---|---|---|---|---|---|---|---|"]
+    lines = ["| estimator | param | truth | bias +- se | scatter (robust) | claimed 1-sigma: cov / sandwich / bootstrap (median over replicates) "
+             "| RMS z (cov / sandwich) | coverage of +-1 sigma (cov / sandwich) |", "|---|---|---|---|---|---|---|---|"]
     for e in EST:
         a = A[scen].get(e)
         if a is None:
@@ -229,7 +270,7 @@ def plot_bias_fields():
     sub[::step, ::step] = True
     sub = sub.ravel()
     for ax, (s, e) in zip(axs.ravel(), sel):
-        a = A[s].get(e)
+        a = A.get(s, {}).get(e)
         if a is None:
             continue
         mf = a["_fields"]["mean"]
@@ -285,7 +326,8 @@ def plot_sensitivity():
 plot_params()
 plot_mapping()
 plot_bias_fields()
-plot_sensitivity()
+if SENS:
+    plot_sensitivity()
 
 # ------------------------------------------------------------------ sensitivity tables
 def stab(kind):
@@ -320,8 +362,8 @@ def frame_summary(kind):
     return out
 
 
-FR = {k: frame_summary(k) for k in ("T2", "T1", "real")}
-SUB = SENS.get("subsample", {})
+FR = {k: frame_summary(k) for k in ("T2", "T1", "real")} if SENS else {}
+SUB = SENS.get("subsample", {}) if SENS else {}
 
 
 def sub_summary():
@@ -357,9 +399,9 @@ rep_json = dict(
                                 SETUP["edge_stats_summary"]["theta_abs_median_deg"], SETUP["edge_stats_summary"]["theta_abs_max_deg"]),
         c="deterministic what-if: top stickers raised by the diagnosed end-board heights (+64/+71/+61/+81 mm) + noise a; median drawing-fit RMS %.2f px" %
           SETUP["geometry_noise"]["diagnosed_whatif_rms_px"]),
+    honesty_summary=HON,
     roundtrip={s: {e: {k: v for k, v in a.items() if k != "_fields"} for e, a in A[s].items() if a is not None} for s in SCEN},
-    sensitivity=dict(T2={k: v for k, v in SENS["T2"].items()}, T1={k: v for k, v in SENS["T1"].items()}, real={k: v for k, v in SENS["real"].items()},
-                     frames_rms=FR, subsample=SUBS, notes=SENS["notes"]),
+    sensitivity=dict(T2=SENS["T2"], T1=SENS["T1"], real=SENS["real"], frames_rms=FR, subsample=SUBS, notes=SENS["notes"]) if SENS else None,
     real_reference=SETUP["real"],
 )
 save_json(rep_json, f"{CACHE}/synthetic_report.json")
@@ -372,11 +414,13 @@ for k, v in SETUP["truths"].items():
               f"(synthetic vs real corners {v['synthetic_vs_real_corner_rms_px']:.1f} px RMS)")
 for k, v in rep_json["noise_models"].items():
     md.append(f"* scenario {k}: {v}")
+md += ["", "## Honesty summary (f, or k1 for the plumb-line; mapping = rotation-compensated error vs truth, median over the region)", "", htab()]
 for s in SCEN:
     md += ["", f"## Round trip {s} ({A[s][EST[0]]['n']} replicates)", "", "Parameters (plumb-line k's are k/f0^2, k/f0^4 at f0 = 1300 in both estimate and truth):", "", ptab(s), "",
            "Mapping error vs truth (rotation compensated; median over the region of the per-point RMS over replicates):", "", mtab(s)]
-md += ["", "## Sensitivity (noise-free synthetic T2)", "", stab("T2"), "", "## Sensitivity (REAL data)", "", stab("real"), "",
-       "Single frames instead of the 7-frame mean: RMS over the 7 frames of the parameter / mapping change: see synthetic_report.json sensitivity.frames_rms.",
-       "Subsampling: see sensitivity.subsample."]
+if SENS:
+    md += ["", "## Sensitivity (noise-free synthetic T2)", "", stab("T2"), "", "## Sensitivity (REAL data)", "", stab("real"), "",
+           "Single frames instead of the 7-frame mean: RMS over the 7 frames of the parameter / mapping change: see synthetic_report.json sensitivity.frames_rms.",
+           "Subsampling: see sensitivity.subsample."]
 open(f"{CACHE}/synthetic_report.md", "w").write("\n".join(md) + "\n")
 print("written")

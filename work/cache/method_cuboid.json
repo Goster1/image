@@ -29,19 +29,19 @@
   "model": "k1k2_ppfix: fx=fy, pp fixed at image centre, k1+k2",
   "rms_reprojection_error_px": 5.662787040735272,
   "uncertainty": {
-    "f_1sigma": 30.56666245238671,
-    "k1_1sigma": 0.17058948187794556,
-    "k2_1sigma": 0.30770191306877304,
+    "f_1sigma": 45.69845344119588,
+    "k1_1sigma": 0.15171520060847324,
+    "k2_1sigma": 0.28243239908985357,
     "f_1sigma_cov": 8.929615522058539,
     "k1_1sigma_cov": 0.03287660793234245,
     "k2_1sigma_cov": 0.05220507388305476,
     "f_1sigma_systematic_model_weighting": 23.292158408692337,
-    "method": "1-sigma = std of a cluster bootstrap (resampling stickers - corners and sides together - and exact edges, n=6); *_cov = Gauss-Newton covariance scaled by the block residual variances (ignores the geometry misfit correlation); f_1sigma_systematic_model_weighting = std of f over all models x weightings"
+    "method": "1-sigma = std of a cluster bootstrap (resampling stickers - corners and sides together - and exact edges, n=150); *_cov = Gauss-Newton covariance scaled by the block residual variances (ignores the geometry misfit correlation); f_1sigma_systematic_model_weighting = std of f over all models x weightings"
   },
   "mapping_uncertainty_px": {
-    "centre": 46.02493281026594,
-    "cart_band": 46.56122088149952,
-    "corners": 536.1248099739346
+    "centre": 49.40462503068899,
+    "cart_band": 51.137982892996575,
+    "corners": 543.6790270943642
   },
   "data_used": "62 valid sticker corners of 20 stickers, 13 traced sides of partly hidden stickers, 3 exact structure edges (cart310_board0_outer, cart80_x_board0_front, cart80_x_board1600_front); mean of 7 jitter-compensated stills",
   "geometry_assumptions": "drawing dimensions and sticker positions exactly as in spec/cart-marker-layout.json (nothing fitted); exact edges on the drawing lines",
@@ -76,63 +76,63 @@
     "weighting": "cluster: every traced line = n_eff = clip(chord/25px, 2, 6) observations",
     "rms_note": "rms_reprojection_error_px = RMS per corner point (radial); block S/E = RMS of the signed point-to-line distance [px]",
     "bootstrap": {
-      "n": 6,
+      "n": 150,
       "std": {
-        "f": 30.56666245238671,
-        "k1": 0.17058948187794556,
-        "k2": 0.30770191306877304
+        "f": 45.69845344119588,
+        "k1": 0.15171520060847324,
+        "k2": 0.28243239908985357
       },
       "q16": {
-        "f": 1323.2290917839694,
-        "k1": -0.28751381476324606,
-        "k2": -0.32204443858971726
+        "f": 1300.5767081647198,
+        "k1": -0.28335060842477683,
+        "k2": -0.40183468536186495
       },
       "q84": {
-        "f": 1382.5446781426187,
-        "k1": -0.04288015413690321,
-        "k2": 0.08097992355165291
+        "f": 1380.409514664915,
+        "k1": 0.0007270072579006451,
+        "k2": 0.08263669448516427
       }
     },
     "mapping": {
       "centre": {
-        "rms_median_px": 46.02493281026594,
-        "rms_max_px": 48.62306596691779,
+        "rms_median_px": 49.40462503068899,
+        "rms_max_px": 51.4207008425241,
         "n_points": 44
       },
       "cart_band": {
-        "rms_median_px": 46.56122088149952,
-        "rms_max_px": 58.63730320559547,
+        "rms_median_px": 51.137982892996575,
+        "rms_max_px": 62.285239537593235,
         "n_points": 536
       },
       "corners": {
-        "rms_median_px": 536.1248099739346,
-        "rms_max_px": 3791459.199848198,
+        "rms_median_px": 543.6790270943642,
+        "rms_max_px": 4042315.061313061,
         "n_points": 88
       },
       "whole_image": {
-        "rms_median_px": 48.044405292403255,
-        "rms_max_px": 3791459.199848198
+        "rms_median_px": 52.21136056769031,
+        "rms_max_px": 4042315.061313061
       }
     },
     "mapping_raw": {
       "centre": {
-        "rms_median_px": 2.858335117358965,
-        "rms_max_px": 3.9290758285806886,
+        "rms_median_px": 3.6699471147976848,
+        "rms_max_px": 5.109279714098556,
         "n_points": 44
       },
       "cart_band": {
-        "rms_median_px": 10.997615454816172,
-        "rms_max_px": 41.62848607699597,
+        "rms_median_px": 15.853489597612567,
+        "rms_max_px": 38.11124658215924,
         "n_points": 536
       },
       "corners": {
-        "rms_median_px": 576.570424248576,
-        "rms_max_px": 6475318.221739457,
+        "rms_median_px": 583.1371597638836,
+        "rms_max_px": 6902539.0134442635,
         "n_points": 88
       },
       "whole_image": {
-        "rms_median_px": 14.50957408985185,
-        "rms_max_px": 6475318.221739457
+        "rms_median_px": 19.202942751607992,
+        "rms_max_px": 6902539.0134442635
       }
     },
     "loso_rms_px": 8.132688393473835,
@@ -304,7 +304,7 @@
           "cy",
           "k1"
         ],
-        "loso": null,
+        "loso": 8.540056404249546,
         "blocks": {
           "M": {
             "rms_coord": 4.068552538714374,
@@ -341,7 +341,7 @@
           "k1",
           "k2"
         ],
-        "loso": null,
+        "loso": 8.465210771289252,
         "blocks": {
           "M": {
             "rms_coord": 4.393643584251187,
@@ -380,7 +380,7 @@
           "k2",
           "k3"
         ],
-        "loso": null,
+        "loso": 9.114375595198457,
         "blocks": {
           "M": {
             "rms_coord": 4.7207465533181825,
@@ -419,7 +419,7 @@
           "k1",
           "k2"
         ],
-        "loso": null,
+        "loso": 8.590655745048611,
         "blocks": {
           "M": {
             "rms_coord": 4.1212449749646405,
@@ -460,7 +460,7 @@
           "p1",
           "p2"
         ],
-        "loso": null,
+        "loso": 10.40258886127625,
         "blocks": {
           "M": {
             "rms_coord": 3.768364313416351,

@@ -2,8 +2,11 @@
 
 Scripts (each runs end-to-end from `work/`): `42_geomdiag_lib.py` (helpers), `42_geomdiag_a_columns.py` (1),
 `42_geomdiag_b_planes.py` (2), `42_geomdiag_c_fits.py` (3), `42_geomdiag_f_crops.py` (visual check),
-`42_geomdiag_d_twocart.py` (4), `42_geomdiag_e_markershape.py` (5), `42_geomdiag_g_effects.py` (px effects).
-Numbers: `work/cache/geomdiag_{columns,planes,fits,twocart,markershape,effects}.json`; plots `results/geomdiag_*.png`.
+`42_geomdiag_d_twocart.py` (4), `42_geomdiag_e_markershape.py` (5), `42_geomdiag_g_effects.py` (px effects, needs c and e),
+`42_geomdiag_h_mapping.py` (adds mapping_uncertainty_px to the two method files, run after d and e).
+Final numbers were produced in that order with `GEOMDIAG_EDGES_DIR=work/cache/geomdiag_edges_snapshot`.
+Numbers: `work/cache/geomdiag_{columns,planes,fits,twocart,markershape,effects}.json`; method files
+`work/cache/method_twocart.json|.md`, `work/cache/method_markershape.json|.md`; plots `results/geomdiag_{columns,planes,fits,crops,twocart,markershape}.png`.
 
 Per CLAUDE.md the drawing dimensions and the sticker positions are exact and the main result must use them.
 Everything below that frees a dimension is a **diagnostic** to locate and size the mismatch; it is **not**
@@ -134,20 +137,20 @@ Camera fx = fy = f, pp free, k1, k2 free, one pose per cart; one element freed, 
 
 | freed element | k | RMS [px] | AIC | f [px] | pp [px] | k1, k2 scaled to f0 = 1300 (plumb: -0.292, 0.072) | fold margin (free dist.) | RMS / f with plumb dist. (dAIC) | row RMS top/A/B/C | diagnosed values (mm unless noted) |
 |---|---|---|---|---|---|---|---|---|---|---|
-| drawing | 17 | 5.34 | 364 | 1309 +- 20 | (938, 485) | -0.087, -0.231 | -0.18 | 5.90 / 1296 (dAIC +20) | 4.9/8.0/3.6/5.4 | - |
-| end-board heights (4) | 21 | 2.88 | 219 | 1440 +- 14 | (939, 390) | -0.319, 0.138 | +191.24 | 2.96 / 1432 (dAIC +3) | 3.4/1.9/2.5/2.3 | 80/X0 +64 +- 8; 80/X1600 +71 +- 5; 310/X0 +61 +- 6; 310/X1600 +81 +- 8 |
-| shelf-row heights A,B,C (3) | 20 | 2.90 | 218 | 1475 +- 27 | (978, 390) | -0.405, 0.286 | +454.99 | 3.10 / 1413 (dAIC +13) | 3.5/1.8/2.1/2.0 | row_A -71 +- 5; row_B -92 +- 12; row_C -92 +- 19 |
-| row heights per cart (6) | 23 | 2.83 | 218 | 1481 +- 27 | (985, 394) | -0.415, 0.302 | +488.44 | 3.05 / 1413 (dAIC +15) | 3.5/1.6/1.9/1.8 | row_80_A -71 +- 6; row_80_B -102 +- 13; row_80_C -100 +- 20; row_310_A -76 +- 7; row_310_B -81 +- 13; row_310_C -91 +- 21 |
-| top-plate height per cart (2) | 19 | 3.01 | 225 | 1434 +- 15 | (972, 382) | -0.373, 0.233 | +327.37 | 3.16 / 1418 (dAIC +8) | 3.6/2.1/2.3/2.2 | top_80 +68 +- 5; top_310 +67 +- 6 |
-| end-board tilts (8) | 25 | 4.54 | 339 | 1305 +- 20 | (933, 521) | 0.008, -0.328 | -0.16 | 5.44 / 1280 (dAIC +41) | 3.5/7.1/4.2/4.9 | tilts about Y -3.7..+10.7 deg |
-| end-board horizontal offsets (8) | 25 | 2.82 | 221 | 1432 +- 17 | (890, 428) | -0.222, 0.025 | +23.75 | 3.33 / 1374 (dAIC +37) | 3.2/2.3/2.5/2.4 | dx_80/X0 +0 +- 3; dy_80/X0 +26 +- 3; dx_80/X1600 +36 +- 3; dy_80/X1600 +27 +- 3; dx_310/X0 -32 +- 4; dy_310/X0 +9 +- 4; dx_310/X1600 +2 +- 3; dy_310/X1600 +27 +- 3 |
-| shelf-stack height per end (4) | 21 | 2.96 | 225 | 1440 +- 14 | (929, 386) | -0.299, 0.110 | +149.94 | 3.08 / 1424 (dAIC +6) | 3.5/2.1/2.4/2.1 | stack_80/X0 -74 +- 11; stack_80/X1600 -68 +- 5; stack_310/X0 -58 +- 7; stack_310/X1600 -85 +- 11 |
-| every shelf sticker height (12) | 29 | 2.66 | 214 | 1495 +- 34 | (930, 356) | -0.297, 0.110 | +175.10 | 2.82 / 1461 (dAIC +11) | 3.4/1.3/1.4/1.3 | card_80_3 -73 +- 15; card_80_4 -73 +- 8; card_80_5 -138 +- 27; card_80_6 -95 +- 16; card_80_7 -110 +- 44; card_80_8 -103 +- 24; card_310_3 -68 +- 8; card_310_4 -98 +- 15; card_310_5 -69 +- 16; card_310_6 -125 +- 25; card_310_7 -89 +- 24; card_310_8 -154 +- 44 |
-| code size (1) | 18 | 5.21 | 359 | 1309 +- 20 | (937, 483) | -0.065, -0.261 | -0.18 | 5.86 / 1294 (dAIC +25) | 4.7/8.1/3.2/5.1 | code 86.8 +- 1.4 mm |
-| code size + board heights (5) | 22 | 2.74 | 208 | 1442 +- 14 | (939, 392) | -0.295, 0.105 | +142.09 | 2.85 / 1431 (dAIC +6) | 3.2/1.9/2.3/2.1 | code 87.5 +- 0.8 mm; 80/X0 +66 +- 8; 80/X1600 +70 +- 5; 310/X0 +60 +- 6; 310/X1600 +82 +- 8 |
-| code size + top height per cart (3) | 20 | 2.88 | 216 | 1435 +- 14 | (973, 385) | -0.361, 0.219 | +308.19 | 3.06 / 1416 (dAIC +11) | 3.4/2.0/2.2/2.0 | code 87.6 +- 0.8 mm; top_80 +66 +- 5; top_310 +68 +- 6 |
-| board heights + tilts (12) | 29 | 2.32 | 181 | 1434 +- 14 | (915, 370) | -0.265, 0.025 | -0.12 | 2.33 / 1431 (dAIC -3) | 2.3/2.1/2.5/2.5 | 80/X0 +72 +- 7; 80/X1600 +79 +- 12; 310/X0 +59 +- 8; 310/X1600 +83 +- 8; tilts about Y -7.7..+13.0 deg |
-| code + board heights + tilts (13) | 30 | 1.94 | 138 | 1441 +- 11 | (908, 395) | -0.206, -0.044 | -0.17 | 1.99 / 1429 (dAIC +3) | 1.6/2.2/2.2/2.3 | code 86.2 +- 0.6 mm; 80/X0 +75 +- 7; 80/X1600 +70 +- 11; 310/X0 +54 +- 6; 310/X1600 +82 +- 7; tilts about Y -8.7..+14.1 deg |
+| drawing | 17 | 5.34 | 364 | 1309 +- 20 | (938, 485) | -0.087, -0.231 | -0.18 (folded) | 5.90 / 1296 (dAIC +20) | 4.9/8.0/3.6/5.4 | - |
+| end-board heights (4) | 21 | 2.88 | 219 | 1440 +- 14 | (939, 390) | -0.319, 0.138 | > 0 (valid) | 2.96 / 1432 (dAIC +3) | 3.4/1.9/2.5/2.3 | 80/X0 +64 +- 8; 80/X1600 +71 +- 5; 310/X0 +61 +- 6; 310/X1600 +81 +- 8 |
+| shelf-row heights A,B,C (3) | 20 | 2.90 | 218 | 1475 +- 27 | (978, 390) | -0.405, 0.286 | > 0 (valid) | 3.10 / 1413 (dAIC +13) | 3.5/1.8/2.1/2.0 | row_A -71 +- 5; row_B -92 +- 12; row_C -92 +- 19 |
+| row heights per cart (6) | 23 | 2.83 | 218 | 1481 +- 27 | (985, 394) | -0.415, 0.302 | > 0 (valid) | 3.05 / 1413 (dAIC +15) | 3.5/1.6/1.9/1.8 | row_80_A -71 +- 6; row_80_B -102 +- 13; row_80_C -100 +- 20; row_310_A -76 +- 7; row_310_B -81 +- 13; row_310_C -91 +- 21 |
+| top-plate height per cart (2) | 19 | 3.01 | 225 | 1434 +- 15 | (972, 382) | -0.373, 0.233 | > 0 (valid) | 3.16 / 1418 (dAIC +8) | 3.6/2.1/2.3/2.2 | top_80 +68 +- 5; top_310 +67 +- 6 |
+| end-board tilts (8) | 25 | 4.54 | 339 | 1305 +- 20 | (933, 521) | 0.008, -0.328 | -0.16 (folded) | 5.44 / 1280 (dAIC +41) | 3.5/7.1/4.2/4.9 | tilts about Y -3.7..+10.7 deg |
+| end-board horizontal offsets (8) | 25 | 2.82 | 221 | 1432 +- 17 | (890, 428) | -0.222, 0.025 | > 0 (valid) | 3.33 / 1374 (dAIC +37) | 3.2/2.3/2.5/2.4 | dx_80/X0 +0 +- 3; dy_80/X0 +26 +- 3; dx_80/X1600 +36 +- 3; dy_80/X1600 +27 +- 3; dx_310/X0 -32 +- 4; dy_310/X0 +9 +- 4; dx_310/X1600 +2 +- 3; dy_310/X1600 +27 +- 3 |
+| shelf-stack height per end (4) | 21 | 2.96 | 225 | 1440 +- 14 | (929, 386) | -0.299, 0.110 | > 0 (valid) | 3.08 / 1424 (dAIC +6) | 3.5/2.1/2.4/2.1 | stack_80/X0 -74 +- 11; stack_80/X1600 -68 +- 5; stack_310/X0 -58 +- 7; stack_310/X1600 -85 +- 11 |
+| every shelf sticker height (12) | 29 | 2.66 | 214 | 1495 +- 34 | (930, 356) | -0.297, 0.110 | > 0 (valid) | 2.82 / 1461 (dAIC +11) | 3.4/1.3/1.4/1.3 | card_80_3 -73 +- 15; card_80_4 -73 +- 8; card_80_5 -138 +- 27; card_80_6 -95 +- 16; card_80_7 -110 +- 44; card_80_8 -103 +- 24; card_310_3 -68 +- 8; card_310_4 -98 +- 15; card_310_5 -69 +- 16; card_310_6 -125 +- 25; card_310_7 -89 +- 24; card_310_8 -154 +- 44 |
+| code size (1) | 18 | 5.21 | 359 | 1309 +- 20 | (937, 483) | -0.065, -0.261 | -0.18 (folded) | 5.86 / 1294 (dAIC +25) | 4.7/8.1/3.2/5.1 | code 86.8 +- 1.4 mm |
+| code size + board heights (5) | 22 | 2.74 | 208 | 1442 +- 14 | (939, 392) | -0.295, 0.105 | > 0 (valid) | 2.85 / 1431 (dAIC +6) | 3.2/1.9/2.3/2.1 | code 87.5 +- 0.8 mm; 80/X0 +66 +- 8; 80/X1600 +70 +- 5; 310/X0 +60 +- 6; 310/X1600 +82 +- 8 |
+| code size + top height per cart (3) | 20 | 2.88 | 216 | 1435 +- 14 | (973, 385) | -0.361, 0.219 | > 0 (valid) | 3.06 / 1416 (dAIC +11) | 3.4/2.0/2.2/2.0 | code 87.6 +- 0.8 mm; top_80 +66 +- 5; top_310 +68 +- 6 |
+| board heights + tilts (12) | 29 | 2.32 | 181 | 1434 +- 14 | (915, 370) | -0.265, 0.025 | -0.12 (folded) | 2.33 / 1431 (dAIC -3) | 2.3/2.1/2.5/2.5 | 80/X0 +72 +- 7; 80/X1600 +79 +- 12; 310/X0 +59 +- 8; 310/X1600 +83 +- 8; tilts about Y -7.7..+13.0 deg |
+| code + board heights + tilts (13) | 30 | 1.94 | 138 | 1441 +- 11 | (908, 395) | -0.206, -0.044 | -0.17 (folded) | 1.99 / 1429 (dAIC +3) | 1.6/2.2/2.2/2.3 | code 86.2 +- 0.6 mm; 80/X0 +75 +- 7; 80/X1600 +70 +- 11; 310/X0 +54 +- 6; 310/X1600 +82 +- 7; tilts about Y -8.7..+14.1 deg |
 
 (f / pp uncertainties: Gauss-Newton covariance scaled by the residual variance; they do not contain the
 model error. Camera height above the floor agrees between the carts in every fit (differences < 25 mm, insensitive - see 4);
@@ -186,7 +189,7 @@ Answer to (3):
 | end board 310 / X=0 height | +61 mm vs 0 | 19.8 / 20.3 px | x 563-807, y 886-977 (bottom left) | +-6 mm; cross ratio +63..+75 |
 | end board 310 / X=1600 height | +81 mm vs 0 | 19.8 / 23.0 px | x 226-480, y 31-178 (top left) | +-8 mm; cross ratio +55..+85 |
 | code size (in-board ratio) | 86.6-88.0 mm vs 90 (or spacing +7..+13 mm vs 330) | 1.0 / 1.2 px (corners of all stickers) | all stickers | +-0.8 mm (BA), board-to-board spread 1.5 mm |
-| end-board tilt about the cart Y axis (section 5, f = 1400) | 4-14 deg vs 0 | 0.8-4.0 px per corner | top boards (image top and bottom edges) | +-1.4-2.4 deg; f-dependent by ~3 deg / 100 px |
+| end-board tilt about the cart Y axis (section 5, f = 1400) | 4-13 deg vs 0 | 0.7-4.0 px per corner | top boards (image top and bottom edges) | +-1.4-2.4 deg; f-dependent by ~3 deg / 100 px |
 | lateral scatter of the stacked stickers | 1-6 mm vs 0 (collinearity 0.23-2.55 px) | 0.2-3.0 px | all four sticker stacks | noise 0.1-0.2 px |
 | remaining after all of the above | - | 1.9 px RMS | everywhere, largest on shelf rows A-C | - |
 
@@ -217,26 +220,27 @@ or free and common. Compared: camera height above the floor h = C_z + 1800 mm fr
 floor normals (cart Z axes in the camera frame). Plot: `results/geomdiag_twocart.png`; method file
 `work/cache/method_twocart.json` / `.md`.
 
-| point set | pp | f where the floor normals agree (x-component = 0) | cov. 1-sigma | bootstrap over stickers (n) | min. angle between normals | sticker RMS there |
+| point set | pp | f where the floor normals agree (x-component = 0) | cov. 1-sigma | bootstrap over stickers: std (n) | min. angle between normals | sticker RMS there |
 |---|---|---|---|---|---|---|
-| (a) all stickers | fixed (959.5, 539.5) | 1376 | 24 | 34 (150) | 0.07 deg at f = 1380 | 6.6 px |
-| (a) all stickers | free (-> (956, 524)) | 1377 | 24 | 55 (146) | 0.06 deg at f = 1380 | 6.6 px |
+| (a) all stickers | fixed (959.5, 539.5) | 1377 | 24 | 34 (150) | 0.06 deg at f = 1380 | 6.5 px |
+| (a) all stickers | free (-> (955, 522)) | 1378 | 23 | 54 (146) | 0.05 deg at f = 1380 | 6.5 px |
 | (b) shelf stickers only | fixed | 1489 | 19 | 49 (148) | 0.28 deg at f = 1480 | 2.3 px |
 | (b) shelf stickers only | free | 1488 | 24 | 67 (144) | 0.20 deg at f = 1480 | 2.3 px |
-| (c) top stickers only | fixed | 1324 | 107 | - | 3.0 deg (never parallel) | 4.3 px |
+| (c) top stickers only | fixed | 1307 | 106 | - | 3.0 deg (never parallel) | 4.3 px |
 
 * The **camera height above the floor is useless** as a constraint here: both carts are at similar depth and
-  their heights scale together with f; |h80 - h310| < 5 mm over f = 1100-1800 (pp fixed; with pp free the
-  dh "roots" at 1481/1630 are artefacts of the pp wandering off / a jump between local minima at f ~ 1620).
+  their heights scale together with f; |h80 - h310| < 6 mm over f = 1100-1800 (pp fixed; with pp free the
+  dh "roots" at 1482/1630 are artefacts of the pp wandering off / a jump between local minima at f ~ 1620).
 * The **floor-normal agreement** is sensitive (x-component slope ~ 2.5 deg per 100 px): all stickers
-  f = 1377 +- 24 (cov) +- 55 (bootstrap); shelf stickers only f = 1488 +- 19 / +- 49..67. The 110 px difference
+  f = 1378 +- 23 (cov) +- 54 (bootstrap); shelf stickers only f = 1488 +- 19..24 / +- 49..67. The 110 px difference
   between the two point sets is the geometry dependence; with the half difference as a systematic term:
-  **f = 1377 +- 82 px** (main entry of method_twocart.json: all stickers, pp free; pp = (956, 524) from the fit at
-  that f, not separately profiled).
+  **f = 1378 +- 81 px** (main entry of method_twocart.json: all stickers, pp free; pp = (955, 522) from the fit at
+  that f, not separately profiled; distortion = plumb in pixel units: k1 = -0.328, k2 = 0.090 at this f).
 * Top stickers alone: the two carts' tops never become parallel (>= 3 deg) and imply camera heights differing by
-  50-115 mm - the top plates as planar targets are mutually inconsistent (consistent with tilted / bent plates).
-* The drawing-geometry sticker RMS at the agreement point is 6.6 px, so this estimate inherits the geometry problem;
-  it is an independent **consistency** check, not a precise measurement.
+  36-119 mm - the top plates as planar targets are mutually inconsistent (consistent with tilted / bent plates).
+* The drawing-geometry sticker RMS at the agreement point is 6.5 px, so this estimate inherits the geometry problem;
+  it is an independent **consistency** check, not a precise measurement. Mapping uncertainty of the method-file lens
+  (f sampled with +- 81 px; 42_geomdiag_h_mapping.py): centre 5.9 px, cart band 25.9 px, corners 35.8 px.
 
 ## 5. Sticker-shape method (horizontal squares; positions and heights not used)
 
@@ -249,35 +253,38 @@ Files: `work/cache/method_markershape.json` / `.md`, `results/geomdiag_markersha
 
 | variant | f [px] | cov. 1-sigma | bootstrap 16-84 % | pp [px] | corner RMS [px] |
 |---|---|---|---|---|---|
-| all stickers, nadir, pp free (method file) | 1601 | 178 | 1428-1775 | (978, 470) | 1.48 |
-| all stickers, nadir, pp fixed | 1496 | 77 | 1373-1621 | (959.5, 539.5) | 1.50 |
-| all stickers, no nadir, pp free | 3183 | 1437 | - | (949, 435) | 1.45 |
-| all stickers, no nadir, pp fixed | 1128 | 280 | - | (959.5, 539.5) | 1.46 |
-| shelf stickers only (10), nadir, pp free | 1417 | 134 | 1338-1491 | (989, 489) | 0.60 |
-| shelf stickers only, nadir, pp fixed | 1388 | 63 | - | (959.5, 539.5) | 0.61 |
-| top stickers only (8), nadir, pp free | 1619 | 255 | 1416-1815 (degenerate replicates) | (998, 477) | 1.84 |
-| top stickers only, nadir, pp fixed | 1514 | 105 | - | (959.5, 539.5) | 1.87 |
+| all stickers, nadir, pp free (method file) | 1601 | 174 | 1434-1772 | (979, 471) | 1.46 |
+| all stickers, nadir, pp fixed | 1500 | 77 | 1380-1622 | (959.5, 539.5) | 1.48 |
+| all stickers, no nadir, pp free | 2966 | 1276 | - | (949, 440) | 1.42 |
+| all stickers, no nadir, pp fixed | 1191 | 277 | - | (959.5, 539.5) | 1.43 |
+| shelf stickers only (10), nadir, pp free | 1417 | 129 | 1339-1490 | (989, 494) | 0.59 |
+| shelf stickers only, nadir, pp fixed | 1391 | 63 | - | (959.5, 539.5) | 0.60 |
+| top stickers only (8), nadir, pp free | 1619 | 249 | 1421-1819 (some degenerate replicates) | (999, 479) | 1.81 |
+| top stickers only, nadir, pp fixed | 1519 | 104 | - | (959.5, 539.5) | 1.84 |
 
-* **Too weak to be useful for f:** the corner RMS vs fixed f is almost flat (1.69 px at 1150, 1.51 at 1400,
-  1.48 at 1600, 1.49 at 1750); without the nadir f is unconstrained (1128-3183). 60-px squares seen under ~20 deg
+Mapping uncertainty of the method-file lens (f, pp sampled with the sigmas above, rotation-compensated;
+42_geomdiag_h_mapping.py): centre 12.8 px, cart band 49.4 px, corners 70.9 px - i.e. useless as a calibration.
+
+* **Too weak to be useful for f:** the corner RMS vs fixed f is almost flat (1.67 px at 1150, 1.49 at 1400,
+  1.46 at 1600, 1.47 at 1750); without the nadir f is unconstrained (1191-2966). 60-px squares seen under ~20 deg
   carry little perspective information; single-sticker poses are even two-fold ambiguous (IPPE).
-* **Diagnostic value:** the shape model should fit to ~0.15 px but gives 1.5 px (top stickers 1.8-1.9 px, shelf
+* **Diagnostic value:** the shape model should fit to ~0.15 px but gives 1.5 px (top stickers 1.8 px, shelf
   stickers 0.6 px). With a free tilt + in-plane yaw per sticker (f fixed at 1300 / 1400 / 1500) it drops to
   **0.17 px** - every sticker is individually a clean square; they are just not mutually parallel. Tilts about the
   cart Y axis (dZ/dX, f = 1400; +- 1.4-2.4 deg for 4-corner stickers):
 
 | board / sticker | tilt dZ/dX [deg] at f = 1300 / 1400 / 1500 | meaning |
 |---|---|---|
-| 80 / X=0: 0, 92 | -7.8 / -10.9 / -13.7 ; -10.5 / -13.7 / -16.6 | outer (X=0) end higher |
-| 80 / X=1600: 1, 2 | +9.0 / +7.4 / +5.9 ; +8.1 / +6.3 / +4.7 | outer (X=1600) end higher |
-| 310 / X=0: 0, 322 | -12.5 / -11.3 / -10.3 ; -14.5 / -13.4 / -12.3 | outer end higher |
-| 310 / X=1600: 1, 2 | +1.5 / +4.2 / +6.8 ; +2.4 / +5.2 / +7.8 | outer end higher (weak) |
-| shelf stickers with >= 3 corners (80: 4, 5, 6; 310: 6) | -0.8..+3.8 / +1.3..+5.4 / -0.8..+7.9 | ~horizontal within 2 sigma |
+| 80 / X=0: 0, 92 | -7.5 / -10.5 / -13.4 ; -10.2 / -13.4 / -16.3 | outer (X=0) end higher |
+| 80 / X=1600: 1, 2 | +8.8 / +7.2 / +5.8 ; +8.0 / +6.2 / +4.6 | outer (X=1600) end higher |
+| 310 / X=0: 0, 322 | -12.4 / -11.2 / -10.2 ; -14.4 / -13.3 / -12.3 | outer end higher |
+| 310 / X=1600: 1, 2 | +1.2 / +3.9 / +6.4 ; +2.1 / +4.8 / +7.4 | outer end higher (weak) |
+| shelf stickers with >= 3 corners (80: 4, 5, 6; 310: 6) | +2.4..+4.0 / +1.7..+5.1 / -0.5..+7.6 | ~horizontal within 2 sigma |
 
   The two stickers of one plate agree (the plate tilts, not the sticker), the pattern holds for f = 1300-1500
   (magnitude changes ~3 deg per 100 px), and top and shelf stickers at the same image position differ (80/X0 top
-  -11..-14 deg vs shelf B +1.4 +- 3.8 deg), so it is not a pure lens effect. The in-plane yaws of the fully visible stickers
-  spread by up to ~2.5 deg within a cart (gauge fixed by a weak prior), i.e. the plates are also slightly rotated.
+  -10.5..-13.4 deg vs shelf B +1.7 +- 3.8 deg), so it is not a pure lens effect. The in-plane yaws of the fully visible stickers
+  spread by up to ~2.4 deg within a cart (gauge fixed by a weak prior), i.e. the plates are also slightly rotated.
 
 ## Conclusions
 
@@ -303,11 +310,11 @@ Files: `work/cache/method_markershape.json` / `.md`, `results/geomdiag_markersha
    It halves the RMS (5.3 -> 2.9 px) and makes the sticker-derived distortion agree with the straight-edge
    distortion (with the code size: k1 = -0.295, k2 = 0.105 vs plumb -0.292, 0.072), while the drawing geometry
    forces an edge-incompatible, folded distortion (k1 = -0.09, k2 = -0.23).
-7. The end plates are tilted along the cart X axis, outer end up: 6-14 deg at three plates, 4-5 deg (weak) at
+7. The end plates are tilted along the cart X axis, outer end up: 6-13 deg at three plates, 4-5 deg (weak) at
    310/X1600 in the shape diagnostic (f = 1400; ~3 deg per 100 px f-dependent); the metric board-tilt fits agree
    at three plates and give the opposite sign at 310/X1600. Qualitatively consistent with the visibly curled / bent plates.
 8. The focal lengths implied: drawing geometry f ~ 1290-1310; any variant that frees the top/shelf heights
-   f ~ 1410-1480, pp_y ~ 360-400; two-cart floor-normal agreement f = 1377 +- 82 (all stickers) / 1488 (shelf only); sticker shape f = 1601 (pp free; 16-84 %: 1428-1775) / 1417 +- 134 (shelf only) - too weak to decide.
+   f ~ 1410-1480, pp_y ~ 360-400; two-cart floor-normal agreement f = 1378 +- 81 (all stickers) / 1488 (shelf only); sticker shape f = 1601 (pp free; 16-84 %: 1434-1772) / 1417 +- 129 (shelf only) - too weak to decide.
 
 **Cannot be decided from these data:**
 9. Top too high vs. shelves (or shelf cards) too low - only the relative offset is observable.

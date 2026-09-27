@@ -855,3 +855,295 @@ def jsonable(o):
     if isinstance(o, (np.bool_,)):
         return bool(o)
     return o
+
+
+# ----------------------------------------------------------------------------------------------------------
+# joint line self-calibration model (distortion centre = principal point, OpenCV-compatible)
+# ----------------------------------------------------------------------------------------------------------
+def unit(v):
+    v = np.asarray(v, float)
+    return v / np.linalg.norm(v)
+
+
+class DirParam:
+    """unit 3-vector near d0: d = normalize(d0 + a e1 + b e2)"""
+
+    def __init__(self, d0):
+        self.d0 = unit(d0)
+        self.e1, self.e2 = vp_basis(self.d0)
+
+    def __call__(self, ab):
+        return unit(self.d0 + ab[0] * self.e1 + ab[1] * self.e2)
+
+
+class JointModel:
+    """Unknowns: f, (cx, cy) [= distortion centre], radial coeffs (poly a_i or div l_i), then direction params.
+
+    frames:
+      'tied'  : common vertical z (2) + azimuth of cart 310 X and cart 80 X in the plane _|_ z (1 + 1);
+                groups 310X, 80X -> x_c;  310Z, 80Z -> z
+      'free'  : independent cart frames: cart c has X direction (2) and Z (1 = rotation of Z about X, Z _|_ X)
+    wv: None (WV edges straightness only) | 'free' (own direction, 2) | 'tied' (WV -> z; frames 'tied' only)
+    """
+
+    def __init__(self, edges, kind="poly", nrad=2, pp_free=True, pp_fixed=C0, frames="tied", wv="free", init=None,
+                 use_groups=("310X", "80X", "310Z", "80Z", "WV"), vp_mode="re", sig_pt=0.2, sig_psi_deg=0.157):
+        """vp_mode 're': residuals = [point distances to each edge's FREE line / sig_pt] + [one angular residual
+        per VP edge: psi_e / sqrt(sig_psi^2 + noise_e^2)] (per-edge direction error treated as random effect);
+        'pt': every point of a VP edge is measured against the line through the VP (no direction error)."""
+        self.kind, self.nrad, self.pp_free, self.frames, self.wv = kind, nrad, pp_free, frames, wv
+        self.vp_mode, self.sig_pt, self.sig_psi = vp_mode, sig_pt, np.radians(sig_psi_deg)
+        self.pp_fixed = np.asarray(pp_fixed, float)
+        self.edges = edges
+        self.es = EdgeSet(edges)
+        self.use = set(use_groups)
+        if wv is None:
+            self.use.discard("WV")
+        self.gr = [e["group"] if e["group"] in self.use else None for e in edges]
+        init = init or {}
+        self.f0 = init.get("f", 1450.0)
+        pp0 = np.asarray(init.get("pp", C0 if not pp_free else (930.0, 440.0)), float)
+        self.a0 = list(init.get("a", [-0.16, 0.02, 0.0][:nrad] if kind == "poly" else [-0.19, -0.02][:nrad]))
+        K0 = np.array([[self.f0, 0, pp0[0]], [0, self.f0, pp0[1]], [0, 0, 1.0]])
+        Ki = np.linalg.inv(K0)
+        vpx = init.get("vp_px", {})  # homogeneous pixel VPs for initial directions
+
+        def d_of(g, default):
+            if g in vpx:
+                return unit(Ki @ np.asarray(vpx[g], float))
+            return unit(default)
+
+        z = d_of("CZ", [0.0, -0.33, 0.94])
+        if z[2] < 0:
+            z = -z
+        self.zp = DirParam(z)
+        self.xref = {}
+        self.xp = {}
+        for c in (310, 80):
+            x = d_of(f"{c}X", [0.3, 0.95, 0.1] if c == 310 else [-0.1, 0.99, 0.1])
+            self.xref[c] = x
+            self.xp[c] = DirParam(x)
+        self.wvp = DirParam(d_of("WV", z))
+        self.names = ["f"] + (["cx", "cy"] if pp_free else []) + [f"a{i + 1}" for i in range(nrad)]
+        self.nin = len(self.names)
+        if frames == "tied":
+            self.names += ["z_a", "z_b", "psi310", "psi80"]
+        else:
+            self.names += ["x310_a", "x310_b", "rz310", "x80_a", "x80_b", "rz80"]
+        if wv == "free":
+            self.names += ["wv_a", "wv_b"]
+        self.pp0 = pp0
+        # per-edge angular noise (point noise only) for the random-effect residuals
+        self.gidx = np.array([k for k, g in enumerate(self.gr) if g is not None], int)
+        self.noise_psi = np.zeros(len(self.gidx))
+        if vp_mode == "re" and len(self.gidx):
+            d0 = Dist(kind, self.a0, None, pp0)
+            U, JU, _ = d0.undistort(self.es.P)
+            r, Ls = self.es.residuals(U, JU, return_lines=True)
+            st = self.es.per_edge_stats(r)
+            for j, k in enumerate(self.gidx):
+                m = self.es.k == k
+                Lpx = float(np.hypot(*(U[m][-1] - U[m][0])))
+                sig_th = st[k]["noise"] * np.sqrt(12.0 / m.sum()) / max(Lpx, 1.0)
+                # d psi / d theta for a rotation of the line about the edge centroid (d = any direction on the line's
+                # interpretation plane is irrelevant: |dn/dtheta| projected -> use the plane-normal rotation rate)
+                a, b, c = Ls[k]
+                lp = np.array([a / S, b / S, c - (a * C0[0] + b * C0[1]) / S])
+                cen = U[m].mean(0)
+                th = np.arctan2(-lp[0], lp[1])
+                ns = []
+                for dth in (0.0, 1e-4):
+                    nn = np.array([-np.sin(th + dth), np.cos(th + dth)])
+                    l2 = np.array([nn[0], nn[1], -nn @ cen])
+                    nv = np.array([self.f0 * l2[0], self.f0 * l2[1], l2[0] * pp0[0] + l2[1] * pp0[1] + l2[2]])
+                    ns.append(nv / np.linalg.norm(nv))
+                rate = np.linalg.norm(ns[1] - ns[0]) / 1e-4
+                self.noise_psi[j] = sig_th * rate
+
+    def x0(self):
+        x = [self.f0] + (list(self.pp0) if self.pp_free else []) + list(self.a0)
+        x += [0.0, 0.0, 0.0, 0.0] if self.frames == "tied" else [0.0] * 6
+        if self.wv == "free":
+            x += [0.0, 0.0]
+        return np.array(x, float)
+
+    def x_scale(self):
+        s = [100.0] + ([30.0, 30.0] if self.pp_free else []) + [0.05] * self.nrad
+        s += [1e-3] * (4 if self.frames == "tied" else 6)
+        if self.wv == "free":
+            s += [1e-3, 1e-3]
+        return np.array(s)
+
+    def unpack(self, x):
+        f = x[0]
+        i = 1
+        if self.pp_free:
+            pp = np.array([x[1], x[2]])
+            i = 3
+        else:
+            pp = self.pp_fixed
+        a = x[i:i + self.nrad]
+        i += self.nrad
+        dist = Dist(self.kind, a, None, pp)
+        dirs = {}
+        if self.frames == "tied":
+            z = self.zp(x[i:i + 2])
+            for c, ps in ((310, x[i + 2]), (80, x[i + 3])):
+                u = unit(self.xref[c] - (self.xref[c] @ z) * z)
+                v = np.cross(z, u)
+                xd = np.cos(ps) * u + np.sin(ps) * v
+                dirs[f"{c}X"] = xd
+                dirs[f"{c}Z"] = z
+            dirs["CZ"] = z
+            i += 4
+        else:
+            for c in (310, 80):
+                xd = self.xp[c](x[i:i + 2])
+                # Z _|_ X: start from the tied initial vertical, orthogonalise, rotate about X by rz
+                z0 = unit(self.zp.d0 - (self.zp.d0 @ xd) * xd)
+                w = np.cross(xd, z0)
+                zd = np.cos(x[i + 2]) * z0 + np.sin(x[i + 2]) * w
+                dirs[f"{c}X"] = xd
+                dirs[f"{c}Z"] = zd
+                i += 3
+        if self.wv == "free":
+            dirs["WV"] = self.wvp(x[i:i + 2])
+            i += 2
+        elif self.wv == "tied":
+            dirs["WV"] = dirs["310Z"]
+        return f, pp, dist, dirs
+
+    def vp_scaled(self, f, pp, d):
+        v = np.array([f * d[0] + pp[0] * d[2], f * d[1] + pp[1] * d[2], d[2]])
+        return to_scaled_h(v)
+
+    def residuals(self, x):
+        f, pp, dist, dirs = self.unpack(x)
+        nbad = len(self.es.P) + (len(self.gidx) if self.vp_mode == "re" else 0)
+        if dist.fold_margin(FOLD_MIN_SLOPE) < 0 or f < 300:
+            return np.full(nbad, 50.0)
+        U, JU, ok = dist.undistort(self.es.P)
+        if not ok:
+            return np.full(nbad, 50.0)
+        if self.vp_mode == "re":
+            r, Ls = self.es.residuals(U, JU, None, return_lines=True)
+            psi = self.psi(Ls, f, pp, dirs)
+            return np.concatenate([r / self.sig_pt, psi / np.sqrt(self.sig_psi ** 2 + self.noise_psi ** 2)])
+        V = np.full((self.es.E, 3), np.nan)
+        for k, g in enumerate(self.gr):
+            if g is not None and g in dirs:
+                V[k] = self.vp_scaled(f, pp, dirs[g])
+        return self.es.residuals(U, JU, V)
+
+    def psi(self, Ls, f, pp, dirs):
+        """angle between each VP edge's interpretation plane (free line) and its group direction (rad)."""
+        out = np.zeros(len(self.gidx))
+        for j, k in enumerate(self.gidx):
+            a, b, c = Ls[k]
+            lp = np.array([a / S, b / S, c - (a * C0[0] + b * C0[1]) / S])  # line in pixel coords
+            n = np.array([f * lp[0], f * lp[1], lp[0] * pp[0] + lp[1] * pp[1] + lp[2]])  # K^T l
+            d = dirs[self.gr[k]]
+            out[j] = np.arcsin(np.clip(n @ d / np.linalg.norm(n), -1, 1))
+        return out
+
+    def fit(self, x0=None, loss="huber", f_scale=0.3, max_nfev=300):
+        x0 = self.x0() if x0 is None else x0
+        res = least_squares(self.residuals, x0, loss=loss, f_scale=f_scale, x_scale=self.x_scale(), method="trf",
+                            diff_step=1e-6, max_nfev=max_nfev, xtol=1e-12, ftol=1e-12, gtol=1e-12)
+        return res
+
+    def opencv(self, x):
+        f, pp, dist, _ = self.unpack(x)
+        return f, pp, dist
+
+
+# ----------------------------------------------------------------------------------------------------------
+# per-edge direction-error model (random effect) and perturbation for the bootstrap
+# ----------------------------------------------------------------------------------------------------------
+def edge_angle_rates(edge_list, dist, f, pp):
+    """per edge: (rate = |d n / d theta| of the interpretation-plane normal for a rotation of the undistorted line
+    about its centroid, noise angle of the free line from the point scatter [rad of image angle])."""
+    es = EdgeSet(edge_list)
+    U, JU, _ = dist.undistort(es.P)
+    r, Ls = es.residuals(U, JU, return_lines=True)
+    st = es.per_edge_stats(r)
+    out = {}
+    for k, e in enumerate(edge_list):
+        m = es.k == k
+        Lpx = float(np.hypot(*(U[m][-1] - U[m][0])))
+        sig_th = st[k]["noise"] * np.sqrt(12.0 / m.sum()) / max(Lpx, 1.0)
+        a, b, c = Ls[k]
+        lp = np.array([a / S, b / S, c - (a * C0[0] + b * C0[1]) / S])
+        cen = U[m].mean(0)
+        th = np.arctan2(-lp[0], lp[1])
+        ns = []
+        for dth in (0.0, 1e-4):
+            nn = np.array([-np.sin(th + dth), np.cos(th + dth)])
+            l2 = np.array([nn[0], nn[1], -nn @ cen])
+            nv = np.array([f * l2[0], f * l2[1], l2[0] * pp[0] + l2[1] * pp[1] + l2[2]])
+            ns.append(nv / np.linalg.norm(nv))
+        rate = float(np.linalg.norm(ns[1] - ns[0]) / 1e-4)
+        out[e["id"]] = dict(rate=rate, sig_theta=float(sig_th), noise_psi=float(sig_th * rate))
+    return out
+
+
+def perturb_directions(edge_list, rates, sig_psi, rng_, groups):
+    """rotate the (distorted) points of every edge whose group is in `groups` about their centroid by a random
+    image angle ~ N(0, sig_psi^2 + noise_psi^2) / rate (random direction error of the physical member)."""
+    out = []
+    for e in edge_list:
+        g = e.get("vgroup", e.get("group"))
+        if g not in groups or e["id"] not in rates:
+            out.append(e)
+            continue
+        r = rates[e["id"]]
+        s = np.sqrt(sig_psi ** 2 + r["noise_psi"] ** 2)
+        dth = rng_.normal(0, s) / max(r["rate"], 1e-9)
+        P = e["points"]
+        c = P.mean(0)
+        R = np.array([[np.cos(dth), -np.sin(dth)], [np.sin(dth), np.cos(dth)]])
+        out.append(dict(e, points=(P - c) @ R.T + c))
+    return out
+
+
+def stratified_resample(edge_list, rng_, rich=("310X", "80X"), small=("CZ", "WV", "FA", "FC")):
+    """resample physical members (clusters) with replacement within the strata rich[i] and 'rest'; members of the
+    small VP groups are kept (they get a parametric direction perturbation instead)."""
+    def vg(e):
+        return e.get("vgroup", e.get("group"))
+
+    out = [e for e in edge_list if vg(e) in small]
+    for st in list(rich) + ["rest"]:
+        pool = [e for e in edge_list if (vg(e) == st if st != "rest" else (vg(e) not in small and vg(e) not in rich))]
+        names = sorted({e["cluster"] for e in pool})
+        if not names:
+            continue
+        pick = rng_.integers(0, len(names), len(names))
+        for q, c in enumerate(pick):
+            out += [dict(e, cluster=f"{e['cluster']}#{st}{q}") for e in pool if e["cluster"] == names[c]]
+    return out
+
+
+def vp_estimates(edge_list, dist, groups):
+    """VP MLE per group (merged groups: 'CZ' = 310Z + 80Z)."""
+    out = {}
+    for g in groups:
+        sub = [e for e in edge_list if (e["group"] in ("310Z", "80Z") if g == "CZ" else e["group"] == g)]
+        if len(sub) < 2:
+            continue
+        es = EdgeSet(sub)
+        U, JU, _ = dist.undistort(es.P)
+        out[g] = fit_vp_group(U, JU, es)
+    return out
+
+
+def f_orthogonal(vps, pairs, pp, f0=1450.0, weights=None):
+    """f with fixed pp from orthogonal VP pairs (least squares on the cosines, optional weights)."""
+    pairs = [p for p in pairs if p[0] in vps and p[1] in vps]
+    w = np.ones(len(pairs)) if weights is None else np.asarray(weights, float)
+
+    def fun(x):
+        return w * np.array([ray(vps[a]["V"], x[0], pp) @ ray(vps[b]["V"], x[0], pp) for a, b in pairs])
+
+    r = least_squares(fun, [f0], x_scale=[100.0])
+    return float(r.x[0])

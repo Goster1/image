@@ -150,6 +150,29 @@ def offsets_table(cam, boots):
     return tab
 
 
+def sticker_rows(cam):
+    """Corner residuals of every sticker row with this camera, and (camera fixed) the Z shift of each row that
+    best fits its corners (diagnostic: where the row 'is' in height for this camera)."""
+    from scipy.optimize import least_squares as lsq
+    out = {}
+    for row in ("top", "A", "B", "C"):
+        for c in (80, 310):
+            pts = [p for p in PTS if p["cart"] == c and M[p["mi"]]["row"] == row]
+            if not pts:
+                continue
+            X = np.array([p["X"] for p in pts])
+            uv = np.array([p["uv"] for p in pts])
+            r0 = cam.proj(X, c) - uv
+
+            def res(dz):
+                return (cam.proj(X + [0, 0, dz[0]], c) - uv).ravel()
+
+            rr = lsq(res, [0.0])
+            out[f"{c}:{row}"] = dict(rms_px=float(np.sqrt(np.mean(np.sum(r0 ** 2, 1)))), n=len(pts), implied_dZ_mm=float(rr.x[0]),
+                                     rms_after_dZ_px=float(np.sqrt(np.mean(rr.fun ** 2) * 2)))
+    return out
+
+
 def lip_pattern(cam):
     """Per cart: common lip offset (dY, dZ) of the five shelf-front lips + per-lip deviation; single-dimension
     alternatives with the camera fixed (diagnostic)."""
@@ -301,6 +324,8 @@ def main():
         tab = offsets_table(cam, boots)
         result["edges"][cname] = tab
         result["lip_pattern"][cname] = lip_pattern(cam)
+        result.setdefault("sticker_rows", {})[cname] = sticker_rows(cam)
+        print("  sticker rows:", {k: (round(v["rms_px"], 2), round(v["implied_dZ_mm"], 1)) for k, v in result["sticker_rows"][cname].items()})
         print(f"==== camera {cname}: {cam.name}")
         for eid, v in tab.items():
             a0, a1 = L.EDGE_MAP[eid][1][0], L.EDGE_MAP[eid][1][1]
@@ -331,6 +356,8 @@ def main():
                       f"{v.get('camera_sigma_mean_px', float('nan')):.2f} | d{a0} {v[f'implied_d{a0}_mm']:+.1f} ({v[f'px_per_mm_{a0}']:.3f}) | "
                       f"d{a1} {v[f'implied_d{a1}_mm']:+.1f} |")
         md.append("")
+        md.append("* sticker rows (corner RMS px / Z shift of the row that fits its corners best, camera fixed, mm): "
+                  + ", ".join(f"{k} {v['rms_px']:.1f}/{v['implied_dZ_mm']:+.0f}" for k, v in result["sticker_rows"][cname].items()))
         for c, lp in result["lip_pattern"][cname].items():
             cd = lp["common_dZ"]
             sc = lp["common_dZ+depth_scale"]
@@ -341,6 +368,29 @@ def main():
                       f"+ D/E shift {de['dZ_DE_mm']:+.1f} +- {de['dZ_DE_mm_sigma']:.1f} mm -> rms {de['rms_px']:.2f} px")
         md.append("")
     open(f"{CACHE}/cuboid_offsets.md", "w").write("\n".join(md) + "\n")
+    # short section in method_cuboid.md
+    E = result["edges"]
+    sec = ["Script `work/41_cuboid_predict.py`; full table `work/cache/cuboid_offsets.md/.json`; plots `results/cuboid_overlay.png`, "
+           "`results/cuboid_crops.png`, `results/cuboid_crops_anchor.png`, `results/cuboid_offsets.png`.",
+           "Offset traced - predicted [px] (+ = traced edge on the + side of the axis in [..]) +- camera 1-sigma (bootstrap, robust) / implied shift [mm]:", "",
+           "| edge | markers-only | joint | edge lens + shelf-sticker poses (diag.) |", "|---|---|---|---|"]
+    for eid in L.EDGE_MAP:
+        a = L.EDGE_MAP[eid][1][0]
+        cells = []
+        for cname in ("markers_only", "joint", "edge_lens_shelf_poses"):
+            v = E[cname][eid]
+            s = v.get("camera_sigma_mean_px_robust")
+            cells.append(f"{v['mean_px']:+.1f}" + (f" +-{s:.1f}" if s is not None else "") + f" / d{a} {v[f'implied_d{a}_mm']:+.0f}")
+        sec.append(f"| {eid} | " + " | ".join(cells) + " |")
+    sec.append("")
+    for cname in ("markers_only", "joint", "edge_lens_shelf_poses", "edge_lens_top_poses"):
+        sr = result["sticker_rows"][cname]
+        sec.append(f"* {cname}: sticker rows RMS px / best Z shift mm: " + ", ".join(f"{k} {v['rms_px']:.1f}/{v['implied_dZ_mm']:+.0f}" for k, v in sr.items()))
+        for c, lp in result["lip_pattern"][cname].items():
+            cd = lp["common_dZ"]
+            sec.append(f"  * lips cart {c}: common lip height {cd['dZ_mm']:+.0f} mm, per-lip deviation " + ", ".join(f"{k} {v:+.1f}" for k, v in cd["per_lip_mean_px"].items())
+                       + f" px (rms {cd['rms_px']:.2f}); + depth scale -> rms {lp['common_dZ+depth_scale']['rms_px']:.2f}; + D/E shift {lp['common_dZ+DE_shift']['dZ_DE_mm']:+.0f} mm -> rms {lp['common_dZ+DE_shift']['rms_px']:.2f}")
+    L.md_replace_section(f"{CACHE}/method_cuboid.md", "## Prediction check: modelled cart lines vs traced edges", sec)
 
     # -------------------------------------------------------------- full-resolution overlay
     img = cv2.imread(f"{CACHE}/mean_aligned_color.png")
@@ -369,23 +419,28 @@ def main():
     ids = list(L.EDGE_MAP)
     fig, ax = plt.subplots(2, 1, figsize=(15, 9), dpi=110, sharex=True)
     xs = np.arange(len(ids))
-    for j, (cname, col) in enumerate((("markers_only", "tab:red"), ("joint", "tab:cyan"), ("edge_lens", "gold"))):
+    series = (("markers_only", "tab:red", "markers-only camera"), ("joint", "tab:cyan", "cuboid joint camera"),
+              ("edge_lens", "gold", "edge-only lens + all-sticker poses"), ("edge_lens_shelf_poses", "tab:orange", "edge-only lens + SHELF-sticker poses (diag.)"))
+    for j, (cname, col, lab) in enumerate(series):
         tab = result["edges"][cname]
         mean = np.array([tab[e]["mean_px"] for e in ids])
         st = np.array([tab[e]["start_px"] for e in ids])
         en = np.array([tab[e]["end_px"] for e in ids])
-        err = np.array([tab[e].get("camera_sigma_mean_px", 0.0) for e in ids])
-        ax[0].errorbar(xs + (j - 1) * 0.22, mean, yerr=err, fmt="o", color=col, ms=4, label=cname, capsize=2)
-        ax[0].vlines(xs + (j - 1) * 0.22, np.minimum(st, en), np.maximum(st, en), color=col, lw=3, alpha=0.4)
+        err = np.array([tab[e].get("camera_sigma_mean_px_robust", 0.0) for e in ids])
+        dx = (j - 1.5) * 0.18
+        ax[0].errorbar(xs + dx, mean, yerr=err, fmt="o", color=col, ms=4, label=lab, capsize=2)
+        ax[0].vlines(xs + dx, np.minimum(st, en), np.maximum(st, en), color=col, lw=3, alpha=0.4)
         a0 = [L.EDGE_MAP[e][1][0] for e in ids]
         imp = np.array([tab[e][f"implied_d{a}_mm"] for e, a in zip(ids, a0)])
-        ax[1].plot(xs + (j - 1) * 0.22, np.clip(imp, -150, 150), "o", color=col, ms=4, label=cname)
+        ax[1].plot(xs + dx, np.clip(imp, -150, 150), "o", color=col, ms=4, label=lab)
     ax[0].axhline(0, color="k", lw=0.6)
-    ax[0].set_ylabel("offset traced - predicted [px]\n(dot = mean, bar = start..end, err = camera 1-sigma)")
+    ax[0].set_ylabel("traced - predicted [px]")
+    ax[0].set_title("dot = mean offset along the normal, bar = first..last 10 % of the edge, error bar = camera 1-sigma (bootstrap, robust)", fontsize=9)
     ax[0].legend(fontsize=8)
     ax[0].grid(alpha=0.3)
     ax[1].axhline(0, color="k", lw=0.6)
-    ax[1].set_ylabel("implied shift of the 3D line [mm]\n(along the 1st axis: Z for lips/rails, X/Y otherwise; clipped +-150)")
+    ax[1].set_ylabel("implied shift of the 3D line [mm]")
+    ax[1].set_title("implied shift along the axis in [..] (Z for lips / rails, X or Y otherwise), camera fixed; clipped at +-150 mm", fontsize=9)
     ax[1].set_xticks(xs)
     ax[1].set_xticklabels([f"{e.replace('cart', '')} [{L.EDGE_MAP[e][1][0]}]" for e in ids], rotation=75, fontsize=7)
     ax[1].grid(alpha=0.3)

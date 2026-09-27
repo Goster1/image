@@ -167,6 +167,47 @@ def main():
     save_json(dict(hypotheses=HYP, runs=out, n_eff=neff, validation_edges=VALID, lips=LIPS,
                    note="DIAGNOSTIC: one drawing dimension freed at a time; the main result uses the drawing unchanged."),
               f"{CACHE}/cuboid_diag.json")
+    # markdown summary
+    md = ["# Cuboid model - DIAGNOSTIC: one drawing dimension freed at a time (not a main estimate)", "",
+          "Script `work/41_cuboid_diag.py`. Joint fit of sticker corners + sticker sides + exact top-plate edges (+ the ten shelf-front lips with "
+          "one common lip height per cart as nuisance); cluster weighting; chi2_ref = chi2 with the block sigmas of the drawing fit of the same "
+          "configuration (lower = better, the drawing fit has chi2_ref = n_eff). Values +- = Gauss-Newton 1-sigma (scaled). "
+          "Validation = cart-80 back top rail (outer silhouette), NOT used in any fit: offset from the drawing line top Y=450, Z=0.", ""]
+    for sname in sorted({k.split("|")[0] for k in out}):
+        for lp in ("lips", "nolips"):
+            md += [f"## {sname}, {'with' if lp == 'lips' else 'without'} shelf lips", "",
+                   "| hypothesis | freed [mm, permille] | chi2_ref | corners px/pt | sides px | exact edges px | lips px | f | pp | k1, k2 | rail offset px (dZ mm) |",
+                   "|---|---|---|---|---|---|---|---|---|---|---|"]
+            for h in HYP:
+                rr = out.get(f"{sname}|{lp}|{h}")
+                if rr is None:
+                    continue
+                b = rr["blocks"]
+                geo = ", ".join(f"{k} {v:+.1f}+-{rr['geo_sd'][k]:.1f}" for k, v in rr["geo"].items()) or "-"
+                it = rr["intr"]
+                pp = f"({it['cx']:.0f}, {it['cy']:.0f})" if "cx" in it else "centre"
+                rail = rr["validation"]["cart80_x_back_rail_out"]
+                md.append(f"| {h} | {geo} | {rr['chi2_ref']:.1f} | {b['M']['rms_point']:.2f} | {b['S']['rms']:.2f} | {b['E']['rms']:.2f} | "
+                          f"{b['X']['rms'] if 'X' in b else float('nan'):.2f} | {it['f']:.0f} | {pp} | {it['k1']:.3f}, {it['k2']:.3f} | "
+                          f"{rail['mean_px']:+.1f} ({rail['dZ_mm']:+.0f}) |")
+            md.append("")
+    open(f"{CACHE}/cuboid_diag.md", "w").write("\n".join(md) + "\n")
+    sec = ["Script `work/41_cuboid_diag.py` (full table `work/cache/cuboid_diag.md`, plot `results/cuboid_diag.png`). DIAGNOSTIC ONLY: one drawing "
+           "dimension freed at a time; the main result above keeps the drawing.", ""]
+    for key in (f"main:{main_key}|lips|drawing", f"main:{main_key}|lips|dz_top", f"main:{main_key}|lips|dz_top@cart", f"main:{main_key}|lips|dz_A",
+                f"main:{main_key}|lips|dz_E", f"main:{main_key}|lips|sz_shelves", f"main:{main_key}|lips|sy_depth", f"main:{main_key}|lips|code_mm",
+                f"main:{main_key}|lips|dz_top+dz_E (2)", "k1k2_ppfree|lips|dz_top", "k1k2_ppfree|nolips|dz_top"):
+        rr = out.get(key)
+        if rr is None:
+            continue
+        b = rr["blocks"]
+        geo = ", ".join(f"{k} {v:+.1f} +- {rr['geo_sd'][k]:.1f}" for k, v in rr["geo"].items()) or "none"
+        rail = rr["validation"]["cart80_x_back_rail_out"]
+        it = rr["intr"]
+        sec.append(f"* {key}: {geo}; chi2_ref {rr['chi2_ref']:.0f}; corners {b['M']['rms_point']:.2f} px/pt, exact edges {b['E']['rms']:.2f} px"
+                   + (f", lips {b['X']['rms']:.2f} px" if 'X' in b else "") + f"; f {it['f']:.0f}, k1 {it['k1']:.3f}, k2 {it['k2']:.3f}"
+                   + (f", pp ({it['cx']:.0f}, {it['cy']:.0f})" if 'cx' in it else "") + f"; back rail (not fitted) {rail['mean_px']:+.1f} px ({rail['dZ_mm']:+.0f} mm in Z)")
+    L.md_replace_section(f"{CACHE}/method_cuboid.md", "## Diagnostic: which single dimension explains the mismatch", sec)
     # plot: chi2_ref per hypothesis (main spec, with / without lips) + freed value
     fig, ax = plt.subplots(1, 3, figsize=(18, 6), dpi=110)
     sname = "main:" + main_key

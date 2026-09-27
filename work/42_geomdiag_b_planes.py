@@ -216,7 +216,12 @@ def board_tests(ms, und, vh, corners="final"):
             P = []
             for i in ids:
                 m = [x for x in ms if x["cart"] == cart and x["id"] == i][0]
-                c = np.array(raw[(cart, i)]["aruco_corners_px"]) if corners == "aruco" else m["corners_px"]
+                if corners == "aruco":
+                    c = np.array(raw[(cart, i)]["aruco_corners_px"])
+                elif corners == "bias_corrected":  # edge corners corrected for the dark-side edge bias (phase-1 review)
+                    c = np.array(raw[(cart, i)]["corners_px_bias_corrected"])
+                else:
+                    c = m["corners_px"]
                 cen = m["corners_3d"].mean(0)[:2]
                 for j in range(4):
                     U, J = und.jac(c[j][None])
@@ -314,7 +319,8 @@ def main():
         und = G.Und(pl)
         vpe = G.fit_vp_lines(und, G.vertical_edges(edges))
         vh = np.append(vpe["v"], 1.0)
-        R = {"vp": vpe["v"].tolist(), "board_tests": board_tests(ms, und, vh), "board_tests_aruco_corners": board_tests(ms, und, vh, "aruco")}
+        R = {"vp": vpe["v"].tolist(), "board_tests": board_tests(ms, und, vh), "board_tests_aruco_corners": board_tests(ms, und, vh, "aruco"),
+             "board_tests_bias_corrected": board_tests(ms, und, vh, "bias_corrected")}
         for cart in (80, 310):
             pts = cart_points(ms, und, cart)
             top = [p for p in pts if p["level"] == "top"]
@@ -355,7 +361,7 @@ def main():
     save_json(strip(out), f"{CACHE}/geomdiag_planes.json")
     for var in [v for v in out if v != "board_distortion_test"]:
         print("=====", var, "VP", np.round(out[var]["vp"], 1))
-        for nm in ("board_tests", "board_tests_aruco_corners"):
+        for nm in ("board_tests", "board_tests_aruco_corners", "board_tests_bias_corrected"):
             for k, R in out[var][nm].items():
                 print(f"  {nm:26s} {k:9s}", " | ".join(f"{kind} {v['rms']:.2f}" + ("" if kind == "plain" else " " + ",".join(f"{a}={b:.4g}" for a, b in v.items() if a not in ("rms", "max")))
                                                      for kind, v in R.items()))

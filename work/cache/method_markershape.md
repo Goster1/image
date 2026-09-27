@@ -4,13 +4,15 @@ Every sticker is modelled as a flat horizontal square with a free 3D position; a
 
 | variant | f [px] | +-cov | pp | corner RMS [px] |
 |---|---|---|---|---|
-| all_vp_ppfree | 1601 | 178 | (978, 470) | 1.484 |
-| all_vp_ppfixed | 1496 | 77 | (960, 540) | 1.502 |
-| all_novp_ppfree | 3183 | 1437 | (949, 435) | 1.450 |
-| all_novp_ppfixed | 1128 | 280 | (960, 540) | 1.458 |
-| top_vp_ppfree | 1619 | 255 | (998, 477) | 1.841 |
-| shelf_vp_ppfree | 1417 | 134 | (989, 489) | 0.595 |
-| top_vp_ppfixed | 1514 | 105 | (960, 540) | 1.872 |
-| shelf_vp_ppfixed | 1388 | 63 | (960, 540) | 0.608 |
+| all_vp_ppfree | 1601 | 174 | (979, 471) | 1.461 |
+| all_vp_ppfixed | 1500 | 77 | (960, 540) | 1.478 |
+| all_novp_ppfree | 2966 | 1276 | (949, 440) | 1.424 |
+| all_novp_ppfixed | 1191 | 277 | (960, 540) | 1.434 |
+| top_vp_ppfree | 1619 | 249 | (999, 479) | 1.810 |
+| shelf_vp_ppfree | 1417 | 129 | (989, 494) | 0.588 |
+| top_vp_ppfixed | 1519 | 104 | (960, 540) | 1.841 |
+| shelf_vp_ppfixed | 1391 | 63 | (960, 540) | 0.601 |
 
-Bootstrap over stickers: all_vp_ppfree: f std 182 px (16-84 %: 1428-1775); all_vp_ppfixed: f std 128 px (16-84 %: 1373-1621); shelf_vp_ppfree: f std 154 px (16-84 %: 1338-1491); top_vp_ppfree: f std 33442 px (16-84 %: 1416-1815)
+Bootstrap over stickers (robust sigma = half the 16-84 % range): all_vp_ppfree: f median 1607, sigma 169 px (16-84 %: 1433-1772); all_vp_ppfixed: f median 1488, sigma 121 px (16-84 %: 1380-1622); shelf_vp_ppfree: f median 1420, sigma 75 px (16-84 %: 1339-1490); top_vp_ppfree: f median 1619, sigma 199 px (16-84 %: 1421-1819)
+
+Verdict: too weak (profile of the corner RMS vs f is almost flat: 1.69 px at 1150, 1.48 px at 1600, 1.49 px at 1750) and biased by the non-parallel stickers (shape-model RMS 1.5 px, 0.17 px when each sticker gets its own tilt). See geometry_diagnosis.md.

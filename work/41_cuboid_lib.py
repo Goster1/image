@@ -579,3 +579,13 @@ def base_data():
     init = load_json(f"{CACHE}/initial_calib.json")
     P0 = {80: np.array(init["poses"]["80"]), 310: np.array(init["poses"]["310"])}
     return M, pts, sides, exact, P0
+
+
+def md_replace_section(path, header, lines):
+    """Replace (or append) the section starting with `header` (a '## ...' line) in a markdown file."""
+    import os
+    txt = open(path).read() if os.path.exists(path) else ""
+    parts = txt.split("\n## ")
+    keep = [parts[0]] + ["## " + p for p in parts[1:] if not ("## " + p).startswith(header)]
+    new = "\n".join(k.rstrip("\n") + "\n" for k in keep).rstrip("\n") + "\n\n" + header + "\n\n" + "\n".join(lines) + "\n"
+    open(path, "w").write(new)

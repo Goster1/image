@@ -568,6 +568,42 @@
         0.0
       ],
       "rms": 0.2352245118076012
+    },
+    "fold_margin": 74.68985946535648,
+    "mapping_uncertainty_detail": {
+      "stats": {
+        "centre": {
+          "rms_median_px": 5.860576292862298,
+          "rms_max_px": 8.332251814391697,
+          "n_points": 44
+        },
+        "cart_band": {
+          "rms_median_px": 25.856421799385927,
+          "rms_max_px": 35.29729691160415,
+          "n_points": 536
+        },
+        "corners": {
+          "rms_median_px": 35.800866704983534,
+          "rms_max_px": 40.292230027754016,
+          "n_points": 88
+        },
+        "whole_image": {
+          "rms_median_px": 29.490717731243627,
+          "rms_max_px": 40.292230027754016
+        }
+      },
+      "samples": 60,
+      "sampled": {
+        "sigma_f": 80.67741604012487,
+        "sigma_cx": null,
+        "sigma_cy": null
+      },
+      "note": "rotation-compensated displacement vs. the method lens; distortion fixed in pixel units"
     }
+  },
+  "mapping_uncertainty_px": {
+    "centre": 5.860576292862298,
+    "cart_band": 25.856421799385927,
+    "corners": 35.800866704983534
   }
 }

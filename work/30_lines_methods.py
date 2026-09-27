@@ -41,15 +41,15 @@ def groups_idx(lc):
     return lc.edge_groups_index()
 
 
-def fit_plumb(edges, centre_free=False, dist=("k1", "k2"), centre=None):
-    lc = LineCal(edges, "plumb", dist_free=dist, centre_free=centre_free, f0=F0, centre_fixed=centre)
+def fit_plumb(edges, centre_free=False, dist=("k1", "k2"), centre=None, sub=2):
+    lc = LineCal(edges, "plumb", dist_free=dist, centre_free=centre_free, f0=F0, centre_fixed=centre, subsample=sub)
     r = lc.solve(lc.x0(), loss="huber", f_scale=0.5)
     return lc, r
 
 
-def fit_vp(edges, dist_px, pp_free=True, x_init=None):
+def fit_vp(edges, dist_px, pp_free=True, x_init=None, sub=2):
     """dist_px: distortion in pixel units as (k1/f^2, k2/f^4, p1/f, p2/f, k3/f^6) -> converted per f inside."""
-    lc = LineCal(edges, "vp", pp_free=pp_free)
+    lc = LineCal(edges, "vp", pp_free=pp_free, subsample=sub)
 
     # distortion fixed in pixel units: re-scale OpenCV coefficients with the current f
     def unpack_fixed(x, _orig=lc.unpack):
@@ -65,8 +65,8 @@ def fit_vp(edges, dist_px, pp_free=True, x_init=None):
     return lc, r
 
 
-def fit_joint(edges, pp_free=True, dist=("k1", "k2"), x_init=None, dist_init=None):
-    lc = LineCal(edges, "joint", dist_free=dist, pp_free=pp_free)
+def fit_joint(edges, pp_free=True, dist=("k1", "k2"), x_init=None, dist_init=None, sub=2):
+    lc = LineCal(edges, "joint", dist_free=dist, pp_free=pp_free, subsample=sub)
     K0 = K_from(F0, F0, (W - 1) / 2, (H - 1) / 2)
     x0 = lc.x0(K0, dist_init if dist_init is not None else np.array([-0.28, 0.05, 0, 0, 0]), P0) if x_init is None else x_init
     r = lc.solve(x0, loss="huber", f_scale=0.5)
@@ -131,13 +131,13 @@ for b in range(NBOOT):
     idx = rng.integers(0, len(EDGES), len(EDGES))
     sub = [dict(EDGES[i], id=f"{EDGES[i]['id']}#{q}") for q, i in enumerate(idx)]
     try:
-        lc, r = fit_plumb(sub)
+        lc, r = fit_plumb(sub, sub=4)
         boot["plumb"].append(r.x[:2])
         d = np.zeros(5)
         d[:2] = r.x[:2]
-        lc2, r2 = fit_vp(sub, px_units(d, F0), x_init=rv.x)
+        lc2, r2 = fit_vp(sub, px_units(d, F0), x_init=rv.x, sub=4)
         boot["vp"].append(r2.x[:3])
-        lc3, r3 = fit_joint(sub, x_init=rj.x)
+        lc3, r3 = fit_joint(sub, x_init=rj.x, sub=4)
         boot["joint"].append(r3.x[: lcj.n_intr])
     except Exception as ex:  # noqa
         print("boot fail", ex)
