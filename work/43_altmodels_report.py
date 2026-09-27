@@ -405,10 +405,9 @@ def plot_cv(summ):
                      " (leave-one-region-out)")
         a.legend(fontsize=8)
         a.grid(alpha=0.3, axis="x")
-        vals = [cv[n].get(key, np.nan) for tag in ("region_tile_E", "region_tile_ME") for cv in [summ["cv"].get(tag, {})] for n in names if n in cv]
-        vals = [v for v in vals if np.isfinite(v)]
-        if vals:
-            a.set_xlim(min(vals) * 0.9, min(max(vals), 3 * min(vals)) * 1.05)
+        a.set_xscale("log")
+        a.set_xlim(0.18, 1.0) if key == "S_rms_px" else a.set_xlim(0.5, 8.0)
+        a.grid(alpha=0.3, axis="x", which="both")
     fig.suptitle("Lens-model choice: information criteria and cross-validation (E = edges only, M = stickers only, ME = joint)", fontsize=11)
     fig.tight_layout()
     fig.savefig(f"{RESULTS}/altmodels_cv.png")
@@ -425,9 +424,14 @@ def region_med(st):
     return {k: round(v["median"], 3) for k, v in st.items()}
 
 
+CV_TESTS = (("region_tile_E", ("S", "V")), ("region_src_E", ("S",)), ("region_tile_ME", ("S", "V")), ("region_src_ME", ("S", "V")))
+
+
 def adequacy(summ):
-    """Models 'adequate to the data': valid lens (not folded, fold barrier inactive) on E and ME, and
-    cross-validated no worse than the reference beyond 2 paired standard errors in every CV test."""
+    """'Adequate to the data' = (1) valid lens on E and ME (fold barrier inactive), (2) not significantly AND relevantly
+    worse than the reference in any EDGE cross-validation test (dMS > 2 se and dMS > 4 % of the reference MS),
+    (3) not decisively worse by the overdispersion-corrected QAIC on E (dQAIC - dQAIC_ref <= 10).
+    Sticker LOSO is NOT used: with the inconsistent drawing geometry it rewards models that absorb geometry errors."""
     out = {}
     for name in MODELS:
         why = []
@@ -435,19 +439,20 @@ def adequacy(summ):
             f = FITS["fits"][ds][name]
             if f["barrier_active"] or f["fold_margin"] < 0:
                 why.append(f"{ds}: fold barrier active (unconstrained optimum folded inside the image)")
-        for tag, keys in (("region_tile_E", ("S", "V")), ("region_src_E", ("S", "V")), ("region_tile_ME", ("S", "V")), ("loso_ME", (None,))):
+        for tag, keys in CV_TESTS:
             cv = summ["cv"].get(tag, {})
-            if name not in cv:
+            if name not in cv or REF not in cv:
                 continue
             for k in keys:
-                if k is None:
-                    d, se = cv[name]["dMS_vs_ref"], cv[name]["dMS_se"]
-                else:
-                    if f"{k}_dMS_vs_ref" not in cv[name]:
-                        continue
-                    d, se = cv[name][f"{k}_dMS_vs_ref"], cv[name][f"{k}_dMS_se"]
-                if d > 2 * se and d > 0:
-                    why.append(f"{tag} {k or 'corners'}: worse than reference by {d:.3g} px^2 (+-{se:.2g})")
+                if f"{k}_dMS_vs_ref" not in cv[name]:
+                    continue
+                d, se = cv[name][f"{k}_dMS_vs_ref"], cv[name][f"{k}_dMS_se"]
+                ms_ref = cv[REF][f"{k}_rms_px"] ** 2
+                if d > 2 * se and d > 0.04 * ms_ref:
+                    why.append(f"{tag} {k}: held-out MS worse than {REF} by {d:.3g} +- {se:.2g} px^2")
+        dq = summ["ic"]["E"][name]["dQAIC"] - summ["ic"]["E"][REF]["dQAIC"]
+        if dq > 10:
+            why.append(f"E: dQAIC {dq:+.1f} vs {REF}")
         out[name] = dict(adequate=len(why) == 0, reasons=why)
     return out
 
@@ -500,7 +505,8 @@ def write_method(summ, name, ds, rec, adq, mc_unc):
                     ("" if conv is None else " -> converted to the closest OpenCV Brown [k1,k2,p1,p2,k3] over the full image"),
                     rms_reprojection_error_px=f["block_stats"]["M"]["rms_radial"],
                     uncertainty=unc,
-                    mapping_uncertainty_px=({k: round(pu[k]["rms_median_px"], 3) for k in ("centre", "cart_band", "corners")} if pu else None),
+                    mapping_uncertainty_px=({k: round(pu[k]["rms_median_px"], 3) for k in ("centre", "cart_band", "corners")}
+                                            if (pu and not f["barrier_active"]) else None),
                     data_used="62 valid sticker corners of 20 stickers (7-frame means) + 61 verified straight edges (straightness; VP groups: cart X/Z axes "
                               "without end-board edges, scene verticals, 2 floor-line groups); block sigmas fixed from the Brown k1,k2 variance components",
                     geometry_assumptions="drawing dimensions and sticker positions exact (not fitted); edges use no dimensions",
@@ -511,6 +517,8 @@ def write_method(summ, name, ds, rec, adq, mc_unc):
                                                                             fold_margin=conv["fold_margin"])),
                         rational_8_coeffs=(lens.brown_dist(P).tolist() if name.startswith("R_") else None),
                         block_stats_joint=f["block_stats"], block_sigmas=FITS["sig"][ds], fold_margin=f["fold_margin"], barrier_active=f["barrier_active"],
+                        mapping_uncertainty_note=("not meaningful: the fit sits on the fold barrier (model not adequate)" if f["barrier_active"] else
+                                                  "parameter part only; add the model-choice part (model_choice_mapping_unc_px) in quadrature"),
                         uncertainty_method="cluster-robust sandwich covariance (clusters = stickers and edges) of the joint fit; mapping uncertainty = "
                                            f"{NSAMP} parameter samples, rotation-compensated displacement vs the fit, RMS over samples, median over region",
                         info_criteria=ic, cross_validation=cvs, other_data_sets=other,
@@ -556,7 +564,8 @@ def write_summary(summ, rec, adq, mcu, conclusions):
     names = list(MODELS)
     md = ["# Lens-model choice (sub-task 43): which model is adequate to the data", "",
           "Scripts: `work/43_altmodels_lib.py` (lens models + estimator), `43_altmodels_fit.py` (fits + CV), "
-          "`43_altmodels_report.py` (criteria, mappings, conversions, plots, method files), `43_altmodels_diaggeom.py` (diagnostics).",
+          "`43_altmodels_report.py` (criteria, mappings, conversions, plots, method files), `43_altmodels_diaggeom.py` (diagnostics). "
+          "Run order: fit (~40 min on a loaded 4-CPU box) -> diaggeom -> report.",
           "Numbers: `work/cache/altmodels_fits.json`, `altmodels_summary.json`, `method_alt_*.json`; plots `results/altmodels_mapping_diff.png`, "
           "`results/altmodels_radial.png`, `results/altmodels_cv.png`.", "",
           "Data: M = 62 sticker corners (drawing geometry exact), E = 61 verified straight edges (straightness S + VP groups V: cart X/Z axes "
@@ -630,7 +639,9 @@ def write_summary(summ, rec, adq, mcu, conclusions):
         row = []
         for ds in ("E", "ME"):
             st = summ["mapping_param_unc"][ds][n]["stats"]
-            row.append("-" if st is None else f"{st['centre']['rms_median_px']:.2f} / {st['cart_band']['rms_median_px']:.2f} / {st['corners']['rms_median_px']:.2f}")
+            if FITS["fits"][ds][n]["barrier_active"]:
+                st = None
+            row.append("n/a (fold barrier active)" if st is None else f"{st['centre']['rms_median_px']:.2f} / {st['cart_band']['rms_median_px']:.2f} / {st['corners']['rms_median_px']:.2f}")
         md.append(f"| {NICE[n]} | {row[0]} | {row[1]} |")
     if mcu:
         md += ["", f"**Model-choice part of the mapping uncertainty** (RMS over the adequate models {', '.join(NICE[m] for m in mcu['models'])} of the rot.-comp. "
@@ -659,19 +670,134 @@ REC = "B_k1k2"
 
 
 def conclusions_text(summ, adq, mcu):
-    return ["(filled in after the results were inspected)"]
+    """Conclusions with the numbers of this run (qualitative statements were checked against the tables)."""
+    fE, fME, fM = FITS["fits"]["E"], FITS["fits"]["ME"], FITS["fits"]["M"]
+    ic, cv, mp = summ["ic"], summ["cv"], summ["mapping"]
+    dg = load_json(f"{CACHE}/altmodels_diaggeom.json") if os.path.exists(f"{CACHE}/altmodels_diaggeom.json") else None
+
+    def P(ds, n, k):
+        return FITS["fits"][ds][n]["P"][k]
+
+    def sd(ds, n, k):
+        return FITS["fits"][ds][n]["sd_sandwich"].get(k, np.nan)
+
+    def mreg(ds, n, kind="rotcomp"):
+        st = mp[ds][n][kind]
+        return f"{st['centre']['median']:.2f} / {st['cart_band']['median']:.2f} / {st['corners']['median']:.2f}"
+
+    def cvd(tag, n, k):
+        c = cv[tag][n]
+        return f"{c[k + '_dMS_vs_ref']:+.4f} +- {c[k + '_dMS_se']:.4f}"
+    def fold_range(ds):
+        rr = FITS["cv"]["region"][ds][REF]
+        return {k: [v["P"][k] for v in rr.values()] for k in ("fx", "cx", "cy")}
+    fr, frm = fold_range("E"), fold_range("ME")
+
+    def pair(a, b, ds="ME"):
+        st = L.region_stats(mapping_vs(ds, a, ds, b, True), UV)
+        return f"{st['centre']['median']:.2f} / {st['cart_band']['median']:.2f} / {st['corners']['median']:.2f}"
+    mRMS = [fM[n]["block_stats"]["M"]["rms_radial"] for n in MODELS]
+    lo = cv.get("loso_M", {})
+    cM = summ["cross"]
+    out = []
+    out.append(f"1. **Stickers only (M, drawing geometry) cannot choose a lens model.** All {len(MODELS)} models leave {min(mRMS):.2f}-{max(mRMS):.2f} px radial RMS "
+               f"(noise ~0.1-0.2 px); the Brown k1,k2 fit has distinct local minima of practically equal cost (pp_y ~287 px, and ~485 px which is folded inside the "
+               "image and excluded by the fold barrier; multi-start used). "
+               f"Leave-one-sticker-out RMS is {min(v['rms_px'] for v in lo.values()):.1f}-{max(v['rms_px'] for v in lo.values()):.1f} px for every model. "
+               f"The sticker-only lenses do not straighten the edges (lens(M) -> edges straightness {min(c['M_to_E']['S']['rms'] for c in cM.values()):.2f}-"
+               f"{max(c['M_to_E']['S']['rms'] for c in cM.values()):.2f} px vs {fE[REF]['block_stats']['S']['rms']:.3f} px for the edge fit). "
+               "The models M 'prefers' (p1,p2, rational, KB k1..k4) are those that absorb the geometry mismatch." +
+               (f" DIAGNOSTIC (5 extra geometry parameters, not a main estimate): with board heights + code size free, all radial 2-3-parameter models give the "
+                f"same chi2 ({dg['M'][REF]['chi2']:.1f} vs drawing {dg['M'][REF]['chi2_drawing']:.1f}; RMS {dg['M'][REF]['block_stats']['M']['rms_radial']:.2f} px), "
+                f"i.e. the stickers carry no information on the radial-profile shape; only k1-only (chi2 {dg['M']['B_k1']['chi2']:.1f}) and pp fixed "
+                f"({dg['M']['B_k1k2_ppfix']['chi2']:.1f}) are worse." if dg else ""))
+    out.append(f"2. **Edges (E) need two radial degrees of freedom; one is not enough.** Brown k1 alone runs into the fold barrier (unconstrained optimum folded "
+               f"inside the image), straightness {fE['B_k1']['block_stats']['S']['rms']:.3f} vs {fE[REF]['block_stats']['S']['rms']:.3f} px, VP {fE['B_k1']['block_stats']['V']['rms']:.3f} vs "
+               f"{fE[REF]['block_stats']['V']['rms']:.3f} px, dQAIC +{ic['E']['B_k1']['dQAIC'] - ic['E'][REF]['dQAIC']:.0f}; division l1 (1 parameter, no fold) dQAIC "
+               f"+{ic['E']['D_l1']['dQAIC'] - ic['E'][REF]['dQAIC']:.0f} and worse in CV. All 2-3-parameter radial forms (Brown k1,k2 / k1,k2,k3, KB k1,k2, division l1,l2, "
+               f"rational k4) reach S {min(fE[n]['block_stats']['S']['rms'] for n in ('B_k1k2', 'B_k1k2k3', 'KB_k1k2', 'D_l1l2', 'R_k1k2k4')):.3f}-"
+               f"{max(fE[n]['block_stats']['S']['rms'] for n in ('B_k1k2', 'B_k1k2k3', 'KB_k1k2', 'D_l1l2', 'R_k1k2k4')):.3f} px, which is the floor set by the "
+               "edges' own non-straightness (0.2-0.6 px bows of real cart members). KB k1..k4 over-fits (ME tile CV of VP consistency "
+               f"{cvd('region_tile_ME', 'KB_k1k2k3k4', 'V')} px^2 worse). The overdispersion (design effect) is c = {summ['chat']['E']:.1f} for edges: "
+               f"AIC with the detection noise ({DET_SIGMA} px) or with n = all points always picks the most flexible model and is not usable.")
+    out.append(f"3. **Brown k1,k2 vs a softer periphery (k3-type) is only weakly decidable.** In-sample the block RMS differ by <= 0.005 px; dQAIC / dQBIC "
+               f"(E): Brown k1,k2 {ic['E'][REF]['dQAIC']:.1f} / {ic['E'][REF]['dQBIC']:.1f}, k1,k2,k3 {ic['E']['B_k1k2k3']['dQAIC']:.1f} / {ic['E']['B_k1k2k3']['dQBIC']:.1f}, "
+               f"KB k1,k2 {ic['E']['KB_k1k2']['dQAIC']:.1f} / {ic['E']['KB_k1k2']['dQBIC']:.1f}, division l1,l2 {ic['E']['D_l1l2']['dQAIC']:.1f} / {ic['E']['D_l1l2']['dQBIC']:.1f}. "
+               f"Extrapolation (train without a source region, predict its edges): Brown k1,k2 straightness RMS {cv['region_src_E'][REF]['S_rms_px']:.3f} px vs "
+               f"k1,k2,k3 {cv['region_src_E']['B_k1k2k3']['S_rms_px']:.3f}, KB {cv['region_src_E']['KB_k1k2']['S_rms_px']:.3f}, rational k4 {cv['region_src_E']['R_k1k2k4']['S_rms_px']:.3f} "
+               f"(paired dMS KB {cvd('region_src_E', 'KB_k1k2', 'S')}, k3 {cvd('region_src_E', 'B_k1k2k3', 'S')} px^2, i.e. ~1.7-1.9 sigma; the difference comes from the "
+               f"held-out scene edges at the image periphery). k3 = {P('E', 'B_k1k2k3', 'k3'):.3f} +- {sd('E', 'B_k1k2k3', 'k3'):.3f} (E) and puts the fold only "
+               f"{fE['B_k1k2k3']['fold_margin']:.3f} (normalised radius, ~{fE['B_k1k2k3']['fold_margin'] * P('E', 'B_k1k2k3', 'fx'):.0f} px) beyond the farthest image corner. "
+               f"The softer-periphery forms agree among themselves (KB k1,k2 vs Brown k1,k2,k3: {pair('KB_k1k2', 'B_k1k2k3')} px, KB vs division l1,l2: "
+               f"{pair('KB_k1k2', 'D_l1l2')} px, KB vs rational k4: {pair('KB_k1k2', 'R_k1k2k4')} px). KB k1,k2 has the lowest QBIC and the best straightness "
+               f"extrapolation, but its VP-consistency extrapolation (ME source-region CV) is worse by {cvd('region_src_ME', 'KB_k1k2', 'V')} px^2, so it fails the strict "
+               "adequacy rule. The cluster "
+               f"differs from Brown k1,k2 by {mreg('ME', 'B_k1k2k3')} px (k3) and {mreg('ME', 'KB_k1k2')} px (KB) (rot.-comp. median centre / cart band / corners, ME), "
+               f"largely through a 3-4 px shift of f and pp (f {P('ME', REF, 'fx'):.0f} vs {P('ME', 'KB_k1k2', 'fx'):.0f}), i.e. inside the f uncertainty "
+               f"(+-{sd('ME', REF, 'f'):.0f} px). -> k3 is only *consistent* with the data, not determined; it is fixed in the recommended model and the difference "
+               "is carried as the model-choice part of the mapping uncertainty (Brown k1,k2,k3 is the natural alternative, `method_alt_brown_k1k2k3.json`).")
+    dgs = ""
+    if dg:
+        a = dg["edges"]["no_rack_tube"]["B_k1k2p1p2"]["P"]
+        b = dg["edges"]["no_scene"]["B_k1k2p1p2"]["P"]
+        c = dg["ME"]["B_k1k2p1p2"]["P"]
+        dgs = (f" Without the rack tube edge the E fit jumps to f {a['fx']:.0f}, p1 {a['p1']:.4f}, p2 {a['p2']:.4f}; without the scene edges to f {b['fx']:.0f}. "
+               f"DIAGNOSTIC: with the relaxed sticker geometry the joint fit gives p1 {c['p1']:.4f}, p2 {c['p2']:.4f}, f {c['fx']:.0f} - the drawing-geometry value is an artefact.")
+    out.append(f"4. **Tangential p1,p2: not determined, fix 0.** Edges: p1 = {P('E', 'B_k1k2p1p2', 'p1'):.4f} +- {sd('E', 'B_k1k2p1p2', 'p1'):.4f}, "
+               f"p2 = {P('E', 'B_k1k2p1p2', 'p2'):.4f} +- {sd('E', 'B_k1k2p1p2', 'p2'):.4f}, f +-{sd('E', 'B_k1k2p1p2', 'f'):.0f} px (vs +-{sd('E', REF, 'f'):.0f} without). "
+               f"Joint with drawing geometry: p1 = {P('ME', 'B_k1k2p1p2', 'p1'):.4f} +- {sd('ME', 'B_k1k2p1p2', 'p1'):.4f}, f {P('ME', 'B_k1k2p1p2', 'fx'):.0f}, pp_y {P('ME', 'B_k1k2p1p2', 'cy'):.0f}: "
+               f"stickers improve (LOSO {cv['loso_ME']['B_k1k2p1p2']['rms_px']:.1f} vs {cv['loso_ME'][REF]['rms_px']:.1f} px) while the edges get worse in CV "
+               f"(ME tile VP {cvd('region_tile_ME', 'B_k1k2p1p2', 'V')}, E source straightness {cvd('region_src_E', 'B_k1k2p1p2', 'S')} px^2) - p1,p2 absorb the "
+               f"sticker geometry mismatch.{dgs} Mapping change caused by p1,p2 in ME: {mreg('ME', 'B_k1k2p1p2')} px.")
+    out.append(f"5. **fx != fy: not determined, fix fx = fy.** E: fx {P('E', 'B_k1k2_fxfy', 'fx'):.0f} +- {sd('E', 'B_k1k2_fxfy', 'fx'):.0f}, fy {P('E', 'B_k1k2_fxfy', 'fy'):.0f} "
+               f"+- {sd('E', 'B_k1k2_fxfy', 'fy'):.0f}; ME fx {P('ME', 'B_k1k2_fxfy', 'fx'):.0f} +- {sd('ME', 'B_k1k2_fxfy', 'fx'):.0f}, fy {P('ME', 'B_k1k2_fxfy', 'fy'):.0f} "
+               f"+- {sd('ME', 'B_k1k2_fxfy', 'fy'):.0f}; dQAIC(E) {ic['E']['B_k1k2_fxfy']['dQAIC'] - ic['E'][REF]['dQAIC']:+.1f}; CV neutral. (A 2 MP webcam with square "
+               "pixels is expected; the data neither confirm nor refute an aspect ratio at the ~3 % level.)")
+    out.append(f"6. **Principal point: free (determined by the edges).** E: ({P('E', REF, 'cx'):.0f} +- {sd('E', REF, 'cx'):.0f}, {P('E', REF, 'cy'):.0f} +- {sd('E', REF, 'cy'):.0f}) px "
+               f"(cluster-robust); fixing it at the image centre costs dQAIC +{ic['E']['B_k1k2_ppfix']['dQAIC'] - ic['E'][REF]['dQAIC']:.0f} (E) / "
+               f"+{ic['ME']['B_k1k2_ppfix']['dQAIC'] - ic['ME'][REF]['dQAIC']:.0f} (ME) and worsens the tile CV of VP consistency ({cvd('region_tile_E', 'B_k1k2_ppfix', 'V')} px^2, E). "
+               f"Over the leave-region-out folds (E) pp moves within cx {min(fr['cx']):.0f}-{max(fr['cx']):.0f}, cy {min(fr['cy']):.0f}-{max(fr['cy']):.0f} px and f within "
+               f"{min(fr['fx']):.0f}-{max(fr['fx']):.0f} px (ME: f {min(frm['fx']):.0f}-{max(frm['fx']):.0f}) - the focal length from edges is fragile (few VP constraints), which "
+               f"is a parameter, not a model-choice issue. Mapping change pp fixed vs free: {mreg('ME', 'B_k1k2_ppfix')} px. "
+               + (f"Observation: the relaxed-geometry sticker diagnostic puts pp_y at {dg['M'][REF]['P']['cy']:.0f} px, ~{P('E', REF, 'cy') - dg['M'][REF]['P']['cy']:.0f} px above the edge value - "
+                  "the stickers and the edges do not agree on pp_y even after the geometry relaxation." if dg else ""))
+    conv = summ["conversion"]["ME"]
+    cs = "; ".join(f"{NICE[n]}: {conv[n]['full']['err']['centre']['median']:.3f} / {conv[n]['full']['err']['cart_band']['median']:.3f} / "
+                   f"{conv[n]['full']['err']['corners']['median']:.3f} px (max {conv[n]['full']['err']['whole_image']['max']:.2f})" for n in ("KB_k1k2", "D_l1l2", "R_k1k2k4", "R_k1k2k3k4k5k6"))
+    out.append(f"7. **Non-Brown models convert to OpenCV Brown [k1,k2,p1,p2,k3] with small error** (median centre / band / corners): {cs}. With k1,k2 only the "
+               f"conversion error of KB k1,k2 is {conv['KB_k1k2']['k1k2']['err']['cart_band']['median']:.2f} px (band) / {conv['KB_k1k2']['k1k2']['err']['corners']['median']:.2f} px (corners).")
+    mpu = summ["mapping_param_unc"]["ME"][REC]["stats"]
+    mc = mcu.get("ME")
+    out.append(f"8. **Recommendation (model adequate to the data): {NICE[REC]} with fx = fy, pp free, p1 = p2 = k3 = 0.** Determined: f, cx, cy and the "
+               "2-parameter radial profile (k1, k2 are strongly correlated; the mapping, not the individual k's, is what the data fix). Only consistent: k3 / softer "
+               "periphery (Brown k1,k2,k3, division l1,l2, rational k4 and - in-sample - KB k1,k2 fit equally well). Not determinable: p1, p2, fx/fy, rational / "
+               "higher-order terms; they are fixed. "
+               + (f"Model-choice part of the mapping uncertainty (RMS over the adequate radial alternatives {', '.join(NICE[m] for m in mcu['models'] if m != REC)}; ME, "
+                  f"rot.-comp.): centre {mc['centre']['rms_median_px']:.2f}, cart band {mc['cart_band']['rms_median_px']:.2f}, corners {mc['corners']['rms_median_px']:.2f} px, "
+                  if mc else "") +
+               (f"vs the parameter part of the same model (sandwich samples): centre {mpu['centre']['rms_median_px']:.2f}, cart band {mpu['cart_band']['rms_median_px']:.2f}, "
+                f"corners {mpu['corners']['rms_median_px']:.2f} px; add them in quadrature." if mpu else ""))
+    return out
 
 
 if __name__ == "__main__":
-    S = main()
+    import sys
+
+    if "--reuse" in sys.argv and os.path.exists(f"{CACHE}/altmodels_summary_raw.json"):
+        S = load_json(f"{CACHE}/altmodels_summary_raw.json")  # skip the (slow) recomputation of sections 1-4
+    else:
+        S = main()
     plot_mapping(S, "ME")
     plot_radial(S, "ME")
     plot_cv(S)
     ADQ = adequacy(S)
     adequate = [n for n in MODELS if ADQ[n]["adequate"]]
-    MCU = dict(models=adequate, recommended=REC)
+    # model-choice set: adequate alternative radial profiles (same f / pp treatment as the recommended model);
+    # fx != fy (not determined) is reported separately
+    mc_set = [n for n in adequate if MODELS[n].get("f", "single") == "single" and MODELS[n].get("pp", "free") == "free"]
+    MCU = dict(models=mc_set, recommended=REC, adequate=adequate)
     for ds in ("E", "ME"):
-        MCU[ds] = model_choice_unc(S, REC, adequate, ds)
+        MCU[ds] = model_choice_unc(S, REC, mc_set, ds)
     S["adequacy"] = ADQ
     S["recommended"] = REC
     S["model_choice_mapping_unc"] = MCU

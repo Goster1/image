@@ -4,6 +4,6 @@
 * native: fx = 1374.1 +- 34, fy = 1374.1, cx = 933.88 +- 19, cy = 452.68 +- 18, k1 = -0.30546 +- 0.017, k2 = 0.07653 +- 0.0099, p1 = 0.0086356 +- 0.0029, p2 = -0.0015217 +- 0.0025
 * blocks: M 4.498 px, V 0.359 px, S 0.232 px; sticker corners radial RMS 6.36 px
 * dQAIC (M/E/ME): 0.0 / 16.8 / 15.1; fold margin 61.967
-* adequate: True
-* mapping 1-sigma (parameter samples, rot.-comp.): centre 3.91 px, cart_band 14.65 px, corners 20.73 px
+* adequate: False - region_src_E S: held-out MS worse than B_k1k2 by 0.0172 +- 0.0056 px^2; region_tile_ME V: held-out MS worse than B_k1k2 by 0.589 +- 0.23 px^2; region_src_ME S: held-out MS worse than B_k1k2 by 0.0149 +- 0.0045 px^2
+* mapping 1-sigma (parameter samples, rot.-comp.): centre 3.63 px, cart_band 12.34 px, corners 18.73 px
 * mapping vs Brown k1,k2 (same data, rot.-comp. median): centre 4.37 px, cart_band 17.57 px, corners 23.194 px, whole_image 17.831 px

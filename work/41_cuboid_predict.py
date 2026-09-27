@@ -405,7 +405,9 @@ def main():
     for i, (txt, col) in enumerate([("predicted (drawing): markers-only camera", (60, 60, 255)), ("predicted: cuboid joint camera", (255, 255, 0)),
                                     ("predicted: edge-only lens + sticker poses", (0, 220, 255)), ("traced edges compared", (0, 255, 0)),
                                     ("other traced edges", (170, 170, 170))]):
-        cv2.putText(img, txt, (930, 520 + 22 * i), cv2.FONT_HERSHEY_SIMPLEX, 0.55, col, 1, cv2.LINE_AA)
+        if i == 0:
+            cv2.rectangle(img, (875, 962), (1275, 1072), (0, 0, 0), -1)
+        cv2.putText(img, txt, (885, 982 + 21 * i), cv2.FONT_HERSHEY_SIMPLEX, 0.47, col, 1, cv2.LINE_AA)
     cv2.imwrite(f"{RESULTS}/cuboid_overlay.png", img)
 
     # -------------------------------------------------------------- zoomed crops

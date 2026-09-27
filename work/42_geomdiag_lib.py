@@ -181,11 +181,16 @@ def fit_vp_lines(und, edges, v0=(930.0, 60.0), subsample=1):
 # ------------------------------------------------------------------------------------------
 # markers / columns
 # ------------------------------------------------------------------------------------------
-def markers():
+def markers(corners="final"):
+    """corners="final": edge corners of markers_final (default); "bias_corrected": the same corrected for the
+    measured dark-side edge-localisation bias (corners_px_bias_corrected, phase-1 review)."""
     ms = load_markers()
     raw = {(m["cart"], m["id"]): m for m in load_json(f"{CACHE}/markers_final.json")}
     for m in ms:
         r = raw[(m["cart"], m["id"])]
+        if corners == "bias_corrected":
+            bc = r["corners_px_bias_corrected"]
+            m["corners_px"] = np.array([bc[j] if bc[j] is not None else m["corners_px"][j] for j in range(4)], float)
         m["side_lines"] = r["side_lines"]
         m["side_valid"] = r["side_valid"]
         s = np.array(m["std"], float)

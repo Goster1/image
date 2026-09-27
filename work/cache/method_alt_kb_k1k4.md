@@ -4,7 +4,7 @@
 * native: fx = 1437.7 +- 32, fy = 1437.7, cx = 927.5 +- 8, cy = 502.15 +- 5.4, k1 = -0.10168 +- 0.046, k2 = 0.46671 +- 0.3, k3 = -1.3264 +- 0.8, k4 = 1.0721 +- 0.66
 * blocks: M 6.517 px, V 0.349 px, S 0.230 px; sticker corners radial RMS 9.22 px
 * dQAIC (M/E/ME): 2.1 / 7.6 / 9.6; fold margin 35.732
-* adequate: True
-* mapping 1-sigma (parameter samples, rot.-comp.): centre 4.07 px, cart_band 16.49 px, corners 23.07 px
+* adequate: False - region_tile_ME V: held-out MS worse than B_k1k2 by 0.265 +- 0.088 px^2
+* mapping 1-sigma (parameter samples, rot.-comp.): centre 2.14 px, cart_band 8.76 px, corners 12.39 px
 * mapping vs Brown k1,k2 (same data, rot.-comp. median): centre 0.213 px, cart_band 1.643 px, corners 1.429 px, whole_image 1.455 px
 * conversion to OpenCV Brown (k1,k2,p1,p2,k3): error median centre 0.498 px, cart_band 0.321 px, corners 0.308 px, whole_image 0.321 px

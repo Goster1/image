@@ -35,6 +35,32 @@ Exact-edge check (implied shift of the traced edge from its drawing line with th
 * cart80_x_board0_front: joint +6.5 mm along Y (-4.41 px); markers-only +7.8 mm (-5.32 px)
 * cart80_x_board1600_front: joint +6.4 mm along Y (-3.49 px); markers-only +7.7 mm (-4.25 px)
 
+## Diagnostic: which single dimension explains the mismatch
+
+Script `work/41_cuboid_diag.py` (full table `work/cache/cuboid_diag.md`, plot `results/cuboid_diag.png`). DIAGNOSTIC ONLY: one drawing dimension freed at a time; the main result above keeps the drawing.
+
+* main:k1k2_ppfix|lips|drawing: none; chi2_ref 223; corners 5.85 px/pt, exact edges 8.43 px, lips 2.64 px; f 1339, k1 -0.148, k2 -0.130; back rail (not fitted) -17.8 px (-60 mm in Z)
+* main:k1k2_ppfix|lips|dz_top: dz_top +65.0 +- 1.6; chi2_ref 100; corners 3.60 px/pt, exact edges 3.72 px, lips 2.24 px; f 1468, k1 -0.434, k2 0.291; back rail (not fitted) +1.5 px (+5 mm in Z)
+* main:k1k2_ppfix|lips|dz_top@cart: dz_top@80 +69.9 +- 2.1, dz_top@310 +61.9 +- 1.7; chi2_ref 99; corners 3.55 px/pt, exact edges 4.02 px, lips 2.24 px; f 1469, k1 -0.444, k2 0.308; back rail (not fitted) +2.6 px (+9 mm in Z)
+* main:k1k2_ppfix|lips|dz_A: dz_A -39.1 +- 1.5; chi2_ref 146; corners 4.41 px/pt, exact edges 7.02 px, lips 2.49 px; f 1331, k1 -0.219, k2 -0.040; back rail (not fitted) -19.1 px (-63 mm in Z)
+* main:k1k2_ppfix|lips|dz_E: dz_E -95.6 +- 5.1; chi2_ref 202; corners 6.18 px/pt, exact edges 8.55 px, lips 1.62 px; f 1334, k1 -0.168, k2 -0.098; back rail (not fitted) -17.7 px (-60 mm in Z)
+* main:k1k2_ppfix|lips|sz_shelves: sz_shelves +82.5 +- 9.1; chi2_ref 206; corners 5.74 px/pt, exact edges 6.45 px, lips 2.48 px; f 1484, k1 -0.313, k2 0.136; back rail (not fitted) -15.1 px (-55 mm in Z)
+* main:k1k2_ppfix|lips|sy_depth: sy -5.0 +- 3.4; chi2_ref 223; corners 5.82 px/pt, exact edges 8.21 px, lips 2.65 px; f 1337, k1 -0.135, k2 -0.148; back rail (not fitted) -18.5 px (-62 mm in Z)
+* main:k1k2_ppfix|lips|code_mm: code_mm +87.5 +- 0.6; chi2_ref 220; corners 5.74 px/pt, exact edges 8.55 px, lips 2.66 px; f 1337, k1 -0.135, k2 -0.147; back rail (not fitted) -18.0 px (-60 mm in Z)
+* main:k1k2_ppfix|lips|dz_top+dz_E (2): dz_top +66.0 +- 1.6, dz_E -74.3 +- 4.2; chi2_ref 78; corners 3.66 px/pt, exact edges 3.69 px, lips 1.52 px; f 1464, k1 -0.416, k2 0.260; back rail (not fitted) +1.4 px (+5 mm in Z)
+* k1k2_ppfree|lips|dz_top: dz_top +67.1 +- 1.5; chi2_ref 91; corners 3.10 px/pt, exact edges 4.41 px, lips 2.24 px; f 1442, k1 -0.440, k2 0.314, pp (978, 399); back rail (not fitted) +1.5 px (+5 mm in Z)
+* k1k2_ppfree|nolips|dz_top: dz_top +67.8 +- 2.5; chi2_ref 64; corners 3.08 px/pt, exact edges 4.37 px; f 1438, k1 -0.449, k2 0.331, pp (971, 396); back rail (not fitted) +1.7 px (+6 mm in Z)
+
+## Conclusions (determined / consistent / not determinable)
+
+1. Main cuboid fit (drawing exact, k1k2_ppfix: fx=fy, pp fixed at image centre, k1+k2): f = 1327 +- 46 px (cluster bootstrap; over 14 model x weighting variants 1294..1386), k1 = -0.118 +- 0.152, k2 = -0.177 +- 0.282; corners 5.66 px per point (max 10.4), sticker sides 2.49 px, exact edges 7.64 px (~40x the corner noise). The exact edges add almost nothing (3 short edges); free-pp variants are unstable (cx 530..955) because pp is the knob that trades the exact edges against the stickers. The distortion contradicts the straight-edge (plumb-line) distortion, as for the marker-only fit: the drawing geometry biases the estimate - only CONSISTENT with the data at the 5-8 px level.
+2. The three exact edges are the edges they claim to be (crops: top-face outer edge of the X=0 board of cart 310 against the floor; top-face front edges of both cart-80 boards, a 1-2 px dark front face beside them) and agree with their own board's stickers to <= 4.6 mm, but every global drawing camera misses them by board0_outer -8.9 px (-19 mm in X), x_board0_front -4.4 px (+7 mm in Y), x_board1600_front -3.5 px (+6 mm in Y) - they inherit the sticker inconsistency.
+3. Shelf lips vs prediction (joint camera): -1.8..+8.7 px (camera 1-sigma 2.1..4.4 px); the lips are sensitive mainly to Y (0.37..0.60 px/mm) and only weakly to Z (0.06..0.18 px/mm), so a single lip fixes its height only to ~+-15..40 mm. With one common lip height per cart the five lips agree only to 2.5..4.3 px rms (markers-only, joint and shelf-anchored cameras): lip outlines / fronts differ by a few mm between shelves.
+4. The clearest misfit is at the TOP level: the cart-80 back top rail lies -19.3 px (markers-only) / -18.7 px (joint) from the drawing top-back edge (= -61 mm in Z), but only -1.8 px when the camera is anchored to the shelf stickers (edge-only lens) - which in turn puts the top stickers +60 / +55 mm (cart 80 / 310) above the drawing and the top-board edges 11..23 px off.
+5. Single dimension: the top-plate surface (end boards with the top stickers) +65 +- 2 mm above the drawing relative to shelves and frame (per cart +70 / +62 mm; pp free +67 mm) explains most of it: chi2_ref 223 -> 100, corners 5.9 -> 3.6 px, exact edges 8.4 -> 3.7 px, and the NOT fitted back rail moves to +1.5 px (+5 mm). No other single dimension comes close (chi2_ref dz_A 146, dz_B 217, dz_C 211, dz_D 207, dz_E 202, sz_shelves 206, sx_width 223, sy_depth 223, code_mm 220). Stickers alone cannot tell this from 'all shelves ~65 mm lower'; the back top rail can, IF it really is at the top-plate level (its height is not in the drawing): with all shelf rows lowered instead (dz_A..E) the rail stays ~60 mm off, so it groups with the shelves/frame and puts the offset on the end boards with the top stickers. Observation only - the main result keeps the drawing.
+6. Second order: shelf E's lip lies below its drawing height relative to A-D: dz_E -74 +- 4 mm on top of dz_top (lips 2.24 -> 1.52 px), in both carts; E has no sticker, so this rests on the identification of the lowest traced lip.
+7. With dz_top freed (diagnostic) the lens moves to f = 1468 (pp fixed) / 1442 with pp (978, 399), k1 -0.44, k2 0.31 - the drawing-geometry f (1327) is pulled down by ~120-140 px by the top-plate mismatch.
+
 ## Prediction check: modelled cart lines vs traced edges
 
 Script `work/41_cuboid_predict.py`; full table `work/cache/cuboid_offsets.md/.json`; plots `results/cuboid_overlay.png`, `results/cuboid_crops.png`, `results/cuboid_crops_anchor.png`, `results/cuboid_offsets.png`.

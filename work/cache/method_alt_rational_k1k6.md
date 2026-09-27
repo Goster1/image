@@ -5,6 +5,6 @@
 * blocks: M 6.349 px, V 0.332 px, S 0.234 px; sticker corners radial RMS 8.98 px
 * dQAIC (M/E/ME): 8.8 / 0.0 / 0.0; fold margin 0.450
 * adequate: True
-* mapping 1-sigma (parameter samples, rot.-comp.): centre 2.26 px, cart_band 9.35 px, corners 12.75 px
+* mapping 1-sigma (parameter samples, rot.-comp.): centre 2.71 px, cart_band 10.67 px, corners 14.95 px
 * mapping vs Brown k1,k2 (same data, rot.-comp. median): centre 0.301 px, cart_band 0.652 px, corners 0.68 px, whole_image 0.46 px
 * conversion to OpenCV Brown (k1,k2,p1,p2,k3): error median centre 0.341 px, cart_band 0.449 px, corners 0.167 px, whole_image 0.333 px

@@ -5,5 +5,5 @@
 * blocks: M 6.097 px, V 0.361 px, S 0.229 px; sticker corners radial RMS 8.62 px
 * dQAIC (M/E/ME): 3.8 / 14.3 / 16.6; fold margin 75.038
 * adequate: True
-* mapping 1-sigma (parameter samples, rot.-comp.): centre 2.22 px, cart_band 11.96 px, corners 20.31 px
+* mapping 1-sigma (parameter samples, rot.-comp.): centre 3.01 px, cart_band 15.98 px, corners 27.67 px
 * mapping vs Brown k1,k2 (same data, rot.-comp. median): centre 0.193 px, cart_band 1.357 px, corners 2.706 px, whole_image 1.597 px

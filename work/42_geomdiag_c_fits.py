@@ -229,6 +229,17 @@ def main():
                   f"f {it['f'][0]:.0f}+-{it['f'][1]:.0f} pp ({it['cx'][0]:.0f},{it['cy'][0]:.0f})+-({it['cx'][1]:.0f},{it['cy'][1]:.0f}) "
                   f"k1 {it['k1'][0]:.3f} k2 {it['k2'][0]:.3f} fold {s['fold_margin']:+.3f} | rows {({kk: round(vv, 2) for kk, vv in s['per_row'].items()})} "
                   f"| h {s['cam_height_mm'][80]:.0f}/{s['cam_height_mm'][310]:.0f} ang {s['floor_normal_angle_deg']:.2f} | {gtxt}")
+    # the same with bias-corrected corners (dark-side edge-localisation bias removed; phase-1 review)
+    Pb = points(G.markers("bias_corrected"))
+    out["free_bias_corrected"] = {}
+    for v in ("drawing", "board_dz", "top_dz_cart", "code_size", "code_size+board_dz"):
+        ba = BA(Pb, v, dist_mode="free", pl=pl)
+        r = ba.solve(ba.x0())
+        s = summarise(ba, r)
+        out["free_bias_corrected"][v] = s
+        it = s["intr"]
+        print(f"[bias-corr  ] {v:30s} rms {s['rms']:.2f} f {it['f'][0]:.0f} pp ({it['cx'][0]:.0f},{it['cy'][0]:.0f}) k1 {it['k1'][0]:.3f} "
+              f"k2 {it['k2'][0]:.3f} fold {s['fold_margin']:+.3f} |", {k: round(val if k != "code_scale" else 90 * (1 + val), 1) for k, (val, sd) in s["geom"].items()})
     save_json({m: {v: {k: val for k, val in s.items() if k != "resid"} for v, s in d.items()} for m, d in out.items()},
               f"{CACHE}/geomdiag_fits.json")
 

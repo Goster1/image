@@ -280,8 +280,10 @@ def main():
             fh.write(f"| {k} | {v['f']:.0f} | {v['sd_f']:.0f} | ({v['cx']:.0f}, {v['cy']:.0f}) | {v['rms']:.3f} |\n")
         fh.write("\nBootstrap over stickers (robust sigma = half the 16-84 % range): " + "; ".join(
             f"{k}: f median {v['f_median']:.0f}, sigma {v['f_sd_robust']:.0f} px (16-84 %: {v['f_q16']:.0f}-{v['f_q84']:.0f})" for k, v in boot.items()) + "\n")
-        fh.write("\nVerdict: too weak (profile of the corner RMS vs f is almost flat: 1.69 px at 1150, 1.48 px at 1600, 1.49 px at 1750) and biased by "
-                 "the non-parallel stickers (shape-model RMS 1.5 px, 0.17 px when each sticker gets its own tilt). See geometry_diagnosis.md.\n")
+        pr = {p["f"]: p["rms_corners"] for p in prof}
+        fh.write(f"\nVerdict: too weak (profile of the corner RMS vs f is almost flat: {pr[1150.0]:.2f} px at 1150, {pr[1400.0]:.2f} px at 1400, "
+                 f"{pr[1600.0]:.2f} px at 1600, {pr[1750.0]:.2f} px at 1750) and biased by the non-parallel stickers (shape-model RMS 1.5 px, "
+                 "0.17 px when each sticker gets its own tilt). See geometry_diagnosis.md.\n")
 
     # plot
     fig, axs = plt.subplots(1, 2, figsize=(13, 4.8), dpi=110)

@@ -60,7 +60,9 @@ Grazing side-line intersections turn the 1-3 px lateral misalignment of the colu
 column and are not used for conclusions. MC: N = 3000, corner + side-line noise + VP (3 px floor).)
 
 Sensitivity to the distortion choice (Z_top from A,B,C, per column): plumb centre fixed / centre free / k1 only
-agree within 0-4 mm at every column; even no undistortion changes it by at most 12 mm (310 / X=1600).
+agree within 0-5 mm at every column; even no undistortion changes it by at most 12 mm (310 / X=1600).
+With the bias-corrected corners (dark-side edge bias removed) the 4-corner-column values change by <= 2.7 mm
+(e.g. 310/X0: 74.7 -> 77.4, 80/X0: 0.2 / -6.9 -> -1.7 / -8.0) and the collinearity RMS by <= 0.06 px.
 
 Observations (1):
 * **Collinearity fails everywhere:** the stacked corners deviate from one image line by 0.23-2.55 px RMS
@@ -88,21 +90,23 @@ Observations (1):
 
 In-board test (one end board = 2 stickers on one plate, 8 corners, drawing layout; homography + one freed element):
 
-| board | plain H RMS [px] | + code size: RMS / code [mm] | ArUco-subpixel corners: plain -> code size / code [mm] | equivalent: Y spacing too large by [mm] | + relative in-plane rotation: RMS / deg | + relative height of 2nd sticker: RMS |
-|---|---|---|---|---|---|---|
-| 80 / X=0 | 0.66 | 0.26 / 87.86 | 0.53 -> 0.37 / 88.70 | 8.0 | 0.65 / 0.42 | 0.24 |
-| 80 / X=1600 | 0.63 | 0.38 / 88.01 | 0.59 -> 0.36 / 88.17 | 7.5 | 0.60 / 0.64 | 0.56 |
-| 310 / X=0 | 0.76 | 0.32 / 87.40 | 0.69 -> 0.32 / 87.71 | 9.8 | 0.76 / -0.20 | 0.71 |
-| 310 / X=1600 | 1.03 | 0.20 / 86.57 | 0.81 -> 0.15 / 87.31 | 13.1 | 1.01 / -0.58 | 0.35 |
+| board | plain H RMS [px] | + code size: RMS / code [mm] | ArUco-subpixel corners: plain -> code size / code [mm] | equivalent: Y spacing too large by [mm] | + relative in-plane rotation: RMS / deg | + relative height of 2nd sticker: RMS | **bias-corrected corners**: plain RMS / code [mm] / + rotation RMS |
+|---|---|---|---|---|---|---|---|
+| 80 / X=0 | 0.66 | 0.26 / 87.86 | 0.53 -> 0.37 / 88.70 | 8.0 | 0.65 / 0.42 | 0.24 | **0.25** / 89.85 / 0.21 (+0.41 deg) |
+| 80 / X=1600 | 0.63 | 0.38 / 88.01 | 0.59 -> 0.36 / 88.17 | 7.5 | 0.60 / 0.64 | 0.56 | **0.39** / 89.96 / 0.27 (+1.00 deg) |
+| 310 / X=0 | 0.76 | 0.32 / 87.40 | 0.69 -> 0.32 / 87.71 | 9.8 | 0.76 / -0.20 | 0.71 | **0.33** / 89.77 / 0.30 (-0.44 deg) |
+| 310 / X=1600 | 1.03 | 0.20 / 86.57 | 0.81 -> 0.15 / 87.31 | 13.1 | 1.01 / -0.58 | 0.35 | **0.22** / 90.25 / 0.19 (-0.33 deg) |
 
-* Two coplanar squares at the drawing layout should fit a homography to ~0.1 px; they fit to 0.63-1.03 px
-  (plumb centre free: 0.59-1.03; no undistortion 0.89-1.32). **No radial distortion fixes it**: the best joint
+* Two coplanar squares at the drawing layout should fit a homography to ~0.1 px; with the raw edge corners they fit
+  to 0.63-1.03 px (plumb centre free: 0.59-1.03; no undistortion 0.89-1.32). **No radial distortion fixes it**: the best joint
   k1, k2 for the four boards leaves 0.74-1.15 px (centre fixed) / 0.59-0.88 px (centre free, at an absurd
   lens: k1 = +0.44, k2 = -0.99, centre (985, 348)).
-* One number per board explains most of it: the ratio code size / sticker spacing. Within one board a code of
-  86.6-88.0 mm (ArUco corners 87.3-88.7 mm) at 330 mm spacing is indistinguishable from a 90 mm code at
-  337.5-343.1 mm spacing (a homography absorbs the common scale). A relative rotation does not help; a relative
-  height helps only at 80/X0.
+* One number per board explains most of it: the ratio code size / sticker spacing (code 86.6-88.0 mm at 330 mm,
+  ArUco-subpixel corners 87.3-88.7 mm, or equivalently a 90 mm code at 337.5-343.1 mm spacing).
+  **This is a detection systematic, not geometry:** with the corners corrected for the measured dark-side
+  edge-localisation bias (0.67 px, phase-1 review; `corners_px_bias_corrected`), the plain in-board RMS drops to
+  0.22-0.39 px and the implied code is 89.8-90.3 mm. The remaining 0.2-0.4 px (2-4x noise) shrinks a little with a
+  relative in-plane rotation of 0.3-1.0 deg (0.19-0.30 px) - small plate/sticker irregularities.
 * Whole top of a cart (16 corners, one plane, 1435 x 330 mm rectangle of centres): H RMS 2.00 px (cart 80),
   2.72 px (cart 310); with a vertical shift of the second board along the post-VP direction: 1.98 / 1.86 px.
   The two end boards are **not consistent with one plane in the drawing layout**, and a pure relative height
@@ -159,7 +163,8 @@ the floor normals differ by 0.7-2.4 deg.)
 Answer to (3):
 * **No single element, and no compact combination, brings the RMS near the detection noise (0.1-0.2 px).**
   The best 1-2-element fits reach 2.7-3.0 px; with 13 extra parameters 1.9 px. Only a free pose for every
-  sticker reaches 0.17 px (section 5), i.e. the corners themselves are fine and each sticker is a perfect square.
+  sticker reaches 0.17 px (section 5), i.e. the corners themselves are fine and each sticker is consistent with a
+  flat square.
 * The dominant, compact element is **the height of the top stickers relative to the shelf stickers**: top
   plate / end boards +60..+80 mm, or equivalently all shelves (or shelf-sticker cards) 60-90 mm lower. Heights of
   the four end boards individually: +61, +64, +71, +81 mm (+- 5-8). The metric fits cannot separate "top higher"
@@ -168,8 +173,9 @@ Answer to (3):
 * **Consistency with the straight edges (independent evidence):** with the drawing geometry the free distortion
   is k1 = -0.087, k2 = -0.231 (at f0 = 1300) - a FOLDED lens (fold margin -0.18: not invertible inside the
   image) and incompatible with the plumb-line from 61 verified edges (-0.292, 0.072); fixing the plumb
-  distortion costs dAIC = +20 for the drawing. With the end-board heights + code size freed, the stickers alone
-  return k1 = -0.295, k2 = 0.105 - essentially the plumb-line distortion, valid (fold margin > 0) - and fixing
+  distortion costs dAIC = +20 for the drawing. With the end-board heights freed (and the code size freed, or
+  equivalently bias-corrected corners), the stickers alone return k1 = -0.295, k2 = 0.105 - essentially the
+  plumb-line distortion, valid (fold margin > 0) - and fixing
   the plumb distortion costs only dAIC = +6 (board heights alone +3, heights + tilts -3). So the geometry
   deviation, not the lens, is what distorts the sticker-only lens estimate. (Free-distortion fits with
   k2 <~ 0 - drawing, code size, board tilts, heights + tilts - are folded; with the plumb distortion fixed every
@@ -177,8 +183,12 @@ Answer to (3):
 * **Implied intrinsics:** drawing f = 1309 +- 20, pp (938, 485); every variant that frees the top/shelf heights gives
   f = 1430-1495 (+-11-34), pp_y 356-396, pp_x 890-985 - i.e. with the drawing geometry f comes out 120-190 px lower
   and pp_y 90-130 px larger (further down in the image). The code size alone moves nothing (f 1309).
-* **Code size:** within the boards the effect is clear (see 2); globally it matters little (5.34 -> 5.21 px alone,
-  2.88 -> 2.74 px with heights) and is equivalent to a 2-4 % larger sticker spacing inside each board.
+* **Code size = edge-localisation bias:** with the uncorrected edge corners a free code size returns 86.8-87.6 mm
+  (5.34 -> 5.21 px alone, 2.88 -> 2.74 px with heights). With the bias-corrected corners (script c, series
+  `free_bias_corrected`) the code comes back to 89.1 (alone) / 89.9 mm (with the board heights), the drawing fit
+  gives 5.25 px (f 1309, folded lens), and the end-board heights alone give 2.76 px, f = 1443, pp (937, 393),
+  k1, k2 = -0.295, 0.105 at f0 = 1300 (= plumb-line), heights +66 / +70 / +61 / +83 mm. The height finding
+  is unchanged by the bias correction; the code-size "finding" disappears.
 
 ### Pixel effect of the diagnosed deviations (camera of the diagnostic fit held fixed)
 
@@ -188,9 +198,10 @@ Answer to (3):
 | end board 80 / X=1600 height | +71 mm vs 0 | 23.8 / 24.4 px | x 1288-1516, y 899-952 (bottom right) | +-5 mm; cross ratio +50..+64 |
 | end board 310 / X=0 height | +61 mm vs 0 | 19.8 / 20.3 px | x 563-807, y 886-977 (bottom left) | +-6 mm; cross ratio +63..+75 |
 | end board 310 / X=1600 height | +81 mm vs 0 | 19.8 / 23.0 px | x 226-480, y 31-178 (top left) | +-8 mm; cross ratio +55..+85 |
-| code size (in-board ratio) | 86.6-88.0 mm vs 90 (or spacing +7..+13 mm vs 330) | 1.0 / 1.2 px (corners of all stickers) | all stickers | +-0.8 mm (BA), board-to-board spread 1.5 mm |
+| apparent code size (in-board ratio), uncorrected corners | 86.6-88.0 mm vs 90 | 1.0 / 1.2 px (corners of all stickers) | all stickers | NOT geometric: bias-corrected corners give 89.8-90.3 mm (edge-localisation bias 0.67 px) |
 | end-board tilt about the cart Y axis (section 5, f = 1400) | 4-13 deg vs 0 | 0.7-4.0 px per corner | top boards (image top and bottom edges) | +-1.4-2.4 deg; f-dependent by ~3 deg / 100 px |
 | lateral scatter of the stacked stickers | 1-6 mm vs 0 (collinearity 0.23-2.55 px) | 0.2-3.0 px | all four sticker stacks | noise 0.1-0.2 px |
+| in-board remainder after the bias correction | - | 0.22-0.39 px RMS per board | end boards | 2-4x noise |
 | remaining after all of the above | - | 1.9 px RMS | everywhere, largest on shelf rows A-C | - |
 
 With the drawing geometry, the refitted camera leaves 5.34 px RMS / 9.6 px max; the largest residuals are on
@@ -206,7 +217,8 @@ row A (8.0 px RMS, the stickers just below the end boards) and row C (5.4 px).
   does not survive high zoom.)
 * Plate deformation: cart 80, both boards: the back (Y = 450) corner is visibly **curled up**; cart 310 X=0: a grey
   downward flap at the back end; cart 310 X=1600: the back part appears to bend down. The plates are therefore not
-  guaranteed flat - compatible (qualitatively) with the in-board scale anomaly and the tilts of section 5.
+  guaranteed flat - compatible (qualitatively) with the plate tilts of section 5 (the in-board scale anomaly of
+  section 2 is a detection bias, not a plate effect).
 * Shelf stickers sit on small white cards at the shelf fronts; at X=0 of cart 310 the cards show white front faces
   (folded/raised cards, thickness not resolvable), some card corners are hidden by the posts or by the next card.
   No obvious strong tilt of the cards.
@@ -295,9 +307,10 @@ Mapping uncertainty of the method-file lens (f, pp sampled with the sigmas above
    cannot remove even the in-board part).
 2. Each sticker individually is consistent with a projected flat square (0.17 px with a free pose per sticker) - detections
    and the local lens model are fine; the inconsistency is in the relative placement / orientation of stickers.
-3. Within every end board the two stickers are inconsistent with the drawing layout by 0.63-1.03 px (5-10x noise);
-   a code/spacing ratio 2.2-3.8 % below nominal (code 86.6-88.0 mm at 330 mm, or spacing 337-343 mm at 90 mm)
-   removes most of it (0.20-0.38 px).
+3. Within every end board the two stickers are inconsistent with the drawing layout by 0.63-1.03 px when the raw
+   edge corners are used; this is an apparent code/spacing ratio 2.2-3.8 % low and is **explained by the measured
+   dark-side edge-localisation bias** (bias-corrected corners: 0.22-0.39 px, code 89.8-90.3 mm). The stickers on one
+   plate are thus consistent with the drawing to ~0.2-0.4 px; code size and spacing are not in question.
 4. The stacked corners (top, A, B, C) are not collinear: 0.23-2.55 px RMS vs 0.10-0.20 px noise -> the stacked
    stickers scatter laterally by ~1-6 mm around a vertical line.
 5. The cross ratio of the stacks puts the top stickers 50-85 mm above the drawing (relative to the shelf stickers)
@@ -308,7 +321,7 @@ Mapping uncertainty of the method-file lens (f, pp sampled with the sigmas above
 6. The most compact single explanation is a +60..+80 mm offset of the top stickers relative to the shelf stickers
    (end boards +61/+64/+71/+81 mm, or per cart +67/+68 mm; equivalently shelves / shelf cards ~70-90 mm lower).
    It halves the RMS (5.3 -> 2.9 px) and makes the sticker-derived distortion agree with the straight-edge
-   distortion (with the code size: k1 = -0.295, k2 = 0.105 vs plumb -0.292, 0.072), while the drawing geometry
+   distortion (bias-corrected corners or free code size: k1 = -0.295, k2 = 0.105 vs plumb -0.292, 0.072), while the drawing geometry
    forces an edge-incompatible, folded distortion (k1 = -0.09, k2 = -0.23).
 7. The end plates are tilted along the cart X axis, outer end up: 6-13 deg at three plates, 4-5 deg (weak) at
    310/X1600 in the shape diagnostic (f = 1400; ~3 deg per 100 px f-dependent); the metric board-tilt fits agree
@@ -318,7 +331,7 @@ Mapping uncertainty of the method-file lens (f, pp sampled with the sigmas above
 
 **Cannot be decided from these data:**
 9. Top too high vs. shelves (or shelf cards) too low - only the relative offset is observable.
-10. Code size vs. sticker spacing inside a board (only their ratio is observable).
+10. Whether the small in-board remainder (0.2-0.4 px after the bias correction) is plate bending or detection.
 11. The physical cause: the visible board thickness is ~10 mm, so the 60-90 mm are not a box under the stickers;
     the images do not show where the offset sits (frame, shelf heights, card mounting).
 12. A residual of ~2 px remains after every compact geometric element tested (and 1.4-2.0 px among the shelf

@@ -208,6 +208,55 @@ def main():
                    + (f", lips {b['X']['rms']:.2f} px" if 'X' in b else "") + f"; f {it['f']:.0f}, k1 {it['k1']:.3f}, k2 {it['k2']:.3f}"
                    + (f", pp ({it['cx']:.0f}, {it['cy']:.0f})" if 'cx' in it else "") + f"; back rail (not fitted) {rail['mean_px']:+.1f} px ({rail['dZ_mm']:+.0f} mm in Z)")
     L.md_replace_section(f"{CACHE}/method_cuboid.md", "## Diagnostic: which single dimension explains the mismatch", sec)
+    # ------------------------------------------------------------------ conclusions (numbers from the three scripts)
+    mc = load_json(f"{CACHE}/method_cuboid.json")
+    off = load_json(f"{CACHE}/cuboid_offsets.json")
+    u = mc["uncertainty"]
+    d0 = mc["dist_coeffs"]
+    br = mc["details"]["block_rms"]
+    fl = list(mc["details"]["f_over_models_and_weightings"].values())
+    E = off["edges"]
+    lips = sum(LIPS.values(), [])
+    lip_j = [E["joint"][e]["mean_px"] for e in lips]
+    lip_s = [E["joint"][e].get("camera_sigma_mean_px_robust", np.nan) for e in lips]
+    sensZ = [E["joint"][e]["px_per_mm_Z"] for e in lips]
+    sensY = [E["joint"][e]["px_per_mm_Y"] for e in lips]
+    rail = {k: E[k]["cart80_x_back_rail_out"] for k in ("markers_only", "joint", "edge_lens_shelf_poses")}
+    dt = out[f"main:{main_key}|lips|dz_top"]
+    dtc = out[f"main:{main_key}|lips|dz_top@cart"]
+    dtf = out["k1k2_ppfree|lips|dz_top"]
+    dte = out[f"main:{main_key}|lips|dz_top+dz_E (2)"]
+    dr = out[f"main:{main_key}|lips|drawing"]
+    others = {h: out[f"main:{main_key}|lips|{h}"]["chi2_ref"] for h in ("dz_A", "dz_B", "dz_C", "dz_D", "dz_E", "sz_shelves", "sx_width", "sy_depth", "code_mm")}
+    sr = off["sticker_rows"]["edge_lens_shelf_poses"]
+    conc = [
+        f"1. Main cuboid fit (drawing exact, {mc['model']}): f = {mc['camera_matrix'][0][0]:.0f} +- {u['f_1sigma']:.0f} px (cluster bootstrap; over 14 model x weighting "
+        f"variants {min(fl):.0f}..{max(fl):.0f}), k1 = {d0[0]:.3f} +- {u['k1_1sigma']:.3f}, k2 = {d0[1]:.3f} +- {u['k2_1sigma']:.3f}; corners {br['M']['rms_point']:.2f} px per point "
+        f"(max {br['M']['max_point']:.1f}), sticker sides {br['S']['rms']:.2f} px, exact edges {br['E']['rms']:.2f} px (~40x the corner noise). The exact edges add almost nothing "
+        "(3 short edges); free-pp variants are unstable (cx 530..955) because pp is the knob that trades the exact edges against the stickers. The distortion "
+        "contradicts the straight-edge (plumb-line) distortion, as for the marker-only fit: the drawing geometry biases the estimate - only CONSISTENT with the data at the 5-8 px level.",
+        "2. The three exact edges are the edges they claim to be (crops: top-face outer edge of the X=0 board of cart 310 against the floor; top-face front edges "
+        "of both cart-80 boards, a 1-2 px dark front face beside them) and agree with their own board's stickers to <= 4.6 mm, but every global drawing camera misses them by "
+        + ", ".join(f"{k.split('_', 1)[1]} {v['joint']['mean_offset_px']:+.1f} px ({v['joint']['implied_shift_mm']:+.0f} mm in {v['joint']['axis']})" for k, v in mc["details"]["exact_edge_check"].items())
+        + " - they inherit the sticker inconsistency.",
+        f"3. Shelf lips vs prediction (joint camera): {min(lip_j):+.1f}..{max(lip_j):+.1f} px (camera 1-sigma {np.nanmin(lip_s):.1f}..{np.nanmax(lip_s):.1f} px); the lips are "
+        f"sensitive mainly to Y ({min(sensY):.2f}..{max(sensY):.2f} px/mm) and only weakly to Z ({min(sensZ):.2f}..{max(sensZ):.2f} px/mm), so a single lip fixes its height only to "
+        "~+-15..40 mm. With one common lip height per cart the five lips agree only to 2.5..4.3 px rms (markers-only, joint and shelf-anchored cameras): lip outlines / fronts differ by a few mm between shelves.",
+        f"4. The clearest misfit is at the TOP level: the cart-80 back top rail lies {rail['markers_only']['mean_px']:+.1f} px (markers-only) / {rail['joint']['mean_px']:+.1f} px (joint) "
+        f"from the drawing top-back edge (= {rail['joint']['implied_dZ_mm']:+.0f} mm in Z), but only {rail['edge_lens_shelf_poses']['mean_px']:+.1f} px when the camera is anchored to the shelf "
+        f"stickers (edge-only lens) - which in turn puts the top stickers {sr['80:top']['implied_dZ_mm']:+.0f} / {sr['310:top']['implied_dZ_mm']:+.0f} mm (cart 80 / 310) above the drawing "
+        "and the top-board edges 11..23 px off.",
+        f"5. Single dimension: the top-plate surface (end boards with the top stickers) {dt['geo']['dz_top']:+.0f} +- {dt['geo_sd']['dz_top']:.0f} mm above the drawing relative to shelves and "
+        f"frame (per cart {dtc['geo']['dz_top@80']:+.0f} / {dtc['geo']['dz_top@310']:+.0f} mm; pp free {dtf['geo']['dz_top']:+.0f} mm) explains most of it: chi2_ref {dr['chi2_ref']:.0f} -> "
+        f"{dt['chi2_ref']:.0f}, corners {dr['blocks']['M']['rms_point']:.1f} -> {dt['blocks']['M']['rms_point']:.1f} px, exact edges {dr['blocks']['E']['rms']:.1f} -> {dt['blocks']['E']['rms']:.1f} px, "
+        f"and the NOT fitted back rail moves to {dt['validation']['cart80_x_back_rail_out']['mean_px']:+.1f} px ({dt['validation']['cart80_x_back_rail_out']['dZ_mm']:+.0f} mm). "
+        "No other single dimension comes close (chi2_ref " + ", ".join(f"{k} {v:.0f}" for k, v in others.items()) + "). Stickers alone cannot tell this from 'all shelves ~65 mm lower'; the back top rail can, IF it really is at the top-plate level (its height is not in the drawing): with all shelf rows lowered instead (dz_A..E) the rail stays ~60 mm off, so it groups with the shelves/frame and puts the offset on the end boards with the top stickers. Observation only - the main result keeps the drawing.",
+        f"6. Second order: shelf E's lip lies below its drawing height relative to A-D: dz_E {dte['geo']['dz_E']:+.0f} +- {dte['geo_sd']['dz_E']:.0f} mm on top of dz_top (lips "
+        f"{dt['blocks']['X']['rms']:.2f} -> {dte['blocks']['X']['rms']:.2f} px), in both carts; E has no sticker, so this rests on the identification of the lowest traced lip.",
+        f"7. With dz_top freed (diagnostic) the lens moves to f = {dt['intr']['f']:.0f} (pp fixed) / {dtf['intr']['f']:.0f} with pp ({dtf['intr']['cx']:.0f}, {dtf['intr']['cy']:.0f}), "
+        f"k1 {dtf['intr']['k1']:.2f}, k2 {dtf['intr']['k2']:.2f} - the drawing-geometry f ({mc['camera_matrix'][0][0]:.0f}) is pulled down by ~120-140 px by the top-plate mismatch.",
+    ]
+    L.md_replace_section(f"{CACHE}/method_cuboid.md", "## Conclusions (determined / consistent / not determinable)", conc)
     # plot: chi2_ref per hypothesis (main spec, with / without lips) + freed value
     fig, ax = plt.subplots(1, 3, figsize=(18, 6), dpi=110)
     sname = "main:" + main_key

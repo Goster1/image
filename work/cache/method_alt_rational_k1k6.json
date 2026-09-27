@@ -29,21 +29,21 @@
   "model": "rational k1..k6, pp free -> converted to the closest OpenCV Brown [k1,k2,p1,p2,k3] over the full image",
   "rms_reprojection_error_px": 8.978528545254857,
   "uncertainty": {
-    "native_f_1sigma": 33.118690189070584,
-    "native_cx_1sigma": 6.264317574248523,
-    "native_cy_1sigma": 6.028385794593339,
-    "native_k1_1sigma": 0.9989449793056215,
-    "native_k2_1sigma": 5.020040408364055,
-    "native_k3_1sigma": 0.9521285589395139,
-    "native_k4_1sigma": 0.9970287774909791,
-    "native_k5_1sigma": 4.614763441888166,
-    "native_k6_1sigma": 2.9572619032174536,
+    "native_f_1sigma": 33.12121427927815,
+    "native_cx_1sigma": 6.264794976204628,
+    "native_cy_1sigma": 6.028845251985161,
+    "native_k1_1sigma": 0.9990211295341781,
+    "native_k2_1sigma": 5.02042302580063,
+    "native_k3_1sigma": 0.9522011157874001,
+    "native_k4_1sigma": 0.9971047724816431,
+    "native_k5_1sigma": 4.6151151987479775,
+    "native_k6_1sigma": 2.957487289441699,
     "note": "1-sigma of the NATIVE parameters (see details.native_params); the OpenCV coefficients are a conversion"
   },
   "mapping_uncertainty_px": {
-    "centre": 2.257,
-    "cart_band": 9.346,
-    "corners": 12.748
+    "centre": 2.71,
+    "cart_band": 10.669,
+    "corners": 14.949
   },
   "data_used": "62 valid sticker corners of 20 stickers (7-frame means) + 61 verified straight edges (straightness; VP groups: cart X/Z axes without end-board edges, scene verticals, 2 floor-line groups); block sigmas fixed from the Brown k1,k2 variance components",
   "geometry_assumptions": "drawing dimensions and sticker positions exact (not fitted); edges use no dimensions",
@@ -133,12 +133,13 @@
     },
     "fold_margin": 0.4501137212370131,
     "barrier_active": false,
-    "uncertainty_method": "cluster-robust sandwich covariance (clusters = stickers and edges) of the joint fit; mapping uncertainty = 8 parameter samples, rotation-compensated displacement vs the fit, RMS over samples, median over region",
+    "mapping_uncertainty_note": "parameter part only; add the model-choice part (model_choice_mapping_unc_px) in quadrature",
+    "uncertainty_method": "cluster-robust sandwich covariance (clusters = stickers and edges) of the joint fit; mapping uncertainty = 150 parameter samples, rotation-compensated displacement vs the fit, RMS over samples, median over region",
     "info_criteria": {
       "M": {
         "dAIC_own": 13.4,
         "dQAIC": 8.8,
-        "dQBIC": 17.1,
+        "dQBIC": 17.2,
         "dAIC_det": 16295.2
       },
       "E": {
@@ -154,7 +155,80 @@
         "dAIC_det": 245795.8
       }
     },
-    "cross_validation": {},
+    "cross_validation": {
+      "loso_M": {
+        "rms_px": 7.8834,
+        "median_px": 7.1417,
+        "max_px": 18.6222,
+        "dMS_vs_ref": -17.3757,
+        "dMS_se": 8.4074,
+        "f_spread": 6.9284
+      },
+      "loso_ME": {
+        "rms_px": 10.8149,
+        "median_px": 9.8936,
+        "max_px": 16.2966,
+        "dMS_vs_ref": 9.0158,
+        "dMS_se": 6.2527,
+        "f_spread": 0.8215
+      },
+      "region_src_E": {
+        "S_rms_px": 0.2627,
+        "S_dMS_vs_ref": -0.0042,
+        "S_dMS_se": 0.004,
+        "n_edges_S": 61,
+        "f_spread": 73.6416,
+        "f_range": [
+          1432.6838778788897,
+          1591.8813161687974
+        ]
+      },
+      "region_tile_E": {
+        "S_rms_px": 0.2293,
+        "S_dMS_vs_ref": -0.0012,
+        "S_dMS_se": 0.0019,
+        "n_edges_S": 61,
+        "V_rms_px": 2.2721,
+        "V_dMS_vs_ref": 4.8374,
+        "V_dMS_se": 3.9022,
+        "n_edges_V": 33,
+        "f_spread": 66.7606,
+        "f_range": [
+          1407.3137747908681,
+          1588.338954904365
+        ]
+      },
+      "region_src_ME": {
+        "S_rms_px": 0.2478,
+        "S_dMS_vs_ref": -0.0064,
+        "S_dMS_se": 0.003,
+        "n_edges_S": 61,
+        "V_rms_px": 0.9637,
+        "V_dMS_vs_ref": 0.0531,
+        "V_dMS_se": 0.102,
+        "n_edges_V": 23,
+        "f_spread": 20.4363,
+        "f_range": [
+          1414.9842769443933,
+          1464.9987360628782
+        ]
+      },
+      "region_tile_ME": {
+        "S_rms_px": 0.2269,
+        "S_dMS_vs_ref": -0.0012,
+        "S_dMS_se": 0.0019,
+        "n_edges_S": 61,
+        "V_rms_px": 0.6124,
+        "V_dMS_vs_ref": -0.074,
+        "V_dMS_se": 0.0741,
+        "n_edges_V": 33,
+        "f_spread": 33.6351,
+        "f_range": [
+          1411.1479755536316,
+          1534.6062121927043
+        ]
+      }
+    },
     "other_data_sets": {
       "M": {
         "params": {
@@ -182,15 +256,15 @@
         "fold_margin": 0.030004326954336746,
         "barrier_active": false,
         "sd_sandwich": {
-          "f": 196.4947459627953,
-          "cx": 25.107219847510887,
-          "cy": 22.50846815867109,
-          "k1": 376.2480535334608,
-          "k2": 285.1370439584501,
-          "k3": 1002.9184412138147,
-          "k4": 379.8624119737001,
-          "k5": 490.5401061933639,
-          "k6": 1134.6611858025124
+          "f": 196.73986973123252,
+          "cx": 25.138643000737776,
+          "cy": 22.536655741943722,
+          "k1": 376.7171894482146,
+          "k2": 285.49312592669247,
+          "k3": 1004.1696108460566,
+          "k4": 380.3366552709231,
+          "k5": 491.1528882100725,
+          "k6": 1136.074374413587
         }
       },
       "E": {
@@ -223,15 +297,15 @@
         "fold_margin": 0.478299825822288,
         "barrier_active": false,
         "sd_sandwich": {
-          "f": 37.69515268360487,
-          "cx": 6.439292645448436,
-          "cy": 6.265925876072702,
-          "k1": 1.1287474821242367,
-          "k2": 5.565387240170665,
-          "k3": 1.027251923225564,
-          "k4": 1.1278863693409982,
-          "k5": 5.116567622951621,
-          "k6": 3.2492766733248133
+          "f": 37.70021887282228,
+          "cx": 6.4401580988383405,
+          "cy": 6.266768040660216,
+          "k1": 1.1288991948406475,
+          "k2": 5.566135258022671,
+          "k3": 1.0273899777293396,
+          "k4": 1.1280379691242073,
+          "k5": 5.117255307831247,
+          "k6": 3.2497133723852434
         }
       }
     },
@@ -249,14 +323,14 @@
     },
     "model_choice_mapping_unc_px": {
       "E": {
-        "centre": 1.922,
-        "cart_band": 6.957,
-        "corners": 13.353
+        "centre": 0.423,
+        "cart_band": 2.699,
+        "corners": 3.38
       },
       "ME": {
-        "centre": 2.059,
-        "cart_band": 7.052,
-        "corners": 12.014
+        "centre": 0.365,
+        "cart_band": 1.964,
+        "corners": 2.667
       }
     },
     "adequate": {

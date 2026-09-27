@@ -1,13 +1,20 @@
 # Lens-model choice (sub-task 43): which model is adequate to the data
 
-Scripts: `work/43_altmodels_lib.py` (lens models + estimator), `43_altmodels_fit.py` (fits + CV), `43_altmodels_report.py` (criteria, mappings, conversions, plots, method files), `43_altmodels_diaggeom.py` (diagnostics).
+Scripts: `work/43_altmodels_lib.py` (lens models + estimator), `43_altmodels_fit.py` (fits + CV), `43_altmodels_report.py` (criteria, mappings, conversions, plots, method files), `43_altmodels_diaggeom.py` (diagnostics). Run order: fit (~40 min on a loaded 4-CPU box) -> diaggeom -> report.
 Numbers: `work/cache/altmodels_fits.json`, `altmodels_summary.json`, `method_alt_*.json`; plots `results/altmodels_mapping_diff.png`, `results/altmodels_radial.png`, `results/altmodels_cv.png`.
 
 Data: M = 62 sticker corners (drawing geometry exact), E = 61 verified straight edges (straightness S + VP groups V: cart X/Z axes without end-board edges, free scene vertical, floor_V / floor_H perpendicular to it), ME = both. Block sigmas fixed per data set from the Brown k1,k2 variance components: M 3.77 px; E: V 0.361, S 0.229 px; ME: M 6.14, V 0.361, S 0.229 px. Every fit carries a fold barrier (radial map must stay invertible to the image corners, margin >= 0.03).
 
 ## Conclusions
 
-(filled in after the results were inspected)
+1. **Stickers only (M, drawing geometry) cannot choose a lens model.** All 16 models leave 4.96-5.99 px radial RMS (noise ~0.1-0.2 px); the Brown k1,k2 fit has distinct local minima of practically equal cost (pp_y ~287 px, and ~485 px which is folded inside the image and excluded by the fold barrier; multi-start used). Leave-one-sticker-out RMS is 7.5-9.1 px for every model. The sticker-only lenses do not straighten the edges (lens(M) -> edges straightness 0.40-2.83 px vs 0.229 px for the edge fit). The models M 'prefers' (p1,p2, rational, KB k1..k4) are those that absorb the geometry mismatch. DIAGNOSTIC (5 extra geometry parameters, not a main estimate): with board heights + code size free, all radial 2-3-parameter models give the same chi2 (32.7 vs drawing 124.0; RMS 2.74 px), i.e. the stickers carry no information on the radial-profile shape; only k1-only (chi2 55.6) and pp fixed (44.2) are worse.
+2. **Edges (E) need two radial degrees of freedom; one is not enough.** Brown k1 alone runs into the fold barrier (unconstrained optimum folded inside the image), straightness 0.286 vs 0.229 px, VP 0.578 vs 0.361 px, dQAIC +302; division l1 (1 parameter, no fold) dQAIC +27 and worse in CV. All 2-3-parameter radial forms (Brown k1,k2 / k1,k2,k3, KB k1,k2, division l1,l2, rational k4) reach S 0.228-0.229 px, which is the floor set by the edges' own non-straightness (0.2-0.6 px bows of real cart members). KB k1..k4 over-fits (ME tile CV of VP consistency +0.2646 +- 0.0879 px^2 worse). The overdispersion (design effect) is c = 12.9 for edges: AIC with the detection noise (0.1 px) or with n = all points always picks the most flexible model and is not usable.
+3. **Brown k1,k2 vs a softer periphery (k3-type) is only weakly decidable.** In-sample the block RMS differ by <= 0.005 px; dQAIC / dQBIC (E): Brown k1,k2 13.0 / 3.2, k1,k2,k3 12.4 / 6.1, KB k1,k2 9.8 / 0.0, division l1,l2 11.6 / 1.9. Extrapolation (train without a source region, predict its edges): Brown k1,k2 straightness RMS 0.278 px vs k1,k2,k3 0.229, KB 0.225, rational k4 0.224 (paired dMS KB -0.0134 +- 0.0071, k3 -0.0119 +- 0.0072 px^2, i.e. ~1.7-1.9 sigma; the difference comes from the held-out scene edges at the image periphery). k3 = -0.034 +- 0.017 (E) and puts the fold only 0.039 (normalised radius, ~56 px) beyond the farthest image corner. The softer-periphery forms agree among themselves (KB k1,k2 vs Brown k1,k2,k3: 0.03 / 0.40 / 0.40 px, KB vs division l1,l2: 0.25 / 0.21 / 1.12 px, KB vs rational k4: 0.05 / 0.06 / 0.13 px). KB k1,k2 has the lowest QBIC and the best straightness extrapolation, but its VP-consistency extrapolation (ME source-region CV) is worse by +0.1195 +- 0.0490 px^2, so it fails the strict adequacy rule. The cluster differs from Brown k1,k2 by 0.27 / 1.78 / 2.31 px (k3) and 0.30 / 2.17 / 2.73 px (KB) (rot.-comp. median centre / cart band / corners, ME), largely through a 3-4 px shift of f and pp (f 1434 vs 1431), i.e. inside the f uncertainty (+-26 px). -> k3 is only *consistent* with the data, not determined; it is fixed in the recommended model and the difference is carried as the model-choice part of the mapping uncertainty (Brown k1,k2,k3 is the natural alternative, `method_alt_brown_k1k2k3.json`).
+4. **Tangential p1,p2: not determined, fix 0.** Edges: p1 = -0.0010 +- 0.0062, p2 = 0.0015 +- 0.0032, f +-44 px (vs +-30 without). Joint with drawing geometry: p1 = 0.0086 +- 0.0029, f 1374, pp_y 453: stickers improve (LOSO 7.9 vs 10.5 px) while the edges get worse in CV (ME tile VP +0.5891 +- 0.2275, E source straightness +0.0172 +- 0.0056 px^2) - p1,p2 absorb the sticker geometry mismatch. Without the rack tube edge the E fit jumps to f 1364, p1 0.0055, p2 0.0111; without the scene edges to f 516. DIAGNOSTIC: with the relaxed sticker geometry the joint fit gives p1 0.0011, p2 0.0004, f 1431 - the drawing-geometry value is an artefact. Mapping change caused by p1,p2 in ME: 4.37 / 17.57 / 23.19 px.
+5. **fx != fy: not determined, fix fx = fy.** E: fx 1383 +- 91, fy 1426 +- 34; ME fx 1439 +- 54, fy 1435 +- 29; dQAIC(E) +1.3; CV neutral. (A 2 MP webcam with square pixels is expected; the data neither confirm nor refute an aspect ratio at the ~3 % level.)
+6. **Principal point: free (determined by the edges).** E: (928 +- 7, 502 +- 4) px (cluster-robust); fixing it at the image centre costs dQAIC +21 (E) / +24 (ME) and worsens the tile CV of VP consistency (+22.7485 +- 11.1775 px^2, E). Over the leave-region-out folds (E) pp moves within cx 912-942, cy 492-509 px and f within 1420-1545 px (ME: f 1419-1499) - the focal length from edges is fragile (few VP constraints), which is a parameter, not a model-choice issue. Mapping change pp fixed vs free: 2.95 / 2.34 / 10.40 px. Observation: the relaxed-geometry sticker diagnostic puts pp_y at 392 px, ~110 px above the edge value - the stickers and the edges do not agree on pp_y even after the geometry relaxation.
+7. **Non-Brown models convert to OpenCV Brown [k1,k2,p1,p2,k3] with small error** (median centre / band / corners): Kannala-Brandt k1,k2: 0.043 / 0.043 / 0.070 px (max 1.55); division l1,l2: 0.023 / 0.015 / 0.020 px (max 0.36); rational k1,k2 / k4: 0.053 / 0.051 / 0.078 px (max 1.73); rational k1..k6: 0.341 / 0.449 / 0.167 px (max 1.24). With k1,k2 only the conversion error of KB k1,k2 is 0.41 px (band) / 0.71 px (corners).
+8. **Recommendation (model adequate to the data): Brown k1,k2 with fx = fy, pp free, p1 = p2 = k3 = 0.** Determined: f, cx, cy and the 2-parameter radial profile (k1, k2 are strongly correlated; the mapping, not the individual k's, is what the data fix). Only consistent: k3 / softer periphery (Brown k1,k2,k3, division l1,l2, rational k4 and - in-sample - KB k1,k2 fit equally well). Not determinable: p1, p2, fx/fy, rational / higher-order terms; they are fixed. Model-choice part of the mapping uncertainty (RMS over the adequate radial alternatives Brown k1,k2,k3, rational k1,k2 / k4, rational k1..k6, division l1,l2; ME, rot.-comp.): centre 0.37, cart band 1.96, corners 2.67 px, vs the parameter part of the same model (sandwich samples): centre 2.14, cart band 9.08, corners 12.67 px; add them in quadrature.
 
 ## 1. Fits (same data, same weights for every model)
 
@@ -53,13 +60,13 @@ Data: M = 62 sticker corners (drawing geometry exact), E = 61 verified straight 
 | Brown k1,k2,k3,p1,p2, fx!=fy | M | fx=1320+-21, fy=1320+-21, cx=949+-24, cy=350.9+-25, k1=-0.5184+-0.11, k2=0.6161+-0.24, p1=0.01074+-0.0024, p2=-0.003151+-0.0036, k3=-0.248+-0.12 | M 3.505 | 4.96 / 10.6 | 0.030 **barrier** |
 | Brown k1, pp fixed | M | f=1359+-24, cx=959.5, cy=539.5, k1=-0.2101+-0.007 | M 4.187 | 5.92 / 11.1 | 0.030 **barrier** |
 | Brown k1,k2, pp fixed | M | f=1326+-20, cx=959.5, cy=539.5, k1=-0.2459+-0.017, k2=0.02493+-0.0087 | M 4.060 | 5.74 / 11.5 | 0.030 **barrier** |
-| Brown k1,k2,k3, pp fixed | M | f=1281+-31, cx=959.5, cy=539.5, k1=0.03459+-0.14, k2=-0.7148+-0.46, k3=0.5764+-0.47 | M 3.860 | 5.46 / 9.4 | 8716.834 |
+| Brown k1,k2,k3, pp fixed | M | f=1281+-31, cx=959.5, cy=539.5, k1=0.03459+-0.14, k2=-0.7148+-0.47, k3=0.5764+-0.47 | M 3.860 | 5.46 / 9.4 | 8716.834 |
 | rational k1,k2 / k4 | M | f=1418+-1.3e+02, cx=971.5+-15, cy=293.7+-17, k1=7.731+-9.3, k2=-0.4361+-1.2, k4=10.21+-12 | M 3.619 | 5.12 / 10.7 | 0.366 |
 | rational k1..k6 | M | f=1313+-2e+02, cx=980.9+-25, cy=286.3+-23, k1=-0.01615+-3.8e+02, k2=0.5525+-2.9e+02, k3=-0.07671+-1e+03, k4=0.6237+-3.8e+02, k5=-0.06442+-4.9e+02, k6=0.21+-1.1e+03 | M 3.688 | 5.22 / 11.4 | 0.030 |
 | Kannala-Brandt k1,k2 | M | f=1316+-16, cx=981.1+-20, cy=286.2+-21, k1=-0.3556+-0.1, k2=0.7277+-0.19 | M 3.681 | 5.21 / 11.4 | 6.173 |
-| Kannala-Brandt k1..k4 | M | f=1362+-7.5e-06, cx=972.5+-2.3e-05, cy=293+-1.6e-05, k1=-0.9045+-0.0043, k2=3.149+-0.0016, k3=-3.83+-6.4e-18, k4=1.421+-0.0002 | M 3.611 | 5.11 / 10.5 | 19.426 |
+| Kannala-Brandt k1..k4 | M | f=1362+-60, cx=972.5+-16, cy=293+-16, k1=-0.9045+-0.73, k2=3.149+-5.2, k3=-3.83+-14, k4=1.421+-14 | M 3.611 | 5.11 / 10.5 | 19.426 |
 | division l1 | M | f=1339+-22, cx=961.4+-78, cy=336+-52, l1=-0.2781+-0.031 | M 3.965 | 5.61 / 10.8 | 0.989 |
-| division l1,l2 | M | f=1320+-1.2e-05, cx=977.5+-2.4e-05, cy=284.2+-1.5e-05, l1=-0.5837+-0.0057, l2=0.5562+-2.4e-08 | M 3.729 | 5.27 / 11.3 | 0.030 **barrier** |
+| division l1,l2 | M | f=1320+-17, cx=977.5+-4.3e-06, cy=284.2+-19, l1=-0.5837+-0.026, l2=0.5562+-4.5e-09 | M 3.729 | 5.27 / 11.3 | 0.030 **barrier** |
 | division l1, pp fixed | M | f=1346+-21, cx=959.5, cy=539.5, l1=-0.3221+-0.03 | M 4.234 | 5.99 / 12.2 | 0.944 |
 
 ## 2. Information criteria (delta to the best model of the data set)
@@ -68,22 +75,22 @@ AIC_own = sum_b n_b ln(RSS_b/n_b) + 2k (each model its own block variances); QAI
 
 | model | k_intr | E: dAIC_own / dQAIC / dQBIC / dAIC_det | ME: dAIC_own / dQAIC / dQBIC | M: dAIC_own / dQAIC / dQBIC |
 |---|---|---|---|---|
-| Brown k1 | 4 | 2781 / 315.4 / 302.1 / 50178 | 2744 / 346.2 / 330.9 | 32.6 / 16.2 / 13.4 |
-| Brown k1,k2 | 5 | 291 / 13.0 / 3.2 / 3879 | 282 / 14.6 / 3.0 | 11.0 / 3.8 / 3.3 |
-| Brown k1,k2,k3 | 6 | 259 / 12.4 / 6.1 / 3478 | 255 / 14.1 / 6.2 | 9.8 / 4.0 / 5.7 |
+| Brown k1 | 4 | 2781 / 315.4 / 302.1 / 50178 | 2744 / 346.2 / 330.9 | 32.6 / 16.3 / 13.5 |
+| Brown k1,k2 | 5 | 291 / 13.0 / 3.2 / 3879 | 282 / 14.6 / 3.0 | 11.0 / 3.9 / 3.3 |
+| Brown k1,k2,k3 | 6 | 259 / 12.4 / 6.1 / 3478 | 255 / 14.2 / 6.2 | 9.8 / 4.1 / 5.8 |
 | Brown k1,k2,p1,p2 | 7 | 293 / 16.8 / 14.1 / 3835 | 225 / 15.1 / 10.8 | 0.0 / 0.0 / 3.9 |
 | Brown k1,k2, fx!=fy | 6 | 284 / 14.3 / 8.0 / 3750 | 284 / 16.6 / 8.6 | 9.3 / 3.8 / 5.5 |
-| Brown k1,k2,k3,p1,p2, fx!=fy | 9 | 225 / 15.3 / 19.6 / 2946 | 184 / 15.3 / 18.3 | 0.8 / 2.4 / 10.8 |
-| Brown k1, pp fixed | 2 | 4372 / 652.8 / 632.4 / 96707 | 4379 / 734.0 / 711.3 | 30.8 / 13.6 / 6.4 |
-| Brown k1,k2, pp fixed | 3 | 597 / 34.2 / 17.4 / 7581 | 589 / 39.0 / 20.0 | 25.2 / 10.6 / 5.6 |
-| Brown k1,k2,k3, pp fixed | 4 | 487 / 27.0 / 13.8 / 6648 | 484 / 31.2 / 15.9 | 14.7 / 5.0 / 2.3 |
-| rational k1,k2 / k4 | 6 | 249 / 11.6 / 5.3 / 3319 | 247 / 13.5 / 5.5 | 2.7 / 0.3 / 2.0 |
-| rational k1..k6 | 9 | 0 / 0.0 / 4.3 / 0 | 0 / 0.0 / 3.1 | 13.4 / 8.8 / 17.1 |
-| Kannala-Brandt k1,k2 | 5 | 249 / 9.7 / 0.0 / 3375 | 247 / 11.6 / 0.0 | 4.9 / 0.5 / 0.0 |
+| Brown k1,k2,k3,p1,p2, fx!=fy | 9 | 225 / 15.3 / 19.7 / 2946 | 184 / 15.3 / 18.3 | 0.8 / 2.4 / 10.8 |
+| Brown k1, pp fixed | 2 | 4372 / 652.8 / 632.5 / 96707 | 4379 / 734.1 / 711.4 | 30.8 / 13.8 / 6.6 |
+| Brown k1,k2, pp fixed | 3 | 597 / 34.2 / 17.4 / 7581 | 589 / 39.0 / 20.0 | 25.2 / 10.7 / 5.7 |
+| Brown k1,k2,k3, pp fixed | 4 | 487 / 27.0 / 13.8 / 6648 | 484 / 31.2 / 15.9 | 14.7 / 5.1 / 2.3 |
+| rational k1,k2 / k4 | 6 | 249 / 11.6 / 5.3 / 3319 | 247 / 13.5 / 5.5 | 2.7 / 0.4 / 2.0 |
+| rational k1..k6 | 9 | 0 / 0.0 / 4.3 / 0 | 0 / 0.0 / 3.1 | 13.4 / 8.8 / 17.2 |
+| Kannala-Brandt k1,k2 | 5 | 249 / 9.8 / 0.0 / 3375 | 247 / 11.6 / 0.0 | 4.9 / 0.6 / 0.0 |
 | Kannala-Brandt k1..k4 | 7 | 169 / 7.6 / 4.9 / 2199 | 177 / 9.6 / 5.3 | 4.1 / 2.1 / 6.0 |
-| division l1 | 4 | 649 / 40.4 / 27.2 / 8061 | 660 / 47.5 / 32.2 | 21.3 / 8.9 / 6.2 |
-| division l1,l2 | 5 | 274 / 11.6 / 1.9 / 3707 | 269 / 13.5 / 1.9 | 8.1 / 2.2 / 1.7 |
-| division l1, pp fixed | 2 | 673 / 39.0 / 18.6 / 8551 | 685 / 46.4 / 23.8 | 33.6 / 15.6 / 8.4 |
+| division l1 | 4 | 649 / 40.4 / 27.2 / 8061 | 660 / 47.5 / 32.2 | 21.3 / 9.0 / 6.3 |
+| division l1,l2 | 5 | 274 / 11.6 / 1.9 / 3707 | 269 / 13.5 / 1.9 | 8.1 / 2.3 / 1.7 |
+| division l1, pp fixed | 2 | 673 / 39.0 / 18.6 / 8551 | 685 / 46.4 / 23.8 | 33.6 / 15.8 / 8.5 |
 
 ## 3. Cross-validation
 
@@ -91,22 +98,22 @@ Leave-one-sticker-out (LOSO): refit without the sticker, predict its corners (po
 
 | model | LOSO M: RMS [px] | LOSO ME: RMS [px], dMS +- se | E tiles: S / V RMS [px] | E tiles: dMS S, V (+-se) [px^2] | E src: S / V | ME tiles: S / V | adequate |
 |---|---|---|---|---|---|---|---|
-| Brown k1 | - | -, - +- - | - / - | - +- -, - +- - | - / - | - / - | no |
-| Brown k1,k2 | - | -, - +- - | - / - | - +- -, - +- - | - / - | - / - | yes |
-| Brown k1,k2,k3 | - | -, - +- - | - / - | - +- -, - +- - | - / - | - / - | yes |
-| Brown k1,k2,p1,p2 | - | -, - +- - | - / - | - +- -, - +- - | - / - | - / - | yes |
-| Brown k1,k2, fx!=fy | - | -, - +- - | - / - | - +- -, - +- - | - / - | - / - | yes |
-| Brown k1,k2,k3,p1,p2, fx!=fy | - | -, - +- - | - / - | - +- -, - +- - | - / - | - / - | no |
-| Brown k1, pp fixed | - | -, - +- - | - / - | - +- -, - +- - | - / - | - / - | no |
-| Brown k1,k2, pp fixed | - | -, - +- - | - / - | - +- -, - +- - | - / - | - / - | yes |
-| Brown k1,k2,k3, pp fixed | - | -, - +- - | - / - | - +- -, - +- - | - / - | - / - | yes |
-| rational k1,k2 / k4 | - | -, - +- - | - / - | - +- -, - +- - | - / - | - / - | yes |
-| rational k1..k6 | - | -, - +- - | - / - | - +- -, - +- - | - / - | - / - | yes |
-| Kannala-Brandt k1,k2 | - | -, - +- - | - / - | - +- -, - +- - | - / - | - / - | yes |
-| Kannala-Brandt k1..k4 | - | -, - +- - | - / - | - +- -, - +- - | - / - | - / - | yes |
-| division l1 | - | -, - +- - | - / - | - +- -, - +- - | - / - | - / - | yes |
-| division l1,l2 | - | -, - +- - | - / - | - +- -, - +- - | - / - | - / - | yes |
-| division l1, pp fixed | - | -, - +- - | - / - | - +- -, - +- - | - / - | - / - | yes |
+| Brown k1 | 8.49 | 9.63, -5.29 +- 14.42 | 0.525 / 0.971 | +0.1079 +- 0.0352, -2.0418 +- 1.4597 | 0.528 / - | 0.526 / 1.134 | no |
+| Brown k1,k2 | 9.11 | 10.45, +0.00 +- 0.00 | 0.235 / 1.450 | +0.0000 +- 0.0000, +0.0000 +- 0.0000 | 0.278 / - | 0.233 / 0.659 | yes |
+| Brown k1,k2,k3 | 8.41 | 10.67, +4.33 +- 1.98 | 0.234 / 1.759 | -0.0007 +- 0.0007, +1.8345 +- 1.3377 | 0.229 / - | 0.232 / 0.617 | yes |
+| Brown k1,k2,p1,p2 | 8.51 | 7.90, -46.03 +- 9.14 | 0.492 / 3.474 | +0.0739 +- 0.0635, +14.5804 +- 11.6816 | 0.317 / - | 0.366 / 1.036 | no |
+| Brown k1,k2, fx!=fy | 8.99 | 10.66, +3.59 +- 1.92 | 0.238 / 1.332 | +0.0011 +- 0.0005, -0.4392 +- 0.2913 | 0.348 / - | 0.233 / 0.640 | yes |
+| Brown k1,k2,k3,p1,p2, fx!=fy | 8.86 | 8.21, -41.27 +- 10.30 | 0.243 / 1.784 | +0.0015 +- 0.0023, +2.1726 +- 1.4913 | 0.313 / - | 0.295 / 0.954 | no |
+| Brown k1, pp fixed | 8.59 | 11.11, +19.26 +- 12.41 | 23.549 / 6.603 | +210.3258 +- 210.2097, +96.7922 +- 43.6433 | 0.677 / - | 0.744 / 4.470 | no |
+| Brown k1,k2, pp fixed | 8.40 | 10.61, +1.17 +- 4.83 | 0.238 / 3.589 | -0.0000 +- 0.0022, +22.7485 +- 11.1775 | 0.349 / - | 0.238 / 2.266 | no |
+| Brown k1,k2,k3, pp fixed | 8.28 | 10.83, +5.94 +- 4.29 | 0.265 / 4.323 | +0.0054 +- 0.0055, +30.0458 +- 17.5921 | 0.244 / - | 0.272 / 2.082 | no |
+| rational k1,k2 / k4 | 8.21 | 10.76, +6.48 +- 2.97 | 0.230 / 1.958 | -0.0016 +- 0.0008, +3.1200 +- 2.2076 | 0.224 / - | 0.228 / 0.616 | yes |
+| rational k1..k6 | 7.88 | 10.81, +9.02 +- 6.25 | 0.229 / 2.272 | -0.0012 +- 0.0019, +4.8374 +- 3.9022 | 0.263 / - | 0.227 / 0.612 | yes |
+| Kannala-Brandt k1,k2 | 8.11 | 10.74, +5.97 +- 2.68 | 0.225 / 3.227 | -0.0027 +- 0.0011, +12.5642 +- 10.3702 | 0.225 / - | 0.224 / 0.602 | no |
+| Kannala-Brandt k1..k4 | 7.47 | 11.10, +14.61 +- 6.49 | 0.294 / 3.460 | +0.0126 +- 0.0099, +14.9303 +- 11.8494 | 0.399 / - | 0.274 / 0.742 | no |
+| division l1 | 8.78 | 11.39, +18.57 +- 8.00 | 0.310 / 5.642 | +0.0191 +- 0.0076, +43.6296 +- 36.9552 | 0.322 / - | 0.307 / 1.291 | no |
+| division l1,l2 | 7.49 | 10.65, +3.80 +- 1.73 | 0.233 / 2.070 | -0.0012 +- 0.0011, +3.7012 +- 2.6986 | 0.233 / - | 0.231 / 0.629 | yes |
+| division l1, pp fixed | 8.83 | 11.43, +19.08 +- 8.44 | 0.251 / 5.963 | +0.0034 +- 0.0027, +52.5603 +- 39.4613 | 0.252 / - | 0.251 / 1.683 | no |
 
 Cross-data prediction (lens of one data set, poses/rotations refit on the other):
 
@@ -170,27 +177,27 @@ Parameter-sample mapping uncertainty (cluster-robust sandwich covariance, rotati
 
 | model | E: centre / band / corners | ME: centre / band / corners |
 |---|---|---|
-| Brown k1 | - | - |
-| Brown k1,k2 | 2.07 / 8.82 / 11.90 | 2.68 / 11.41 / 15.58 |
-| Brown k1,k2,k3 | 2.59 / 11.52 / 16.36 | 2.11 / 8.92 / 11.67 |
-| Brown k1,k2,p1,p2 | 3.56 / 12.14 / 17.36 | 3.91 / 14.65 / 20.73 |
-| Brown k1,k2, fx!=fy | 5.33 / 32.42 / 60.59 | 2.22 / 11.96 / 20.31 |
-| Brown k1,k2,k3,p1,p2, fx!=fy | 7.15 / 36.40 / 59.23 | 4.04 / 18.23 / 27.77 |
-| Brown k1, pp fixed | 1.53 / 7.06 / 11.33 | 1.99 / 9.33 / 16.25 |
-| Brown k1,k2, pp fixed | 1.78 / 7.78 / 10.33 | 1.54 / 6.95 / 10.71 |
-| Brown k1,k2,k3, pp fixed | 1.68 / 8.26 / 12.76 | 0.96 / 4.61 / 7.17 |
-| rational k1,k2 / k4 | 2.37 / 10.38 / 14.50 | 1.77 / 7.94 / 11.61 |
-| rational k1..k6 | 2.24 / 9.45 / 12.01 | 2.26 / 9.35 / 12.75 |
-| Kannala-Brandt k1,k2 | 1.07 / 4.03 / 4.68 | 1.59 / 7.26 / 10.77 |
-| Kannala-Brandt k1..k4 | 3.46 / 14.33 / 20.98 | 4.07 / 16.49 / 23.07 |
-| division l1 | 1.96 / 7.90 / 11.48 | 1.75 / 6.18 / 7.73 |
-| division l1,l2 | 2.45 / 10.62 / 15.19 | 1.80 / 7.39 / 10.08 |
-| division l1, pp fixed | 2.94 / 12.75 / 18.32 | 2.24 / 9.66 / 13.48 |
+| Brown k1 | n/a (fold barrier active) | n/a (fold barrier active) |
+| Brown k1,k2 | 2.15 / 9.14 / 12.82 | 2.14 / 9.08 / 12.67 |
+| Brown k1,k2,k3 | 2.27 / 9.67 / 13.47 | 1.89 / 8.06 / 11.25 |
+| Brown k1,k2,p1,p2 | 3.43 / 11.78 / 17.19 | 3.63 / 12.34 / 18.73 |
+| Brown k1,k2, fx!=fy | 4.62 / 27.90 / 52.78 | 3.01 / 15.98 / 27.67 |
+| Brown k1,k2,k3,p1,p2, fx!=fy | n/a (fold barrier active) | n/a (fold barrier active) |
+| Brown k1, pp fixed | n/a (fold barrier active) | n/a (fold barrier active) |
+| Brown k1,k2, pp fixed | 2.00 / 8.84 / 12.67 | 1.67 / 7.39 / 10.92 |
+| Brown k1,k2,k3, pp fixed | 2.04 / 9.00 / 13.00 | 1.88 / 8.33 / 12.05 |
+| rational k1,k2 / k4 | 2.45 / 10.35 / 13.94 | 2.08 / 8.70 / 12.08 |
+| rational k1..k6 | 3.24 / 12.53 / 19.37 | 2.71 / 10.67 / 14.95 |
+| Kannala-Brandt k1,k2 | 2.25 / 9.61 / 13.42 | 1.82 / 7.72 / 10.77 |
+| Kannala-Brandt k1..k4 | 2.61 / 10.85 / 15.27 | 2.14 / 8.76 / 12.39 |
+| division l1 | 2.54 / 10.64 / 16.13 | 2.09 / 8.54 / 13.31 |
+| division l1,l2 | 2.08 / 8.90 / 12.43 | 1.79 / 7.63 / 10.74 |
+| division l1, pp fixed | 2.15 / 9.46 / 14.74 | 2.00 / 8.78 / 13.56 |
 
-**Model-choice part of the mapping uncertainty** (RMS over the adequate models Brown k1,k2, Brown k1,k2,k3, Brown k1,k2,p1,p2, Brown k1,k2, fx!=fy, Brown k1,k2, pp fixed, Brown k1,k2,k3, pp fixed, rational k1,k2 / k4, rational k1..k6, Kannala-Brandt k1,k2, Kannala-Brandt k1..k4, division l1, division l1,l2, division l1, pp fixed of the rot.-comp. difference to the recommended Brown k1,k2, median over region):
+**Model-choice part of the mapping uncertainty** (RMS over the adequate models Brown k1,k2, Brown k1,k2,k3, rational k1,k2 / k4, rational k1..k6, division l1,l2 of the rot.-comp. difference to the recommended Brown k1,k2, median over region):
 
-* E: centre 1.92, cart band 6.96, corners 13.35 px (max over models: 3.48 / 15.60 / 29.63 px)
-* ME: centre 2.06, cart band 7.05, corners 12.01 px (max over models: 4.37 / 17.58 / 25.60 px)
+* E: centre 0.42, cart band 2.70, corners 3.38 px (max over models: 0.58 / 3.05 / 4.70 px)
+* ME: centre 0.37, cart band 1.96, corners 2.67 px (max over models: 0.52 / 2.33 / 3.92 px)
 
 ## 5. Conversion of non-Brown models to OpenCV Brown
 

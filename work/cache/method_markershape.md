@@ -15,4 +15,4 @@ Every sticker is modelled as a flat horizontal square with a free 3D position; a
 
 Bootstrap over stickers (robust sigma = half the 16-84 % range): all_vp_ppfree: f median 1607, sigma 169 px (16-84 %: 1433-1772); all_vp_ppfixed: f median 1488, sigma 121 px (16-84 %: 1380-1622); shelf_vp_ppfree: f median 1420, sigma 75 px (16-84 %: 1339-1490); top_vp_ppfree: f median 1619, sigma 199 px (16-84 %: 1421-1819)
 
-Verdict: too weak (profile of the corner RMS vs f is almost flat: 1.69 px at 1150, 1.48 px at 1600, 1.49 px at 1750) and biased by the non-parallel stickers (shape-model RMS 1.5 px, 0.17 px when each sticker gets its own tilt). See geometry_diagnosis.md.
+Verdict: too weak (profile of the corner RMS vs f is almost flat: 1.67 px at 1150, 1.49 px at 1400, 1.46 px at 1600, 1.47 px at 1750) and biased by the non-parallel stickers (shape-model RMS 1.5 px, 0.17 px when each sticker gets its own tilt). See geometry_diagnosis.md.

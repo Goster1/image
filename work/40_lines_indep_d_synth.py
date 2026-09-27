@@ -57,6 +57,12 @@ jr = jm.fit(loss="linear")
 f_est, pp_est, dist_est, dirs = jm.unpack(jr.x)
 print(f"real-data joint estimate: f={f_est:.1f} pp={np.round(pp_est, 1)} a={np.round(dist_est.a, 5)}; sig_bow {SIG_BOW:.3f} px")
 
+# GLS weights for the VP-only f (same estimator as 40_lines_indep_b_vp.py): VP covariances of the real data
+rates_real = L.edge_angle_rates(acc, pl["dist"], f_init, pl["dist"].c)
+COVS = {g: L.vp_cov_mc(acc, pl["dist"], g, vps[g], rates_real, np.radians(0.155), n=60, rng_=rng) for g in ("310X", "80X", "CZ")}
+f_real_gls = L.gls_f(vps, COVS, [("310X", "CZ"), ("80X", "CZ")], pl["dist"].c, f0=f_init)
+print(f"real-data VP f (GLS, pp = distortion centre) {f_real_gls:.1f} (unweighted {f_init:.1f})")
+
 F_T = f_est
 PP_T = pp_est + SHIFT
 DIST_T = L.Dist("poly", dist_est.a.copy(), None, PP_T)
@@ -128,9 +134,10 @@ for t in range(NT):
     row["plumb_fixed"] = list(p0["x"])
     # VPs + f (pp = distortion centre)
     v1 = L.vp_estimates(se, p1["dist"], ["310X", "80X", "CZ", "WV"])
-    row["vp_f_ppDist"] = L.f_orthogonal(v1, [("310X", "CZ"), ("80X", "CZ")], p1["dist"].c)
+    row["vp_f_ppDist"] = L.gls_f(v1, COVS, [("310X", "CZ"), ("80X", "CZ")], p1["dist"].c)
+    row["vp_f_ppDist_unweighted"] = L.f_orthogonal(v1, [("310X", "CZ"), ("80X", "CZ")], p1["dist"].c)
     v0 = L.vp_estimates(se, p0["dist"], ["310X", "80X", "CZ", "WV"])
-    row["vp_f_ppC0"] = L.f_orthogonal(v0, [("310X", "CZ"), ("80X", "CZ")], L.C0)
+    row["vp_f_ppC0"] = L.gls_f(v0, COVS, [("310X", "CZ"), ("80X", "CZ")], L.C0)
     row["map_vp_ppDist"] = mapping_err(row["vp_f_ppDist"], p1["dist"].c, p1["dist"])
     # joint
     ini = dict(f=row["vp_f_ppDist"], pp=tuple(p1["dist"].c), a=list(p1["dist"].a), vp_px={g: L.from_scaled_h(v["V"]).tolist() for g, v in v1.items()})
@@ -159,7 +166,8 @@ def st(x, t_):
 
 summ = dict(
     plumb_centre_x=st(P1[:, 0], PP_T[0]), plumb_centre_y=st(P1[:, 1], PP_T[1]), plumb_a1=st(P1[:, 2], DIST_T.a[0]), plumb_a2=st(P1[:, 3], DIST_T.a[1]),
-    vp_f_ppDist=st(fv, F_T), vp_f_ppC0_with_fixed_centre_plumb=st(fv0, F_T),
+    vp_f_ppDist=st(fv, F_T), vp_f_ppDist_unweighted=st([r["vp_f_ppDist_unweighted"] for r in rows], F_T),
+    vp_f_ppC0_with_fixed_centre_plumb=st(fv0, F_T),
     joint_f=st(J[:, 0], F_T), joint_cx=st(J[:, 1], PP_T[0]), joint_cy=st(J[:, 2], PP_T[1]), joint_a1=st(J[:, 3], DIST_T.a[0]), joint_a2=st(J[:, 4], DIST_T.a[1]),
     map_joint={k: float(np.sqrt(np.mean([r["map_joint"][k] ** 2 for r in rows]))) for k in REG},
     map_vp_ppDist={k: float(np.sqrt(np.mean([r["map_vp_ppDist"][k] ** 2 for r in rows]))) for k in REG},

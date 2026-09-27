@@ -25,6 +25,8 @@ B = load_json(f"{CACHE}/40_lines_indep_vp.json")
 C = load_json(f"{CACHE}/40_lines_indep_joint.json")
 SY = load_json(f"{CACHE}/40_lines_indep_synth.json") if os.path.exists(f"{CACHE}/40_lines_indep_synth.json") else None
 CMP = load_json(f"{CACHE}/40_lines_indep_compare.json") if os.path.exists(f"{CACHE}/40_lines_indep_compare.json") else None
+PS = load_json(f"{CACHE}/40_lines_indep_ppscan.json") if os.path.exists(f"{CACHE}/40_lines_indep_ppscan.json") else None
+SE = load_json(f"{CACHE}/40_lines_indep_sensitivity.json") if os.path.exists(f"{CACHE}/40_lines_indep_sensitivity.json") else None
 bA = np.load(f"{CACHE}/40_lines_indep_plumb_boot.npz")
 bB = np.load(f"{CACHE}/40_lines_indep_vp_boot.npz")
 bC = np.load(f"{CACHE}/40_lines_indep_joint_boot.npz")
@@ -40,6 +42,15 @@ def mapping_unc(K0, d0, samples):
     disp = [mapping_displacement(K0, d0, K1, d1, uv=uv, compensate=True) for K1, d1 in samples]
     ms, _ = mapping_stats(np.array(disp), uv)
     return ms
+
+
+def mapping_unc_robust(K0, d0, samples):
+    """per grid point the 68.3 % quantile of |displacement| over the samples; median over each region."""
+    from evaltools import region_defs
+
+    disp = np.array([mapping_displacement(K0, d0, K1, d1, uv=uv, compensate=True) for K1, d1 in samples])
+    q = np.percentile(np.hypot(disp[..., 0], disp[..., 1]), 68.27, axis=0)
+    return {k: float(np.median(q[fn(uv)])) for k, fn in region_defs().items()}
 
 
 def reg_summary(ms):
@@ -81,6 +92,7 @@ samp_i = [(K_from(f_vp, f_vp, x[0], x[1]), kvec(x[2:4], f_vp)) for x in xa]
 samp_ii = [(K_from(f, f, x[0], x[1]), kvec(x[2:4], f)) for x, f in zip(px, fb)]
 mu_i = mapping_unc(K_pl, kpl, samp_i)
 mu_ii = mapping_unc(K_pl, kpl, samp_ii)
+mu_ii_rob = mapping_unc_robust(K_pl, kpl, samp_ii)
 k1s_i = np.array([s[1][0] for s in samp_i])
 k2s_i = np.array([s[1][1] for s in samp_i])
 k1s_ii = np.array([s[1][0] for s in samp_ii])
@@ -121,12 +133,16 @@ plumb = lens_json(
         mapping_uncertainty_meaning="main value: distortion-only (f fixed at the VP value); 'mapping_uncertainty_with_f' includes the f "
                                     "uncertainty of the VP method",
         mapping_uncertainty_full=mu_i, mapping_uncertainty_with_f=reg_summary(mu_ii), mapping_uncertainty_with_f_full=mu_ii,
+        mapping_uncertainty_with_f_robust_q68=mu_ii_rob,
         f_used=f_vp, pixel_units_scale_S=S,
         coefficients_pixel_units=dict(a1=float(a_pl[0]), a2=float(a_pl[1]), note="a_i = k_i S^(2i)/f^(2i), S = 1000 px"),
         distortion_centre=dict(value=cen.tolist(), boot_sd=boot_c["boot_sd"][:2], boot_sd_robust=boot_c["boot_sd_robust"][:2],
                                sandwich_se=boot_c["se_cluster"][:2], corr_boot=boot_c["boot_corr"]),
         model_selection="leave-one-cluster-out CV of the straightness rms (px): " + ", ".join(f"{k} {v['loco_cv_rms']:.4f}" for k, v in A["models"].items()),
         models=alts, regions=regions, rejection=A["rejection"],
+        comparison_orchestrator_linecal=(dict(ours=CMP.get("ours_plumb"), linecal=CMP.get("linecal_plumb")) if CMP else None),
+        synthetic_round_trip=(dict((k, v) for k, v in SY["summary"].items() if k.startswith("plumb")) if SY else None),
+        sensitivity=SE,
     ),
 )
 save_json(L.jsonable(plumb), f"{CACHE}/method_plumbline.json")
@@ -136,6 +152,7 @@ K_vp = K_from(f_vp, f_vp, *pp_vp)
 k_vp = kvec(a_c, f_vp)
 samp_vp = [(K_from(f, f, x[0], x[1]), kvec(x[2:4], f)) for x, f in zip(px, fb)]
 mu_vp = mapping_unc(K_vp, k_vp, samp_vp)
+mu_vp_rob = mapping_unc_robust(K_vp, k_vp, samp_vp)
 cxs, cys = px[:, 0], px[:, 1]
 k1v = np.array([s[1][0] for s in samp_vp])
 k2v = np.array([s[1][1] for s in samp_vp])
@@ -167,6 +184,7 @@ vanish = lens_json(
     data_used=data_used + "; VP groups: 310X (9 edges / 7 members), 80X (7/6), cart posts 310Z+80Z (4), scene verticals (5, not used for f)",
     geometry_assumptions="no dimensions; cart X axes perpendicular to the cart posts; both carts' posts parallel (upright on one floor)",
     details=dict(
+        mapping_uncertainty_full=mu_vp, mapping_uncertainty_robust_q68=mu_vp_rob,
         vp=vpm["vps"], sigma_psi_deg=B["sigma_psi_deg"], sigma_psi_per_group_deg=B["sigma_psi_per_group_deg"],
         f_of_ppy=B["f_of_ppy"], f_of_ppy_boot=bsum["k1k2_c"].get("f_of_ppy"),
         pp_fixed_image_centre=dict(note="with the centre-fixed plumb-line distortion (k1k2) and pp = image centre", f=B["plumb_variants"]["k1k2"]["solutions"]["S1_cartX_cartZ|ppC0"]["f"],
@@ -176,8 +194,13 @@ vanish = lens_json(
         all_solutions=alt_vp, pairsets=B["pairsets"],
         notes=["floor-line groups (FA along / FC across the aisle) are inconsistent with the vertical (chi2 350-550 for 4 dof) -> not used",
                "end-board groups give pp-free solutions that swing with the distortion variant (f 49..1475) -> not used",
-               "pp free is under-determined with the structural pairs: f and pp_y trade along f(pp_y) (details.f_of_ppy, ~1.8 px f per px pp_y)",
+               "pp free is under-determined with the structural pairs; if the distortion centre is kept fixed while pp moves ('mixed', "
+               "details.f_of_ppy) f changes ~1.7 px per px of pp_y, but for the OpenCV-consistent model (distortion centre = pp) f is almost "
+               "independent of pp_y (details.pp_scan: 1469..1503 for pp_y 340..660)",
                "self-consistent pairs (distortion centre = pp) give f 1479-1490 for all plumb variants (centre fixed or free, poly or division)"],
+        pp_scan=PS, synthetic_round_trip=(SY["summary"] if SY else None), synthetic_truth=(SY["truth"] if SY else None),
+        synthetic_claimed=(SY["claimed"] if SY else None), sensitivity=SE,
+        comparison_orchestrator_linecal=(CMP.get("linecal_vp_joint") if CMP else None),
     ),
 )
 save_json(L.jsonable(vanish), f"{CACHE}/method_vanishing.json")
@@ -209,7 +232,14 @@ joint = lens_json(
     geometry_assumptions="no dimensions; cart X axes _|_ posts; both carts upright on one floor (common vertical)",
     details=dict(psi_rms_deg=jm["psi_rms_deg"], sig_psi_deg=jm["sig_psi_deg"], sig_pt_px=jm["sig_pt_px"], straightness_inflation=C["straightness_inflation"],
                  se_formal=jm.get("se_formal"), boot=jb, mapping_uncertainty_full=jm["mapping_uncertainty"], f_profile=C["f_profile"],
-                 variants=alt_j, rms_meaning="straightness rms (px, distorted image); VP consistency: psi_rms_deg"),
+                 variants=alt_j, rms_meaning="straightness rms (px, distorted image); VP consistency: psi_rms_deg",
+                 pp_scan=PS, synthetic_round_trip=(SY["summary"] if SY else None), synthetic_truth=(SY["truth"] if SY else None),
+                 sensitivity=SE, comparison_orchestrator_linecal=(CMP.get("linecal_vp_joint") if CMP else None),
+                 systematics=dict(frames_free_minus_main=C["variants"]["JRE_k1k2_framesfree"]["f"] - fJ,
+                                  wv_tied_minus_main=C["variants"]["JRE_k1k2_wvtied"]["f"] - fJ,
+                                  div2_minus_main=C["variants"]["JRE_div2_ppfree"]["f"] - fJ,
+                                  pointlevel_vp_minus_main=C["variants"]["JPT_k1k2_ppfree"]["f"] - fJ,
+                                  pp_y_div2_minus_main=C["variants"]["JRE_div2_ppfree"]["pp"][1] - ppJ[1])),
 )
 # f profile 1-sigma (delta chi2 = 1, sigma units of the joint cost)
 fp = np.array(C["f_profile"]["f"])
@@ -247,21 +277,31 @@ md(f"{CACHE}/method_plumbline.md", "Plumb-line (independent, 40_lines_indep_a_pl
     f"the radial model (div2_c {mods['div2_c']['x'][1]:.0f}, k1k2k3_c {mods['k1k2k3_c']['x'][1]:.0f}, k1k2+tangential {mods['k1k2_c_t']['x'][1]:.0f}) -> cx determined (~930), cy only 'consistent' (430-520).",
     "k1-only folds at the image corner (runs into the fold barrier, rms 0.51 px) -> inadequate; k3 not determinable (runs towards the fold).",
     "Per-region: " + "; ".join(f"{k}: " + ", ".join(f"{n}={v:.4g}" for n, v in r['params'].items()) for k, r in regions.items() if k.endswith('_k1k2_c')),
-    "Rejected as curved: " + ", ".join(A["rejection"]["rejected"]) + " (cart-80 shelf lips A inner edge and E; bows 0.8-1.0 px that no lens removes).",
-])
+    "Per-region with the centre FIXED at the image centre disagree (a1: scene {:.4f}, cart310 {:.4f}, cart80 {:.4f}, +-0.004-0.006) but agree with a free centre -> evidence for a decentred distortion (or a different radial profile: div2 with fixed centre fits as well, LOCO 0.2077).".format(
+        A["regions"]["scene_k1k2"]["x"][0], A["regions"]["cart310_k1k2"]["x"][0], A["regions"]["cart80_k1k2"]["x"][0]),
+    "Rejected as curved: " + ", ".join(A["rejection"]["rejected"]) + " (cart-80 lowest lip E: both boundaries arched by ~0.75-0.8 px -> physically bent lip; A_in = inner shading boundary of the rounded A lip highlight, wobbly; its sharp partner A_out is kept). Crops: results/40_lines_indep_rejected_strips.png.",
+    "Same edges, orchestrator LineCal plumb: k@1300 (-0.2890, 0.0698) fixed centre, (-0.2697, 0.0559) centre (929.5, 426.7) -> identical to ours within 0.001 / 1 px.",
+] + ([f"Synthetic round trip (40 trials, truth pp shifted +15,+15): centre error sd ({SY['summary']['plumb_centre_x']['sd']:.1f}, {SY['summary']['plumb_centre_y']['sd']:.1f}) px, bias ({SY['summary']['plumb_centre_x']['bias']:+.1f}, {SY['summary']['plumb_centre_y']['bias']:+.1f}); claimed (bootstrap) ({boot_c['boot_sd'][0]:.1f}, {boot_c['boot_sd'][1]:.1f})."] if SY else []))
 md(f"{CACHE}/method_vanishing.md", "Vanishing points (independent, 40_lines_indep_b_vp.py)", vanish, [
     f"f from cart-X _|_ common post vertical (both carts, chi2 {sol['chi2']:.1f}/{sol['dof']}), pp = plumb distortion centre.",
     f"pp fixed at the image centre (with the centre-fixed plumb distortion): f = {vanish['details']['pp_fixed_image_centre']['f']:.1f} +- {vanish['details']['pp_fixed_image_centre']['boot_sd']:.1f}.",
-    "pp cannot be determined from the VPs: floor lines are inconsistent with the vertical, end boards not parallel to the cart axes; f and pp_y trade ~1.8 px per px.",
+    "pp cannot be determined from the VPs: floor lines are inconsistent with the vertical (chi2 350-550/4), end boards not parallel to the cart axes.",
+    "For the OpenCV-consistent model (distortion centre = pp) f is nearly independent of pp_y: 1469 (pp_y 340) .. 1489 (540) .. 1503 (660) (results/40_lines_indep_ppscan.png); only mixed models (centre fixed, pp moved) trade 1.7 px f per px pp_y.",
+    f"Only cart 310 (310X _|_ 310 posts): f = {B['plumb_variants']['k1k2_c']['solutions']['S1_310only|ppDist']['f']:.0f}; with the scene verticals instead of the posts: {B['plumb_variants']['k1k2_c']['solutions']['S1w_cartX_WV|ppDist']['f']:.0f}.",
     "Self-consistent (distortion centre = pp) solutions agree for all plumb variants (1479-1490); mixed (centre != pp) differ by up to 200 px.",
     f"Cart-post vertical vs scene verticals: {B['vertical_test']['k1k2_c']['angles_deg'].get('CZ-WV', float('nan')):.2f} deg (plumb centre free), "
     f"{B['vertical_test']['k1k2']['angles_deg'].get('CZ-WV', float('nan')):.2f} deg (centre fixed) -> carts' verticals and building verticals not parallel within noise.",
-])
+] + ([f"Synthetic round trip (40 trials): VP f bias {SY['summary']['vp_f_ppDist']['bias']:+.1f}, sd {SY['summary']['vp_f_ppDist']['sd']:.1f} px (claimed bootstrap sd {f_sd:.1f}, robust {f_sdr:.1f} -> conservative)."] if SY else [])
+   + ([f"Sensitivity: +-0.5 px dark-side edge shift: df {SE['cases']['dark+0.5']['rms_changes']['vp_f']:.2f} px; random per-edge tilts (0.3 px at the ends): df {SE['cases']['tilt_rand0.3']['rms_changes']['vp_f']:.1f} px rms."] if SE else [])
+   + (["Orchestrator LineCal on the same edges (separate cart frames, point-level VP): vp " + ", ".join(f"{k} f={v['f']:.0f}" for k, v in CMP['linecal_vp_joint'].items() if k.startswith('vp')) + " -> ~40 px lower, mainly because cart 80's vertical then rests on its own two short post fragments (our frames-free variant: 1438)."] if CMP else []))
 md(f"{CACHE}/method_lines_joint.md", "Joint line self-calibration (independent, 40_lines_indep_c_joint.py)", joint, [
     "Cost: straightness (points, distorted-image distances, weight 1/sig_pt with a within-edge correlation inflation) + one angular VP-consistency residual per member (random direction error sig_psi).",
     "Variants (f, pp): " + "; ".join(f"{n}: {v['f']:.0f}, ({v['pp'][0]:.0f},{v['pp'][1]:.0f})" for n, v in C["variants"].items()),
-    "f is stable (1470-1490) under all straightness/VP weightings and distortion models with tied cart frames; separate cart frames give 1425-1440 (cart 80's own posts are 2 short edges).",
-])
+    "f is stable (1470-1490) under all straightness/VP weightings and distortion models with tied cart frames; separate cart frames give 1425-1440 (cart 80's own posts are 2 short edges); scene verticals tied to the posts: 1504.",
+    f"pp_y depends on the radial model (k1k2 {ppJ[1]:.0f}, div2 {C['variants']['JRE_div2_ppfree']['pp'][1]:.0f}, k1k2k3 {C['variants']['JRE_k1k2k3_ppfree']['pp'][1]:.0f}); f does not.",
+    f"Focal profile (delta chi2 = 1): +-{joint['uncertainty']['f_profile_1sigma_formal']:.0f} px.",
+] + ([f"Synthetic round trip (40 trials, truth pp +15,+15): f bias {SY['summary']['joint_f']['bias']:+.1f} sd {SY['summary']['joint_f']['sd']:.1f} (claimed {jb['sd'][0]:.1f}); pp bias ({SY['summary']['joint_cx']['bias']:+.1f}, {SY['summary']['joint_cy']['bias']:+.1f}) sd ({SY['summary']['joint_cx']['sd']:.1f}, {SY['summary']['joint_cy']['sd']:.1f}) (claimed {jb['sd'][1]:.1f}, {jb['sd'][2]:.1f}); mapping error vs truth " + ", ".join(f"{k} {v:.1f}" for k, v in SY['summary']['map_joint'].items()) + " px (claimed " + ", ".join(f"{k} {v:.1f}" for k, v in reg_summary(jm['mapping_uncertainty']).items()) + ")."] if SY else [])
+   + (["Orchestrator LineCal joint on the same edges: " + ", ".join(f"{k} f={v['f']:.0f} pp=({v['pp'][0]:.0f},{v['pp'][1]:.0f})" for k, v in CMP['linecal_vp_joint'].items() if k.startswith('joint')) + "; our analogue (separate frames, point-level VP) JPT_k1k2_framesfree: 1435, (932, 505)."] if CMP else []))
 
 # ============================================================ summary figure
 fig, ax = plt.subplots(1, 2, figsize=(17, 6))
@@ -269,11 +309,11 @@ rows = []
 for k in ["S1_cartX_cartZ|ppDist", "S1_310only|ppDist", "S1w_cartX_WV|ppDist"]:
     s = B["plumb_variants"]["k1k2_c"]["solutions"][k]
     bs = bsum["k1k2_c"]["solutions"].get(k)
-    rows.append((f"VP k1k2_c {k}", s["f"], bs["sd"][0] if bs else s["se"][0], s["pp"][1], "tab:blue"))
+    rows.append((f"VP k1k2_c {k}", s["f"], bs["sd_robust"][0] if bs else s["se"][0], s["pp"][1], "tab:blue"))
 for pn in ["k1k2", "div2"]:
     s = B["plumb_variants"][pn]["solutions"]["S1_cartX_cartZ|ppC0"]
     bs = bsum.get(pn, {}).get("solutions", {}).get("S1_cartX_cartZ|ppC0")
-    rows.append((f"VP {pn} (centre fixed) S1|ppC0", s["f"], bs["sd"][0] if bs else s["se"][0], s["pp"][1], "tab:cyan"))
+    rows.append((f"VP {pn} (centre fixed) S1|ppC0", s["f"], bs["sd_robust"][0] if bs else s["se"][0], s["pp"][1], "tab:cyan"))
 for pn in ["div2_c", "k1k2k3_c"]:
     s = B["plumb_variants"][pn]["solutions"]["S1_cartX_cartZ|ppDist"]
     rows.append((f"VP {pn} S1|ppDist", s["f"], s["se"][0], s["pp"][1], "tab:cyan"))
@@ -288,7 +328,8 @@ for i, (lab, f, sd, ppy, col) in enumerate(rows):
     ax[1].plot(ppy, i, "o", color=col)
 ax[0].set_yticks(range(len(rows)))
 ax[0].set_yticklabels([r[0] for r in rows], fontsize=7)
-ax[0].set_xlabel("f [px] (bars: bootstrap sd where available, else formal)")
+ax[0].set_xlabel("f [px] (bars: bootstrap sd (VP: robust 68 % half-width) where available, else formal)")
+ax[0].set_xlim(1300, 1650)
 ax[0].grid(alpha=0.3)
 ax[0].set_title("independent line methods: focal length")
 ax[1].set_yticks(range(len(rows)))

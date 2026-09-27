@@ -310,6 +310,12 @@ def main():
                 sens.setdefault(f"{cart}_{end}", {})[var] = dict(Ztop_from_ABC=[round(x, 1) for x in vals],
                                                                gap_topA_if_BC400=[round(x, 1) for x in vals2])
     out["variant_sensitivity"] = sens
+    # bias-corrected corners (dark-side edge bias removed), main plumb variant, nominal values only
+    msb = G.markers("bias_corrected")
+    Rb = run_variant("k1k2_centre_fixed", msb, edges, do_mc=False)
+    out["bias_corrected_nominal"] = [dict(cart=r["cart"], end=r["end"], XY=r["XY"], levels_pt=r["levels_pt"], nominal=r["nominal"],
+                                          collin_rms=(float(np.sqrt(np.mean(np.square(list(r["resid_dist"].values())))))
+                                                      if len(r["resid_dist"]) >= 3 else None)) for r in Rb["columns"]]
     save_json(out, f"{CACHE}/geomdiag_columns.json")
 
     # ---- print ----
@@ -339,6 +345,8 @@ def main():
         for r in out[var]["columns"]:
             if len(r["resid_dist"]) >= 3:
                 print(f"  {var:18s} {r['cart']:3d}/X{r['end']:<4d} {np.round(r['XY'], 1)}", {k: round(v, 2) for k, v in r["resid_dist"].items()})
+    print("bias-corrected corners (4-point columns): ", [(r["cart"], r["end"], r["XY"], round(r["nominal"]["Ztop_from_ABC"], 1), round(r["collin_rms"], 2))
+                                                        for r in out["bias_corrected_nominal"] if len(r["levels_pt"]) == 4])
     print("variant sensitivity (Ztop from ABC per column):")
     for k, s in sens.items():
         print(" ", k, {v: s[v]["Ztop_from_ABC"] for v in variants})

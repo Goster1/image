@@ -1147,3 +1147,48 @@ def f_orthogonal(vps, pairs, pp, f0=1450.0, weights=None):
 
     r = least_squares(fun, [f0], x_scale=[100.0])
     return float(r.x[0])
+
+
+def vp_cov_mc(edge_list, dist, g, v, rates, sig_psi, n=80, rng_=None):
+    """Monte-Carlo covariance (tangent coords of v['basis']) of a group VP under per-member direction errors."""
+    rng_ = np.random.default_rng(0) if rng_ is None else rng_
+    sub = [e for e in edge_list if (e["group"] in ("310Z", "80Z") if g == "CZ" else e["group"] == g)]
+    sub = [dict(e, vgroup="_mc") for e in sub]
+    e1, e2 = v["basis"]
+    T = []
+    for _ in range(n):
+        pert = perturb_directions(sub, rates, sig_psi, rng_, groups={"_mc"})
+        es = EdgeSet(pert)
+        U, JU, _ = dist.undistort(es.P)
+        w = fit_vp_group(U, JU, es)
+        Vs = w["V"] * np.sign(w["V"] @ v["V"])
+        T.append([Vs @ e1, Vs @ e2])
+    return np.cov(np.array(T).T)
+
+
+def gls_f(vps, covs, pairs, pp, f0=1450.0, outer=3):
+    """GLS estimate of f (pp fixed) from orthogonal VP pairs with propagated VP covariances (tangent coords)."""
+    pairs = [p for p in pairs if p[0] in vps and p[1] in vps]
+    gl = sorted({g for p in pairs for g in p})
+
+    def cvec(f, Vd):
+        return np.array([ray(Vd[a], f, pp) @ ray(Vd[b], f, pp) for a, b in pairs])
+
+    base = {g: vps[g]["V"] for g in gl}
+    f = f0
+    for _ in range(outer):
+        G = np.zeros((len(pairs), 2 * len(gl)))
+        c0 = cvec(f, base)
+        for k, g in enumerate(gl):
+            for j, e in enumerate(vps[g]["basis"]):
+                Vd = dict(base)
+                Vd[g] = unit(base[g] + 1e-6 * e)
+                G[:, 2 * k + j] = (cvec(f, Vd) - c0) / 1e-6
+        Sg = np.zeros((2 * len(gl), 2 * len(gl)))
+        for k, g in enumerate(gl):
+            Sg[2 * k:2 * k + 2, 2 * k:2 * k + 2] = covs[g]
+        Ci = np.linalg.inv(G @ Sg @ G.T + 1e-14 * np.eye(len(pairs)))
+        Lc = np.linalg.cholesky(Ci)
+        r = least_squares(lambda z: Lc.T @ cvec(z[0], base), [f], x_scale=[100.0])
+        f = float(r.x[0])
+    return f
