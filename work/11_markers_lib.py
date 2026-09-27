@@ -13,8 +13,9 @@ Contents
 * ArUco-rule sub-pixel corner refinement (cv2.cornerSubPix with the window used by the ArUco
   detector for CORNER_REFINE_SUBPIX)
 * edge-based corners: sub-pixel tracing of the four sides of the black square, per-side validity
-  checks, line fit (straight in undistorted coordinates, i.e. slightly curved in the image) and
-  intersection of adjacent sides
+  checks (full / partial / invalid), total-least-squares line fit (straight in the image, or
+  optionally straight in undistorted coordinates = slightly curved in the image) and intersection
+  of adjacent sides
 """
 from __future__ import annotations
 
@@ -137,6 +138,19 @@ def rect_H(quad, C=10.0, M=2.0):
     dst = np.array([[0, 0], [S, 0], [S, S], [0, S]], float) + M * C
     Hm = cv2.getPerspectiveTransform(dst.astype(np.float32), np.asarray(quad, np.float32))
     return Hm, int(round(S + 2 * M * C))
+
+
+def homog4(src, dst):
+    """Exact float64 homography from 4 point pairs (src -> dst)."""
+    A = []
+    b = []
+    for (x, y), (u, v) in zip(np.asarray(src, float), np.asarray(dst, float)):
+        A.append([x, y, 1, 0, 0, 0, -u * x, -u * y])
+        b.append(u)
+        A.append([0, 0, 0, x, y, 1, -v * x, -v * y])
+        b.append(v)
+    h = np.linalg.solve(np.array(A), np.array(b))
+    return np.r_[h, 1.0].reshape(3, 3)
 
 
 def apply_H(Hm, P):
@@ -337,30 +351,38 @@ def _tls(P):
     return c, d, float(np.sqrt(np.mean(r ** 2))), r
 
 
-def side_quality(tr, black, white, min_good=0.8):
-    """Per-sample goodness and side validity.
+def _longest_run(b):
+    best = cur = 0
+    for v in b:
+        cur = cur + 1 if v else 0
+        best = max(best, cur)
+    return best
 
-    A sample is good if: the gradient maximum is not at the search limit, its strength is at least
-    40 % of the black->white step expected for this marker (derivative of a blurred step ~ step /
-    (sqrt(2 pi) sigma_blur) -> compared with the marker's own median strength), the inside is dark
-    and the outside bright (polarity/occlusion check), and it lies on the robust line (|r| < 0.6 px).
-    The side is valid if >= min_good of the samples are good, the good samples cover both halves
-    of the side, and the line rms <= 0.35 px."""
+
+def side_quality(tr, black, white, min_good=0.8, min_run=0.45):
+    """Per-sample goodness and side status.
+
+    A sample is good if: the gradient maximum is not at the search limit, the inside (0.5 cell
+    inward) is dark and the outside (0.33 cell outward, white margin) bright - polarity / occlusion
+    check -, its strength is >= 40 % of the side's median strength (strength collapse) and it lies
+    on the robust line (|r| < max(0.6 px, 3 rms)).
+    status  "full"    : >= min_good of the samples good, both halves covered, line rms <= 0.35 px
+            "partial" : otherwise, if a contiguous run of good samples covers >= min_run of the
+                        traced length (the rest is cut by an occluder) and rms <= 0.35 px
+            "invalid" : anything else (occluded / cut / not straight)
+    near_a / near_b: fraction of good samples in the third of the traced range next to corner a / b
+    (tells whether the corner neighbourhood itself is visible)."""
     step = white - black
     ins_ok = tr["inside"] < black + 0.35 * step
     out_ok = tr["outside"] > black + 0.65 * step
     base = ~tr["at_limit"] & ins_ok & out_ok
-    if base.sum() >= 5:
-        smed = np.median(tr["strength"][base])
-    else:
-        smed = np.median(tr["strength"])
+    smed = np.median(tr["strength"][base]) if base.sum() >= 5 else np.median(tr["strength"])
     st_ok = tr["strength"] > 0.4 * smed
     good = base & st_ok
     rms = np.inf
     if good.sum() >= 5:
-        # robust line: two passes
         for _ in range(2):
-            c, d, rms, r_all = _tls(tr["points"][good])
+            c, d, rms, _r = _tls(tr["points"][good])
             nn = np.array([-d[1], d[0]])
             r = (tr["points"] - c) @ nn
             good = base & st_ok & (np.abs(r) < max(0.6, 3 * rms))
@@ -368,12 +390,23 @@ def side_quality(tr, black, white, min_good=0.8):
                 break
         if good.sum() >= 5:
             c, d, rms, _ = _tls(tr["points"][good])
-    frac = good.mean() if len(good) else 0.0
+    n = len(good)
+    frac = float(good.mean()) if n else 0.0
+    run = _longest_run(good) / n if n else 0.0
     s = tr["s"]
-    mid = 0.5 * (s.min() + s.max())
-    cover = good[s < mid].mean() > 0.5 and good[s >= mid].mean() > 0.5 if len(s) > 3 else False
-    valid = bool(frac >= min_good and cover and rms <= 0.35)
-    return dict(good=good, frac_good=float(frac), rms=float(rms), valid=valid, strength_median=float(smed),
+    mid = 0.5 * (s.min() + s.max()) if n else 0
+    cover = bool(n > 3 and good[s < mid].mean() > 0.5 and good[s >= mid].mean() > 0.5)
+    third = max(n // 3, 1)
+    near_a = float(good[:third].mean()) if n else 0.0
+    near_b = float(good[-third:].mean()) if n else 0.0
+    if frac >= min_good and cover and rms <= 0.35:
+        status = "full"
+    elif run >= min_run and good.sum() >= 8 and rms <= 0.35:
+        status = "partial"
+    else:
+        status = "invalid"
+    return dict(good=good, frac_good=frac, run_frac=float(run), rms=float(rms), status=status,
+                valid=status != "invalid", near_a=near_a, near_b=near_b, strength_median=float(smed),
                 inside_ok=float(ins_ok.mean()), outside_ok=float(out_ok.mean()))
 
 
@@ -440,10 +473,13 @@ def edge_quad(img, quad, K=None, dist=None, end_frac=0.18, step=1.0, iters=2, mi
             p = intersect(s_prev["line"][0], s_prev["line"][1], s_next["line"][0], s_next["line"][1])
             if K is not None:
                 p = to_pixels(p, K, dist)
-            if np.linalg.norm(p - q[i]) < 0.35 * side:
+            if np.linalg.norm(p - q[i]) < 0.35 * side and s_prev["valid"] and s_next["valid"]:
                 newq[i] = p
-                cvalid[i] = s_prev["valid"] and s_next["valid"]
-        out = dict(corners=newq, sides=sides, corner_valid=cvalid, black=black, white=white)
+                cvalid[i] = True
+        # corner neighbourhood visible on both adjacent sides (needed for corner-type detectors)
+        cvis = np.array([sides[(i - 1) % 4]["quality"]["near_b"] >= 0.6 and sides[i]["quality"]["near_a"] >= 0.6
+                         for i in range(4)])
+        out = dict(corners=newq, sides=sides, corner_valid=cvalid, corner_visible=cvis, black=black, white=white)
         q = newq
     return out
 

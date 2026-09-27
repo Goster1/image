@@ -58,3 +58,47 @@ def to_points(markers, sel=None, use_centres=False):
             if m["valid"][j]:
                 pts.append(dict(cart=m["cart"], id=m["id"], mi=mi, corner=j, X=m["corners_3d"][j], uv=m["corners_px"][j]))
     return pts
+
+
+def marker_side_edges(markers, only_partial=True, frac=0.18, step=1.5):
+    """Sub-pixel traced sides of the black code square as exact 3D model lines (cart frame).
+
+    Side j joins corners j and j+1 (OpenCV order). The side is used when both of its end corners are
+    NOT already used as corner observations (only_partial=True) but the side itself is visible; the side
+    is traced between the (possibly extrapolated) corner positions, excluding `frac` at each end.
+    Returns edges in the linedata format with model_line = axis-aligned 3D line on the sticker plane.
+    """
+    from edgelib import trace_edge, line_fit
+
+    out = []
+    for m in markers:
+        c = m["corners_px"]
+        if np.any(np.isnan(c)):
+            continue
+        X = m["corners_3d"]
+        valid = m["valid"]
+        side_ok = m.get("side_valid", [True] * 4)
+        for j in range(4):
+            a, b = j, (j + 1) % 4
+            if only_partial and valid[a] and valid[b]:
+                continue
+            if not side_ok[j]:
+                continue
+            P0, P1 = c[a], c[b]
+            L = np.hypot(*(P1 - P0))
+            t = np.linspace(frac, 1 - frac, max(int(L * (1 - 2 * frac) / step), 5))
+            poly = P0[None] + (P1 - P0)[None] * t[:, None]
+            tr = trace_edge(poly, halfwidth=3.0, step=step, iters=2, min_strength=3.0)
+            if len(tr["points"]) < 6:
+                continue
+            _, _, rms, mx = line_fit(tr["points"])
+            if rms > 0.35:
+                continue
+            A, B = X[a], X[b]
+            ax = int(np.argmax(np.abs(B - A)))
+            fixed = {"XYZ"[i]: float(A[i]) for i in range(3) if i != ax}
+            out.append(dict(id=f"marker_{m['cart']}_{m['id']}_side{j}", region=f"cart{m['cart']}", cart=m["cart"],
+                            direction="cart" + "XYZ"[ax], what=f"side {j} of sticker {m['id']} (cart {m['cart']})",
+                            model_line={"fixed": fixed, "free": "XYZ"[ax], "range_mm": [float(min(A[ax], B[ax])), float(max(A[ax], B[ax]))], "exact": True},
+                            points=tr["points"], length=float(L * (1 - 2 * frac)), cls="marker_side"))
+    return out

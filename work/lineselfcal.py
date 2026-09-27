@@ -49,6 +49,7 @@ class LineCal:
         self.allp = np.vstack(self.pts)
         self.idx = np.cumsum([0] + [len(p) for p in self.pts])
         self.chord = np.array([np.hypot(*(p[-1] - p[0])) for p in self.pts])
+        self.resid_mode = "jacobian"  # or "chord" (older approximation, noise-biased)
         if mode == "plumb":
             self.groups = [None] * len(edges)
         else:
@@ -112,31 +113,54 @@ class LineCal:
             d = rots[int(c)][:, AXIS[ax]]
         return K @ d
 
-    def undist_px(self, K, d):
-        n = undistort_points(self.allp, K, d, iters=30)
+    def undist_px(self, K, d, pts=None):
+        pts = self.allp if pts is None else pts
+        n = undistort_points(pts, K, d, iters=30)
         return np.column_stack([K[0, 0] * n[:, 0] + K[0, 2], K[1, 1] * n[:, 1] + K[1, 2]])
 
-    def residuals(self, x, per_edge=False):
-        K, d, rots, wv = self.unpack(x)
+    def undist_jac(self, K, d, h=0.5):
+        """Undistorted px + 2x2 Jacobian dU/dD per point (finite differences)."""
         U = self.undist_px(K, d)
+        Ux = self.undist_px(K, d, self.allp + [h, 0.0])
+        Uy = self.undist_px(K, d, self.allp + [0.0, h])
+        J = np.stack([(Ux - U) / h, (Uy - U) / h], axis=2)  # N x 2 (U comp) x 2 (D comp)
+        return U, J
+
+    def residuals(self, x, per_edge=False):
+        """Residuals = distances in the DISTORTED image: r_d = r_u / |J^T n| (first order), which is the
+        ML residual under isotropic image noise and has no noise-induced shrinkage bias."""
+        K, d, rots, wv = self.unpack(x)
+        if self.resid_mode == "jacobian":
+            U, J = self.undist_jac(K, d)
+        else:
+            U, J = self.undist_px(K, d), None
         out = []
         pe = []
         for k in range(len(self.pts)):
-            P = U[self.idx[k]:self.idx[k + 1]]
+            sl = slice(self.idx[k], self.idx[k + 1])
+            P = U[sl]
             c = P.mean(0)
-            scale = self.chord[k] / max(np.hypot(*(P[-1] - P[0])), 1e-9)
             g = self.groups[k]
             if g is None or self.mode == "plumb":
                 if self.mode == "vp":
-                    r = np.zeros(0)
-                else:
-                    u, s, vt = np.linalg.svd(P - c, full_matrices=False)
-                    r = (P - c) @ vt[1]
+                    out.append(np.zeros(0))
+                    pe.append(np.nan)
+                    continue
+                u, s, vt = np.linalg.svd(P - c, full_matrices=False)
+                nvec = vt[1]
+                r = (P - c) @ nvec
+                nv = np.tile(nvec, (len(P), 1))
             else:
                 v = self.vp(g, K, rots, wv)
                 l = np.cross(v, np.r_[c, 1.0])
-                r = (P @ l[:2] + l[2]) / np.hypot(l[0], l[1])
-            r = r * scale
+                nn = np.hypot(l[0], l[1])
+                r = (P @ l[:2] + l[2]) / nn
+                nv = np.tile(l[:2] / nn, (len(P), 1))
+            if J is not None:
+                jt = np.einsum("nij,ni->nj", J[sl], nv)  # J^T n
+                r = r / np.maximum(np.hypot(jt[:, 0], jt[:, 1]), 1e-9)
+            else:
+                r = r * self.chord[k] / max(np.hypot(*(P[-1] - P[0])), 1e-9)
             out.append(r)
             pe.append(float(np.sqrt(np.mean(r ** 2))) if len(r) else np.nan)
         return pe if per_edge else np.concatenate(out)

@@ -57,3 +57,13 @@ matters more than a pretty number. Code lives in `work/`, never modify `data/` o
   bootstrap, profile, ...). Separate "determined" vs "consistent with" vs "not determinable".
 * Plots go to `results/*.png` with descriptive names; keep them readable (dpi ~110).
 * Do not write model names or tool names into repo files.
+
+## Important pitfall found (plumb-line / any edge residual)
+Measuring straightness residuals in the UNDISTORTED image (or rescaling them by a per-edge chord ratio)
+creates a noise-induced shrinkage bias: the fit prefers weaker distortion because the undistortion
+magnifies the noise (synthetic test: sigma 0.2 px -> k1 biased by +0.01...+0.04). Residuals must be
+distances in the DISTORTED image: r_d = r_u / |J^T n| (J = Jacobian of the undistortion map, n = unit
+normal of the fitted line in the undistorted image). lineselfcal.py and combined.py do this now.
+With this correction the free distortion centre is recoverable in synthetic tests (+-20..50 px with
+0.2-0.4 px per-edge bows). On the prototype automatic chains (unverified) the free centre goes to
+~(926, 834), i.e. ~300 px below the image centre - to be checked with the verified edges.
