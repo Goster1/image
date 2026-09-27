@@ -296,6 +296,7 @@
         "E: dQAIC +27.5 vs B_k1k2"
       ]
     },
-    "recommended_model": "B_k1k2"
+    "recommended_model": "B_k1k2",
+    "review_note": "REVIEW: uncertainty / mapping_uncertainty_px are edge-cluster sandwich values; the delete-one-member jackknife of the recommended Brown k1,k2 fit shows they are too small (f x1.5, cy x4 - cy rests on the floor-line parallel assumption, mapping x1.5); see work/cache/altmodels_review.md"
   }
 }

@@ -17,7 +17,7 @@ import numpy as np
 from combined import Combined
 from common import CACHE, RESULTS, H, W, K_from, lens_json, load_json, save_json
 from evaltools import grid, mapping_displacement, mapping_stats
-from linedata import load_edges
+from linedata import load_edges, stratified_resample
 from markerdata import load_markers, marker_side_edges, to_points
 
 NBOOT = int(sys.argv[1]) if len(sys.argv) > 1 else 100
@@ -130,8 +130,7 @@ for bi in range(NBOOT):
         bp += [dict(p, mi=1000 * q + mi) for p in PTS if p["mi"] == mi]
     if len({p["cart"] for p in bp}) < 2:
         continue
-    pick_e = rng.integers(0, len(EDGES), len(EDGES))
-    be = [dict(EDGES[i], id=f"{EDGES[i]['id']}#{q}") for q, i in enumerate(pick_e)]
+    be = stratified_resample(LINES, rng) + SIDES  # edges resampled within their VP group; sticker sides follow stickers
     try:
         cbb, rb = run(SPECS["k1k2"], bp, be, x0=r.x.copy(), sig=dict(cb.sig))
         boot.append(rb.x[: cb.ni])
@@ -146,7 +145,12 @@ disp = np.array([mapping_displacement(K, d, *lens_of(cb, np.r_[xb, r.x[cb.ni:]])
 mstats, mrms = mapping_stats(disp, uv)
 disp_raw = np.array([mapping_displacement(K, d, *lens_of(cb, np.r_[xb, r.x[cb.ni:]]), uv, compensate=False) for xb in boot])
 mstats_raw, _ = mapping_stats(disp_raw, uv)
-print("bootstrap std", dict(zip(cb.inames, np.round(boot.std(0), 4))))
+def rstd(a):
+    return 0.5 * (np.percentile(a, 84, axis=0) - np.percentile(a, 16, axis=0))
+
+
+print("bootstrap median", dict(zip(cb.inames, np.round(np.median(boot, 0), 4))), "robust std", dict(zip(cb.inames, np.round(rstd(boot), 4))),
+      "std", dict(zip(cb.inames, np.round(boot.std(0), 4))))
 print("mapping (rot-comp) 1 sigma", {k: round(v["rms_median_px"], 3) for k, v in mstats.items()})
 
 # ------------- plots -------------
@@ -167,7 +171,7 @@ fig.tight_layout()
 fig.savefig(f"{RESULTS}/combined_f_profile{TAG}.png")
 plt.close(fig)
 
-unc = {f"{n}_1sigma": float(v) for n, v in zip(cb.inames, boot.std(0))}
+unc = {f"{n}_1sigma": float(v) for n, v in zip(cb.inames, rstd(boot))}
 unc.update({f"{n}_1sigma_cov": float(v) for n, v in zip(cb.inames, summary["k1k2"]["sigma_cov"])})
 out = lens_json(K, d, method="combined_robust (stickers with drawing geometry, cluster-robust IRLS weights + edges: VPs incl. floor lines, straightness, sides of partly hidden stickers)",
                 model="fx=fy, pp free, k1,k2 (p1=p2=k3=0)", rms_reprojection_error_px=summary["k1k2"]["block_rms"]["M"][0],

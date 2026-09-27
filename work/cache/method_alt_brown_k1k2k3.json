@@ -29,17 +29,19 @@
   "model": "Brown k1,k2,k3, pp free",
   "rms_reprojection_error_px": 8.851648419781847,
   "uncertainty": {
-    "f_1sigma": 26.454907711516174,
-    "cx_1sigma": 6.84167879860712,
-    "cy_1sigma": 4.8386686595855055,
-    "k1_1sigma": 0.020153878998904536,
-    "k2_1sigma": 0.03170025652540313,
-    "k3_1sigma": 0.01691048766960085
+    "f_1sigma": 44.261847245197515,
+    "cx_1sigma": 9.568323996919602,
+    "cy_1sigma": 34.83819012452826,
+    "k1_1sigma": 0.03068769300185701,
+    "k2_1sigma": 0.046280341210657674,
+    "k3_1sigma": 0.02494063587044358,
+    "cy_1sigma_if_floor_lines_parallel": 8.568759085798979,
+    "note": "max(delete-one-cluster jackknife, member-cluster sandwich) of the joint fit; clusters = physical edge members (pair_of merged) and stickers. cy_1sigma is that of the fit WITHOUT the floor-line VP groups (the blue line || white tape assumption carries almost all cy information; without it cy = 485.0 px, shift 20.0 px)"
   },
   "mapping_uncertainty_px": {
-    "centre": 1.89,
-    "cart_band": 8.062,
-    "corners": 11.252
+    "centre": 4.124,
+    "cart_band": 15.078,
+    "corners": 21.087
   },
   "data_used": "62 valid sticker corners of 20 stickers (7-frame means) + 61 verified straight edges (straightness; VP groups: cart X/Z axes without end-board edges, scene verticals, 2 floor-line groups); block sigmas fixed from the Brown k1,k2 variance components",
   "geometry_assumptions": "drawing dimensions and sticker positions exact (not fitted); edges use no dimensions",
@@ -102,8 +104,8 @@
     },
     "fold_margin": 0.04650987436018572,
     "barrier_active": false,
-    "mapping_uncertainty_note": "parameter part only; add the model-choice part (model_choice_mapping_unc_px) in quadrature",
-    "uncertainty_method": "cluster-robust sandwich covariance (clusters = stickers and edges) of the joint fit; mapping uncertainty = 150 parameter samples, rotation-compensated displacement vs the fit, RMS over samples, median over region",
+    "mapping_uncertainty_note": "total (parameter part and model-choice part in quadrature), see details.review",
+    "uncertainty_method": "REVIEWED: 1-sigma = max(delete-one-cluster jackknife, cluster-robust sandwich) with clusters = physical edge members (pair_of merged) and stickers; cy from the variant without floor-line VP groups; mapping uncertainty = parameter part (max of jackknife of the rotation-compensated mapping and 150 member-sandwich samples, with and without floor-line VP groups; median over region) and model-choice part in quadrature",
     "info_criteria": {
       "M": {
         "dAIC_own": 9.8,
@@ -300,6 +302,253 @@
       "adequate": true,
       "reasons": []
     },
-    "recommended_model": "B_k1k2"
+    "recommended_model": "B_k1k2",
+    "review": {
+      "script": "work/43_altmodels_review.py",
+      "previous_uncertainty": {
+        "f_1sigma": 26.454907711516174,
+        "cx_1sigma": 6.84167879860712,
+        "cy_1sigma": 4.8386686595855055,
+        "k1_1sigma": 0.020153878998904536,
+        "k2_1sigma": 0.03170025652540313,
+        "k3_1sigma": 0.01691048766960085
+      },
+      "previous_mapping_uncertainty_px": {
+        "centre": 1.89,
+        "cart_band": 8.062,
+        "corners": 11.252
+      },
+      "sd_sandwich_member_clusters": {
+        "f": 29.082536324192123,
+        "cx": 5.516481195347662,
+        "cy": 3.9769564102589556,
+        "k1": 0.021137820274638112,
+        "k2": 0.03256053976205992,
+        "k3": 0.01778568658708438
+      },
+      "sd_jackknife_member_clusters": {
+        "f": 44.261847245197515,
+        "cx": 9.568323996919602,
+        "cy": 8.568759085798979,
+        "k1": 0.03068769300185701,
+        "k2": 0.046280341210657674,
+        "k3": 0.02494063587044358
+      },
+      "jackknife_bias": {
+        "f": 5.864577134525007,
+        "cx": 6.47504460890184,
+        "cy": -3.6901309504133906,
+        "k1": -0.012629695717739697,
+        "k2": 0.02154721399922796,
+        "k3": -0.010759855555571834
+      },
+      "mapping_param_unc_jackknife_px": {
+        "centre": 3.393,
+        "cart_band": 14.23,
+        "corners": 19.571,
+        "whole_image": 16.222
+      },
+      "mapping_param_unc_sandwich_member_px": {
+        "centre": 2.353,
+        "cart_band": 9.99,
+        "corners": 13.925,
+        "whole_image": 11.386
+      },
+      "mapping_param_unc_used_px": {
+        "centre": 4.108,
+        "cart_band": 14.95,
+        "corners": 20.918
+      },
+      "model_choice_part_px": {
+        "centre": 0.365,
+        "cart_band": 1.964,
+        "corners": 2.667
+      },
+      "mapping_uncertainty_definition": "sqrt(parameter part^2 + model-choice part^2); parameter part = max over {jackknife, member sandwich} x {with, without floor-line VP groups}",
+      "f_range_over_jackknife_folds": [
+        1410.5692963297802,
+        1455.409270456034
+      ],
+      "most_influential_clusters": [
+        {
+          "cluster": "m:scene_tapeH_top",
+          "max_abs_shift_in_jk_sd": 0.79,
+          "shift": {
+            "f": -1.8131,
+            "cx": -0.6089,
+            "cy": -6.8079,
+            "k1": 0.0025,
+            "k2": -0.0037,
+            "k3": 0.0016
+          },
+          "barrier_active": false
+        },
+        {
+          "cluster": "m:cart80_x_back_rail_out",
+          "max_abs_shift_in_jk_sd": 0.73,
+          "shift": {
+            "f": -4.4698,
+            "cx": 6.9473,
+            "cy": 2.4643,
+            "k1": -0.0107,
+            "k2": 0.0232,
+            "k3": -0.0123
+          },
+          "barrier_active": true
+        },
+        {
+          "cluster": "m:cart310_x_E_front_fall",
+          "max_abs_shift_in_jk_sd": 0.53,
+          "shift": {
+            "f": 23.6352,
+            "cx": 0.0028,
+            "cy": 0.409,
+            "k1": -0.0136,
+            "k2": 0.0142,
+            "k3": -0.0066
+          },
+          "barrier_active": false
+        },
+        {
+          "cluster": "m:cart310_x_A_front_fall",
+          "max_abs_shift_in_jk_sd": 0.51,
+          "shift": {
+            "f": 22.6899,
+            "cx": -1.5167,
+            "cy": -0.3341,
+            "k1": -0.01,
+            "k2": 0.0075,
+            "k3": -0.003
+          },
+          "barrier_active": false
+        },
+        {
+          "cluster": "m:cart310_x_C_front_fall",
+          "max_abs_shift_in_jk_sd": 0.48,
+          "shift": {
+            "f": -21.2047,
+            "cx": -2.6961,
+            "cy": -0.9238,
+            "k1": 0.0144,
+            "k2": -0.0151,
+            "k3": 0.006
+          },
+          "barrier_active": false
+        },
+        {
+          "cluster": "m:cart80_x_back_low",
+          "max_abs_shift_in_jk_sd": 0.47,
+          "shift": {
+            "f": -4.0854,
+            "cx": 1.4013,
+            "cy": 3.9823,
+            "k1": -0.0121,
+            "k2": 0.022,
+            "k3": -0.0106
+          },
+          "barrier_active": true
+        }
+      ],
+      "without_floor_line_vp_groups": {
+        "P": {
+          "fx": 1425.7945663496555,
+          "fy": 1425.7945663496555,
+          "cx": 929.2944909845178,
+          "cy": 485.00697562198036,
+          "k1": -0.34488098286197705,
+          "k2": 0.12394854381910797,
+          "p1": 0.0,
+          "p2": 0.0,
+          "k3": -0.024399263455397373,
+          "k4": 0.0,
+          "k5": 0.0,
+          "k6": 0.0
+        },
+        "sd_jackknife": {
+          "f": 46.827436820597285,
+          "cx": 7.246296173133372,
+          "cy": 34.83819012452826,
+          "k1": 0.03057013190042836,
+          "k2": 0.04087867840654884,
+          "k3": 0.020787906573467844
+        },
+        "sd_sandwich_member": {
+          "f": 30.362228584556245,
+          "cx": 5.2612501281096,
+          "cy": 23.994327654635637,
+          "k1": 0.0219182924577761,
+          "k2": 0.032217249428458536,
+          "k3": 0.016874768978120458
+        },
+        "mapping_unc_jackknife": {
+          "centre": 4.108,
+          "cart_band": 14.95,
+          "corners": 20.918,
+          "whole_image": 17.035
+        },
+        "mapping_unc_sandwich_member": {
+          "centre": 3.008,
+          "cart_band": 10.922,
+          "corners": 15.221,
+          "whole_image": 12.388
+        },
+        "block_stats": {
+          "M": {
+            "rms": 6.207062179240074,
+            "rms_radial": 8.778111516374413,
+            "max_radial": 14.476331931997969,
+            "n": 124
+          },
+          "V": {
+            "rms": 0.38984022066345614,
+            "max": 1.5531000949890086,
+            "n": 1701
+          },
+          "S": {
+            "rms": 0.21275348855058693,
+            "max": 1.1064276568181886,
+            "n": 1538
+          }
+        }
+      },
+      "edges_only": {
+        "P": {
+          "fx": 1432.1949271755723,
+          "fy": 1432.1949271755723,
+          "cx": 931.0682806835641,
+          "cy": 505.59811048329897,
+          "k1": -0.3550229706524157,
+          "k2": 0.1416835902109494,
+          "p1": 0.0,
+          "p2": 0.0,
+          "k3": -0.03370013972467258,
+          "k4": 0.0,
+          "k5": 0.0,
+          "k6": 0.0
+        },
+        "sd_jackknife": {
+          "f": 205.49719302768477,
+          "cx": 9.278976382966663,
+          "cy": 7.722003777298543,
+          "k1": 0.10926128548762887,
+          "k2": 0.1032051027210724,
+          "k3": 0.04391687489428766
+        },
+        "sd_sandwich_member": {
+          "f": 32.84792677687032,
+          "cx": 5.502345770754506,
+          "cy": 4.09533312631859,
+          "k1": 0.022123422618327223,
+          "k2": 0.033100040314137026,
+          "k3": 0.01802267639149462
+        },
+        "mapping_unc_jackknife": {
+          "centre": 15.426,
+          "cart_band": 64.796,
+          "corners": 83.2,
+          "whole_image": 72.805
+        }
+      }
+    }
   }
 }

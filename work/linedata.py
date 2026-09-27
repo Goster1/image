@@ -39,3 +39,34 @@ def load_edges(min_len=40.0, only_straight=True, verified_only=True, source=None
                                 direction=e.get("direction", "unknown"), model_line=e.get("model_line"),
                                 what=e.get("what", ""), points=P, length=L, cls=e.get("class")))
     return out
+
+
+def edge_stratum(e):
+    """Stratum for the bootstrap: VP group if any, else 'straight'."""
+    g = e.get("vp_group", "__auto__")
+    if g == "__auto__":
+        d = e.get("direction")
+        if d in ("cartX", "cartY", "cartZ") and e.get("cart") in (80, 310):
+            g = f"{e['cart']}_{d}"
+        elif d == "world_vertical":
+            g = "world_vertical"
+        else:
+            g = None
+    return g or "straight"
+
+
+def stratified_resample(edges, rng):
+    """Resample edges with replacement WITHIN each stratum (keeps every VP group populated)."""
+    import collections
+
+    groups = collections.defaultdict(list)
+    for e in edges:
+        groups[edge_stratum(e)].append(e)
+    out = []
+    q = 0
+    for g, lst in groups.items():
+        idx = rng.integers(0, len(lst), len(lst))
+        for i in idx:
+            out.append(dict(lst[i], id=f"{lst[i]['id']}#{q}"))
+            q += 1
+    return out

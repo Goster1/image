@@ -16,7 +16,16 @@ from common import CACHE, RESULTS, load_json, save_json
 
 L = importlib.import_module("44_synth_lib")
 SETUP = load_json(f"{CACHE}/synthetic_setup.json")
-RAW = pickle.load(open(f"{CACHE}/synthetic_roundtrip_raw.pkl", "rb"))
+import glob
+
+RAW = None
+for _fn in sorted(glob.glob(f"{CACHE}/synthetic_roundtrip_raw*.pkl")):  # main file + resumed parts
+    _d = pickle.load(open(_fn, "rb"))
+    if RAW is None:
+        RAW = _d
+    else:
+        for _s, _reps in _d["out"].items():
+            RAW["out"].setdefault(_s, {}).update(_reps)
 import os
 
 SENS = load_json(f"{CACHE}/synthetic_sensitivity.json") if os.path.exists(f"{CACHE}/synthetic_sensitivity.json") else None

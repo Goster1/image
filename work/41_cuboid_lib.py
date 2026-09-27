@@ -25,7 +25,7 @@ import numpy as np
 from scipy.optimize import least_squares
 
 from calib import DNAMES
-from common import (CACHE, CART_D, CART_W, FLOOR_Z, SHELF_Z, H, W, K_from, load_json, project, rodrigues,
+from common import (CACHE, CART_D, CART_W, FLOOR_Z, SHELF_Z, H, W, K_from, fold_margin, load_json, project, rodrigues,
                     undistort_points)
 from markerdata import load_markers, marker_side_edges, to_points
 
@@ -319,8 +319,14 @@ class CuboidFit:
     counts as n_eff observations, n_eff = clip(chord / corr_px, 2, 6)).
     """
 
+    FOLD_MIN = 0.03  # required fold margin (normalised radius), same value as calib.Problem / combined.Combined
+
     def __init__(self, pts, lines, spec, geo=(), nuis=(), subsample=2, weight_mode="cluster", corr_px=25.0,
-                 carts=(80, 310), sig=None, markers=None):
+                 carts=(80, 310), sig=None, markers=None, fold_barrier=True):
+        # fold_barrier (review fix): forbid Brown lenses whose radial map folds before the farthest image corner
+        # (common.fold_margin > FOLD_MIN); such a lens is not invertible inside the image (CONTEXT.md, 18:30).
+        # The barrier is the LAST element of the residual vector (0 when inactive).
+        self.fold_barrier = bool(fold_barrier)
         self.f_mode = spec.get("f", "single")
         self.pp_free = spec.get("pp", "free") == "free"
         self.dfree = list(spec.get("dist", ["k1", "k2"]))
@@ -490,7 +496,35 @@ class CuboidFit:
         for k in ("S", "E", "X"):
             if len(b[k]):
                 parts.append(b[k] * w[k] / self.sig[k])
+        if self.fold_barrier:
+            K, d, _, _, _ = self.unpack(x)
+            parts.append(np.array([1000.0 * max(0.0, self.FOLD_MIN - fold_margin(K, d))]))
         return np.concatenate(parts)
+
+    def fold_margin(self, x):
+        K, d, _, _, _ = self.unpack(x)
+        return float(fold_margin(K, d))
+
+    def n_eff(self):
+        """Effective number of observations: corner coordinates + sum of n_eff of the lines (cluster weighting)
+        or of the traced points (point weighting)."""
+        n = 2 * len(self.pts)
+        for ln in self.lines:
+            n += ln["neff"] if self.weight_mode == "cluster" else len(ln["P"])
+        return float(n)
+
+    def nll(self, x):
+        """-2 log L (up to a constant) with the block variances profiled out: sum_k n_k log(sigma_k^2).
+        Comparable between solutions of the SAME data set (the reweighted cost itself is ~n_eff/2 for every
+        converged solution and must not be used to pick between starts)."""
+        b, w = self.blocks(x)
+        out = len(b["M"]) * np.log(max(np.mean(b["M"] ** 2), 1e-12)) if len(b["M"]) else 0.0
+        for k in ("S", "E", "X"):
+            if len(b[k]):
+                ww = w[k] ** 2
+                nk = sum(ln["neff"] if self.weight_mode == "cluster" else len(ln["P"]) for ln in self.lines if ln["blk"] == k)
+                out += nk * np.log(max(np.sum(ww * b[k] ** 2) / np.sum(ww), 1e-12))
+        return float(out)
 
     def x0(self, K, dist, poses, geo0=None, nuis0=None):
         x = [K[0, 0]] if self.f_mode == "single" else [K[0, 0], K[1, 1]]
@@ -562,10 +596,20 @@ class CuboidFit:
         return r
 
 
-def cov_from(res):
+def cov_from(res, cf=None):
+    """Gauss-Newton covariance scaled by the residual variance per EFFECTIVE observation.
+    Review fix: with cluster weighting a traced line of n points carries only n_eff observations, so the
+    dof must be n_eff - p (the old version used rows - p, i.e. every traced point, which shrank all
+    formal sigmas by ~1.5x).  The fold-barrier row (if any) is dropped, so a parameter sitting on the
+    barrier gets the curvature of the data only (the barrier is a validity constraint, not information)."""
     J = res.jac
-    dof = max(J.shape[0] - J.shape[1], 1)
-    s2 = 2 * res.cost / dof
+    fun = res.fun
+    if cf is not None and cf.fold_barrier:
+        J = J[:-1]
+        fun = fun[:-1]
+    n = cf.n_eff() if cf is not None else J.shape[0]
+    dof = max(n - J.shape[1], 1)
+    s2 = float(np.sum(fun ** 2)) / dof
     C = np.linalg.pinv(J.T @ J) * s2
     return C
 

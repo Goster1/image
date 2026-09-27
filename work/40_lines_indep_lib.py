@@ -848,8 +848,8 @@ def jsonable(o):
         return [jsonable(v) for v in o]
     if isinstance(o, np.ndarray):
         return jsonable(o.tolist())
-    if isinstance(o, (np.floating,)):
-        return float(o)
+    if isinstance(o, (float, np.floating)):
+        return float(o) if np.isfinite(o) else None  # strict JSON: NaN/Inf -> null
     if isinstance(o, (np.integer,)):
         return int(o)
     if isinstance(o, (np.bool_,)):

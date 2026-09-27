@@ -77,7 +77,7 @@ def camera_markers_only(nboot=150, seed=2020):
     spec = dict(f="single", pp="fixed" if "pp fixed" in mm["model"] else "free", dist=["k1", "k2"])
     rng = np.random.default_rng(seed)
     mis = sorted({p["mi"] for p in PTS})
-    cf0 = L.CuboidFit(PTS, [], spec)
+    cf0 = L.CuboidFit(PTS, [], spec, fold_barrier=False)  # mirrors the reference camera (method_markers.json, fitted without the barrier)
     x0 = cf0.x0(cam.K, cam.dist, cam.poses)
     boots = []
     for b in range(nboot):
@@ -87,7 +87,7 @@ def camera_markers_only(nboot=150, seed=2020):
             bp += [dict(p, mi=1000 * q + mi) for p in PTS if p["mi"] == mi]
         if len({p["cart"] for p in bp}) < 2:
             continue
-        cf = L.CuboidFit(bp, [], spec)
+        cf = L.CuboidFit(bp, [], spec, fold_barrier=False)
         r = cf.solve(x0, reweight=False)
         boots.append(cf.camera(r.x))
     return cam, boots

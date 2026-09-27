@@ -27,6 +27,50 @@ SY = load_json(f"{CACHE}/40_lines_indep_synth.json") if os.path.exists(f"{CACHE}
 CMP = load_json(f"{CACHE}/40_lines_indep_compare.json") if os.path.exists(f"{CACHE}/40_lines_indep_compare.json") else None
 PS = load_json(f"{CACHE}/40_lines_indep_ppscan.json") if os.path.exists(f"{CACHE}/40_lines_indep_ppscan.json") else None
 SE = load_json(f"{CACHE}/40_lines_indep_sensitivity.json") if os.path.exists(f"{CACHE}/40_lines_indep_sensitivity.json") else None
+RV = load_json(f"{CACHE}/40_lines_indep_review.json") if os.path.exists(f"{CACHE}/40_lines_indep_review.json") else None
+
+
+def apply_review(js, which, f_sys_key=None):
+    """Review correction: headline 1-sigma = statistical (+) systematic (half-range over the credible model/assumption
+    variants of 40_lines_indep_j_review.py); the statistical values are kept as *_stat, mapping likewise."""
+    if RV is None:
+        return js
+    bud = RV["budget"][which]
+    u = js["uncertainty"]
+    fsys = RV["budget"][f_sys_key]["f_sys"] if f_sys_key else bud["f_sys"]
+    for key, sys_ in [("fx_px_1sigma", fsys), ("fy_px_1sigma", fsys), ("cx_1sigma", bud["cx_sys"]), ("cy_1sigma", bud["cy_sys"]),
+                      ("k1_1sigma", bud["k1_sys"]), ("k2_1sigma", bud["k2_sys"])]:
+        if key in u and u[key] is not None:
+            u[key + "_stat"] = u[key]
+            u[key + "_sys"] = sys_
+            u[key] = float(np.hypot(u[key], sys_))
+    u["how"] = (u.get("how", "") + "; HEADLINE 1-sigma = statistical (+) systematic in quadrature (review): systematic = half-range of the "
+                "central values over the credible variants (radial model k1k2 / k1k2k3 / division-2; the two visible pieces of the blue floor "
+                "line treated separately or as one straight line; straightness weighting), see details.review; *_stat / *_sys kept")
+    stat = js["mapping_uncertainty_px"]
+    js["mapping_uncertainty_px"] = {r: round(float(np.hypot(stat[r], bud["mapping_sys"][r])), 3) for r in stat}
+    js["details"]["mapping_uncertainty_stat"] = stat
+    js["details"]["mapping_uncertainty_sys"] = {r: round(v, 3) for r, v in bud["mapping_sys"].items()}
+    ct = RV["collinearity_tests"]
+    js["details"]["review"] = dict(
+        summary=["numbers reproduced; no code bug that changes the results",
+                 "principal point / distortion-centre height is NOT determined to the bootstrap sd: it moves with the radial model and with "
+                 "the floor-line assumption (range of the credible variants: y = %.0f..%.0f); x is determined to ~+-10 px"
+                 % (min(v["pp"][1] for v in bud["values"].values()), max(v["pp"][1] for v in bud["values"].values())),
+                 "blue floor line (one painted line visible left of cart 310 and between the carts): with the main lens the piece between "
+                 "the carts lies %+.1f px off the straight line through the left piece and is rotated by %.2f deg; with the pieces merged "
+                 "into one straight edge the free distortion centre moves to y ~510 without cost for the other edges (k1k2k3)"
+                 % (ct["plumb:k1k2_c"]["floorline_top"]["offset_px"], ct["plumb:k1k2_c"]["floorline_top"]["angle_deg"]),
+                 "focal length is robust to these variants (half-range %.1f px for this method)" % fsys,
+                 "stratified leave-one-VP-member-out jackknife (joint): sd f/cx/cy = %s (bootstrap %s); jackknife calibrated on synthetic "
+                 "data is ~unbiased but very noisy (8..37 px for a true 21.6 px)" % (np.round(RV["jackknife"]["sd_f_cx_cy"], 1).tolist(),
+                                                                                       np.round(RV["jackknife"]["bootstrap_sd"], 1).tolist()),
+                 "cart split (joint, common vertical): cart-310 X only f = %.0f, cart-80 X only f = %.0f"
+                 % (RV["cart_split"]["cart310_X_only"]["f"], RV["cart_split"]["cart80_X_only"]["f"])],
+        budget=bud, collinearity_tests=ct, not_in_budget_joint=RV.get("not_in_budget_joint"))
+    return js
+
+
 bA = np.load(f"{CACHE}/40_lines_indep_plumb_boot.npz")
 bB = np.load(f"{CACHE}/40_lines_indep_vp_boot.npz")
 bC = np.load(f"{CACHE}/40_lines_indep_joint_boot.npz")
@@ -145,6 +189,7 @@ plumb = lens_json(
         sensitivity=SE,
     ),
 )
+plumb = apply_review(plumb, "plumbline", f_sys_key="vanishing")
 save_json(L.jsonable(plumb), f"{CACHE}/method_plumbline.json")
 
 # ============================================================ method_vanishing
@@ -203,6 +248,7 @@ vanish = lens_json(
         comparison_orchestrator_linecal=(CMP.get("linecal_vp_joint") if CMP else None),
     ),
 )
+vanish = apply_review(vanish, "vanishing")
 save_json(L.jsonable(vanish), f"{CACHE}/method_vanishing.json")
 
 # ============================================================ method_lines_joint
@@ -250,6 +296,7 @@ try:
     joint["uncertainty"]["f_profile_1sigma_formal"] = float((hi - lo) / 2)
 except Exception:  # noqa
     pass
+joint = apply_review(joint, "lines_joint")
 save_json(L.jsonable(joint), f"{CACHE}/method_lines_joint.json")
 
 
@@ -263,7 +310,15 @@ def md(fn, title, js, lines):
            f"(1-sigma {u.get('cx_1sigma', float('nan')):.1f}, {u.get('cy_1sigma', float('nan')):.1f})",
            f"* dist = [{', '.join(f'{v:.4f}' for v in d)}]; k1 1-sigma {u.get('k1_1sigma', float('nan')):.4f}, k2 1-sigma {u.get('k2_1sigma', float('nan')):.4f}",
            f"* rms {js['rms_reprojection_error_px']:.3f} px; mapping uncertainty (rotation-compensated, px) {js['mapping_uncertainty_px']}",
-           ""] + lines
+           ""]
+    if "review" in js["details"]:
+        txt += ["**Review correction** (40_lines_indep_j_review.py): the 1-sigma values above are statistical (+) systematic; "
+                f"statistical only: f {u.get('fx_px_1sigma_stat', float('nan')):.1f}, cx {u.get('cx_1sigma_stat', float('nan')):.1f}, "
+                f"cy {u.get('cy_1sigma_stat', float('nan')):.1f}, k1 {u.get('k1_1sigma_stat', float('nan')):.4f}, k2 {u.get('k2_1sigma_stat', float('nan')):.4f}; "
+                f"mapping {js['details']['mapping_uncertainty_stat']}; systematic: f {u.get('fx_px_1sigma_sys', float('nan')):.1f}, "
+                f"cx {u.get('cx_1sigma_sys', float('nan')):.1f}, cy {u.get('cy_1sigma_sys', float('nan')):.1f}, mapping {js['details']['mapping_uncertainty_sys']}.", ""]
+        txt += ["* " + q for q in js["details"]["review"]["summary"]] + [""]
+    txt += lines
     with open(fn, "w") as fh:
         fh.write("\n".join(txt) + "\n")
 

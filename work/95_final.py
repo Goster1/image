@@ -67,7 +67,9 @@ def lens_from_names(x):
 
 # ---- statistical part: bootstrap -> mapping displacement fields
 Dstat = np.array([mapping_displacement(K0, d0, *lens_from_names(xb), uv) for xb in boot])
-sig_stat_map = np.sqrt(np.mean(np.sum(Dstat ** 2, 2), 0))
+# robust per-point 1-sigma: 68th percentile of the displacement magnitude over replicates (degenerate replicates
+# of the bootstrap - see REPORT - do not dominate)
+sig_stat_map = np.percentile(np.hypot(Dstat[..., 0], Dstat[..., 1]), 68.3, axis=0)
 # ---- systematic part: alternatives
 alts = []
 for name, fn, meth in ALTS + [(os.path.basename(e)[:-5], e, None) for e in EXTRA]:
@@ -114,7 +116,7 @@ def pvec(K, d):
 
 p0 = pvec(K0, d0)
 pb = np.array([pvec(*lens_from_names(xb)) for xb in boot])
-s_stat = pb.std(0)
+s_stat = 0.5 * (np.percentile(pb, 84, axis=0) - np.percentile(pb, 16, axis=0))
 s_sys = np.sqrt(np.mean([(pvec(a["K"], a["d"]) - p0) ** 2 for a in alts], 0)) if alts else np.zeros(8)
 s_tot = np.sqrt(s_stat ** 2 + s_sys ** 2)
 for n, v, a, b, c in zip(pnames, p0, s_stat, s_sys, s_tot):

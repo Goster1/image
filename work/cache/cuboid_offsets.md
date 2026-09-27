@@ -2,7 +2,7 @@
 
 Script `work/41_cuboid_predict.py`. Offset = traced - predicted along the image normal [px], sign + = traced edge on the + side of
 the first axis in [..]; implied shift = move of the drawing line (camera fixed) that puts it onto the traced edge [mm];
-cam-sigma = 1-sigma of the mean offset over the bootstrap cameras. Cameras: markers_only = markers-only (fx=fy, pp fixed, dist k1+k2); joint = joint (k1k2_ppfix: fx=fy, pp fixed at image centre, k1+k2); edge_lens = edge-only lens (method_lines_joint) + poses from all stickers; edge_lens_shelf_poses = edge-only lens (method_lines_joint) + poses from stickers of rows A+B+C only; edge_lens_top_poses = edge-only lens (method_lines_joint) + poses from stickers of rows top only
+cam-sigma = 1-sigma of the mean offset over the bootstrap cameras. Cameras: markers_only = markers-only (fx=fy, pp fixed, dist k1+k2); joint = joint (k1_ppfix: fx=fy, pp fixed at image centre, k1 only); edge_lens = edge-only lens (method_lines_joint) + poses from all stickers; edge_lens_shelf_poses = edge-only lens (method_lines_joint) + poses from stickers of rows A+B+C only; edge_lens_top_poses = edge-only lens (method_lines_joint) + poses from stickers of rows top only
 
 ## camera: markers_only
 
@@ -48,159 +48,159 @@ cam-sigma = 1-sigma of the mean offset over the bootstrap cameras. Cameras: mark
 
 | edge | model line | mean px (start / end) | cam-sigma px | implied 1st axis [mm] (px/mm) | implied 2nd axis [mm] |
 |---|---|---|---|---|---|
-| cart310_board0_outer | top_x0 [X] | -8.85 (-13.11 / -4.27) | 5.04 | dX -18.8 (0.473) | dZ +27.1 |
-| cart310_board1600_outer | top_x1600 [X] | +7.70 (+10.73 / +5.63) | 6.18 | dX +11.9 (0.643) | dZ +77.7 |
-| cart310_x_board0_front | top_front [Y] | +1.19 (-2.24 / +4.35) | 4.52 | dY +2.1 (0.567) | dZ +7.0 |
-| cart310_x_board1600_front | top_front [Y] | +4.78 (+4.28 / +5.91) | 4.10 | dY +6.9 (0.690) | dZ +23.4 |
-| cart310_x_A_front_fall | shelfA_front [Z] | -1.52 (-3.88 / -0.39) | 3.16 | dZ -9.6 (0.162) | dY -2.6 |
-| cart310_x_B_front_fall | shelfB_front [Z] | +4.24 (+2.19 / +5.27) | 4.53 | dZ +36.3 (0.116) | dY +8.2 |
-| cart310_x_B_front_rise | shelfB_front [Z] | +1.49 (-0.44 / +2.69) | 4.54 | dZ +12.5 (0.116) | dY +2.8 |
-| cart310_x_C_front_fall | shelfC_front [Z] | +1.86 (+2.62 / +0.93) | 6.84 | dZ +22.0 (0.086) | dY +4.3 |
-| cart310_x_C_front_rise | shelfC_front [Z] | +0.03 (+0.33 / -1.02) | 6.93 | dZ +0.5 (0.088) | dY +0.1 |
-| cart310_x_D_front_fall | shelfD_front [Z] | +3.19 (+2.82 / +3.36) | 8.56 | dZ +43.8 (0.073) | dY +7.7 |
-| cart310_x_E_front_fall | shelfE_front [Z] | -1.82 (-2.18 / -2.06) | 9.81 | dZ -30.4 (0.060) | dY -4.9 |
-| cart310_x_B_inner_fall | shelfB_front [Z] | +14.10 (+13.72 / +14.31) | 4.66 | dZ +123.4 (0.114) | dY +27.8 |
-| cart310_x_back_inner | top_back [Z] | -77.64 (-81.41 / -74.01) | 4.38 | dZ -253.5 (0.306) | dY -135.2 |
-| cart310_z_post_front_left_right | post_x0_y0 [X] | -1.21 (+0.82 / -2.88) | 7.15 | dX -6.1 (0.171) | dY -2.6 |
-| cart310_z_post_front_right | post_x1600_y0 [X] | -5.29 (-3.69 / -6.93) | 3.85 | dX -12.0 (0.444) | dY +23.4 |
-| cart80_x_board0_front | top_front [Y] | +4.41 (+6.29 / +2.68) | 3.52 | dY +6.5 (0.674) | dZ +19.6 |
-| cart80_x_board1600_front | top_front [Y] | +3.49 (+2.94 / +4.30) | 2.93 | dY +6.4 (0.548) | dZ +19.1 |
-| cart80_y_board0_outer | top_x0 [X] | -10.22 (-8.63 / -12.64) | 18.15 | dX -16.2 (0.629) | dZ +204.3 |
-| cart80_y_board1600_outer | top_x1600 [X] | +7.82 (+9.87 / +5.90) | 4.41 | dX +17.7 (0.442) | dZ +23.2 |
-| cart80_x_back_rail_out | top_back [Z] | -18.65 (-23.42 / -14.59) | 3.36 | dZ -61.1 (0.306) | dY -34.9 |
-| cart80_x_back_rail_in | top_back [Z] | -30.54 (-36.01 / -27.41) | 3.37 | dZ -100.6 (0.304) | dY -57.4 |
-| cart80_x_back_low | top_back [Z] | -78.01 (-82.50 / -71.94) | 3.62 | dZ -253.1 (0.308) | dY -144.4 |
-| cart80_x_A_front_out | shelfA_front [Z] | +1.46 (-0.39 / -1.15) | 3.46 | dZ +8.3 (0.176) | dY +2.5 |
-| cart80_x_A_front_in | shelfA_front [Z] | +8.86 (+8.43 / +6.99) | 3.93 | dZ +51.5 (0.172) | dY +15.6 |
-| cart80_x_B_front | shelfB_front [Z] | +1.45 (-0.37 / +1.39) | 2.82 | dZ +11.1 (0.128) | dY +2.8 |
-| cart80_x_C_front | shelfC_front [Z] | +7.90 (+7.88 / +6.47) | 3.43 | dZ +81.6 (0.097) | dY +17.8 |
-| cart80_x_D_front | shelfD_front [Z] | +8.75 (+8.01 / +7.71) | 4.11 | dZ +109.5 (0.080) | dY +21.7 |
-| cart80_x_E_front | shelfE_front [Z] | +3.23 (+3.55 / +0.79) | 4.81 | dZ +49.0 (0.066) | dY +8.8 |
-| cart80_x_E_front_in | shelfE_front [Z] | +6.00 (+6.19 / +3.59) | 4.81 | dZ +90.5 (0.067) | dY +16.3 |
-| cart80_z_post1600_sil | post_x1600_y0 [X] | -0.03 (+0.05 / +0.06) | 4.07 | dX -0.2 (0.158) | dY +0.1 |
-| cart80_z_post1600_sil_low | post_x1600_y0 [X] | -4.39 (-4.65 / -4.18) | 1.88 | dX -22.5 (0.195) | dY +9.8 |
+| cart310_board0_outer | top_x0 [X] | -10.38 (-14.39 / -5.98) | 5.15 | dX -22.0 (0.473) | dZ +32.3 |
+| cart310_board1600_outer | top_x1600 [X] | +6.19 (+6.47 / +5.94) | 2.56 | dX +9.2 (0.676) | dZ +61.1 |
+| cart310_x_board0_front | top_front [Y] | +2.23 (-1.46 / +5.66) | 3.99 | dY +3.9 (0.565) | dZ +13.3 |
+| cart310_x_board1600_front | top_front [Y] | +5.04 (+4.29 / +6.40) | 3.96 | dY +7.3 (0.687) | dZ +25.0 |
+| cart310_x_A_front_fall | shelfA_front [Z] | -1.82 (-3.65 / -0.92) | 2.34 | dZ -11.5 (0.160) | dY -3.1 |
+| cart310_x_B_front_fall | shelfB_front [Z] | +3.73 (+1.95 / +4.74) | 3.87 | dZ +32.0 (0.116) | dY +7.2 |
+| cart310_x_B_front_rise | shelfB_front [Z] | +0.98 (-0.68 / +2.10) | 3.88 | dZ +8.2 (0.116) | dY +1.8 |
+| cart310_x_C_front_fall | shelfC_front [Z] | +1.44 (+2.27 / +0.62) | 6.13 | dZ +17.0 (0.086) | dY +3.3 |
+| cart310_x_C_front_rise | shelfC_front [Z] | -0.39 (-0.02 / -1.46) | 6.24 | dZ -4.3 (0.088) | dY -0.8 |
+| cart310_x_D_front_fall | shelfD_front [Z] | +2.86 (+2.45 / +3.13) | 7.80 | dZ +39.1 (0.073) | dY +6.9 |
+| cart310_x_E_front_fall | shelfE_front [Z] | -1.90 (-2.47 / -1.80) | 8.99 | dZ -31.6 (0.060) | dY -5.1 |
+| cart310_x_B_inner_fall | shelfB_front [Z] | +13.43 (+13.17 / +13.60) | 3.82 | dZ +117.4 (0.114) | dY +26.4 |
+| cart310_x_back_inner | top_back [Z] | -74.92 (-78.60 / -71.49) | 3.53 | dZ -249.4 (0.300) | dY -131.5 |
+| cart310_z_post_front_left_right | post_x0_y0 [X] | -0.66 (+1.38 / -2.28) | 7.02 | dX -2.9 (0.175) | dY -1.2 |
+| cart310_z_post_front_right | post_x1600_y0 [X] | -5.12 (-4.05 / -6.32) | 3.73 | dX -11.6 (0.444) | dY +22.8 |
+| cart80_x_board0_front | top_front [Y] | +5.09 (+6.83 / +3.39) | 3.72 | dY +7.6 (0.670) | dZ +22.8 |
+| cart80_x_board1600_front | top_front [Y] | +3.82 (+3.07 / +4.82) | 2.78 | dY +7.0 (0.544) | dZ +21.0 |
+| cart80_y_board0_outer | top_x0 [X] | -7.66 (-8.92 / -6.62) | 3.20 | dX -11.5 (0.668) | dZ +157.2 |
+| cart80_y_board1600_outer | top_x1600 [X] | +9.14 (+10.83 / +7.24) | 4.42 | dX +20.7 (0.442) | dZ +27.4 |
+| cart80_x_back_rail_out | top_back [Z] | -16.97 (-24.34 / -12.56) | 3.33 | dZ -55.7 (0.307) | dY -31.6 |
+| cart80_x_back_rail_in | top_back [Z] | -28.58 (-35.56 / -25.38) | 3.21 | dZ -94.5 (0.303) | dY -53.6 |
+| cart80_x_back_low | top_back [Z] | -76.35 (-83.47 / -69.82) | 3.43 | dZ -247.0 (0.309) | dY -140.0 |
+| cart80_x_A_front_out | shelfA_front [Z] | +0.79 (-0.01 / -1.83) | 1.86 | dZ +4.6 (0.175) | dY +1.4 |
+| cart80_x_A_front_in | shelfA_front [Z] | +7.83 (+7.87 / +6.08) | 1.75 | dZ +45.7 (0.172) | dY +13.8 |
+| cart80_x_B_front | shelfB_front [Z] | +0.82 (-0.12 / +0.30) | 2.12 | dZ +6.3 (0.128) | dY +1.6 |
+| cart80_x_C_front | shelfC_front [Z] | +7.56 (+8.23 / +5.65) | 3.41 | dZ +77.6 (0.098) | dY +17.1 |
+| cart80_x_D_front | shelfD_front [Z] | +8.69 (+8.71 / +7.22) | 4.32 | dZ +107.8 (0.081) | dY +21.5 |
+| cart80_x_E_front | shelfE_front [Z] | +3.41 (+4.36 / +0.66) | 5.11 | dZ +51.1 (0.067) | dY +9.3 |
+| cart80_x_E_front_in | shelfE_front [Z] | +6.21 (+7.01 / +3.46) | 5.12 | dZ +92.5 (0.068) | dY +16.8 |
+| cart80_z_post1600_sil | post_x1600_y0 [X] | -0.19 (-0.17 / -0.06) | 4.38 | dX -1.2 (0.161) | dY +0.5 |
+| cart80_z_post1600_sil_low | post_x1600_y0 [X] | -4.48 (-4.74 / -4.26) | 1.90 | dX -22.6 (0.197) | dY +10.0 |
 
-* sticker rows (corner RMS px / Z shift of the row that fits its corners best, camera fixed, mm): 80:top 4.7/+6, 310:top 5.9/+7, 80:A 8.0/-28, 310:A 8.7/-33, 80:B 3.9/-15, 310:B 4.4/-12, 80:C 5.8/+26, 310:C 2.4/+9
-* lips cart 310: common lip height dZ +9.3 mm (formal +-5.8); per-lip deviation from it [px]: A -3.02, B +3.16, C +1.06, D +2.51, E -2.37 (rms 2.79 px); + shelf-depth scale -19.0 +- 12.4 permille -> rms 2.59 px; + D/E shift +5.5 +- 16.4 mm -> rms 2.78 px
-* lips cart 80: common lip height dZ +31.4 mm (formal +-8.4); per-lip deviation from it [px]: A -4.06, B -2.57, C +4.86, D +6.24, E +1.14 (rms 4.27 px); + shelf-depth scale -64.0 +- 11.5 permille -> rms 2.55 px; + D/E shift +63.5 +- 18.4 mm -> rms 3.19 px
+* sticker rows (corner RMS px / Z shift of the row that fits its corners best, camera fixed, mm): 80:top 6.2/+7, 310:top 6.5/+9, 80:A 8.0/-27, 310:A 8.3/-32, 80:B 4.0/-18, 310:B 4.3/-13, 80:C 5.6/+22, 310:C 2.0/+5
+* lips cart 310: common lip height dZ +6.3 mm (formal +-5.5); per-lip deviation from it [px]: A -2.83, B +3.00, C +0.90, D +2.40, E -2.28 (rms 2.61 px); + shelf-depth scale -17.1 +- 11.6 permille -> rms 2.43 px; + D/E shift +4.9 +- 15.2 mm -> rms 2.60 px
+* lips cart 80: common lip height dZ +28.3 mm (formal +-8.6); per-lip deviation from it [px]: A -4.18, B -2.82, C +4.79, D +6.40, E +1.50 (rms 4.37 px); + shelf-depth scale -66.3 +- 11.3 permille -> rms 2.50 px; + D/E shift +67.1 +- 18.0 mm -> rms 3.14 px
 
 ## camera: edge_lens
 
 | edge | model line | mean px (start / end) | cam-sigma px | implied 1st axis [mm] (px/mm) | implied 2nd axis [mm] |
 |---|---|---|---|---|---|
-| cart310_board0_outer | top_x0 [X] | -9.78 (-11.03 / -8.86) | nan | dX -20.9 (0.469) | dZ +30.9 |
-| cart310_board1600_outer | top_x1600 [X] | +9.05 (+9.61 / +8.33) | nan | dX +13.8 (0.656) | dZ +91.7 |
-| cart310_x_board0_front | top_front [Y] | -0.78 (-5.06 / +3.27) | nan | dY -1.4 (0.571) | dZ -4.6 |
-| cart310_x_board1600_front | top_front [Y] | +1.63 (+1.10 / +2.75) | nan | dY +2.5 (0.666) | dZ +8.0 |
-| cart310_x_A_front_fall | shelfA_front [Z] | -6.06 (-7.11 / -5.03) | nan | dZ -36.3 (0.167) | dY -10.1 |
-| cart310_x_B_front_fall | shelfB_front [Z] | +1.98 (+0.12 / +3.66) | nan | dZ +16.1 (0.121) | dY +3.8 |
-| cart310_x_B_front_rise | shelfB_front [Z] | -0.82 (-2.53 / +0.88) | nan | dZ -6.9 (0.121) | dY -1.6 |
-| cart310_x_C_front_fall | shelfC_front [Z] | +1.91 (+1.90 / +1.93) | nan | dZ +21.0 (0.091) | dY +4.3 |
-| cart310_x_C_front_rise | shelfC_front [Z] | -0.31 (-0.39 / -0.58) | nan | dZ -3.4 (0.092) | dY -0.7 |
-| cart310_x_D_front_fall | shelfD_front [Z] | +3.98 (+2.92 / +5.35) | nan | dZ +51.8 (0.077) | dY +9.5 |
-| cart310_x_E_front_fall | shelfE_front [Z] | +0.73 (-1.13 / +2.47) | nan | dZ +11.1 (0.064) | dY +1.9 |
-| cart310_x_B_inner_fall | shelfB_front [Z] | +11.58 (+11.13 / +11.93) | nan | dZ +96.1 (0.121) | dY +22.6 |
-| cart310_x_back_inner | top_back [Z] | -75.18 (-76.85 / -73.34) | nan | dZ -254.3 (0.296) | dY -137.1 |
-| cart310_z_post_front_left_right | post_x0_y0 [X] | +2.33 (+2.48 / +2.28) | nan | dX +12.4 (0.187) | dY +5.6 |
-| cart310_z_post_front_right | post_x1600_y0 [X] | -5.52 (-5.91 / -5.31) | nan | dX -12.5 (0.437) | dY +25.6 |
-| cart80_x_board0_front | top_front [Y] | +1.92 (+4.53 / -0.77) | nan | dY +3.0 (0.650) | dZ +8.6 |
-| cart80_x_board1600_front | top_front [Y] | +3.98 (+2.14 / +6.19) | nan | dY +7.4 (0.539) | dZ +21.4 |
-| cart80_y_board0_outer | top_x0 [X] | -8.76 (-10.01 / -7.58) | nan | dX -13.4 (0.654) | dZ +207.2 |
-| cart80_y_board1600_outer | top_x1600 [X] | +11.67 (+9.71 / +13.98) | nan | dX +27.2 (0.427) | dZ +35.8 |
-| cart80_x_back_rail_out | top_back [Z] | -14.26 (-17.44 / -10.36) | nan | dZ -48.8 (0.294) | dY -28.1 |
-| cart80_x_back_rail_in | top_back [Z] | -26.43 (-29.89 / -23.12) | nan | dZ -91.1 (0.291) | dY -52.5 |
-| cart80_x_back_low | top_back [Z] | -73.60 (-76.52 / -68.48) | nan | dZ -248.3 (0.296) | dY -143.0 |
-| cart80_x_A_front_out | shelfA_front [Z] | -4.52 (-4.22 / -4.78) | nan | dZ -25.1 (0.179) | dY -7.8 |
-| cart80_x_A_front_in | shelfA_front [Z] | +2.25 (+1.79 / +2.14) | nan | dZ +12.7 (0.177) | dY +4.0 |
-| cart80_x_B_front | shelfB_front [Z] | -3.02 (-3.28 / -2.74) | nan | dZ -22.9 (0.132) | dY -6.0 |
-| cart80_x_C_front | shelfC_front [Z] | +4.99 (+6.05 / +3.86) | nan | dZ +49.5 (0.101) | dY +11.2 |
-| cart80_x_D_front | shelfD_front [Z] | +7.18 (+7.60 / +6.58) | nan | dZ +85.7 (0.084) | dY +17.6 |
-| cart80_x_E_front | shelfE_front [Z] | +2.82 (+3.66 / +1.31) | nan | dZ +40.4 (0.070) | dY +7.6 |
-| cart80_x_E_front_in | shelfE_front [Z] | +5.63 (+6.33 / +4.13) | nan | dZ +80.3 (0.070) | dY +15.1 |
-| cart80_z_post1600_sil | post_x1600_y0 [X] | -0.81 (-0.69 / -0.78) | nan | dX -4.8 (0.168) | dY +2.2 |
-| cart80_z_post1600_sil_low | post_x1600_y0 [X] | -5.64 (-5.74 / -5.61) | nan | dX -27.4 (0.205) | dY +12.4 |
+| cart310_board0_outer | top_x0 [X] | -9.47 (-11.42 / -7.72) | nan | dX -19.8 (0.479) | dZ +31.3 |
+| cart310_board1600_outer | top_x1600 [X] | +11.63 (+13.61 / +9.63) | nan | dX +18.3 (0.636) | dZ +125.0 |
+| cart310_x_board0_front | top_front [Y] | -1.22 (-5.52 / +2.85) | nan | dY -2.2 (0.571) | dZ -7.1 |
+| cart310_x_board1600_front | top_front [Y] | +1.08 (+0.62 / +2.13) | nan | dY +1.6 (0.658) | dZ +5.4 |
+| cart310_x_A_front_fall | shelfA_front [Z] | -7.09 (-8.24 / -5.82) | nan | dZ -42.6 (0.167) | dY -11.9 |
+| cart310_x_B_front_fall | shelfB_front [Z] | +1.30 (-0.83 / +3.37) | nan | dZ +10.3 (0.123) | dY +2.4 |
+| cart310_x_B_front_rise | shelfB_front [Z] | -1.52 (-3.48 / +0.54) | nan | dZ -12.5 (0.123) | dY -3.0 |
+| cart310_x_C_front_fall | shelfC_front [Z] | +2.22 (+1.76 / +2.57) | nan | dZ +23.7 (0.093) | dY +4.9 |
+| cart310_x_C_front_rise | shelfC_front [Z] | -0.19 (-0.54 / -0.07) | nan | dZ -2.1 (0.095) | dY -0.4 |
+| cart310_x_D_front_fall | shelfD_front [Z] | +4.82 (+3.46 / +6.64) | nan | dZ +60.7 (0.079) | dY +11.4 |
+| cart310_x_E_front_fall | shelfE_front [Z] | +2.54 (+0.21 / +4.80) | nan | dZ +37.8 (0.066) | dY +6.5 |
+| cart310_x_B_inner_fall | shelfB_front [Z] | +10.97 (+10.35 / +11.43) | nan | dZ +89.6 (0.122) | dY +21.2 |
+| cart310_x_back_inner | top_back [Z] | -73.88 (-75.11 / -72.41) | nan | dZ -259.3 (0.285) | dY -136.0 |
+| cart310_z_post_front_left_right | post_x0_y0 [X] | +5.79 (+3.63 / +7.81) | nan | dX +28.1 (0.198) | dY +13.6 |
+| cart310_z_post_front_right | post_x1600_y0 [X] | -7.91 (-9.35 / -6.61) | nan | dX -17.8 (0.437) | dY +37.3 |
+| cart80_x_board0_front | top_front [Y] | +1.53 (+4.09 / -1.10) | nan | dY +2.4 (0.642) | dZ +7.0 |
+| cart80_x_board1600_front | top_front [Y] | +3.41 (+1.71 / +5.47) | nan | dY +6.3 (0.537) | dZ +18.6 |
+| cart80_y_board0_outer | top_x0 [X] | -12.98 (-12.79 / -13.11) | nan | dX -20.4 (0.636) | dZ +356.7 |
+| cart80_y_board1600_outer | top_x1600 [X] | +12.21 (+10.59 / +14.04) | nan | dX +28.0 (0.434) | dZ +38.7 |
+| cart80_x_back_rail_out | top_back [Z] | -11.85 (-14.19 / -9.03) | nan | dZ -42.0 (0.283) | dY -23.6 |
+| cart80_x_back_rail_in | top_back [Z] | -24.21 (-26.77 / -21.82) | nan | dZ -86.4 (0.280) | dY -48.5 |
+| cart80_x_back_low | top_back [Z] | -71.05 (-73.27 / -66.83) | nan | dZ -248.9 (0.286) | dY -139.6 |
+| cart80_x_A_front_out | shelfA_front [Z] | -5.01 (-5.12 / -5.19) | nan | dZ -28.1 (0.178) | dY -8.7 |
+| cart80_x_A_front_in | shelfA_front [Z] | +1.90 (+1.24 / +1.80) | nan | dZ +10.8 (0.175) | dY +3.4 |
+| cart80_x_B_front | shelfB_front [Z] | -3.53 (-4.30 / -2.87) | nan | dZ -26.6 (0.133) | dY -7.0 |
+| cart80_x_C_front | shelfC_front [Z] | +5.11 (+5.66 / +4.43) | nan | dZ +49.5 (0.103) | dY +11.4 |
+| cart80_x_D_front | shelfD_front [Z] | +7.96 (+7.72 / +7.86) | nan | dZ +92.3 (0.086) | dY +19.2 |
+| cart80_x_E_front | shelfE_front [Z] | +4.40 (+4.62 / +3.36) | nan | dZ +60.6 (0.073) | dY +11.6 |
+| cart80_x_E_front_in | shelfE_front [Z] | +7.19 (+7.28 / +6.18) | nan | dZ +98.9 (0.073) | dY +18.9 |
+| cart80_z_post1600_sil | post_x1600_y0 [X] | -3.79 (-4.40 / -3.18) | nan | dX -21.4 (0.176) | dY +10.1 |
+| cart80_z_post1600_sil_low | post_x1600_y0 [X] | -6.43 (-7.06 / -5.88) | nan | dX -30.1 (0.213) | dY +14.1 |
 
-* sticker rows (corner RMS px / Z shift of the row that fits its corners best, camera fixed, mm): 80:top 6.4/+16, 310:top 4.8/+9, 80:A 10.1/-36, 310:A 11.3/-45, 80:B 6.4/-28, 310:B 5.4/-22, 80:C 5.0/+14, 310:C 2.7/-1
-* lips cart 310: common lip height dZ -4.2 mm (formal +-7.4); per-lip deviation from it [px]: A -5.35, B +2.48, C +2.29, D +4.30, E +1.00 (rms 3.70 px); + shelf-depth scale -57.4 +- 9.7 permille -> rms 2.12 px; + D/E shift +47.1 +- 17.4 mm -> rms 3.12 px
-* lips cart 80: common lip height dZ +1.4 mm (formal +-9.2); per-lip deviation from it [px]: A -4.76, B -3.20, C +4.85, D +7.06, E +2.72 (rms 4.82 px); + shelf-depth scale -75.2 +- 10.2 permille -> rms 2.30 px; + D/E shift +78.7 +- 17.2 mm -> rms 3.09 px
+* sticker rows (corner RMS px / Z shift of the row that fits its corners best, camera fixed, mm): 80:top 7.1/+20, 310:top 6.0/+12, 80:A 10.7/-39, 310:A 12.3/-51, 80:B 9.0/-38, 310:B 8.0/-35, 80:C 7.9/+1, 310:C 6.4/-20
+* lips cart 310: common lip height dZ -4.4 mm (formal +-8.8); per-lip deviation from it [px]: A -6.36, B +1.84, C +2.63, D +5.17, E +2.83 (rms 4.40 px); + shelf-depth scale -74.4 +- 8.6 permille -> rms 1.91 px; + D/E shift +67.2 +- 18.1 mm -> rms 3.31 px
+* lips cart 80: common lip height dZ +2.3 mm (formal +-10.3); per-lip deviation from it [px]: A -5.42, B -3.84, C +4.87, D +7.76, E +4.23 (rms 5.48 px); + shelf-depth scale -86.7 +- 9.9 permille -> rms 2.24 px; + D/E shift +93.0 +- 17.2 mm -> rms 3.13 px
 
 ## camera: edge_lens_shelf_poses
 
 | edge | model line | mean px (start / end) | cam-sigma px | implied 1st axis [mm] (px/mm) | implied 2nd axis [mm] |
 |---|---|---|---|---|---|
-| cart310_board0_outer | top_x0 [X] | -23.28 (-25.73 / -21.12) | nan | dX -49.5 (0.471) | dZ +77.0 |
-| cart310_board1600_outer | top_x1600 [X] | +10.84 (+11.04 / +10.47) | nan | dX +17.0 (0.639) | dZ +107.5 |
-| cart310_x_board0_front | top_front [Y] | +5.64 (+1.63 / +9.42) | nan | dY +9.9 (0.565) | dZ +35.3 |
-| cart310_x_board1600_front | top_front [Y] | +13.10 (+12.67 / +14.11) | nan | dY +20.0 (0.654) | dZ +71.1 |
-| cart310_x_A_front_fall | shelfA_front [Z] | +0.26 (+0.40 / +0.07) | nan | dZ +1.7 (0.151) | dY +0.4 |
-| cart310_x_B_front_fall | shelfB_front [Z] | +3.11 (+2.13 / +3.88) | nan | dZ +28.0 (0.110) | dY +6.1 |
-| cart310_x_B_front_rise | shelfB_front [Z] | +0.36 (-0.55 / +1.18) | nan | dZ +3.2 (0.111) | dY +0.7 |
-| cart310_x_C_front_fall | shelfC_front [Z] | -0.78 (+0.02 / -1.28) | nan | dZ -9.3 (0.083) | dY -1.7 |
-| cart310_x_C_front_rise | shelfC_front [Z] | -2.69 (-2.26 / -3.62) | nan | dZ -31.8 (0.084) | dY -6.0 |
-| cart310_x_D_front_fall | shelfD_front [Z] | -0.47 (-1.04 / +0.31) | nan | dZ -6.7 (0.070) | dY -1.1 |
-| cart310_x_E_front_fall | shelfE_front [Z] | -5.64 (-6.97 / -4.41) | nan | dZ -96.8 (0.058) | dY -15.1 |
-| cart310_x_B_inner_fall | shelfB_front [Z] | +12.47 (+12.43 / +12.58) | nan | dZ +113.6 (0.110) | dY +24.7 |
-| cart310_x_back_inner | top_back [Z] | -63.02 (-63.86 / -61.96) | nan | dZ -227.4 (0.277) | dY -115.2 |
-| cart310_z_post_front_left_right | post_x0_y0 [X] | -2.58 (-0.49 / -4.31) | nan | dX -13.2 (0.180) | dY -5.8 |
-| cart310_z_post_front_right | post_x1600_y0 [X] | -1.10 (+1.36 / -3.75) | nan | dX -3.0 (0.419) | dY +5.4 |
-| cart80_x_board0_front | top_front [Y] | +13.91 (+16.58 / +11.13) | nan | dY +21.8 (0.639) | dZ +68.9 |
-| cart80_x_board1600_front | top_front [Y] | +12.99 (+11.33 / +15.00) | nan | dY +24.2 (0.536) | dZ +76.6 |
-| cart80_y_board0_outer | top_x0 [X] | -8.99 (-10.03 / -7.99) | nan | dX -14.1 (0.636) | dZ +173.7 |
-| cart80_y_board1600_outer | top_x1600 [X] | +22.59 (+22.47 / +23.10) | nan | dX +52.1 (0.434) | dZ +72.6 |
-| cart80_x_back_rail_out | top_back [Z] | -1.80 (-3.26 / +0.07) | nan | dZ -6.6 (0.276) | dY -3.6 |
-| cart80_x_back_rail_in | top_back [Z] | -14.35 (-15.93 / -12.73) | nan | dZ -52.5 (0.274) | dY -28.4 |
-| cart80_x_back_low | top_back [Z] | -60.86 (-62.33 / -57.54) | nan | dZ -218.5 (0.279) | dY -118.0 |
-| cart80_x_A_front_out | shelfA_front [Z] | +2.96 (+3.84 / +1.90) | nan | dZ +18.3 (0.163) | dY +5.3 |
-| cart80_x_A_front_in | shelfA_front [Z] | +9.54 (+9.56 / +8.97) | nan | dZ +59.4 (0.161) | dY +17.1 |
-| cart80_x_B_front | shelfB_front [Z] | -0.93 (-1.10 / -0.77) | nan | dZ -7.8 (0.121) | dY -1.9 |
-| cart80_x_C_front | shelfC_front [Z] | +3.13 (+4.05 / +2.19) | nan | dZ +33.9 (0.093) | dY +7.2 |
-| cart80_x_D_front | shelfD_front [Z] | +3.01 (+3.14 / +2.78) | nan | dZ +39.1 (0.077) | dY +7.5 |
-| cart80_x_E_front | shelfE_front [Z] | -3.16 (-2.74 / -4.17) | nan | dZ -48.6 (0.065) | dY -8.5 |
-| cart80_x_E_front_in | shelfE_front [Z] | -0.37 (-0.07 / -1.34) | nan | dZ -5.5 (0.065) | dY -1.0 |
-| cart80_z_post1600_sil | post_x1600_y0 [X] | +1.99 (+2.96 / +1.34) | nan | dX +12.0 (0.163) | dY -5.3 |
-| cart80_z_post1600_sil_low | post_x1600_y0 [X] | -5.37 (-4.85 / -5.92) | nan | dX -26.8 (0.201) | dY +11.8 |
+| cart310_board0_outer | top_x0 [X] | -26.21 (-29.32 / -23.25) | nan | dX -55.0 (0.477) | dZ +91.2 |
+| cart310_board1600_outer | top_x1600 [X] | +16.85 (+18.24 / +15.42) | nan | dX +27.3 (0.617) | dZ +184.4 |
+| cart310_x_board0_front | top_front [Y] | +6.10 (+2.11 / +9.85) | nan | dY +10.8 (0.561) | dZ +39.0 |
+| cart310_x_board1600_front | top_front [Y] | +14.30 (+13.95 / +15.22) | nan | dY +22.2 (0.643) | dZ +80.0 |
+| cart310_x_A_front_fall | shelfA_front [Z] | +0.27 (+0.57 / +0.06) | nan | dZ +1.8 (0.149) | dY +0.5 |
+| cart310_x_B_front_fall | shelfB_front [Z] | +2.80 (+1.81 / +3.67) | nan | dZ +25.1 (0.111) | dY +5.5 |
+| cart310_x_B_front_rise | shelfB_front [Z] | +0.05 (-0.87 / +0.95) | nan | dZ +0.3 (0.111) | dY +0.1 |
+| cart310_x_C_front_fall | shelfC_front [Z] | -0.70 (-0.01 / -1.08) | nan | dZ -8.2 (0.085) | dY -1.6 |
+| cart310_x_C_front_rise | shelfC_front [Z] | -2.67 (-2.29 / -3.48) | nan | dZ -31.1 (0.086) | dY -5.9 |
+| cart310_x_D_front_fall | shelfD_front [Z] | -0.01 (-0.64 / +0.93) | nan | dZ -0.2 (0.072) | dY -0.0 |
+| cart310_x_E_front_fall | shelfE_front [Z] | -4.59 (-6.08 / -3.14) | nan | dZ -76.5 (0.060) | dY -12.1 |
+| cart310_x_B_inner_fall | shelfB_front [Z] | +12.15 (+12.07 / +12.29) | nan | dZ +110.3 (0.110) | dY +24.0 |
+| cart310_x_back_inner | top_back [Z] | -59.06 (-59.43 / -58.41) | nan | dZ -223.7 (0.264) | dY -109.4 |
+| cart310_z_post_front_left_right | post_x0_y0 [X] | -0.76 (-0.63 / -0.73) | nan | dX -3.9 (0.189) | dY -1.8 |
+| cart310_z_post_front_right | post_x1600_y0 [X] | -2.09 (-1.19 / -3.13) | nan | dX -5.1 (0.422) | dY +9.5 |
+| cart80_x_board0_front | top_front [Y] | +15.37 (+18.02 / +12.62) | nan | dY +24.5 (0.628) | dZ +78.7 |
+| cart80_x_board1600_front | top_front [Y] | +13.32 (+11.84 / +15.14) | nan | dY +25.1 (0.531) | dZ +80.7 |
+| cart80_y_board0_outer | top_x0 [X] | -17.30 (-17.12 / -17.41) | nan | dX -28.1 (0.616) | dZ +412.9 |
+| cart80_y_board1600_outer | top_x1600 [X] | +25.70 (+25.88 / +25.78) | nan | dX +58.8 (0.437) | dZ +85.9 |
+| cart80_x_back_rail_out | top_back [Z] | +3.23 (+2.70 / +3.84) | nan | dZ +12.2 (0.263) | dY +6.4 |
+| cart80_x_back_rail_in | top_back [Z] | -9.54 (-10.09 / -8.99) | nan | dZ -36.6 (0.261) | dY -19.1 |
+| cart80_x_back_low | top_back [Z] | -55.67 (-56.35 / -53.39) | nan | dZ -209.8 (0.265) | dY -109.5 |
+| cart80_x_A_front_out | shelfA_front [Z] | +3.56 (+4.38 / +2.18) | nan | dZ +22.4 (0.160) | dY +6.4 |
+| cart80_x_A_front_in | shelfA_front [Z] | +10.16 (+10.24 / +9.39) | nan | dZ +64.4 (0.158) | dY +18.3 |
+| cart80_x_B_front | shelfB_front [Z] | -0.94 (-1.32 / -0.71) | nan | dZ -7.8 (0.121) | dY -1.9 |
+| cart80_x_C_front | shelfC_front [Z] | +3.29 (+3.96 / +2.49) | nan | dZ +35.2 (0.094) | dY +7.5 |
+| cart80_x_D_front | shelfD_front [Z] | +3.52 (+3.30 / +3.47) | nan | dZ +44.9 (0.078) | dY +8.7 |
+| cart80_x_E_front | shelfE_front [Z] | -2.15 (-2.04 / -3.01) | nan | dZ -32.3 (0.066) | dY -5.7 |
+| cart80_x_E_front_in | shelfE_front [Z] | +0.63 (+0.61 / -0.18) | nan | dZ +9.6 (0.066) | dY +1.7 |
+| cart80_z_post1600_sil | post_x1600_y0 [X] | +0.24 (+0.59 / +0.08) | nan | dX +1.3 (0.169) | dY -0.6 |
+| cart80_z_post1600_sil_low | post_x1600_y0 [X] | -5.28 (-5.21 / -5.40) | nan | dX -25.6 (0.206) | dY +11.7 |
 
-* sticker rows (corner RMS px / Z shift of the row that fits its corners best, camera fixed, mm): 80:top 18.4/+60, 310:top 17.1/+55, 80:A 2.1/+1, 310:A 1.7/-4, 80:B 2.4/-6, 310:B 2.0/+4, 80:C 3.0/+16, 310:C 2.6/+7
-* lips cart 310: common lip height dZ -0.9 mm (formal +-6.8); per-lip deviation from it [px]: A +0.40, B +3.21, C -0.70, D -0.40, E -5.59 (rms 2.93 px); + shelf-depth scale +37.3 +- 12.3 permille -> rms 2.47 px; + D/E shift -51.2 +- 14.4 mm -> rms 2.24 px
-* lips cart 80: common lip height dZ +11.6 mm (formal +-5.3); per-lip deviation from it [px]: A +1.08, B -2.33, C +2.06, D +2.12, E -3.91 (rms 2.51 px); + shelf-depth scale +10.4 +- 11.4 permille -> rms 2.40 px; + D/E shift -10.5 +- 14.2 mm -> rms 2.44 px
+* sticker rows (corner RMS px / Z shift of the row that fits its corners best, camera fixed, mm): 80:top 22.0/+75, 310:top 20.9/+71, 80:A 2.6/+6, 310:A 1.6/+2, 80:B 2.7/-10, 310:B 2.0/-0, 80:C 2.6/+7, 310:C 1.4/-7
+* lips cart 310: common lip height dZ +0.2 mm (formal +-5.7); per-lip deviation from it [px]: A +0.24, B +2.77, C -0.72, D -0.02, E -4.61 (rms 2.48 px); + shelf-depth scale +29.4 +- 10.6 permille -> rms 2.14 px; + D/E shift -38.7 +- 12.6 mm -> rms 2.00 px
+* lips cart 80: common lip height dZ +15.2 mm (formal +-5.0); per-lip deviation from it [px]: A +1.14, B -2.77, C +1.87, D +2.33, E -3.16 (rms 2.35 px); + shelf-depth scale +6.6 +- 11.0 permille -> rms 2.29 px; + D/E shift -3.0 +- 13.5 mm -> rms 2.34 px
 
 ## camera: edge_lens_top_poses
 
 | edge | model line | mean px (start / end) | cam-sigma px | implied 1st axis [mm] (px/mm) | implied 2nd axis [mm] |
 |---|---|---|---|---|---|
-| cart310_board0_outer | top_x0 [X] | -6.88 (-7.11 / -6.99) | nan | dX -14.7 (0.467) | dZ +21.4 |
-| cart310_board1600_outer | top_x1600 [X] | +7.15 (+7.94 / +6.21) | nan | dX +10.8 (0.662) | dZ +73.0 |
-| cart310_x_board0_front | top_front [Y] | -1.81 (-6.16 / +2.32) | nan | dY -3.2 (0.572) | dZ -9.9 |
-| cart310_x_board1600_front | top_front [Y] | -0.94 (-1.50 / +0.21) | nan | dY -1.4 (0.669) | dZ -4.3 |
-| cart310_x_A_front_fall | shelfA_front [Z] | -5.91 (-7.29 / -4.56) | nan | dZ -33.5 (0.177) | dY -9.9 |
-| cart310_x_B_front_fall | shelfB_front [Z] | +5.48 (+3.45 / +7.30) | nan | dZ +42.5 (0.128) | dY +10.5 |
-| cart310_x_B_front_rise | shelfB_front [Z] | +2.68 (+0.81 / +4.51) | nan | dZ +20.6 (0.129) | dY +5.1 |
-| cart310_x_C_front_fall | shelfC_front [Z] | +7.84 (+7.77 / +7.85) | nan | dZ +81.6 (0.096) | dY +17.4 |
-| cart310_x_C_front_rise | shelfC_front [Z] | +5.60 (+5.47 / +5.37) | nan | dZ +57.4 (0.098) | dY +12.3 |
-| cart310_x_D_front_fall | shelfD_front [Z] | +11.34 (+10.24 / +12.69) | nan | dZ +140.1 (0.081) | dY +27.1 |
-| cart310_x_E_front_fall | shelfE_front [Z] | +9.25 (+7.42 / +10.84) | nan | dZ +137.4 (0.067) | dY +24.3 |
-| cart310_x_B_inner_fall | shelfB_front [Z] | +15.14 (+14.63 / +15.53) | nan | dZ +118.7 (0.128) | dY +29.4 |
-| cart310_x_back_inner | top_back [Z] | -77.08 (-79.04 / -74.96) | nan | dZ -252.1 (0.306) | dY -141.2 |
-| cart310_z_post_front_left_right | post_x0_y0 [X] | +7.37 (+5.45 / +9.13) | nan | dX +36.9 (0.194) | dY +17.4 |
-| cart310_z_post_front_right | post_x1600_y0 [X] | -10.61 (-12.43 / -8.95) | nan | dX -23.1 (0.451) | dY +50.9 |
-| cart80_x_board0_front | top_front [Y] | -2.06 (+0.54 / -4.73) | nan | dY -3.2 (0.637) | dZ -10.1 |
-| cart80_x_board1600_front | top_front [Y] | +0.88 (-1.02 / +3.14) | nan | dY +1.6 (0.548) | dZ +4.9 |
-| cart80_y_board0_outer | top_x0 [X] | -10.32 (-10.42 / -10.13) | nan | dX -16.3 (0.635) | dZ +134.1 |
-| cart80_y_board1600_outer | top_x1600 [X] | +3.31 (+4.44 / +2.68) | nan | dX +7.4 (0.450) | dZ +10.9 |
-| cart80_x_back_rail_out | top_back [Z] | -18.12 (-18.59 / -16.82) | nan | dZ -64.8 (0.280) | dY -35.3 |
-| cart80_x_back_rail_in | top_back [Z] | -30.85 (-31.50 / -29.62) | nan | dZ -111.2 (0.277) | dY -60.6 |
-| cart80_x_back_low | top_back [Z] | -77.12 (-77.64 / -74.41) | nan | dZ -273.6 (0.282) | dY -149.1 |
-| cart80_x_A_front_out | shelfA_front [Z] | -11.00 (-11.52 / -10.22) | nan | dZ -66.0 (0.167) | dY -19.3 |
-| cart80_x_A_front_in | shelfA_front [Z] | -3.96 (-5.07 / -3.49) | nan | dZ -24.1 (0.165) | dY -7.0 |
-| cart80_x_B_front | shelfB_front [Z] | -14.14 (-15.77 / -12.28) | nan | dZ -115.0 (0.123) | dY -28.4 |
-| cart80_x_C_front | shelfC_front [Z] | -9.56 (-10.03 / -8.69) | nan | dZ -101.3 (0.094) | dY -21.6 |
-| cart80_x_D_front | shelfD_front [Z] | -9.28 (-10.95 / -7.55) | nan | dZ -118.6 (0.078) | dY -23.0 |
-| cart80_x_E_front | shelfE_front [Z] | -14.88 (-16.32 / -13.82) | nan | dZ -225.9 (0.066) | dY -40.1 |
-| cart80_x_E_front_in | shelfE_front [Z] | -12.14 (-13.69 / -10.97) | nan | dZ -184.3 (0.066) | dY -32.7 |
-| cart80_z_post1600_sil | post_x1600_y0 [X] | +0.00 (+0.19 / -0.03) | nan | dX -0.1 (0.168) | dY +0.0 |
-| cart80_z_post1600_sil_low | post_x1600_y0 [X] | -5.05 (-5.09 / -5.07) | nan | dX -24.0 (0.210) | dY +11.3 |
+| cart310_board0_outer | top_x0 [X] | -7.00 (-6.78 / -7.43) | nan | dX -15.0 (0.466) | dZ +21.6 |
+| cart310_board1600_outer | top_x1600 [X] | +7.25 (+8.63 / +5.85) | nan | dX +11.0 (0.658) | dZ +97.9 |
+| cart310_x_board0_front | top_front [Y] | -2.11 (-6.44 / +1.98) | nan | dY -3.7 (0.571) | dZ -11.5 |
+| cart310_x_board1600_front | top_front [Y] | -0.27 (-0.74 / +0.79) | nan | dY -0.4 (0.674) | dZ -1.2 |
+| cart310_x_A_front_fall | shelfA_front [Z] | -5.45 (-6.39 / -4.40) | nan | dZ -30.4 (0.180) | dY -9.0 |
+| cart310_x_B_front_fall | shelfB_front [Z] | +7.28 (+5.83 / +8.58) | nan | dZ +55.0 (0.132) | dY +13.8 |
+| cart310_x_B_front_rise | shelfB_front [Z] | +4.51 (+3.17 / +5.83) | nan | dZ +34.0 (0.132) | dY +8.5 |
+| cart310_x_C_front_fall | shelfC_front [Z] | +10.98 (+11.74 / +10.46) | nan | dZ +110.2 (0.100) | dY +23.9 |
+| cart310_x_C_front_rise | shelfC_front [Z] | +9.06 (+9.45 / +8.16) | nan | dZ +89.5 (0.101) | dY +19.4 |
+| cart310_x_D_front_fall | shelfD_front [Z] | +16.04 (+15.58 / +16.58) | nan | dZ +189.8 (0.084) | dY +37.4 |
+| cart310_x_E_front_fall | shelfE_front [Z] | +14.70 (+13.79 / +15.32) | nan | dZ +208.7 (0.070) | dY +37.6 |
+| cart310_x_B_inner_fall | shelfB_front [Z] | +16.78 (+16.50 / +17.03) | nan | dZ +128.0 (0.131) | dY +32.1 |
+| cart310_x_back_inner | top_back [Z] | -77.61 (-79.69 / -75.35) | nan | dZ -258.0 (0.301) | dY -142.4 |
+| cart310_z_post_front_left_right | post_x0_y0 [X] | +7.69 (+5.46 / +9.77) | nan | dX +37.8 (0.197) | dY +17.8 |
+| cart310_z_post_front_right | post_x1600_y0 [X] | -25.99 (-32.70 / -19.39) | nan | dX -53.7 (0.473) | dY +156.2 |
+| cart80_x_board0_front | top_front [Y] | -1.20 (+1.39 / -3.86) | nan | dY -1.9 (0.643) | dZ -6.0 |
+| cart80_x_board1600_front | top_front [Y] | +0.60 (-1.12 / +2.67) | nan | dY +1.1 (0.548) | dZ +3.4 |
+| cart80_y_board0_outer | top_x0 [X] | -10.90 (-10.18 / -11.46) | nan | dX -17.2 (0.632) | dZ +196.5 |
+| cart80_y_board1600_outer | top_x1600 [X] | +3.51 (+4.21 / +3.15) | nan | dX +7.8 (0.448) | dZ +11.5 |
+| cart80_x_back_rail_out | top_back [Z] | -18.00 (-18.92 / -16.42) | nan | dZ -66.1 (0.272) | dY -35.1 |
+| cart80_x_back_rail_in | top_back [Z] | -30.63 (-31.76 / -29.22) | nan | dZ -113.4 (0.270) | dY -60.2 |
+| cart80_x_back_low | top_back [Z] | -77.03 (-77.98 / -73.98) | nan | dZ -280.6 (0.275) | dY -148.9 |
+| cart80_x_A_front_out | shelfA_front [Z] | -10.55 (-10.91 / -10.33) | nan | dZ -63.8 (0.165) | dY -18.3 |
+| cart80_x_A_front_in | shelfA_front [Z] | -3.57 (-4.46 / -3.42) | nan | dZ -21.9 (0.163) | dY -6.3 |
+| cart80_x_B_front | shelfB_front [Z] | -13.67 (-15.05 / -12.24) | nan | dZ -110.6 (0.124) | dY -27.0 |
+| cart80_x_C_front | shelfC_front [Z] | -8.62 (-8.81 / -8.24) | nan | dZ -90.1 (0.096) | dY -19.1 |
+| cart80_x_D_front | shelfD_front [Z] | -7.91 (-9.18 / -6.75) | nan | dZ -99.1 (0.080) | dY -19.1 |
+| cart80_x_E_front | shelfE_front [Z] | -13.11 (-14.07 / -12.72) | nan | dZ -194.5 (0.067) | dY -34.4 |
+| cart80_x_E_front_in | shelfE_front [Z] | -10.36 (-11.42 / -9.89) | nan | dZ -153.6 (0.067) | dY -27.2 |
+| cart80_z_post1600_sil | post_x1600_y0 [X] | +2.15 (+2.67 / +1.86) | nan | dX +12.6 (0.169) | dY -5.8 |
+| cart80_z_post1600_sil_low | post_x1600_y0 [X] | -3.87 (-3.68 / -4.11) | nan | dX -18.6 (0.207) | dY +8.6 |
 
-* sticker rows (corner RMS px / Z shift of the row that fits its corners best, camera fixed, mm): 80:top 2.3/-0, 310:top 3.7/-0, 80:A 18.4/-71, 310:A 13.1/-50, 80:B 21.5/-103, 310:B 7.6/-11, 80:C 21.2/-110, 310:C 8.7/+25
-* lips cart 310: common lip height dZ +28.5 mm (formal +-15.0); per-lip deviation from it [px]: A -10.95, B +1.83, C +5.11, D +9.04, E +7.34 (rms 7.74 px); + shelf-depth scale -138.3 +- 7.9 permille -> rms 1.82 px; + D/E shift +131.9 +- 27.8 mm -> rms 5.15 px
-* lips cart 80: common lip height dZ -99.3 mm (formal +-9.6); per-lip deviation from it [px]: A +5.54, B -1.91, C -0.18, D -1.49, E -8.34 (rms 5.03 px); + shelf-depth scale +76.1 +- 11.4 permille -> rms 2.45 px; + D/E shift -76.6 +- 19.1 mm -> rms 3.45 px
+* sticker rows (corner RMS px / Z shift of the row that fits its corners best, camera fixed, mm): 80:top 2.2/+0, 310:top 3.9/-0, 80:A 18.2/-71, 310:A 13.7/-49, 80:B 19.3/-101, 310:B 16.6/-4, 80:C 14.5/-98, 310:C 20.3/+45
+* lips cart 310: common lip height dZ +48.2 mm (formal +-19.4); per-lip deviation from it [px]: A -14.11, B +0.93, C +6.18, D +11.98, E +11.31 (rms 10.24 px); + shelf-depth scale -181.0 +- 5.8 permille -> rms 1.37 px; + D/E shift +179.6 +- 32.2 mm -> rms 6.15 px
+* lips cart 80: common lip height dZ -92.1 mm (formal +-8.0); per-lip deviation from it [px]: A +4.68, B -2.27, C +0.20, D -0.55, E -6.90 (rms 4.20 px); + shelf-depth scale +59.1 +- 10.8 permille -> rms 2.32 px; + D/E shift -56.5 +- 17.1 mm -> rms 3.13 px
 

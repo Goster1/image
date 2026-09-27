@@ -14,8 +14,8 @@ and in addition the orchestrator's start from initial_calib), plumb-line (centre
 distortion fixed), joint lines, combined (markers + exact lines + VP groups + straightness + sticker sides).
 Claimed uncertainties: covariance / cluster sandwich per replicate; bootstrap (stickers / edges) on a subset.
 
-Usage: python3 44_synth_b_roundtrip.py [NREP=40] [NWORKERS=3]
-Writes work/cache/synthetic_roundtrip_raw.pkl
+Usage: python3 44_synth_b_roundtrip.py [NREP=30] [NWORKERS=3] [--resume]
+Writes work/cache/synthetic_roundtrip_raw.pkl (with --resume: skips finished tasks, writes synthetic_roundtrip_raw_partN.pkl)
 """
 import importlib
 import os
@@ -31,8 +31,8 @@ from markerdata import to_points
 
 L = importlib.import_module("44_synth_lib")
 
-NREP = int(sys.argv[1]) if len(sys.argv) > 1 else 40
-NW = int(sys.argv[2]) if len(sys.argv) > 2 else 3
+NREP = int(sys.argv[1]) if len(sys.argv) > 1 and not sys.argv[1].startswith("-") else 30
+NW = int(sys.argv[2]) if len(sys.argv) > 2 and not sys.argv[2].startswith("-") else 3
 NB_MARK = (6, 40)  # (replicates with bootstrap, bootstrap size) markers
 NB_LINE = (3, 12)
 NB_COMB = (2, 8)
@@ -158,7 +158,11 @@ def run_task(task):
         res["markers_" + name] = rec(r["names"], r["x"], T, "std", C=r["C"], Cs=r["Cs"], extra=extra, g=g, claim_from=("C", "Cs"))
     # ---------------- combined
     cb, rc, Cc, Kc, dc = L.combined_estimate(pts, edges, K0, d0, P0)
-    extra = dict(block_rms=cb.block_rms(rc.x), sig_blocks=dict(cb.sig))
+    comb_retry = None
+    if cb.block_rms(rc.x)["S"][0] > 1.0:  # failed start (e.g. folded distortion) -> orchestrator's default start
+        comb_retry = float(cb.block_rms(rc.x)["S"][0])
+        cb, rc, Cc, Kc, dc = L.combined_estimate(pts, edges, K_from(1400.0, 1400.0, *L.CEN), np.array([-0.3, 0.06, 0, 0, 0]), P0)
+    extra = dict(block_rms=cb.block_rms(rc.x), sig_blocks=dict(cb.sig), failed_start_S_rms=comb_retry)
     if rep < NB_COMB[0]:
         mis = sorted({p["mi"] for p in pts})
         bx = []
@@ -187,16 +191,37 @@ def run_task(task):
         ed = edges[:NE]
         f_t = T.params["f"]
         kx0 = np.array([T.d[0] * (L.F0 / f_t) ** 2 + 0.04 * g.standard_normal(), T.d[1] * (L.F0 / f_t) ** 4 + 0.02 * g.standard_normal()])
+        # perturbed start; if the fit fails (edge RMS > 1 px: the start folds the distortion inside the image and
+        # undistort_points diverges for the edges near the corners) -> retry from the orchestrator's default start
         lcp, rp, Ccp, Csp = L.plumb_estimate(ed, centre_free=False, x0=kx0)
+        fail_p = float(np.sqrt(np.mean(rp.fun ** 2)))
+        if fail_p > 1.0:
+            lcp, rp, Ccp, Csp = L.plumb_estimate(ed, centre_free=False)
+        else:
+            fail_p = None
         res["plumb_fixed"] = rec(lcp.names[: lcp.n_intr], rp.x[: lcp.n_intr], T, "plumb", C=Ccp, Cs=Csp, g=g, claim_from=("Cs",),
-                                 extra=dict(rms=float(np.sqrt(np.mean(rp.fun ** 2)))))
-        lcf, rf, Ccf, Csf = L.plumb_estimate(ed, centre_free=True, x0=np.r_[L.CEN + 20 * g.standard_normal(2), kx0])
-        res["plumb_free"] = rec(lcf.names[: lcf.n_intr], rf.x[: lcf.n_intr], T, "plumb", C=Ccf, Cs=Csf, g=g, claim_from=("Cs",))
+                                 extra=dict(rms=float(np.sqrt(np.mean(rp.fun ** 2))), failed_start_rms=fail_p, start=kx0))
+        x0f = np.r_[L.CEN + 20 * g.standard_normal(2), kx0]
+        lcf, rf, Ccf, Csf = L.plumb_estimate(ed, centre_free=True, x0=x0f)
+        fail_f = float(np.sqrt(np.mean(rf.fun ** 2)))
+        if fail_f > 1.0 or np.hypot(*(rf.x[:2] - L.CEN)) > 600:
+            fail_f = [fail_f, rf.x[:4].tolist()]
+            lcf, rf, Ccf, Csf = L.plumb_estimate(ed, centre_free=True)
+        else:
+            fail_f = None
+        res["plumb_free"] = rec(lcf.names[: lcf.n_intr], rf.x[: lcf.n_intr], T, "plumb", C=Ccf, Cs=Csf, g=g, claim_from=("Cs",),
+                                extra=dict(rms=float(np.sqrt(np.mean(rf.fun ** 2))), failed_start=fail_f, start=x0f))
         dpx = np.array([rp.x[0] / L.F0 ** 2, rp.x[1] / L.F0 ** 4])
         lcv, rv, Ccv, Csv = L.vp_estimate(ed, dpx, K0, P0)
         res["vp"] = rec(lcv.names[: lcv.n_intr], rv.x[: lcv.n_intr], T, "vp", C=Ccv, Cs=Csv, dpx=dpx, g=g, claim_from=("Cs",))
         lcj, rj, Ccj, Csj = L.joint_estimate(ed, K0, d0, P0)
-        res["lines_joint"] = rec(lcj.names[: lcj.n_intr], rj.x[: lcj.n_intr], T, "std", C=Ccj, Cs=Csj, g=g, claim_from=("Cs",))
+        fail_j = float(np.sqrt(np.mean(rj.fun ** 2)))
+        if fail_j > 2.0:
+            lcj, rj, Ccj, Csj = L.joint_estimate(ed, K_from(1300.0, 1300.0, *L.CEN), np.array([-0.28, 0.05, 0, 0, 0]), P0)
+        else:
+            fail_j = None
+        res["lines_joint"] = rec(lcj.names[: lcj.n_intr], rj.x[: lcj.n_intr], T, "std", C=Ccj, Cs=Csj, g=g, claim_from=("Cs",),
+                                 extra=dict(rms=float(np.sqrt(np.mean(rj.fun ** 2))), failed_start_rms=fail_j))
         if rep < NB_LINE[0]:
             bp_, bv_, bj_ = [], [], []
             for b in range(NB_LINE[1]):
@@ -233,23 +258,52 @@ def run_task(task):
     return scen, rep, res, time.time() - t0
 
 
+def load_done(paths):
+    """(scen, rep) -> result from earlier (partial) runs."""
+    done = {}
+    for fn in paths:
+        if os.path.exists(fn):
+            with open(fn, "rb") as fh:
+                d = pickle.load(fh)
+            for sc, reps in d["out"].items():
+                for rp, res in reps.items():
+                    done[(sc, rp)] = res
+    return done
+
+
 if __name__ == "__main__":
+    # optional: --resume  -> skip tasks already stored in synthetic_roundtrip_raw*.pkl, write to a new part file
+    resume = "--resume" in sys.argv
     tasks = [(s, r) for r in range(NREP) for s in SCEN]
     # expensive (bootstrap) tasks first for load balancing
     tasks.sort(key=lambda t: 0 if t[1] < max(NB_MARK[0], NB_LINE[0], NB_COMB[0]) else 1)
+    import glob
+
+    parts = sorted(glob.glob(f"{CACHE}/synthetic_roundtrip_raw*.pkl"))
+    redo = set()
+    if "--redo" in sys.argv:
+        for q in sys.argv[sys.argv.index("--redo") + 1].split(","):
+            a, b = q.split(":")
+            redo.add((a, int(b)))
+    if resume:
+        done = load_done(parts)
+        tasks = [t for t in tasks if t not in done or t in redo]
+        fn = f"{CACHE}/synthetic_roundtrip_raw_part{len(parts) + 1}.pkl"
+        print("resume: already done", len(done), "remaining", len(tasks), "->", fn)
+    else:
+        for q in parts:
+            os.remove(q)
+        fn = f"{CACHE}/synthetic_roundtrip_raw.pkl"
     out = {s: {} for s in SCEN}
     t0 = time.time()
-    fn = f"{CACHE}/synthetic_roundtrip_raw.pkl"
+    meta = dict(setup_review=SETUP["review_status"], nrep=NREP, n_edges=NE, uv=L.UV, uv_shape=L.UV_SHAPE,
+                truths={k: v.params for k, v in TR.items()})
     with Pool(NW) as pool:
         for i, (scen, rep, res, dt) in enumerate(pool.imap_unordered(run_task, tasks)):
             out[scen][rep] = res
-            if i % 10 == 0 or i == len(tasks) - 1:
-                print(f"{i + 1}/{len(tasks)} {scen} rep {rep} {dt:.1f}s elapsed {time.time() - t0:.0f}s "
-                      f"f(k1k2_ppfree)={res['markers_k1k2_ppfree']['x'][0]:.1f} f(comb)={res['combined_k1k2']['x'][0]:.1f}", flush=True)
-            if i % 25 == 0:
-                with open(fn, "wb") as fh:
-                    pickle.dump(dict(out=out, setup_review=SETUP["review_status"], nrep=NREP), fh)
-    with open(fn, "wb") as fh:
-        pickle.dump(dict(out=out, setup_review=SETUP["review_status"], nrep=NREP, n_edges=NE, uv=L.UV, uv_shape=L.UV_SHAPE,
-                         truths={k: v.params for k, v in TR.items()}), fh)
+            print(f"{i + 1}/{len(tasks)} {scen} rep {rep} {dt:.1f}s elapsed {time.time() - t0:.0f}s "
+                  f"f(k1k2_ppfree)={res['markers_k1k2_ppfree']['x'][0]:.1f} f(comb)={res['combined_k1k2']['x'][0]:.1f}", flush=True)
+            with open(fn + ".tmp", "wb") as fh:
+                pickle.dump(dict(out=out, **meta), fh)
+            os.replace(fn + ".tmp", fn)
     print("done", round(time.time() - t0), "s")

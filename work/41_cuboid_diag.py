@@ -88,11 +88,12 @@ def fit_one(args):
         except Exception as ex:  # noqa
             print("fail", hname, ex)
             continue
-        if best is None or r.cost < best[1].cost:
-            best = (cf, r)
-    cf, r = best
+        v = cf.nll(r.x) + 1e6 * max(0.0, cf.FOLD_MIN - 0.005 - cf.fold_margin(r.x))  # review fix: rank starts by the profiled likelihood
+        if best is None or v < best[2]:
+            best = (cf, r, v)
+    cf, r, _ = best
     K, d, poses, g, nu = cf.unpack(r.x)
-    C = L.cov_from(r)
+    C = L.cov_from(r, cf)  # review fix: dof from the effective number of observations
     sd = dict(zip(cf.names, np.sqrt(np.diag(C))))
     br = cf.block_rms(r.x)
     pl = cf.per_line_rms(r.x)
@@ -112,7 +113,7 @@ def fit_one(args):
     return dict(hyp=hname, spec=spec, with_lips=with_lips, intr=dict(zip(cf.inames, r.x[: cf.ni].tolist())),
                 intr_sd={n: float(sd[n]) for n in cf.inames}, geo={k: float(v) for k, v in g.items()},
                 geo_sd={k: float(sd[k]) for k in g}, nuis={k: float(v) for k, v in nu.items()}, nuis_sd={k: float(sd[k]) for k in nu},
-                blocks=br, sig=dict(cf.sig), per_line=pl, validation=val, k=len(r.x), cost=float(r.cost),
+                blocks=br, sig=dict(cf.sig), per_line=pl, validation=val, k=len(r.x), cost=float(r.cost), fold_margin=cf.fold_margin(r.x),
                 x=r.x.tolist(), names=cf.names)
 
 
@@ -121,11 +122,16 @@ def main():
     mc = load_json(f"{CACHE}/method_cuboid.json")
     main_key = mc["details"]["main_key"].split("|")[0]
     specs = {"k1_ppfix": dict(f="single", pp="fixed", dist=["k1"]), "k1k2_ppfix": dict(f="single", pp="fixed", dist=["k1", "k2"]),
-             "k1_ppfree": dict(f="single", pp="free", dist=["k1"]), "k1k2_ppfree": dict(f="single", pp="free", dist=["k1", "k2"])}
+             "k1_ppfree": dict(f="single", pp="free", dist=["k1"]), "k1k2_ppfree": dict(f="single", pp="free", dist=["k1", "k2"]),
+             "k1k2k3_ppfree": dict(f="single", pp="free", dist=["k1", "k2", "k3"]), "k1k2_ppfree_fxfy": dict(f="fxfy", pp="free", dist=["k1", "k2"]),
+             "k1k2p1p2_ppfree": dict(f="single", pp="free", dist=["k1", "k2", "p1", "p2"])}
+    assert main_key in specs, main_key  # review fix: never label a fallback spec as the main model
     spec_main = specs.get(main_key, specs["k1k2_ppfix"])
     runs = []
     quick = os.environ.get("CUBOID_QUICK", "0") == "1"
     spec_list = (("main:" + main_key, spec_main),) if quick else (("main:" + main_key, spec_main), ("k1k2_ppfree", specs["k1k2_ppfree"]))
+    if not quick and main_key != "k1k2_ppfix":  # review: keep the k1k2 / pp-fixed lens as a comparison (the main k1 lens sits on the fold barrier)
+        spec_list = spec_list + (("k1k2_ppfix", specs["k1k2_ppfix"]),)
     for sname, spec in spec_list:
         for with_lips in (True, False):
             for h in (["drawing", "dz_top", "dz_E"] if quick else HYP):
@@ -188,7 +194,7 @@ def main():
                 pp = f"({it['cx']:.0f}, {it['cy']:.0f})" if "cx" in it else "centre"
                 rail = rr["validation"]["cart80_x_back_rail_out"]
                 md.append(f"| {h} | {geo} | {rr['chi2_ref']:.1f} | {b['M']['rms_point']:.2f} | {b['S']['rms']:.2f} | {b['E']['rms']:.2f} | "
-                          f"{b['X']['rms'] if 'X' in b else float('nan'):.2f} | {it['f']:.0f} | {pp} | {it['k1']:.3f}, {it['k2']:.3f} | "
+                          f"{b['X']['rms'] if 'X' in b else float('nan'):.2f} | {it.get('f', it.get('fx', float('nan'))):.0f} | {pp} | {it['k1']:.3f}, {it.get('k2', 0.0):.3f} | "
                           f"{rail['mean_px']:+.1f} ({rail['dZ_mm']:+.0f}) |")
             md.append("")
     open(f"{CACHE}/cuboid_diag.md", "w").write("\n".join(md) + "\n")
@@ -196,7 +202,8 @@ def main():
            "dimension freed at a time; the main result above keeps the drawing.", ""]
     for key in (f"main:{main_key}|lips|drawing", f"main:{main_key}|lips|dz_top", f"main:{main_key}|lips|dz_top@cart", f"main:{main_key}|lips|dz_A",
                 f"main:{main_key}|lips|dz_E", f"main:{main_key}|lips|sz_shelves", f"main:{main_key}|lips|sy_depth", f"main:{main_key}|lips|code_mm",
-                f"main:{main_key}|lips|dz_top+dz_E (2)", "k1k2_ppfree|lips|dz_top", "k1k2_ppfree|nolips|dz_top"):
+                f"main:{main_key}|lips|dz_top+dz_E (2)", f"main:{main_key}|lips|dz_A..E (5)", "k1k2_ppfix|lips|drawing", "k1k2_ppfix|lips|dz_top",
+                "k1k2_ppfix|lips|dz_A..E (5)", "k1k2_ppfree|lips|drawing", "k1k2_ppfree|lips|dz_top", "k1k2_ppfree|lips|dz_A..E (5)", "k1k2_ppfree|nolips|dz_top"):
         rr = out.get(key)
         if rr is None:
             continue
@@ -205,7 +212,7 @@ def main():
         rail = rr["validation"]["cart80_x_back_rail_out"]
         it = rr["intr"]
         sec.append(f"* {key}: {geo}; chi2_ref {rr['chi2_ref']:.0f}; corners {b['M']['rms_point']:.2f} px/pt, exact edges {b['E']['rms']:.2f} px"
-                   + (f", lips {b['X']['rms']:.2f} px" if 'X' in b else "") + f"; f {it['f']:.0f}, k1 {it['k1']:.3f}, k2 {it['k2']:.3f}"
+                   + (f", lips {b['X']['rms']:.2f} px" if 'X' in b else "") + f"; f {it.get('f', it.get('fx', float('nan'))):.0f}, k1 {it['k1']:.3f}, k2 {it.get('k2', 0.0):.3f}"
                    + (f", pp ({it['cx']:.0f}, {it['cy']:.0f})" if 'cx' in it else "") + f"; back rail (not fitted) {rail['mean_px']:+.1f} px ({rail['dZ_mm']:+.0f} mm in Z)")
     L.md_replace_section(f"{CACHE}/method_cuboid.md", "## Diagnostic: which single dimension explains the mismatch", sec)
     # ------------------------------------------------------------------ conclusions (numbers from the three scripts)
@@ -225,38 +232,62 @@ def main():
     dt = out[f"main:{main_key}|lips|dz_top"]
     dtc = out[f"main:{main_key}|lips|dz_top@cart"]
     dtf = out["k1k2_ppfree|lips|dz_top"]
+    dtk = out.get("k1k2_ppfix|lips|dz_top", out.get("main:k1k2_ppfix|lips|dz_top"))
+    dzr = [rr["geo"]["dz_top"] for k, rr in out.items() if k.endswith("|lips|dz_top")]
+    rail_by = {k.split("|")[0] + "/" + k.split("|")[2]: rr["validation"]["cart80_x_back_rail_out"] for k, rr in out.items()
+               if k.split("|")[1] == "lips" and k.split("|")[2] in ("drawing", "dz_top", "dz_A..E (5)")}
     dte = out[f"main:{main_key}|lips|dz_top+dz_E (2)"]
     dr = out[f"main:{main_key}|lips|drawing"]
     others = {h: out[f"main:{main_key}|lips|{h}"]["chi2_ref"] for h in ("dz_A", "dz_B", "dz_C", "dz_D", "dz_E", "sz_shelves", "sx_width", "sy_depth", "code_mm")}
     sr = off["sticker_rows"]["edge_lens_shelf_poses"]
+    lip_rms = [off["lip_pattern"][cn][str(c)]["common_dZ"]["rms_px"] if str(c) in off["lip_pattern"][cn] else off["lip_pattern"][cn][c]["common_dZ"]["rms_px"]
+               for cn in ("markers_only", "joint", "edge_lens_shelf_poses") for c in (80, 310)]
+    bd_off = [abs(E["edge_lens_shelf_poses"][e]["mean_px"]) for e in E["edge_lens_shelf_poses"] if "board" in e]
+    cxs = [v["x"][v["names"].index("cx")] for k, v in mc["details"]["grid"].items() if "|" in k and "cx" in v["names"]]
+    fm_main = mc["details"].get("fold_margin", float("nan"))
+    nob = mc["details"].get("without_fold_barrier", {}).get("grid", {}).get(main_key)
+    fold_txt = (f" The fit uses a fold barrier (fold margin >= {mc['details'].get('fold_barrier_min', 0.03)}); the main solution has fold margin {fm_main:.3f}"
+                + (" i.e. it SITS ON THE BARRIER: the drawing geometry pushes the distortion towards a lens that folds inside the image, so k1, k2 are set by the "
+                   "validity constraint and not by the data" if fm_main < mc["details"].get("fold_barrier_min", 0.03) + 0.005 else "")
+                + (f" (without the barrier: f {nob['x'][0]:.0f}, k1 {nob['x'][nob['names'].index('k1')]:.3f}"
+                   + (f", k2 {nob['x'][nob['names'].index('k2')]:.3f}" if 'k2' in nob['names'] else "") + f", fold margin {nob['fold_margin']:.3f} = folded)" if nob else "") + ".")
     conc = [
         f"1. Main cuboid fit (drawing exact, {mc['model']}): f = {mc['camera_matrix'][0][0]:.0f} +- {u['f_1sigma']:.0f} px (cluster bootstrap; over 14 model x weighting "
-        f"variants {min(fl):.0f}..{max(fl):.0f}), k1 = {d0[0]:.3f} +- {u['k1_1sigma']:.3f}, k2 = {d0[1]:.3f} +- {u['k2_1sigma']:.3f}; corners {br['M']['rms_point']:.2f} px per point "
-        f"(max {br['M']['max_point']:.1f}), sticker sides {br['S']['rms']:.2f} px, exact edges {br['E']['rms']:.2f} px (~40x the corner noise). The exact edges add almost nothing "
-        "(3 short edges); free-pp variants are unstable (cx 530..955) because pp is the knob that trades the exact edges against the stickers. The distortion "
-        "contradicts the straight-edge (plumb-line) distortion, as for the marker-only fit: the drawing geometry biases the estimate - only CONSISTENT with the data at the 5-8 px level.",
+        f"variants {min(fl):.0f}..{max(fl):.0f}), k1 = {d0[0]:.3f} +- {u['k1_1sigma']:.3f}" + (f", k2 = {d0[1]:.3f} +- {u['k2_1sigma']:.3f}" if "k2_1sigma" in u else "") + f"; corners {br['M']['rms_point']:.2f} px per point "
+        f"(max {br['M']['max_point']:.1f}), sticker sides {br['S']['rms']:.2f} px, exact edges {br['E']['rms']:.2f} px (corner RMS ~{br['M']['rms_point'] / 0.13:.0f}x the per-frame corner scatter). The exact edges add almost nothing "
+        f"(3 short edges); free-pp variants are unstable (cx {min(cxs):.0f}..{max(cxs):.0f}) because pp is the knob that trades the exact edges against the stickers." + fold_txt + " The "
+        "unconstrained distortion contradicts the straight-edge (plumb-line) distortion, as for the marker-only fit: the drawing geometry biases the estimate - only CONSISTENT with the data at the 5-8 px level.",
         "2. The three exact edges are the edges they claim to be (crops: top-face outer edge of the X=0 board of cart 310 against the floor; top-face front edges "
         "of both cart-80 boards, a 1-2 px dark front face beside them) and agree with their own board's stickers to <= 4.6 mm, but every global drawing camera misses them by "
         + ", ".join(f"{k.split('_', 1)[1]} {v['joint']['mean_offset_px']:+.1f} px ({v['joint']['implied_shift_mm']:+.0f} mm in {v['joint']['axis']})" for k, v in mc["details"]["exact_edge_check"].items())
         + " - they inherit the sticker inconsistency.",
         f"3. Shelf lips vs prediction (joint camera): {min(lip_j):+.1f}..{max(lip_j):+.1f} px (camera 1-sigma {np.nanmin(lip_s):.1f}..{np.nanmax(lip_s):.1f} px); the lips are "
         f"sensitive mainly to Y ({min(sensY):.2f}..{max(sensY):.2f} px/mm) and only weakly to Z ({min(sensZ):.2f}..{max(sensZ):.2f} px/mm), so a single lip fixes its height only to "
-        "~+-15..40 mm. With one common lip height per cart the five lips agree only to 2.5..4.3 px rms (markers-only, joint and shelf-anchored cameras): lip outlines / fronts differ by a few mm between shelves.",
+        f"~+-{2.5 / max(sensZ):.0f}..{2.5 / min(sensZ):.0f} mm (for 2.5 px). With one common lip height per cart the five lips agree only to {min(lip_rms):.1f}..{max(lip_rms):.1f} px rms (markers-only, joint and shelf-anchored cameras): lip outlines / fronts differ by a few mm between shelves.",
         f"4. The clearest misfit is at the TOP level: the cart-80 back top rail lies {rail['markers_only']['mean_px']:+.1f} px (markers-only) / {rail['joint']['mean_px']:+.1f} px (joint) "
         f"from the drawing top-back edge (= {rail['joint']['implied_dZ_mm']:+.0f} mm in Z), but only {rail['edge_lens_shelf_poses']['mean_px']:+.1f} px when the camera is anchored to the shelf "
         f"stickers (edge-only lens) - which in turn puts the top stickers {sr['80:top']['implied_dZ_mm']:+.0f} / {sr['310:top']['implied_dZ_mm']:+.0f} mm (cart 80 / 310) above the drawing "
-        "and the top-board edges 11..23 px off.",
+        f"and the top-board edges {min(bd_off):.0f}..{max(bd_off):.0f} px off.",
         f"5. Single dimension: the top-plate surface (end boards with the top stickers) {dt['geo']['dz_top']:+.0f} +- {dt['geo_sd']['dz_top']:.0f} mm above the drawing relative to shelves and "
-        f"frame (per cart {dtc['geo']['dz_top@80']:+.0f} / {dtc['geo']['dz_top@310']:+.0f} mm; pp free {dtf['geo']['dz_top']:+.0f} mm) explains most of it: chi2_ref {dr['chi2_ref']:.0f} -> "
+        f"frame (per cart {dtc['geo']['dz_top@80']:+.0f} / {dtc['geo']['dz_top@310']:+.0f} mm; pp free {dtf['geo']['dz_top']:+.0f} mm" + (f"; k1k2 pp fixed {dtk['geo']['dz_top']:+.0f} mm" if dtk else "") + f"; range over the lens models {min(dzr):+.0f}..{max(dzr):+.0f} mm - the k1-only lens sits on the fold barrier and gives the low end; formal +- = Gauss-Newton with n_eff dof) explains most of it: chi2_ref {dr['chi2_ref']:.0f} -> "
         f"{dt['chi2_ref']:.0f}, corners {dr['blocks']['M']['rms_point']:.1f} -> {dt['blocks']['M']['rms_point']:.1f} px, exact edges {dr['blocks']['E']['rms']:.1f} -> {dt['blocks']['E']['rms']:.1f} px, "
         f"and the NOT fitted back rail moves to {dt['validation']['cart80_x_back_rail_out']['mean_px']:+.1f} px ({dt['validation']['cart80_x_back_rail_out']['dZ_mm']:+.0f} mm). "
-        "No other single dimension comes close (chi2_ref " + ", ".join(f"{k} {v:.0f}" for k, v in others.items()) + "). Stickers alone cannot tell this from 'all shelves ~65 mm lower'; the back top rail can, IF it really is at the top-plate level (its height is not in the drawing): with all shelf rows lowered instead (dz_A..E) the rail stays ~60 mm off, so it groups with the shelves/frame and puts the offset on the end boards with the top stickers. Observation only - the main result keeps the drawing.",
+        "No other single dimension comes close (chi2_ref " + ", ".join(f"{k} {v:.0f}" for k, v in others.items()) + "). Stickers alone cannot tell this from 'all shelves ~65 mm lower'; the back top rail can, IF it really is at the top-plate level (its height is not in the drawing): with all shelf rows lowered instead (dz_A..E) the rail stays off (" + ", ".join(f"{k}: {v['mean_px']:+.1f} px / {v['dZ_mm']:+.0f} mm" for k, v in rail_by.items()) + "), so it groups with the shelves/frame and puts the offset on the end boards with the top stickers. Caveat: the rail edge was first read as a wall conduit by the scene tracing and re-assigned to cart 80 in the review. Observation only - the main result keeps the drawing.",
         f"6. Second order: shelf E's lip lies below its drawing height relative to A-D: dz_E {dte['geo']['dz_E']:+.0f} +- {dte['geo_sd']['dz_E']:.0f} mm on top of dz_top (lips "
         f"{dt['blocks']['X']['rms']:.2f} -> {dte['blocks']['X']['rms']:.2f} px), in both carts; E has no sticker, so this rests on the identification of the lowest traced lip.",
         f"7. With dz_top freed (diagnostic) the lens moves to f = {dt['intr']['f']:.0f} (pp fixed) / {dtf['intr']['f']:.0f} with pp ({dtf['intr']['cx']:.0f}, {dtf['intr']['cy']:.0f}), "
-        f"k1 {dtf['intr']['k1']:.2f}, k2 {dtf['intr']['k2']:.2f} - the drawing-geometry f ({mc['camera_matrix'][0][0]:.0f}) is pulled down by ~120-140 px by the top-plate mismatch.",
+        f"k1 {dtf['intr']['k1']:.2f}, k2 {dtf['intr']['k2']:.2f} (fold margin {dtf.get('fold_margin', float('nan')):.2f}; main-lens dz_top fit: fold margin {dt.get('fold_margin', float('nan')):.3f}" + (" = on the barrier" if dt.get("fold_margin", 1) < 0.035 else "") + f") - the drawing-geometry f ({mc['camera_matrix'][0][0]:.0f}) is pulled down by "
+        f"~{dt['intr']['f'] - mc['camera_matrix'][0][0]:.0f} px (pp fixed) by the top-plate mismatch; this bias is NOT contained in the main-result uncertainty.",
     ]
     L.md_replace_section(f"{CACHE}/method_cuboid.md", "## Conclusions (determined / consistent / not determinable)", conc)
+    # review addition: the geometry systematic of f (diagnostic dz_top fit, same lens model) as an explicit uncertainty term
+    shift = float(dt["intr"]["f"] - mc["camera_matrix"][0][0])
+    mc["uncertainty"]["f_geometry_shift_px_diag"] = shift
+    mc["uncertainty"]["f_1sigma_incl_geometry"] = float(np.hypot(mc["uncertainty"]["f_1sigma"], shift / 2.0))
+    mc["uncertainty"]["geometry_note"] = ("f_geometry_shift_px_diag = f(top-plate height freed, diagnostic) - f(drawing), same lens model; "
+                                          "f_1sigma_incl_geometry = sqrt(bootstrap^2 + (shift/2)^2) - half the shift as a 1-sigma systematic of the "
+                                          "drawing-geometry estimate (the drawing is used unchanged for the value itself)")
+    save_json(mc, f"{CACHE}/method_cuboid.json")
     # plot: chi2_ref per hypothesis (main spec, with / without lips) + freed value
     fig, ax = plt.subplots(1, 3, figsize=(18, 6), dpi=110)
     sname = "main:" + main_key

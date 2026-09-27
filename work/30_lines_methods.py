@@ -15,7 +15,7 @@ import numpy as np
 
 from common import CACHE, H, W, K_from, lens_json, load_json, save_json
 from evaltools import grid, mapping_displacement, mapping_stats
-from linedata import load_edges
+from linedata import load_edges, stratified_resample
 from lineselfcal import LineCal, sandwich
 
 rng = np.random.default_rng(2024)
@@ -128,8 +128,7 @@ print("vp pp fixed", {k: f"{v[0]:.5g}±{v[1]:.2g}" for k, v in out["vanishing_pp
 # ---------------- cluster bootstrap over edges (everything re-estimated) ----------------
 boot = {"plumb": [], "vp": [], "joint": []}
 for b in range(NBOOT):
-    idx = rng.integers(0, len(EDGES), len(EDGES))
-    sub = [dict(EDGES[i], id=f"{EDGES[i]['id']}#{q}") for q, i in enumerate(idx)]
+    sub = stratified_resample(EDGES, rng)
     try:
         lc, r = fit_plumb(sub, sub=4)
         boot["plumb"].append(r.x[:2])
@@ -143,10 +142,16 @@ for b in range(NBOOT):
         print("boot fail", ex)
     if b % 10 == 0:
         print("boot", b)
+def rstd(a):
+    """robust 1-sigma: half of the 16-84 % range"""
+    return 0.5 * (np.percentile(a, 84, axis=0) - np.percentile(a, 16, axis=0))
+
+
 for k in boot:
     boot[k] = np.array(boot[k])
     if len(boot[k]):
-        print("bootstrap", k, "mean", np.round(boot[k].mean(0), 4), "std", np.round(boot[k].std(0), 4))
+        print("bootstrap", k, "median", np.round(np.median(boot[k], 0), 4), "robust std", np.round(rstd(boot[k]), 4),
+              "std", np.round(boot[k].std(0), 4))
 
 
 def lens_from_joint(x, names):
@@ -161,7 +166,7 @@ uv, _ = grid(40)
 Kj, dj = lens_from_joint(rj.x[: lcj.n_intr], lcj.names[: lcj.n_intr])
 disp = np.array([mapping_displacement(Kj, dj, *lens_from_joint(xb, lcj.names[: lcj.n_intr]), uv) for xb in boot["joint"]]) if len(boot["joint"]) else None
 mj = mapping_stats(disp, uv)[0] if disp is not None else None
-sd = boot["joint"].std(0) if len(boot["joint"]) else np.full(lcj.n_intr, np.nan)
+sd = rstd(boot["joint"]) if len(boot["joint"]) else np.full(lcj.n_intr, np.nan)
 save_json(lens_json(Kj, dj, method="lines_joint (edges only: straightness + VP orthogonality)", model="fx=fy, pp free, k1,k2",
                     rms_reprojection_error_px=out["lines_joint"]["rms"],
                     uncertainty={f"{n}_1sigma": float(s) for n, s in zip(lcj.names[: lcj.n_intr], sd)},
@@ -173,13 +178,13 @@ pv = dict(zip(lcv.names, rv.x))
 fv = pv["f"]
 Kv = K_from(fv, fv, pv["cx"], pv["cy"])
 dv = np.array([dpx[0] * fv ** 2, dpx[1] * fv ** 4, 0, 0, 0])
-sdv = boot["vp"].std(0) if len(boot["vp"]) else [np.nan] * 3
+sdv = rstd(boot["vp"]) if len(boot["vp"]) else [np.nan] * 3
 save_json(lens_json(Kv, dv, method="vanishing_points (f, pp from orthogonal VPs; distortion from plumb-line)", model="fx=fy, pp free; k1,k2 from plumb-line",
                     rms_reprojection_error_px=out["vanishing"]["rms"], uncertainty={"f_1sigma": float(sdv[0]), "cx_1sigma": float(sdv[1]), "cy_1sigma": float(sdv[2])},
                     data_used=f"{len(EDGES)} verified edges (VP groups: cart X/Y/Z of both carts, scene verticals)",
                     geometry_assumptions="no dimensions; cart axes mutually orthogonal", details=out["vanishing"]), f"{CACHE}/method_vanishing.json")
 # plumb lens json (distortion; quoted at the VP focal length)
-sdp = boot["plumb"].std(0) if len(boot["plumb"]) else [np.nan] * 2
+sdp = rstd(boot["plumb"]) if len(boot["plumb"]) else [np.nan] * 2
 Kp = K_from(fv, fv, (W - 1) / 2, (H - 1) / 2)
 dpo = np.array([dpx[0] * fv ** 2, dpx[1] * fv ** 4, 0, 0, 0])
 save_json(lens_json(Kp, dpo, method="plumb_line (distortion only, centre = image centre; f taken from the VP method)",

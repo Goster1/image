@@ -70,20 +70,24 @@ SPECS = {
 }
 
 
-def fit(spec, pts, lines, wm="cluster", x0=None, sig=None, starts=(1300.0, 1450.0), reweight=True):
+def fit(spec, pts, lines, wm="cluster", x0=None, sig=None, starts=(1300.0, 1450.0), reweight=True, fold_barrier=True):
+    """Best of several starts. Review fixes: (1) fold barrier on by default (a folded lens is not a valid
+    model inside the image); (2) the starts are compared by the profiled likelihood cf.nll (the reweighted
+    cost is ~n_eff/2 for every converged solution and cannot rank them)."""
     best = None
     if x0 is not None:
         starts = (None,)
     for f0 in starts:
-        cf = L.CuboidFit(pts, lines, spec, weight_mode=wm, sig=sig)
+        cf = L.CuboidFit(pts, lines, spec, weight_mode=wm, sig=sig, fold_barrier=fold_barrier)
         if f0 is None:
             xs = x0.copy()
         else:
             xs = cf.x0(K_from(f0, f0, (W - 1) / 2, (H - 1) / 2), np.array([-0.25, 0.05]), P0)
         r = cf.solve(xs, reweight=reweight)
-        if best is None or r.cost < best[1].cost:
-            best = (cf, r)
-    return best
+        v = cf.nll(r.x) + (1e6 * max(0.0, cf.FOLD_MIN - 0.005 - cf.fold_margin(r.x)) if fold_barrier else 0.0)
+        if best is None or v < best[2]:
+            best = (cf, r, v)
+    return best[0], best[1]
 
 
 def predict_corners(cf, x, te_pts):
@@ -145,15 +149,22 @@ def main():
     for wm in ("cluster", "point"):
         for name, spec in SPECS.items():
             cf, r = fit(spec, PTS, LINES, wm=wm)
-            C = L.cov_from(r)
+            C = L.cov_from(r, cf)
             s = np.sqrt(np.diag(C))[: cf.ni]
             br = cf.block_rms(r.x)
             fits[(name, wm)] = (cf, r)
+            fm = cf.fold_margin(r.x)
             summary[f"{name}|{wm}"] = dict(names=cf.inames, x=r.x[: cf.ni].tolist(), sigma_cov=s.tolist(), block_rms=br,
                                            sig=dict(cf.sig), poses={c: r.x[cf.ni + 6 * i: cf.ni + 6 * i + 6].tolist() for i, c in enumerate(cf.carts)},
-                                           per_line=cf.per_line_rms(r.x))
+                                           per_line=cf.per_line_rms(r.x), fold_margin=fm, on_fold_barrier=bool(fm < cf.FOLD_MIN + 0.005))
             print(f"{wm:7s} {name:17s} " + " ".join(f"{n}={v:.5g}" for n, v in zip(cf.inames, r.x[: cf.ni]))
-                  + f" | M {br['M']['rms_point']:.2f} px/pt, S {br['S']['rms']:.2f}, E {br['E']['rms']:.2f}")
+                  + f" | M {br['M']['rms_point']:.2f} px/pt, S {br['S']['rms']:.2f}, E {br['E']['rms']:.2f} | fold margin {fm:.3f}")
+    # the same grid WITHOUT the fold barrier (as originally run) - for transparency only: these lenses fold
+    nobar = {}
+    for name, spec in SPECS.items():
+        cfn, rn = fit(spec, PTS, LINES, wm="cluster", fold_barrier=False)
+        nobar[name] = dict(names=cfn.inames, x=rn.x[: cfn.ni].tolist(), block_rms=cfn.block_rms(rn.x), fold_margin=cfn.fold_margin(rn.x))
+        print(f"nobarrier {name:17s} " + " ".join(f"{n}={v:.5g}" for n, v in zip(cfn.inames, rn.x[: cfn.ni])) + f" | fold margin {nobar[name]['fold_margin']:.3f}")
     # ------------------------------------------------------------------ LOSO / leave-one-edge-out
     jobs = []
     loso_keys = [k for k in fits if k[1] == "cluster" and (not QUICK or k[0] in ("k1k2_ppfix", "k1_ppfix"))]
@@ -178,7 +189,19 @@ def main():
         print(f"{wm:7s} {name:17s} LOSO {s['loso_rms_px']:.2f} px  rows " + str({k: round(v, 2) for k, v in s['loso_rms_by_row_px'].items()})
               + "  edge-out " + str({k.split('_', 1)[1]: round(v['rms_px'], 2) for k, v in s["leave_edge_out"].items()}))
     # ------------------------------------------------------------------ choose the main model (cluster weighting)
-    cand = {k: v for k, v in summary.items() if k.endswith("|cluster") and "loso_rms_px" in v}
+    # Review fix: with the fold barrier the free-pp / fx!=fy variants reach a lower LOSO, but their pp is NOT determined:
+    # it jumps by ~100 px between data subsets / local minima (pp_stability below), and fx != fy by ~2 % only absorbs the
+    # geometry mismatch (square pixels expected).  Parameters the data do not determine are fixed (CLAUDE.md), so the main
+    # model is chosen by LOSO among the pp-fixed, fx = fy models only; the free-pp LOSO values are reported.
+    pp_stab = {}
+    for nm_ in ("k1k2_ppfree", "k1k2_ppfree_fxfy"):
+        rows_ = {"all": dict(zip(summary[f"{nm_}|cluster"]["names"], summary[f"{nm_}|cluster"]["x"]))}
+        for tag, lines, pts in (("corners_only", [], PTS), ("corners+sides", SIDES, PTS), ("corners+exact_edges", EXACT, PTS)):
+            cfv, rv = fit(SPECS[nm_], pts, lines, wm="cluster")
+            rows_[tag] = dict(zip(cfv.inames, rv.x[: cfv.ni].tolist()))
+        pp_stab[nm_] = rows_
+        print("pp stability", nm_, {k: (round(v["cx"]), round(v["cy"])) for k, v in rows_.items()})
+    cand = {k: v for k, v in summary.items() if k.endswith("|cluster") and "loso_rms_px" in v and "cx" not in v["names"] and "fx" not in v["names"]}
     best_key = min(cand, key=lambda k: cand[k]["loso_rms_px"] + 0.02 * len(cand[k]["x"]))
     best_name = best_key.split("|")[0]
     cf, r = fits[(best_name, "cluster")]
@@ -192,11 +215,11 @@ def main():
             m["corners_px"] = np.where(ok[:, None], c, m["corners_px"])
     pts_b = to_points(Mb)
     cfb, rb = fit(SPECS[best_name], pts_b, LINES, wm="cluster", x0=r.x.copy(), sig=dict(cf.sig))
-    summary["bias_corrected_corners"] = dict(names=cfb.inames, x=rb.x[: cfb.ni].tolist(), block_rms=cfb.block_rms(rb.x))
+    summary["bias_corrected_corners"] = dict(names=cfb.inames, x=rb.x[: cfb.ni].tolist(), block_rms=cfb.block_rms(rb.x), fold_margin=cfb.fold_margin(rb.x))
     # data-subset variants of the main model
     for tag, lines, pts in (("corners_only", [], PTS), ("corners+sides", SIDES, PTS), ("corners+exact_edges", EXACT, PTS)):
         cfv, rv = fit(SPECS[best_name], pts, lines, wm="cluster")
-        summary[f"subset_{tag}"] = dict(names=cfv.inames, x=rv.x[: cfv.ni].tolist(), block_rms=cfv.block_rms(rv.x))
+        summary[f"subset_{tag}"] = dict(names=cfv.inames, x=rv.x[: cfv.ni].tolist(), block_rms=cfv.block_rms(rv.x), fold_margin=cfv.fold_margin(rv.x))
         print(f"subset {tag:22s}", np.round(rv.x[: cfv.ni], 4), {k: round(v.get('rms_point', v.get('rms')), 2) for k, v in cfv.block_rms(rv.x).items()})
     # ------------------------------------------------------------------ profile of f (main model)
     prof = []
@@ -210,7 +233,7 @@ def main():
             y = rr.x
             cfp.update_feet(np.r_[fv, y])
         br = cfp.block_rms(np.r_[fv, y])
-        prof.append([fv, 2 * rr.cost, br["M"]["rms_point"], br["S"]["rms"], br["E"]["rms"]] + list(y[: cfp.ni - 1]))
+        prof.append([fv, 2 * rr.cost, br["M"]["rms_point"], br["S"]["rms"], br["E"]["rms"]] + list(y[: cfp.ni - 1]) + [cfp.fold_margin(np.r_[fv, y])])
         print(f"  profile f={fv:.0f}: chi2 {2 * rr.cost:.1f}  M {br['M']['rms_point']:.2f} S {br['S']['rms']:.2f} E {br['E']['rms']:.2f}")
     prof = np.array(prof)
     # ------------------------------------------------------------------ cluster bootstrap
@@ -225,6 +248,8 @@ def main():
     boot = np.array([x for b, x in sorted(bres) if x is not None])
     print(f"bootstrap: {len(boot)} of {NBOOT} ok")
     bi = boot[:, : cf.ni]
+    boot_fold = np.array([cf.fold_margin(xb) for xb in boot])
+    print(f"bootstrap fold margins: min {boot_fold.min():.3f}, on barrier (<{cf.FOLD_MIN + 0.005}) {np.mean(boot_fold < cf.FOLD_MIN + 0.005):.2f}")
     K, dist = cf.camera(r.x).K, cf.camera(r.x).dist
     uv, _ = grid(40)
     disp = []
@@ -327,8 +352,11 @@ def main():
     unc.update({f"{n}_1sigma_cov": float(v) for n, v in zip(names, summary[best_key]["sigma_cov"])})
     unc["f_1sigma_systematic_model_weighting"] = float(np.std([v for k, v in f_all.items()]))
     unc["method"] = ("1-sigma = std of a cluster bootstrap (resampling stickers - corners and sides together - and exact edges, "
-                     f"n={len(boot)}); *_cov = Gauss-Newton covariance scaled by the block residual variances (ignores the geometry "
-                     "misfit correlation); f_1sigma_systematic_model_weighting = std of f over all models x weightings")
+                     f"n={len(boot)}, every replicate refit with the fold barrier); *_cov = Gauss-Newton covariance scaled by the residual variance "
+                     "per effective observation (cluster n_eff; fold-barrier row dropped; ignores the geometry misfit correlation); "
+                     "f_1sigma_systematic_model_weighting = std of f over all models x weightings. NONE of these contains the bias of the "
+                     "drawing geometry (diagnostic 41_cuboid_diag.py: freeing the top-plate height moves f by ~+100 px; written below as "
+                     "f_geometry_shift_px_diag / f_1sigma_incl_geometry by 41_cuboid_diag.py)")
     brm = summary[best_key]["block_rms"]
     cam_best = cf.camera(r.x)
     out = lens_json(cam_best.K, cam_best.dist[:5], method="cuboid (sticker corners + sticker sides + exact top-plate edges, drawing dimensions exact)",
@@ -339,7 +367,16 @@ def main():
                     data_used=(f"{len(PTS)} valid sticker corners of {len(M)} stickers, {len(SIDES)} traced sides of partly hidden stickers, "
                                f"{len(EXACT)} exact structure edges ({', '.join(e['id'] for e in EXACT)}); mean of 7 jitter-compensated stills"),
                     geometry_assumptions="drawing dimensions and sticker positions exactly as in spec/cart-marker-layout.json (nothing fitted); exact edges on the drawing lines",
-                    details=dict(main_key=best_key, block_rms=brm, block_sigmas=dict(cf.sig), weighting="cluster: every traced line = n_eff = clip(chord/25px, 2, 6) observations",
+                    details=dict(main_key=best_key, block_rms=brm, fold_margin=cf.fold_margin(r.x), fold_barrier_min=cf.FOLD_MIN,
+                                 on_fold_barrier=bool(cf.fold_margin(r.x) < cf.FOLD_MIN + 0.005),
+                                 bootstrap_fold_margin=dict(min=float(boot_fold.min()), median=float(np.median(boot_fold)),
+                                                            frac_on_barrier=float(np.mean(boot_fold < cf.FOLD_MIN + 0.005))),
+                                 model_choice=("LOSO (+0.02 px per intrinsic) among the pp-fixed, fx=fy models; free-pp / fx!=fy models excluded because "
+                                               "their pp is not determined (pp_stability: jumps between data subsets / local minima)"),
+                                 loso_all_models={k: v.get("loso_rms_px") for k, v in summary.items() if k.endswith("|cluster")},
+                                 pp_stability=pp_stab,
+                                 without_fold_barrier=dict(note="same grid without the barrier (the original run): every k1/k1k2 lens folds inside the image "
+                                                                "(fold margin < 0), i.e. it is not invertible there and is not a valid main result", grid=nobar), block_sigmas=dict(cf.sig), weighting="cluster: every traced line = n_eff = clip(chord/25px, 2, 6) observations",
                                  rms_note="rms_reprojection_error_px = RMS per corner point (radial); block S/E = RMS of the signed point-to-line distance [px]",
                                  bootstrap=dict(n=len(boot), std=dict(zip(names, bstd.tolist())), q16=dict(zip(names, q16.tolist())), q84=dict(zip(names, q84.tolist()))),
                                  mapping=mstats, mapping_raw=mstats_raw, loso_rms_px=summary[best_key]["loso_rms_px"],
@@ -364,14 +401,22 @@ def main():
     lines_md = ["# Method: cuboid cart model (stickers + exact edges, drawing dimensions exact)", "",
                 f"Script `work/41_cuboid_fit.py` (helpers `41_cuboid_lib.py`). Data: {len(PTS)} sticker corners, {len(SIDES)} sticker sides, "
                 f"{len(EXACT)} exact structure edges ({', '.join(e['id'] for e in EXACT)}). Edge files reviewed: {REVIEW}.", "",
-                f"Main model (min. leave-one-sticker-out error, cluster weighting): **{best_name}**", "",
+                f"Main model (min. leave-one-sticker-out error among the pp-fixed, fx=fy models, cluster weighting): **{best_name}**. "
+                "Free-pp variants reach a lower LOSO (" + ", ".join(f"{k.split('|')[0]} {v['loso_rms_px']:.2f} px" for k, v in summary.items()
+                                                                      if k.endswith("|cluster") and "cx" in v["names"] and "loso_rms_px" in v)
+                + ") but their pp is not determined: " + "; ".join(f"{nm_}: " + ", ".join(f"{t} ({v['cx']:.0f}, {v['cy']:.0f})" for t, v in rw.items())
+                                                                   for nm_, rw in pp_stab.items()) + ".", "",
                 "| param | value | bootstrap 1-sigma | cov 1-sigma |", "|---|---|---|---|"]
     for n, v, e1, e2 in zip(names, s["x"], bstd, s["sigma_cov"]):
         lines_md.append(f"| {n} | {v:.5g} | {e1:.3g} | {e2:.3g} |")
     lines_md += ["", f"Block RMS: corners {brm['M']['rms_point']:.2f} px per point (max {brm['M']['max_point']:.1f}), sticker sides {brm['S']['rms']:.2f} px, "
                  f"exact edges {brm['E']['rms']:.2f} px. LOSO {s['loso_rms_px']:.2f} px.",
                  f"Mapping uncertainty (rot.-comp., bootstrap): " + ", ".join(f"{k} {v['rms_median_px']:.2f} px" for k, v in mstats.items()), "",
-                 "| model / weighting | f | pp | dist | corners px/pt | sides | edges | LOSO |", "|---|---|---|---|---|---|---|---|"]
+                 f"Fold barrier (fold margin >= {cf.FOLD_MIN}) ON in every fit; main-model fold margin {cf.fold_margin(r.x):.3f}"
+                + (" - the solution SITS ON THE BARRIER: the data (drawing geometry) push the distortion towards a lens that folds inside the image; "
+                   "k1, k2 are then fixed by the validity constraint, not by the data." if cf.fold_margin(r.x) < cf.FOLD_MIN + 0.005 else "")
+                + f" Bootstrap: {np.mean(boot_fold < cf.FOLD_MIN + 0.005) * 100:.0f} % of the replicates on the barrier.", "",
+                "| model / weighting | f | pp | dist | corners px/pt | sides | edges | LOSO | fold margin |", "|---|---|---|---|---|---|---|---|---|"]
     for k, v in summary.items():
         if "|" not in k:
             continue
@@ -380,7 +425,15 @@ def main():
         pp = f"({x['cx']:.0f}, {x['cy']:.0f})" if "cx" in x else "centre"
         dd = ", ".join(f"{n}={x[n]:.3f}" for n in ("k1", "k2", "k3", "p1", "p2") if n in x)
         b = v["block_rms"]
-        lines_md.append(f"| {k} | {f_:.0f} | {pp} | {dd} | {b['M']['rms_point']:.2f} | {b['S']['rms']:.2f} | {b['E']['rms']:.2f} | {v.get('loso_rms_px', float('nan')):.2f} |")
+        lines_md.append(f"| {k} | {f_:.0f} | {pp} | {dd} | {b['M']['rms_point']:.2f} | {b['S']['rms']:.2f} | {b['E']['rms']:.2f} | {v.get('loso_rms_px', float('nan')):.2f} | {v['fold_margin']:.3f} |")
+    lines_md += ["", "Without the fold barrier (original run; all k1 / k1k2 lenses fold inside the image - not valid):", "",
+                 "| model (cluster) | f | pp | dist | corners px/pt | sides | edges | fold margin |", "|---|---|---|---|---|---|---|---|"]
+    for k, v in nobar.items():
+        x = dict(zip(v["names"], v["x"]))
+        pp = f"({x['cx']:.0f}, {x['cy']:.0f})" if "cx" in x else "centre"
+        dd = ", ".join(f"{n}={x[n]:.3f}" for n in ("k1", "k2", "k3", "p1", "p2") if n in x)
+        b = v["block_rms"]
+        lines_md.append(f"| {k} | {x.get('f', x.get('fx')):.0f} | {pp} | {dd} | {b['M']['rms_point']:.2f} | {b['S']['rms']:.2f} | {b['E']['rms']:.2f} | {v['fold_margin']:.3f} |")
     lines_md += ["", "Exact-edge check (implied shift of the traced edge from its drawing line with the fitted camera, mm):"]
     for eid, v in exact_check.items():
         lines_md.append(f"* {eid}: joint {v['joint']['implied_shift_mm']:+.1f} mm along {v['joint']['axis']} ({v['joint']['mean_offset_px']:+.2f} px); "
