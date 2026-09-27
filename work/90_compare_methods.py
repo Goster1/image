@@ -41,17 +41,16 @@ def collect():
 
 
 def method_id_of(fn, it, seen):
+    """Short unique id: first token of the method name (file name for the main method); duplicates get '@<file>'."""
     base = os.path.basename(fn)[7:-5]
-    m = it.get("method", base)
-    mid = base if m.split(" ")[0] in (base, base.replace("_lc", "")) else base + ":" + m.split(" ")[0]
     if base == "combined":
         mid = "main_combined"
-    k, n = mid, 2
-    while k in seen:
-        k = f"{mid}#{n}"
-        n += 1
-    seen.add(k)
-    return k
+    else:
+        mid = it.get("method", base).split(" ")[0]
+        if mid in seen:
+            mid = f"{mid}@{base}"
+    seen.add(mid)
+    return mid
 
 
 def main():

@@ -56,9 +56,10 @@ for fr in range(nfr):
                 continue
             X3 = np.array(m["corners_3d_mm"])
             for j in range(4):
-                if m["corner_valid"][j]:
+                q = m["per_frame_corners_still_px"][fr][j]
+                if m["corner_valid"][j] and q is not None and np.all(np.isfinite(np.array(q, float))):
                     X.append(X3[j])
-                    uv.append(m["per_frame_corners_still_px"][fr][j])
+                    uv.append(q)
         e, _ = pose_fit(np.array(X), np.array(uv), np.array(init["poses"][str(c)]))
         ee.append(np.hypot(e[:, 0], e[:, 1]))
     ee = np.concatenate(ee)
@@ -106,11 +107,13 @@ L["determination"] = {
         "edges alone give f only fragile" % (f, U["fx_px_1sigma"], 100 * U["fx_px_1sigma"] / f),
     ],
     "consistent_only": [
-        "cy = %.0f +- %.0f px: carried by the floor-line groups (in the main fit floor lines as straightness only: cy %.0f); "
-        "edge-only fits give 438-509 depending on the floor-line assumptions" % (cy, U["cy_px_1sigma"], fs[2] if fs else float("nan")),
+        "cy = %.0f +- %.0f px: carried by the vanishing-point groups (without them cy %.0f); floor lines as straightness only: "
+        "cy %.0f; edge-only fits give 426-509 depending on the floor-line / vertical assumptions"
+        % (cy, U["cy_px_1sigma"], dict(zip(S["k1k2_influence_no_vp"]["names"], S["k1k2_influence_no_vp"]["x"]))["cy"], fs[2] if fs else float("nan")),
         "k3 ~ -0.03 +- 0.025 (improvement not significant)",
     ],
-    "not_determinable": ["p1, p2 (tangential)", "fx != fy (pixel aspect; fx/fy - 1 = -0.9 +- 0.9 %)",
+    "not_determinable": ["p1, p2 (tangential)", "fx != fy (pixel aspect; edges alone fx 1383 +- 91 vs fy 1426 +- 34; combined fit "
+                         "fx/fy - 1 = %+.1f %%)" % (100 * (S["k1k2_fxfy"]["x"][0] / S["k1k2_fxfy"]["x"][1] - 1)),
                          "cause of the sticker-geometry mismatch (top plate vs shelves)"],
 }
 save_json(L, f"{RESULTS}/lens_result.json")

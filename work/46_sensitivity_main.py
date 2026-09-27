@@ -7,6 +7,7 @@ outward by 0.66 px, 'all_bias_corrected' = corners bias-corrected + sides outwar
 Usage: python3 46_sensitivity_main.py [NWORKERS=4] -> work/cache/sensitivity_main.json
 """
 import importlib
+import os
 import sys
 import time
 from multiprocessing import Pool
@@ -15,6 +16,7 @@ import numpy as np
 
 from common import CACHE, save_json
 
+os.environ.setdefault("SYNTH_SETUP", f"{CACHE}/synthetic_setup_main.json")  # truths T1 / T2 of the main-estimator study
 C = importlib.import_module("44_synth_c_sensitivity")
 L = C.L
 NW = int(sys.argv[1]) if len(sys.argv) > 1 else 4

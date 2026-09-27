@@ -1,5 +1,6 @@
 [
   {
+    "method_id": "alt_model_brown_k1",
     "method": "alt_model_brown_k1 (lens-model comparison; stickers + edges jointly, same data and weights for every model)",
     "fx": 1536.2479360821756,
     "fy": 1536.2479360821756,
@@ -10,27 +11,40 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 9.396782376173272,
+    "rms": 8.139478409231497,
     "unc": {
-      "f_1sigma": 43.448682300057605,
-      "cx_1sigma": 20.757960909257175,
-      "cy_1sigma": 38.07049696199256,
-      "k1_1sigma": 0.012266772156832684
+      "fx_px_1sigma": 43.448682300057605,
+      "fy_px_1sigma": 43.448682300057605,
+      "cx_px_1sigma": 20.757960909257175,
+      "cy_px_1sigma": 38.07049696199256,
+      "k1_1sigma": 0.012266772156832684,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma",
+        "fy_px_1sigma": "f_1sigma",
+        "cx_px_1sigma": "cx_1sigma",
+        "cy_px_1sigma": "cy_1sigma",
+        "k1_1sigma": "k1_1sigma"
+      },
+      "method_native": {
+        "f_1sigma": 43.448682300057605,
+        "cx_1sigma": 20.757960909257175,
+        "cy_1sigma": 38.07049696199256
+      }
     },
     "model": "Brown k1, pp free",
     "file": "work/cache/method_alt_brown_k1.json",
     "vs_main_px": {
-      "centre": 6.2086680998029955,
-      "cart_band": 32.256466629652074,
-      "corners": 57.1680772866752
-    },
-    "vs_main_px_max": {
-      "centre": 11.48158861920052,
-      "cart_band": 60.74789196781318,
-      "corners": 66.16841694300331
+      "centre": 5.455993259805705,
+      "cart_band": 27.888051904253558,
+      "corners": 52.403383360828215
     }
   },
   {
+    "method_id": "alt_model_brown_k1k2",
     "method": "alt_model_brown_k1k2 (lens-model comparison; stickers + edges jointly, same data and weights for every model)",
     "fx": 1434.4309164810184,
     "fy": 1434.4309164810184,
@@ -41,30 +55,43 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 8.681979813461604,
+    "rms": 7.225093793743216,
     "unc": {
-      "f_1sigma": 43.339841534292056,
-      "cx_1sigma": 9.679548950603033,
-      "cy_1sigma": 42.704924863971854,
+      "fx_px_1sigma": 43.339841534292056,
+      "fy_px_1sigma": 43.339841534292056,
+      "cx_px_1sigma": 9.679548950603033,
+      "cy_px_1sigma": 42.704924863971854,
       "k1_1sigma": 0.02126391849788418,
       "k2_1sigma": 0.01281197826396874,
-      "cy_1sigma_if_floor_lines_parallel": 14.977792147815501,
-      "note": "max(delete-one-cluster jackknife, member-cluster sandwich) of the joint fit; clusters = physical edge members (pair_of merged) and stickers. cy_1sigma is that of the fit WITHOUT the floor-line VP groups (the blue line || white tape assumption carries almost all cy information; without it cy = 477.5 px, shift 24.4 px)"
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma",
+        "fy_px_1sigma": "f_1sigma",
+        "cx_px_1sigma": "cx_1sigma",
+        "cy_px_1sigma": "cy_1sigma",
+        "k1_1sigma": "k1_1sigma",
+        "k2_1sigma": "k2_1sigma"
+      },
+      "method_native": {
+        "f_1sigma": 43.339841534292056,
+        "cx_1sigma": 9.679548950603033,
+        "cy_1sigma": 42.704924863971854,
+        "cy_1sigma_if_floor_lines_parallel": 14.977792147815501,
+        "note": "max(delete-one-cluster jackknife, member-cluster sandwich) of the joint fit; clusters = physical edge members (pair_of merged) and stickers. cy_1sigma is that of the fit WITHOUT the floor-line VP groups (the blue line || white tape assumption carries almost all cy information; without it cy = 477.5 px, shift 24.4 px)"
+      }
     },
     "model": "Brown k1,k2, pp free",
     "file": "work/cache/method_alt_brown_k1k2.json",
     "vs_main_px": {
-      "centre": 1.564217033994845,
-      "cart_band": 6.745830852895751,
-      "corners": 9.254817634356137
-    },
-    "vs_main_px_max": {
-      "centre": 2.201083450888542,
-      "cart_band": 9.547631775264087,
-      "corners": 9.696133880391583
+      "centre": 2.4779699718336436,
+      "cart_band": 10.725327681830677,
+      "corners": 14.660809072789164
     }
   },
   {
+    "method_id": "alt_model_brown_k1k2_fxfy",
     "method": "alt_model_brown_k1k2_fxfy (lens-model comparison; stickers + edges jointly, same data and weights for every model)",
     "fx": 1439.3311570656087,
     "fy": 1435.405865096003,
@@ -75,29 +102,42 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 8.622906991956649,
+    "rms": 7.158263315268239,
     "unc": {
-      "fx_1sigma": 53.746584785498904,
-      "fy_1sigma": 29.292182765555864,
-      "cx_1sigma": 7.240602344339797,
-      "cy_1sigma": 7.326438267614746,
+      "fx_px_1sigma": 53.746584785498904,
+      "fy_px_1sigma": 29.292182765555864,
+      "cx_px_1sigma": 7.240602344339797,
+      "cy_px_1sigma": 7.326438267614746,
       "k1_1sigma": 0.017255077184515247,
-      "k2_1sigma": 0.011707098446515152
+      "k2_1sigma": 0.011707098446515152,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "fx_1sigma",
+        "fy_px_1sigma": "fy_1sigma",
+        "cx_px_1sigma": "cx_1sigma",
+        "cy_px_1sigma": "cy_1sigma",
+        "k1_1sigma": "k1_1sigma",
+        "k2_1sigma": "k2_1sigma"
+      },
+      "method_native": {
+        "fx_1sigma": 53.746584785498904,
+        "fy_1sigma": 29.292182765555864,
+        "cx_1sigma": 7.240602344339797,
+        "cy_1sigma": 7.326438267614746
+      }
     },
     "model": "Brown k1,k2, fx!=fy, pp free",
     "file": "work/cache/method_alt_brown_k1k2_fxfy.json",
     "vs_main_px": {
-      "centre": 1.370151721453258,
-      "cart_band": 5.469373639937382,
-      "corners": 6.9306095133587196
-    },
-    "vs_main_px_max": {
-      "centre": 2.038757813604959,
-      "cart_band": 7.688394982793309,
-      "corners": 7.62531081490546
+      "centre": 2.272545659170722,
+      "cart_band": 9.45002628839974,
+      "corners": 12.34322024437165
     }
   },
   {
+    "method_id": "alt_model_brown_k1k2_ppfixed",
     "method": "alt_model_brown_k1k2_ppfixed (lens-model comparison; stickers + edges jointly, same data and weights for every model)",
     "fx": 1435.714462044721,
     "fy": 1435.714462044721,
@@ -108,26 +148,37 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 8.713548211495313,
+    "rms": 7.567296675236801,
     "unc": {
-      "f_1sigma": 23.969225986805732,
+      "fx_px_1sigma": 23.969225986805732,
+      "fy_px_1sigma": 23.969225986805732,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
       "k1_1sigma": 0.012603883578182375,
-      "k2_1sigma": 0.007699683176723363
+      "k2_1sigma": 0.007699683176723363,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma",
+        "fy_px_1sigma": "f_1sigma",
+        "k1_1sigma": "k1_1sigma",
+        "k2_1sigma": "k2_1sigma"
+      },
+      "method_native": {
+        "f_1sigma": 23.969225986805732
+      }
     },
     "model": "Brown k1,k2, pp fixed",
     "file": "work/cache/method_alt_brown_k1k2_ppfixed.json",
     "vs_main_px": {
-      "centre": 3.233327774257438,
-      "cart_band": 7.947931714062988,
-      "corners": 18.315084135867924
-    },
-    "vs_main_px_max": {
-      "centre": 4.974866930008059,
-      "cart_band": 16.863087244386524,
-      "corners": 21.899504019449214
+      "centre": 3.5514822417031997,
+      "cart_band": 11.893773625304256,
+      "corners": 23.39260943570751
     }
   },
   {
+    "method_id": "alt_model_brown_k1k2k3",
     "method": "alt_model_brown_k1k2k3 (lens-model comparison; stickers + edges jointly, same data and weights for every model)",
     "fx": 1431.7740406737312,
     "fy": 1431.7740406737312,
@@ -138,31 +189,44 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": -0.030737411465295038,
-    "rms": 8.851648419781847,
+    "rms": 7.197284330030159,
     "unc": {
-      "f_1sigma": 44.261847245197515,
-      "cx_1sigma": 9.568323996919602,
-      "cy_1sigma": 34.83819012452826,
+      "fx_px_1sigma": 44.261847245197515,
+      "fy_px_1sigma": 44.261847245197515,
+      "cx_px_1sigma": 9.568323996919602,
+      "cy_px_1sigma": 34.83819012452826,
       "k1_1sigma": 0.03068769300185701,
       "k2_1sigma": 0.046280341210657674,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
       "k3_1sigma": 0.02494063587044358,
-      "cy_1sigma_if_floor_lines_parallel": 8.568759085798979,
-      "note": "max(delete-one-cluster jackknife, member-cluster sandwich) of the joint fit; clusters = physical edge members (pair_of merged) and stickers. cy_1sigma is that of the fit WITHOUT the floor-line VP groups (the blue line || white tape assumption carries almost all cy information; without it cy = 485.0 px, shift 20.0 px)"
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma",
+        "fy_px_1sigma": "f_1sigma",
+        "cx_px_1sigma": "cx_1sigma",
+        "cy_px_1sigma": "cy_1sigma",
+        "k1_1sigma": "k1_1sigma",
+        "k2_1sigma": "k2_1sigma",
+        "k3_1sigma": "k3_1sigma"
+      },
+      "method_native": {
+        "f_1sigma": 44.261847245197515,
+        "cx_1sigma": 9.568323996919602,
+        "cy_1sigma": 34.83819012452826,
+        "cy_1sigma_if_floor_lines_parallel": 8.568759085798979,
+        "note": "max(delete-one-cluster jackknife, member-cluster sandwich) of the joint fit; clusters = physical edge members (pair_of merged) and stickers. cy_1sigma is that of the fit WITHOUT the floor-line VP groups (the blue line || white tape assumption carries almost all cy information; without it cy = 485.0 px, shift 20.0 px)"
+      }
     },
     "model": "Brown k1,k2,k3, pp free",
     "file": "work/cache/method_alt_brown_k1k2k3.json",
     "vs_main_px": {
-      "centre": 1.7414413961066337,
-      "cart_band": 8.48461615919081,
-      "corners": 11.575883082054187
-    },
-    "vs_main_px_max": {
-      "centre": 2.7073237523148608,
-      "cart_band": 12.531978503493105,
-      "corners": 21.186587588132085
+      "centre": 2.7053911904917394,
+      "cart_band": 12.451261838321694,
+      "corners": 16.90123315547157
     }
   },
   {
+    "method_id": "alt_model_brown_k1k2p1p2",
     "method": "alt_model_brown_k1k2p1p2 (lens-model comparison; stickers + edges jointly, same data and weights for every model)",
     "fx": 1374.0577063730407,
     "fy": 1374.0577063730407,
@@ -173,30 +237,43 @@
     "p1": 0.00863563967398933,
     "p2": -0.001521707013515808,
     "k3": 0.0,
-    "rms": 6.3606152162540495,
+    "rms": 5.863352937856765,
     "unc": {
-      "f_1sigma": 33.78073560100192,
-      "cx_1sigma": 18.8907528685017,
-      "cy_1sigma": 17.713508151739543,
+      "fx_px_1sigma": 33.78073560100192,
+      "fy_px_1sigma": 33.78073560100192,
+      "cx_px_1sigma": 18.8907528685017,
+      "cy_px_1sigma": 17.713508151739543,
       "k1_1sigma": 0.016808078029426115,
       "k2_1sigma": 0.009933869087870424,
       "p1_1sigma": 0.0029119103696340774,
-      "p2_1sigma": 0.0025212373078213053
+      "p2_1sigma": 0.0025212373078213053,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma",
+        "fy_px_1sigma": "f_1sigma",
+        "cx_px_1sigma": "cx_1sigma",
+        "cy_px_1sigma": "cy_1sigma",
+        "k1_1sigma": "k1_1sigma",
+        "k2_1sigma": "k2_1sigma",
+        "p1_1sigma": "p1_1sigma",
+        "p2_1sigma": "p2_1sigma"
+      },
+      "method_native": {
+        "f_1sigma": 33.78073560100192,
+        "cx_1sigma": 18.8907528685017,
+        "cy_1sigma": 17.713508151739543
+      }
     },
     "model": "Brown k1,k2,p1,p2, pp free",
     "file": "work/cache/method_alt_brown_k1k2p1p2.json",
     "vs_main_px": {
-      "centre": 5.712199123286595,
-      "cart_band": 24.099358483971606,
-      "corners": 32.477468926905274
-    },
-    "vs_main_px_max": {
-      "centre": 9.110613759516985,
-      "cart_band": 42.32144009702003,
-      "corners": 50.449792154998285
+      "centre": 6.88514602588708,
+      "cart_band": 27.885497034308983,
+      "corners": 37.88647185707198
     }
   },
   {
+    "method_id": "alt_model_division_l1",
     "method": "alt_model_division_l1 (lens-model comparison; stickers + edges jointly, same data and weights for every model)",
     "fx": 1416.324250525176,
     "fy": 1416.324250525176,
@@ -207,28 +284,41 @@
     "p1": 8.620876006838273e-06,
     "p2": -6.174534060323617e-07,
     "k3": -0.07161996220635365,
-    "rms": 9.398780646491351,
+    "rms": 7.351012672106633,
     "unc": {
-      "native_f_1sigma": 27.940616460063303,
-      "native_cx_1sigma": 10.330921841226509,
-      "native_cy_1sigma": 6.504228476629473,
-      "native_l1_1sigma": 0.02024531141272435,
-      "note": "1-sigma of the NATIVE parameters (see details.native_params); the OpenCV coefficients are a conversion"
+      "fx_px_1sigma": 27.940616460063303,
+      "fy_px_1sigma": 27.940616460063303,
+      "cx_px_1sigma": 10.330921841226509,
+      "cy_px_1sigma": 6.504228476629473,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "native_f_1sigma",
+        "fy_px_1sigma": "native_f_1sigma",
+        "cx_px_1sigma": "native_cx_1sigma",
+        "cy_px_1sigma": "native_cy_1sigma"
+      },
+      "method_native": {
+        "native_f_1sigma": 27.940616460063303,
+        "native_cx_1sigma": 10.330921841226509,
+        "native_cy_1sigma": 6.504228476629473,
+        "native_l1_1sigma": 0.02024531141272435,
+        "note": "1-sigma of the NATIVE parameters (see details.native_params); the OpenCV coefficients are a conversion"
+      }
     },
     "model": "division l1, pp free -> converted to the closest OpenCV Brown [k1,k2,p1,p2,k3] over the full image",
     "file": "work/cache/method_alt_division_l1.json",
     "vs_main_px": {
-      "centre": 3.412057506872266,
-      "cart_band": 16.78007171310641,
-      "corners": 27.42925014480679
-    },
-    "vs_main_px_max": {
-      "centre": 6.185103384443984,
-      "cart_band": 30.701679394820484,
-      "corners": 31.417095110297236
+      "centre": 3.962769282843166,
+      "cart_band": 20.656998016798525,
+      "corners": 32.801462782545116
     }
   },
   {
+    "method_id": "alt_model_division_l1l2",
     "method": "alt_model_division_l1l2 (lens-model comparison; stickers + edges jointly, same data and weights for every model)",
     "fx": 1430.924278699525,
     "fy": 1430.924278699525,
@@ -239,29 +329,42 @@
     "p1": 2.621861608643753e-08,
     "p2": 1.0277968970875768e-08,
     "k3": -0.02847153298040513,
-    "rms": 8.832780071834375,
+    "rms": 7.235901800311223,
     "unc": {
-      "native_f_1sigma": 25.730429686062422,
-      "native_cx_1sigma": 5.602971765616198,
-      "native_cy_1sigma": 3.8646750127036564,
-      "native_l1_1sigma": 0.021355076994247935,
-      "native_l2_1sigma": 0.023006648160100916,
-      "note": "1-sigma of the NATIVE parameters (see details.native_params); the OpenCV coefficients are a conversion"
+      "fx_px_1sigma": 25.730429686062422,
+      "fy_px_1sigma": 25.730429686062422,
+      "cx_px_1sigma": 5.602971765616198,
+      "cy_px_1sigma": 3.8646750127036564,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "native_f_1sigma",
+        "fy_px_1sigma": "native_f_1sigma",
+        "cx_px_1sigma": "native_cx_1sigma",
+        "cy_px_1sigma": "native_cy_1sigma"
+      },
+      "method_native": {
+        "native_f_1sigma": 25.730429686062422,
+        "native_cx_1sigma": 5.602971765616198,
+        "native_cy_1sigma": 3.8646750127036564,
+        "native_l1_1sigma": 0.021355076994247935,
+        "native_l2_1sigma": 0.023006648160100916,
+        "note": "1-sigma of the NATIVE parameters (see details.native_params); the OpenCV coefficients are a conversion"
+      }
     },
     "model": "division l1,l2, pp free -> converted to the closest OpenCV Brown [k1,k2,p1,p2,k3] over the full image",
     "file": "work/cache/method_alt_division_l1l2.json",
     "vs_main_px": {
-      "centre": 1.8040484356442752,
-      "cart_band": 8.989602738372678,
-      "corners": 12.980508990051757
-    },
-    "vs_main_px_max": {
-      "centre": 3.022289344749707,
-      "cart_band": 14.044470881478013,
-      "corners": 18.32666919831061
+      "centre": 2.6951835408410876,
+      "cart_band": 12.948184420078848,
+      "corners": 18.355958888729177
     }
   },
   {
+    "method_id": "alt_model_kb_k1k2",
     "method": "alt_model_kb_k1k2 (lens-model comparison; stickers + edges jointly, same data and weights for every model)",
     "fx": 1430.8590495122996,
     "fy": 1430.8590495122996,
@@ -272,29 +375,42 @@
     "p1": 1.9261403313604057e-06,
     "p2": -1.8290481946460948e-06,
     "k3": -0.032057121895713095,
-    "rms": 8.919194196138827,
+    "rms": 7.185348925055944,
     "unc": {
-      "native_f_1sigma": 26.81595423947967,
-      "native_cx_1sigma": 6.171510630014328,
-      "native_cy_1sigma": 4.234710590631364,
-      "native_k1_1sigma": 0.0202656465046719,
-      "native_k2_1sigma": 0.020300968112398357,
-      "note": "1-sigma of the NATIVE parameters (see details.native_params); the OpenCV coefficients are a conversion"
+      "fx_px_1sigma": 26.81595423947967,
+      "fy_px_1sigma": 26.81595423947967,
+      "cx_px_1sigma": 6.171510630014328,
+      "cy_px_1sigma": 4.234710590631364,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "native_f_1sigma",
+        "fy_px_1sigma": "native_f_1sigma",
+        "cx_px_1sigma": "native_cx_1sigma",
+        "cy_px_1sigma": "native_cy_1sigma"
+      },
+      "method_native": {
+        "native_f_1sigma": 26.81595423947967,
+        "native_cx_1sigma": 6.171510630014328,
+        "native_cy_1sigma": 4.234710590631364,
+        "native_k1_1sigma": 0.0202656465046719,
+        "native_k2_1sigma": 0.020300968112398357,
+        "note": "1-sigma of the NATIVE parameters (see details.native_params); the OpenCV coefficients are a conversion"
+      }
     },
     "model": "Kannala-Brandt k1,k2, pp free -> converted to the closest OpenCV Brown [k1,k2,p1,p2,k3] over the full image",
     "file": "work/cache/method_alt_kb_k1k2.json",
     "vs_main_px": {
-      "centre": 1.7997932516325024,
-      "cart_band": 8.844424562471339,
-      "corners": 11.942299037945595
-    },
-    "vs_main_px_max": {
-      "centre": 2.8402828380883065,
-      "cart_band": 13.130166064172494,
-      "corners": 20.94592820631646
+      "centre": 2.7623419873790658,
+      "cart_band": 12.84275677835921,
+      "corners": 17.30076412344657
     }
   },
   {
+    "method_id": "alt_model_kb_k1k4",
     "method": "alt_model_kb_k1k4 (lens-model comparison; stickers + edges jointly, same data and weights for every model)",
     "fx": 1430.2832869574183,
     "fy": 1430.2832869574183,
@@ -305,31 +421,44 @@
     "p1": 1.0803261887959101e-05,
     "p2": -8.633372456799962e-06,
     "k3": -0.0024983209929118886,
-    "rms": 9.216004943155982,
+    "rms": 7.138048574060217,
     "unc": {
-      "native_f_1sigma": 31.73619457254206,
-      "native_cx_1sigma": 8.012291735810491,
-      "native_cy_1sigma": 5.3974373843420285,
-      "native_k1_1sigma": 0.04626247805360294,
-      "native_k2_1sigma": 0.30355567502605757,
-      "native_k3_1sigma": 0.7979081057294981,
-      "native_k4_1sigma": 0.6644243005263903,
-      "note": "1-sigma of the NATIVE parameters (see details.native_params); the OpenCV coefficients are a conversion"
+      "fx_px_1sigma": 31.73619457254206,
+      "fy_px_1sigma": 31.73619457254206,
+      "cx_px_1sigma": 8.012291735810491,
+      "cy_px_1sigma": 5.3974373843420285,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "native_f_1sigma",
+        "fy_px_1sigma": "native_f_1sigma",
+        "cx_px_1sigma": "native_cx_1sigma",
+        "cy_px_1sigma": "native_cy_1sigma"
+      },
+      "method_native": {
+        "native_f_1sigma": 31.73619457254206,
+        "native_cx_1sigma": 8.012291735810491,
+        "native_cy_1sigma": 5.3974373843420285,
+        "native_k1_1sigma": 0.04626247805360294,
+        "native_k2_1sigma": 0.30355567502605757,
+        "native_k3_1sigma": 0.7979081057294981,
+        "native_k4_1sigma": 0.6644243005263903,
+        "note": "1-sigma of the NATIVE parameters (see details.native_params); the OpenCV coefficients are a conversion"
+      }
     },
     "model": "Kannala-Brandt k1..k4, pp free -> converted to the closest OpenCV Brown [k1,k2,p1,p2,k3] over the full image",
     "file": "work/cache/method_alt_kb_k1k4.json",
     "vs_main_px": {
-      "centre": 1.8749716464243582,
-      "cart_band": 8.132741814963245,
-      "corners": 10.38047777480727
-    },
-    "vs_main_px_max": {
-      "centre": 2.6770972563052284,
-      "cart_band": 11.390395355972597,
-      "corners": 11.418078519906842
+      "centre": 2.794515682285569,
+      "cart_band": 12.111296128116797,
+      "corners": 15.85938477072559
     }
   },
   {
+    "method_id": "alt_model_rational_k1k6",
     "method": "alt_model_rational_k1k6 (lens-model comparison; stickers + edges jointly, same data and weights for every model)",
     "fx": 1431.1819442727408,
     "fy": 1431.1819442727408,
@@ -340,33 +469,46 @@
     "p1": 4.950687798722944e-06,
     "p2": 4.527858785538263e-06,
     "k3": -0.012388226187284454,
-    "rms": 8.978528545254857,
+    "rms": 7.059592809133514,
     "unc": {
-      "native_f_1sigma": 33.12121427927815,
-      "native_cx_1sigma": 6.264794976204628,
-      "native_cy_1sigma": 6.028845251985161,
-      "native_k1_1sigma": 0.9990211295341781,
-      "native_k2_1sigma": 5.02042302580063,
-      "native_k3_1sigma": 0.9522011157874001,
-      "native_k4_1sigma": 0.9971047724816431,
-      "native_k5_1sigma": 4.6151151987479775,
-      "native_k6_1sigma": 2.957487289441699,
-      "note": "1-sigma of the NATIVE parameters (see details.native_params); the OpenCV coefficients are a conversion"
+      "fx_px_1sigma": 33.12121427927815,
+      "fy_px_1sigma": 33.12121427927815,
+      "cx_px_1sigma": 6.264794976204628,
+      "cy_px_1sigma": 6.028845251985161,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "native_f_1sigma",
+        "fy_px_1sigma": "native_f_1sigma",
+        "cx_px_1sigma": "native_cx_1sigma",
+        "cy_px_1sigma": "native_cy_1sigma"
+      },
+      "method_native": {
+        "native_f_1sigma": 33.12121427927815,
+        "native_cx_1sigma": 6.264794976204628,
+        "native_cy_1sigma": 6.028845251985161,
+        "native_k1_1sigma": 0.9990211295341781,
+        "native_k2_1sigma": 5.02042302580063,
+        "native_k3_1sigma": 0.9522011157874001,
+        "native_k4_1sigma": 0.9971047724816431,
+        "native_k5_1sigma": 4.6151151987479775,
+        "native_k6_1sigma": 2.957487289441699,
+        "note": "1-sigma of the NATIVE parameters (see details.native_params); the OpenCV coefficients are a conversion"
+      }
     },
     "model": "rational k1..k6, pp free -> converted to the closest OpenCV Brown [k1,k2,p1,p2,k3] over the full image",
     "file": "work/cache/method_alt_rational_k1k6.json",
     "vs_main_px": {
-      "centre": 1.7979145130524243,
-      "cart_band": 7.566426191468042,
-      "corners": 8.845451499048647
-    },
-    "vs_main_px_max": {
-      "centre": 2.607246509127014,
-      "cart_band": 9.7392597274752,
-      "corners": 18.32216826092987
+      "centre": 2.727515738666833,
+      "cart_band": 11.56834172972512,
+      "corners": 14.346969050962858
     }
   },
   {
+    "method_id": "alt_model_rational_k4",
     "method": "alt_model_rational_k4 (lens-model comparison; stickers + edges jointly, same data and weights for every model)",
     "fx": 1430.5133161848876,
     "fy": 1430.5133161848876,
@@ -377,223 +519,481 @@
     "p1": 2.061556215400213e-06,
     "p2": -2.269393235396701e-06,
     "k3": -0.03252812636044806,
-    "rms": 8.930189113951673,
+    "rms": 7.169478229527664,
     "unc": {
-      "native_f_1sigma": 26.749393442444575,
-      "native_cx_1sigma": 6.463233043340604,
-      "native_cy_1sigma": 4.427012082737489,
-      "native_k1_1sigma": 0.1976382600692136,
-      "native_k2_1sigma": 0.04028283148070231,
-      "native_k4_1sigma": 0.2147018488442634,
-      "note": "1-sigma of the NATIVE parameters (see details.native_params); the OpenCV coefficients are a conversion"
+      "fx_px_1sigma": 26.749393442444575,
+      "fy_px_1sigma": 26.749393442444575,
+      "cx_px_1sigma": 6.463233043340604,
+      "cy_px_1sigma": 4.427012082737489,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "native_f_1sigma",
+        "fy_px_1sigma": "native_f_1sigma",
+        "cx_px_1sigma": "native_cx_1sigma",
+        "cy_px_1sigma": "native_cy_1sigma"
+      },
+      "method_native": {
+        "native_f_1sigma": 26.749393442444575,
+        "native_cx_1sigma": 6.463233043340604,
+        "native_cy_1sigma": 4.427012082737489,
+        "native_k1_1sigma": 0.1976382600692136,
+        "native_k2_1sigma": 0.04028283148070231,
+        "native_k4_1sigma": 0.2147018488442634,
+        "note": "1-sigma of the NATIVE parameters (see details.native_params); the OpenCV coefficients are a conversion"
+      }
     },
     "model": "rational k1,k2 / k4, pp free -> converted to the closest OpenCV Brown [k1,k2,p1,p2,k3] over the full image",
     "file": "work/cache/method_alt_rational_k4.json",
     "vs_main_px": {
-      "centre": 1.8381408774425338,
-      "cart_band": 8.927443331740145,
-      "corners": 11.924581355556512
-    },
-    "vs_main_px_max": {
-      "centre": 2.8377228700686263,
-      "cart_band": 13.091422594695263,
-      "corners": 21.63347126177542
+      "centre": 2.8018593540307717,
+      "cart_band": 12.884643186237877,
+      "corners": 17.28146078703562
     }
   },
   {
-    "method": "combined (ALL stickers with the drawing geometry at full weight + verified edges: VPs incl. floor lines, straightness, sides of partly hidden stickers; block weights by variance components)",
-    "fx": 1455.680935755212,
-    "fy": 1455.680935755212,
-    "cx": 927.5865179818798,
-    "cy": 502.32361709285976,
-    "k1": -0.3450013347994305,
-    "k2": 0.09554325089687377,
+    "method_id": "main_combined",
+    "method": "main_combined: combined (all 20 stickers with the drawing geometry, one common weight for all sticker corners + verified edges: VPs incl. floor lines, straightness, sides of partly hidden stickers; block weights by variance components iterated to convergence)",
+    "fx": 1468.6305267212908,
+    "fy": 1468.6305267212908,
+    "cx": 928.208880561814,
+    "cy": 503.23267209749196,
+    "k1": -0.3515649467682102,
+    "k2": 0.09938428401533507,
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 9.956780074559207,
+    "rms": 7.885676645444518,
     "unc": {
-      "f_1sigma": 14.074506460780412,
-      "cx_1sigma": 4.922490564853206,
-      "cy_1sigma": 8.865312719100132,
-      "k1_1sigma": 0.008418446561147569,
-      "k2_1sigma": 0.006870357562351631,
-      "f_1sigma_cov": 4.204079984420371,
-      "cx_1sigma_cov": 2.309256114344249,
-      "cy_1sigma_cov": 2.7115996206374517,
-      "k1_1sigma_cov": 0.0028808406726879058,
-      "k2_1sigma_cov": 0.0024200380657547504
+      "fx_px_1sigma": 30.96372006312467,
+      "fy_px_1sigma": 30.96372006312467,
+      "cx_px_1sigma": 10.63421419236742,
+      "cy_px_1sigma": 28.91943264803664,
+      "k1_1sigma": 0.01633572478901646,
+      "k2_1sigma": 0.020514899287374037,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "fx_px_1sigma",
+        "fy_px_1sigma": "fy_px_1sigma",
+        "cx_px_1sigma": "cx_px_1sigma",
+        "cy_px_1sigma": "cy_px_1sigma",
+        "k1_1sigma": "k1_1sigma",
+        "k2_1sigma": "k2_1sigma"
+      },
+      "method_native": {
+        "note": "1-sigma = max(stat (+) sys, synthetic round-trip RMSE); p1=p2=k3=0 fixed (not determined); fx=fy fitted as one parameter; k1 and k2 are strongly correlated (-0.9) - use uncertainty_details.covariance or the mapping uncertainty, not the individual sigmas combined as independent"
+      }
     },
-    "model": "fx=fy, pp free, k1,k2 (p1=p2=k3=0)",
+    "model": "OpenCV pinhole + Brown-Conrady, fx = fy, principal point free, radial k1, k2; p1 = p2 = k3 = 0 fixed (k3 only consistent with the data, p1/p2 and fx != fy not determined - REPORT.md ch. 7)",
     "file": "work/cache/method_combined.json",
     "vs_main_px": {
       "centre": 0.0,
       "cart_band": 0.0,
       "corners": 1.1368683772161603e-13
-    },
-    "vs_main_px_max": {
-      "centre": 0.0,
-      "cart_band": 2.3437142008433856e-13,
-      "corners": 4.547473508864641e-13
     }
   },
   {
+    "method_id": "combined_k1k2k3",
     "method": "combined_k1k2k3",
-    "fx": 1454.7819074970846,
-    "fy": 1454.7819074970846,
-    "cx": 929.9943413313595,
-    "cy": 504.445919792087,
-    "k1": -0.35819618293503735,
-    "k2": 0.1306619333025223,
+    "fx": 1469.8515494744308,
+    "fy": 1469.8515494744308,
+    "cx": 930.2763744404974,
+    "cy": 504.9778700964392,
+    "k1": -0.3643114778997497,
+    "k2": 0.13209415072711952,
     "p1": 0.0,
     "p2": 0.0,
-    "k3": -0.02385788009292965,
-    "rms": 10.059530759679667,
+    "k3": -0.022362444043947025,
+    "rms": 7.919339874219954,
     "unc": {
-      "f_1sigma_cov": 4.274854341319258,
-      "cx_1sigma_cov": 2.386025805403671,
-      "cy_1sigma_cov": 2.7797883844571114,
-      "k1_1sigma_cov": 0.004859015414386463,
-      "k2_1sigma_cov": 0.010040568330504785,
-      "k3_1sigma_cov": 0.006388029995282403
+      "fx_px_1sigma": 3.368504995358294,
+      "fy_px_1sigma": 3.368504995358294,
+      "cx_px_1sigma": 2.408212800575098,
+      "cy_px_1sigma": 2.806363731690342,
+      "k1_1sigma": 0.004922126554597275,
+      "k2_1sigma": 0.010505972764115572,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": 0.006801236182683073,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma_cov",
+        "fy_px_1sigma": "f_1sigma_cov",
+        "cx_px_1sigma": "cx_1sigma_cov",
+        "cy_px_1sigma": "cy_1sigma_cov",
+        "k1_1sigma": "k1_1sigma_cov",
+        "k2_1sigma": "k2_1sigma_cov",
+        "k3_1sigma": "k3_1sigma_cov"
+      },
+      "method_native": {
+        "f_1sigma_cov": 3.368504995358294,
+        "cx_1sigma_cov": 2.408212800575098,
+        "cy_1sigma_cov": 2.806363731690342,
+        "k1_1sigma_cov": 0.004922126554597275,
+        "k2_1sigma_cov": 0.010505972764115572,
+        "k3_1sigma_cov": 0.006801236182683073
+      }
     },
     "model": "k1k2k3",
     "file": "work/cache/method_combined_alternatives.json",
     "vs_main_px": {
-      "centre": 0.14684262561349923,
-      "cart_band": 0.9459682345972038,
-      "corners": 1.2421410900982897
-    },
-    "vs_main_px_max": {
-      "centre": 0.2534372173793071,
-      "cart_band": 1.7264880177985074,
-      "corners": 9.512212179035561
+      "centre": 0.11431967078685834,
+      "cart_band": 0.22039822431203787,
+      "corners": 0.3927185299545261
     }
   },
   {
+    "method_id": "combined_k1k2p1p2",
     "method": "combined_k1k2p1p2",
-    "fx": 1388.5761136347026,
-    "fy": 1388.5761136347026,
-    "cx": 944.8021188193044,
-    "cy": 449.334976593417,
-    "k1": -0.3097100570408924,
-    "k2": 0.0766555842229133,
-    "p1": 0.009103984973197674,
-    "p2": -0.003514348180468871,
+    "fx": 1397.8746613363903,
+    "fy": 1397.8746613363903,
+    "cx": 946.3474587652952,
+    "cy": 453.19613974084115,
+    "k1": -0.31398409790296833,
+    "k2": 0.07851441221849133,
+    "p1": 0.008531897413880949,
+    "p2": -0.003737695786353841,
     "k3": 0.0,
-    "rms": 5.089343394210734,
+    "rms": 6.279264152236935,
     "unc": {
-      "f_1sigma_cov": 5.342877712055054,
-      "cx_1sigma_cov": 5.37331985220845,
-      "cy_1sigma_cov": 4.053275763709098,
-      "k1_1sigma_cov": 0.003171439145146561,
-      "k2_1sigma_cov": 0.0024034527714007995,
-      "p1_1sigma_cov": 0.0005356739896727165,
-      "p2_1sigma_cov": 0.0008229967682598536
+      "fx_px_1sigma": 5.3275986035717455,
+      "fy_px_1sigma": 5.3275986035717455,
+      "cx_px_1sigma": 5.376604379223938,
+      "cy_px_1sigma": 4.160903992027312,
+      "k1_1sigma": 0.0032072689315625147,
+      "k2_1sigma": 0.002452453891529758,
+      "p1_1sigma": 0.0005579455373856905,
+      "p2_1sigma": 0.0008320595590693046,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma_cov",
+        "fy_px_1sigma": "f_1sigma_cov",
+        "cx_px_1sigma": "cx_1sigma_cov",
+        "cy_px_1sigma": "cy_1sigma_cov",
+        "k1_1sigma": "k1_1sigma_cov",
+        "k2_1sigma": "k2_1sigma_cov",
+        "p1_1sigma": "p1_1sigma_cov",
+        "p2_1sigma": "p2_1sigma_cov"
+      },
+      "method_native": {
+        "f_1sigma_cov": 5.3275986035717455,
+        "cx_1sigma_cov": 5.376604379223938,
+        "cy_1sigma_cov": 4.160903992027312,
+        "k1_1sigma_cov": 0.0032072689315625147,
+        "k2_1sigma_cov": 0.002452453891529758,
+        "p1_1sigma_cov": 0.0005579455373856905,
+        "p2_1sigma_cov": 0.0008320595590693046
+      }
     },
     "model": "k1k2p1p2",
     "file": "work/cache/method_combined_alternatives.json",
     "vs_main_px": {
-      "centre": 4.768195236744884,
-      "cart_band": 19.385711249754337,
-      "corners": 25.427403493811504
-    },
-    "vs_main_px_max": {
-      "centre": 8.158660077332756,
-      "cart_band": 36.998913748684025,
-      "corners": 50.05597594479217
+      "centre": 4.92009771527408,
+      "cart_band": 20.488303566605822,
+      "corners": 27.50264257206163
     }
   },
   {
+    "method_id": "combined_k1k2_fxfy",
     "method": "combined_k1k2_fxfy",
-    "fx": 1438.5137059000228,
-    "fy": 1452.1713475131548,
-    "cx": 927.5391394832232,
-    "cy": 504.8382757419132,
-    "k1": -0.34206674655775987,
-    "k2": 0.09337277355461798,
+    "fx": 1431.1509948960122,
+    "fy": 1462.6293064647039,
+    "cx": 927.9755866937002,
+    "cy": 508.9663630415102,
+    "k1": -0.34545480882967144,
+    "k2": 0.09454337611836068,
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 10.04474630785858,
+    "rms": 8.74647259498368,
     "unc": {
-      "fx_1sigma_cov": 13.305357324083358,
-      "fy_1sigma_cov": 4.859210469886673,
-      "cx_1sigma_cov": 2.306133502968422,
-      "cy_1sigma_cov": 3.2576248692392418,
-      "k1_1sigma_cov": 0.0035202327574118428,
-      "k2_1sigma_cov": 0.002765743693899067
+      "fx_px_1sigma": 12.26253111648951,
+      "fy_px_1sigma": 3.8535754768964727,
+      "cx_px_1sigma": 2.3058807751650785,
+      "cy_px_1sigma": 3.103452743108785,
+      "k1_1sigma": 0.003247750217525233,
+      "k2_1sigma": 0.002624006920399694,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "fx_1sigma_cov",
+        "fy_px_1sigma": "fy_1sigma_cov",
+        "cx_px_1sigma": "cx_1sigma_cov",
+        "cy_px_1sigma": "cy_1sigma_cov",
+        "k1_1sigma": "k1_1sigma_cov",
+        "k2_1sigma": "k2_1sigma_cov"
+      },
+      "method_native": {
+        "fx_1sigma_cov": 12.26253111648951,
+        "fy_1sigma_cov": 3.8535754768964727,
+        "cx_1sigma_cov": 2.3058807751650785,
+        "cy_1sigma_cov": 3.103452743108785,
+        "k1_1sigma_cov": 0.003247750217525233,
+        "k2_1sigma_cov": 0.002624006920399694
+      }
     },
     "model": "k1k2_fxfy",
     "file": "work/cache/method_combined_alternatives.json",
     "vs_main_px": {
-      "centre": 0.6698963889712996,
-      "cart_band": 4.677912993196154,
-      "corners": 9.296481666780448
-    },
-    "vs_main_px_max": {
-      "centre": 1.4966911711572792,
-      "cart_band": 8.179448168543287,
-      "corners": 11.071897039509352
+      "centre": 1.368841831115498,
+      "cart_band": 10.115410297272543,
+      "corners": 20.33621882728438
     }
   },
   {
+    "method_id": "combined_k1k2_ppfixed",
     "method": "combined_k1k2_ppfixed",
-    "fx": 1458.4195321450056,
-    "fy": 1458.4195321450056,
+    "fx": 1467.0416706235785,
+    "fy": 1467.0416706235785,
     "cx": 959.5,
     "cy": 539.5,
-    "k1": -0.36827348735282517,
-    "k2": 0.11323696563650898,
+    "k1": -0.37236368113684676,
+    "k2": 0.1157438892454097,
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 9.892038677030381,
+    "rms": 8.152263751640021,
     "unc": {
-      "f_1sigma_cov": 3.774890768208378,
-      "k1_1sigma_cov": 0.002081377648697955,
-      "k2_1sigma_cov": 0.001390144739942486
+      "fx_px_1sigma": 3.0140081139936017,
+      "fy_px_1sigma": 3.0140081139936017,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": 0.0017820288571810334,
+      "k2_1sigma": 0.0012442437374941369,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma_cov",
+        "fy_px_1sigma": "f_1sigma_cov",
+        "k1_1sigma": "k1_1sigma_cov",
+        "k2_1sigma": "k2_1sigma_cov"
+      },
+      "method_native": {
+        "f_1sigma_cov": 3.0140081139936017,
+        "k1_1sigma_cov": 0.0017820288571810334,
+        "k2_1sigma_cov": 0.0012442437374941369
+      }
     },
     "model": "k1k2_ppfixed",
     "file": "work/cache/method_combined_alternatives.json",
     "vs_main_px": {
-      "centre": 3.040811302745527,
-      "cart_band": 2.175399091654297,
-      "corners": 9.811890626773124
-    },
-    "vs_main_px_max": {
-      "centre": 3.2966991611123353,
-      "cart_band": 7.121958828144588,
-      "corners": 12.247917471931649
+      "centre": 3.0333324252724263,
+      "cart_band": 2.7614093798000736,
+      "corners": 11.014619356804094
     }
   },
   {
-    "method": "combined_k1k2_robust",
-    "fx": 1474.8032616971022,
-    "fy": 1474.8032616971022,
-    "cx": 929.8064383256999,
-    "cy": 504.4256609724738,
-    "k1": -0.35629170761505874,
-    "k2": 0.10273679661082336,
+    "method_id": "combined_k1k2_common_vertical",
+    "method": "combined_k1k2_common_vertical",
+    "fx": 1466.5233699027174,
+    "fy": 1466.5233699027174,
+    "cx": 931.3348081623967,
+    "cy": 507.4764508611441,
+    "k1": -0.35403110935048626,
+    "k2": 0.10184587051477034,
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": null,
-    "unc": {},
-    "model": "k1k2_robust (stickers cluster-robust IRLS weights, c=1.5 px)",
+    "rms": 7.886429891562423,
+    "unc": {
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {},
+      "method_native": {}
+    },
+    "model": "k1k2, fx=fy, pp free (common_vertical)",
     "file": "work/cache/method_combined_alternatives.json",
     "vs_main_px": {
-      "centre": 1.3670174971232167,
-      "cart_band": 5.8906896529508765,
-      "corners": 7.5752539567659944
-    },
-    "vs_main_px_max": {
-      "centre": 1.9622337640203407,
-      "cart_band": 7.7726031660196915,
-      "corners": 9.249939771185621
+      "centre": 0.3424226937653946,
+      "cart_band": 0.8969149115870299,
+      "corners": 2.0765767233269785
     }
   },
   {
+    "method_id": "combined_k1k2_rowblocks",
+    "method": "combined_k1k2_rowblocks",
+    "fx": 1472.5312334407497,
+    "fy": 1472.5312334407497,
+    "cx": 928.9483259175621,
+    "cy": 503.68366036110666,
+    "k1": -0.3542121287889054,
+    "k2": 0.10116726316883717,
+    "p1": 0.0,
+    "p2": 0.0,
+    "k3": 0.0,
+    "rms": 7.973990284098424,
+    "unc": {
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {},
+      "method_native": {}
+    },
+    "model": "k1k2, fx=fy, pp free (rowblocks)",
+    "file": "work/cache/method_combined_alternatives.json",
+    "vs_main_px": {
+      "centre": 0.2732545313072926,
+      "cart_band": 1.1685906581514376,
+      "corners": 1.445404359459514
+    }
+  },
+  {
+    "method_id": "combined_k1k2_no_80_3_7_sides",
+    "method": "combined_k1k2_no_80_3_7_sides",
+    "fx": 1442.826277783187,
+    "fy": 1442.826277783187,
+    "cx": 927.7511293129465,
+    "cy": 501.9984450932693,
+    "k1": -0.33916748309505534,
+    "k2": 0.09248542625847987,
+    "p1": 0.0,
+    "p2": 0.0,
+    "k3": 0.0,
+    "rms": 7.378509598016127,
+    "unc": {
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {},
+      "method_native": {}
+    },
+    "model": "k1k2, fx=fy, pp free (no_80_3_7_sides)",
+    "file": "work/cache/method_combined_alternatives.json",
+    "vs_main_px": {
+      "centre": 1.869371499854201,
+      "cart_band": 8.064308882940374,
+      "corners": 10.955646326130339
+    }
+  },
+  {
+    "method_id": "combined_k1k2_no_bent_lip",
+    "method": "combined_k1k2_no_bent_lip",
+    "fx": 1467.5868793090303,
+    "fy": 1467.5868793090303,
+    "cx": 931.105748809105,
+    "cy": 505.09310757449094,
+    "k1": -0.3517681320767476,
+    "k2": 0.09984494932106915,
+    "p1": 0.0,
+    "p2": 0.0,
+    "k3": 0.0,
+    "rms": 7.865579299845316,
+    "unc": {
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {},
+      "method_native": {}
+    },
+    "model": "k1k2, fx=fy, pp free (no_bent_lip)",
+    "file": "work/cache/method_combined_alternatives.json",
+    "vs_main_px": {
+      "centre": 0.2202598960578006,
+      "cart_band": 0.39552442460416243,
+      "corners": 0.6552324509217204
+    }
+  },
+  {
+    "method_id": "combined_k1k2_floor_straight_only",
+    "method": "combined_k1k2_floor_straight_only",
+    "fx": 1468.9524871626775,
+    "fy": 1468.9524871626775,
+    "cx": 927.5793836288675,
+    "cy": 491.827883677942,
+    "k1": -0.35041669966251265,
+    "k2": 0.09797921212586648,
+    "p1": 0.0,
+    "p2": 0.0,
+    "k3": 0.0,
+    "rms": 7.895690084367599,
+    "unc": {
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {},
+      "method_native": {}
+    },
+    "model": "k1k2, fx=fy, pp free (floor_straight_only)",
+    "file": "work/cache/method_combined_alternatives.json",
+    "vs_main_px": {
+      "centre": 0.7886310317269082,
+      "cart_band": 0.481162225145727,
+      "corners": 1.560773638499996
+    }
+  },
+  {
+    "method_id": "combined_k1k2_robust",
+    "method": "combined_k1k2_robust",
+    "fx": 1476.1634446884864,
+    "fy": 1476.1634446884864,
+    "cx": 929.8191817267219,
+    "cy": 504.50484380027365,
+    "k1": -0.3569707919984585,
+    "k2": 0.10313173687170382,
+    "p1": 0.0,
+    "p2": 0.0,
+    "k3": 0.0,
+    "rms": 8.059741355115975,
+    "unc": {
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {},
+      "method_native": {}
+    },
+    "model": "k1k2_robust (stickers cluster-robust IRLS weights, c=1.5 px)",
+    "file": "work/cache/method_combined_alternatives.json",
+    "vs_main_px": {
+      "centre": 0.5381793192739135,
+      "cart_band": 2.239337511507058,
+      "corners": 2.7143868865292955
+    }
+  },
+  {
+    "method_id": "cuboid",
     "method": "cuboid (sticker corners + sticker sides + exact top-plate edges, drawing dimensions exact)",
     "fx": 1359.3244506854417,
     "fy": 1359.3244506854417,
@@ -604,32 +1004,43 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 6.091988435829991,
+    "rms": 5.920834365994528,
     "unc": {
-      "f_1sigma": 35.94968193744443,
+      "fx_px_1sigma": 58.38662283302332,
+      "fy_px_1sigma": 58.38662283302332,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
       "k1_1sigma": 0.011246540239015218,
-      "f_1sigma_cov": 12.068066404724965,
-      "k1_1sigma_cov": 0.008880694097617624,
-      "f_1sigma_systematic_model_weighting": 23.66771932993992,
-      "method": "1-sigma = std of a cluster bootstrap (resampling stickers - corners and sides together - and exact edges, n=150, every replicate refit with the fold barrier); *_cov = Gauss-Newton covariance scaled by the residual variance per effective observation (cluster n_eff; fold-barrier row dropped; ignores the geometry misfit correlation); f_1sigma_systematic_model_weighting = std of f over all models x weightings. NONE of these contains the bias of the drawing geometry (diagnostic 41_cuboid_diag.py: freeing the top-plate height moves f by ~+100 px; written below as f_geometry_shift_px_diag / f_1sigma_incl_geometry by 41_cuboid_diag.py)",
-      "f_geometry_shift_px_diag": 92.01343585460336,
-      "f_1sigma_incl_geometry": 58.38662283302332,
-      "geometry_note": "f_geometry_shift_px_diag = f(top-plate height freed, diagnostic) - f(drawing), same lens model; f_1sigma_incl_geometry = sqrt(bootstrap^2 + (shift/2)^2) - half the shift as a 1-sigma systematic of the drawing-geometry estimate (the drawing is used unchanged for the value itself)"
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma_incl_geometry",
+        "fy_px_1sigma": "f_1sigma_incl_geometry",
+        "k1_1sigma": "k1_1sigma"
+      },
+      "method_native": {
+        "f_1sigma": 35.94968193744443,
+        "f_1sigma_cov": 12.068066404724965,
+        "k1_1sigma_cov": 0.008880694097617624,
+        "f_1sigma_systematic_model_weighting": 23.66771932993992,
+        "method": "1-sigma = std of a cluster bootstrap (resampling stickers - corners and sides together - and exact edges, n=150, every replicate refit with the fold barrier); *_cov = Gauss-Newton covariance scaled by the residual variance per effective observation (cluster n_eff; fold-barrier row dropped; ignores the geometry misfit correlation); f_1sigma_systematic_model_weighting = std of f over all models x weightings. NONE of these contains the bias of the drawing geometry (diagnostic 41_cuboid_diag.py: freeing the top-plate height moves f by ~+100 px; written below as f_geometry_shift_px_diag / f_1sigma_incl_geometry by 41_cuboid_diag.py)",
+        "f_geometry_shift_px_diag": 92.01343585460336,
+        "f_1sigma_incl_geometry": 58.38662283302332,
+        "geometry_note": "f_geometry_shift_px_diag = f(top-plate height freed, diagnostic) - f(drawing), same lens model; f_1sigma_incl_geometry = sqrt(bootstrap^2 + (shift/2)^2) - half the shift as a 1-sigma systematic of the drawing-geometry estimate (the drawing is used unchanged for the value itself)"
+      }
     },
     "model": "k1_ppfix: fx=fy, pp fixed at image centre, k1 only",
     "file": "work/cache/method_cuboid.json",
     "vs_main_px": {
-      "centre": 6.9312390780947695,
-      "cart_band": 24.163530229614103,
-      "corners": 14.127734299208655
-    },
-    "vs_main_px_max": {
-      "centre": 12.328979574017863,
-      "cart_band": 28.1608331105024,
-      "corners": 23.77308001343233
+      "centre": 7.883433104541011,
+      "cart_band": 28.51621153987099,
+      "corners": 19.028796320650404
     }
   },
   {
+    "method_id": "cuboid_k1k2_ppfix_cluster",
     "method": "cuboid_k1k2_ppfix_cluster",
     "fx": 1344.7195302668235,
     "fy": 1344.7195302668235,
@@ -640,26 +1051,39 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 5.941950401401524,
+    "rms": 5.7645336592756315,
     "unc": {
-      "f_1sigma_cov": 13.257144280344834,
-      "k1_1sigma_cov": 0.04732033332018724,
-      "k2_1sigma_cov": 0.07283025102043884
+      "fx_px_1sigma": 13.257144280344834,
+      "fy_px_1sigma": 13.257144280344834,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": 0.04732033332018724,
+      "k2_1sigma": 0.07283025102043884,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma_cov",
+        "fy_px_1sigma": "f_1sigma_cov",
+        "k1_1sigma": "k1_1sigma_cov",
+        "k2_1sigma": "k2_1sigma_cov"
+      },
+      "method_native": {
+        "f_1sigma_cov": 13.257144280344834,
+        "k1_1sigma_cov": 0.04732033332018724,
+        "k2_1sigma_cov": 0.07283025102043884
+      }
     },
     "model": "k1k2_ppfix|cluster",
     "file": "work/cache/method_cuboid_alternatives.json",
     "vs_main_px": {
-      "centre": 8.10078208158442,
-      "cart_band": 32.6476141919258,
-      "corners": 36.724658296254276
-    },
-    "vs_main_px_max": {
-      "centre": 13.774043396343854,
-      "cart_band": 37.794948115813256,
-      "corners": 49.9404133105391
+      "centre": 8.880161205323372,
+      "cart_band": 36.476291825676086,
+      "corners": 41.995231797115224
     }
   },
   {
+    "method_id": "cuboid_k1_ppfree_cluster",
     "method": "cuboid_k1_ppfree_cluster",
     "fx": 1371.632173149591,
     "fy": 1371.632173149591,
@@ -670,27 +1094,41 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 6.017857875365856,
+    "rms": 5.872153951153811,
     "unc": {
-      "f_1sigma_cov": 13.831447411374192,
-      "cx_1sigma_cov": 64.40699276624507,
-      "cy_1sigma_cov": 36.86486510578091,
-      "k1_1sigma_cov": 0.01047862856494822
+      "fx_px_1sigma": 13.831447411374192,
+      "fy_px_1sigma": 13.831447411374192,
+      "cx_px_1sigma": 64.40699276624507,
+      "cy_px_1sigma": 36.86486510578091,
+      "k1_1sigma": 0.01047862856494822,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma_cov",
+        "fy_px_1sigma": "f_1sigma_cov",
+        "cx_px_1sigma": "cx_1sigma_cov",
+        "cy_px_1sigma": "cy_1sigma_cov",
+        "k1_1sigma": "k1_1sigma_cov"
+      },
+      "method_native": {
+        "f_1sigma_cov": 13.831447411374192,
+        "cx_1sigma_cov": 64.40699276624507,
+        "cy_1sigma_cov": 36.86486510578091,
+        "k1_1sigma_cov": 0.01047862856494822
+      }
     },
     "model": "k1_ppfree|cluster",
     "file": "work/cache/method_cuboid_alternatives.json",
     "vs_main_px": {
-      "centre": 5.984289980393433,
-      "cart_band": 18.62415904263995,
-      "corners": 5.4784917163592235
-    },
-    "vs_main_px_max": {
-      "centre": 9.23281504129175,
-      "cart_band": 23.67104161158619,
-      "corners": 10.950240154525488
+      "centre": 6.930587403626237,
+      "cart_band": 22.878997929813778,
+      "corners": 5.266169369961547
     }
   },
   {
+    "method_id": "cuboid_k1k2_ppfree_cluster",
     "method": "cuboid_k1k2_ppfree_cluster",
     "fx": 1357.7173303789739,
     "fy": 1357.7173303789739,
@@ -701,28 +1139,43 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 6.356601990249875,
+    "rms": 5.672585897207382,
     "unc": {
-      "f_1sigma_cov": 14.377569261013246,
-      "cx_1sigma_cov": 56.80067880294488,
-      "cy_1sigma_cov": 49.016792235563486,
-      "k1_1sigma_cov": 0.04828803297931241,
-      "k2_1sigma_cov": 0.08101977168504405
+      "fx_px_1sigma": 14.377569261013246,
+      "fy_px_1sigma": 14.377569261013246,
+      "cx_px_1sigma": 56.80067880294488,
+      "cy_px_1sigma": 49.016792235563486,
+      "k1_1sigma": 0.04828803297931241,
+      "k2_1sigma": 0.08101977168504405,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma_cov",
+        "fy_px_1sigma": "f_1sigma_cov",
+        "cx_px_1sigma": "cx_1sigma_cov",
+        "cy_px_1sigma": "cy_1sigma_cov",
+        "k1_1sigma": "k1_1sigma_cov",
+        "k2_1sigma": "k2_1sigma_cov"
+      },
+      "method_native": {
+        "f_1sigma_cov": 14.377569261013246,
+        "cx_1sigma_cov": 56.80067880294488,
+        "cy_1sigma_cov": 49.016792235563486,
+        "k1_1sigma_cov": 0.04828803297931241,
+        "k2_1sigma_cov": 0.08101977168504405
+      }
     },
     "model": "k1k2_ppfree|cluster",
     "file": "work/cache/method_cuboid_alternatives.json",
     "vs_main_px": {
-      "centre": 6.626006816599354,
-      "cart_band": 24.180080353551972,
-      "corners": 21.70820344217422
-    },
-    "vs_main_px_max": {
-      "centre": 12.893844498506578,
-      "cart_band": 37.186101093679156,
-      "corners": 58.40117669210651
+      "centre": 7.500671269831496,
+      "cart_band": 28.077884980636377,
+      "corners": 26.02802714946779
     }
   },
   {
+    "method_id": "cuboid_k1k2k3_ppfree_cluster",
     "method": "cuboid_k1k2k3_ppfree_cluster",
     "fx": 1338.3022615443072,
     "fy": 1338.3022615443072,
@@ -733,29 +1186,45 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.2331682412536027,
-    "rms": 6.679617823374008,
+    "rms": 6.0207025969289445,
     "unc": {
-      "f_1sigma_cov": 16.254863725453728,
-      "cx_1sigma_cov": 28.882474837334808,
-      "cy_1sigma_cov": 22.729304502650372,
-      "k1_1sigma_cov": 0.07794349186034227,
-      "k2_1sigma_cov": 0.17798619673131436,
-      "k3_1sigma_cov": 0.13111053325039732
+      "fx_px_1sigma": 16.254863725453728,
+      "fy_px_1sigma": 16.254863725453728,
+      "cx_px_1sigma": 28.882474837334808,
+      "cy_px_1sigma": 22.729304502650372,
+      "k1_1sigma": 0.07794349186034227,
+      "k2_1sigma": 0.17798619673131436,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": 0.13111053325039732,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma_cov",
+        "fy_px_1sigma": "f_1sigma_cov",
+        "cx_px_1sigma": "cx_1sigma_cov",
+        "cy_px_1sigma": "cy_1sigma_cov",
+        "k1_1sigma": "k1_1sigma_cov",
+        "k2_1sigma": "k2_1sigma_cov",
+        "k3_1sigma": "k3_1sigma_cov"
+      },
+      "method_native": {
+        "f_1sigma_cov": 16.254863725453728,
+        "cx_1sigma_cov": 28.882474837334808,
+        "cy_1sigma_cov": 22.729304502650372,
+        "k1_1sigma_cov": 0.07794349186034227,
+        "k2_1sigma_cov": 0.17798619673131436,
+        "k3_1sigma_cov": 0.13111053325039732
+      }
     },
     "model": "k1k2k3_ppfree|cluster",
     "file": "work/cache/method_cuboid_alternatives.json",
     "vs_main_px": {
-      "centre": 72.48607303017683,
-      "cart_band": 60.30202260103299,
-      "corners": 87.04258907138022
-    },
-    "vs_main_px_max": {
-      "centre": 76.67138495533088,
-      "cart_band": 76.62274366937058,
-      "corners": 1130.1500756991438
+      "centre": 68.70800684771899,
+      "cart_band": 58.30663664519554,
+      "corners": 77.87806798893585
     }
   },
   {
+    "method_id": "cuboid_k1k2_ppfree_fxfy_cluster",
     "method": "cuboid_k1k2_ppfree_fxfy_cluster",
     "fx": 1338.6371849750808,
     "fy": 1363.9406221485428,
@@ -766,29 +1235,44 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 6.177215520166681,
+    "rms": 5.636049632387791,
     "unc": {
-      "fx_1sigma_cov": 16.128219417195726,
-      "fy_1sigma_cov": 14.381781791768729,
-      "cx_1sigma_cov": 58.847007243636,
-      "cy_1sigma_cov": 48.04488048562266,
-      "k1_1sigma_cov": 0.054747754653762484,
-      "k2_1sigma_cov": 0.08360281027729981
+      "fx_px_1sigma": 16.128219417195726,
+      "fy_px_1sigma": 14.381781791768729,
+      "cx_px_1sigma": 58.847007243636,
+      "cy_px_1sigma": 48.04488048562266,
+      "k1_1sigma": 0.054747754653762484,
+      "k2_1sigma": 0.08360281027729981,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "fx_1sigma_cov",
+        "fy_px_1sigma": "fy_1sigma_cov",
+        "cx_px_1sigma": "cx_1sigma_cov",
+        "cy_px_1sigma": "cy_1sigma_cov",
+        "k1_1sigma": "k1_1sigma_cov",
+        "k2_1sigma": "k2_1sigma_cov"
+      },
+      "method_native": {
+        "fx_1sigma_cov": 16.128219417195726,
+        "fy_1sigma_cov": 14.381781791768729,
+        "cx_1sigma_cov": 58.847007243636,
+        "cy_1sigma_cov": 48.04488048562266,
+        "k1_1sigma_cov": 0.054747754653762484,
+        "k2_1sigma_cov": 0.08360281027729981
+      }
     },
     "model": "k1k2_ppfree_fxfy|cluster",
     "file": "work/cache/method_cuboid_alternatives.json",
     "vs_main_px": {
-      "centre": 6.759695851905667,
-      "cart_band": 27.6972354292258,
-      "corners": 17.331697203581392
-    },
-    "vs_main_px_max": {
-      "centre": 13.096402774639449,
-      "cart_band": 38.144590169497704,
-      "corners": 31.073827430227134
+      "centre": 7.714047898132029,
+      "cart_band": 31.532173976352183,
+      "corners": 21.245780693638068
     }
   },
   {
+    "method_id": "cuboid_k1k2p1p2_ppfree_cluster",
     "method": "cuboid_k1k2p1p2_ppfree_cluster",
     "fx": 1362.96908835082,
     "fy": 1362.96908835082,
@@ -799,30 +1283,47 @@
     "p1": 0.010678737036987282,
     "p2": -0.0027842711238161245,
     "k3": 0.0,
-    "rms": 5.330152071607049,
+    "rms": 5.156620319593195,
     "unc": {
-      "f_1sigma_cov": 15.92385735594379,
-      "cx_1sigma_cov": 23.24119016118791,
-      "cy_1sigma_cov": 25.655141849156866,
-      "k1_1sigma_cov": 0.05996883384557961,
-      "k2_1sigma_cov": 0.10409554365126165,
-      "p1_1sigma_cov": 0.0031272105082178815,
-      "p2_1sigma_cov": 0.0036795907244743576
+      "fx_px_1sigma": 15.92385735594379,
+      "fy_px_1sigma": 15.92385735594379,
+      "cx_px_1sigma": 23.24119016118791,
+      "cy_px_1sigma": 25.655141849156866,
+      "k1_1sigma": 0.05996883384557961,
+      "k2_1sigma": 0.10409554365126165,
+      "p1_1sigma": 0.0031272105082178815,
+      "p2_1sigma": 0.0036795907244743576,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma_cov",
+        "fy_px_1sigma": "f_1sigma_cov",
+        "cx_px_1sigma": "cx_1sigma_cov",
+        "cy_px_1sigma": "cy_1sigma_cov",
+        "k1_1sigma": "k1_1sigma_cov",
+        "k2_1sigma": "k2_1sigma_cov",
+        "p1_1sigma": "p1_1sigma_cov",
+        "p2_1sigma": "p2_1sigma_cov"
+      },
+      "method_native": {
+        "f_1sigma_cov": 15.92385735594379,
+        "cx_1sigma_cov": 23.24119016118791,
+        "cy_1sigma_cov": 25.655141849156866,
+        "k1_1sigma_cov": 0.05996883384557961,
+        "k2_1sigma_cov": 0.10409554365126165,
+        "p1_1sigma_cov": 0.0031272105082178815,
+        "p2_1sigma_cov": 0.0036795907244743576
+      }
     },
     "model": "k1k2p1p2_ppfree|cluster",
     "file": "work/cache/method_cuboid_alternatives.json",
     "vs_main_px": {
-      "centre": 22.16193494617192,
-      "cart_band": 40.6713767810795,
-      "corners": 66.73850782798333
-    },
-    "vs_main_px_max": {
-      "centre": 29.98714779158622,
-      "cart_band": 55.11372726226525,
-      "corners": 615.6152161042838
+      "centre": 20.17714605068574,
+      "cart_band": 43.123099181090964,
+      "corners": 55.36459868143879
     }
   },
   {
+    "method_id": "cuboid_k1_ppfix_point",
     "method": "cuboid_k1_ppfix_point",
     "fx": 1300.9441846724205,
     "fy": 1300.9441846724205,
@@ -833,25 +1334,37 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 9.916375614941229,
+    "rms": 6.307644569717386,
     "unc": {
-      "f_1sigma_cov": 10.871652180048393,
-      "k1_1sigma_cov": 0.00773640322162481
+      "fx_px_1sigma": 10.871652180048393,
+      "fy_px_1sigma": 10.871652180048393,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": 0.00773640322162481,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma_cov",
+        "fy_px_1sigma": "f_1sigma_cov",
+        "k1_1sigma": "k1_1sigma_cov"
+      },
+      "method_native": {
+        "f_1sigma_cov": 10.871652180048393,
+        "k1_1sigma_cov": 0.00773640322162481
+      }
     },
     "model": "k1_ppfix|point",
     "file": "work/cache/method_cuboid_alternatives.json",
     "vs_main_px": {
-      "centre": 11.010807342140998,
-      "cart_band": 44.96055156982805,
-      "corners": 40.66881231899401
-    },
-    "vs_main_px_max": {
-      "centre": 18.060455896934332,
-      "cart_band": 51.21116233520892,
-      "corners": 46.33587670737165
+      "centre": 11.761473740476436,
+      "cart_band": 48.77949152898448,
+      "corners": 46.153016652691434
     }
   },
   {
+    "method_id": "cuboid_k1k2_ppfix_point",
     "method": "cuboid_k1k2_ppfix_point",
     "fx": 1307.9277142766095,
     "fy": 1307.9277142766095,
@@ -862,26 +1375,39 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 8.878181428836221,
+    "rms": 6.150598912397476,
     "unc": {
-      "f_1sigma_cov": 10.360987375336451,
-      "k1_1sigma_cov": 0.028824827338367384,
-      "k2_1sigma_cov": 0.04457883909375976
+      "fx_px_1sigma": 10.360987375336451,
+      "fy_px_1sigma": 10.360987375336451,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": 0.028824827338367384,
+      "k2_1sigma": 0.04457883909375976,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma_cov",
+        "fy_px_1sigma": "f_1sigma_cov",
+        "k1_1sigma": "k1_1sigma_cov",
+        "k2_1sigma": "k2_1sigma_cov"
+      },
+      "method_native": {
+        "f_1sigma_cov": 10.360987375336451,
+        "k1_1sigma_cov": 0.028824827338367384,
+        "k2_1sigma_cov": 0.04457883909375976
+      }
     },
     "model": "k1k2_ppfix|point",
     "file": "work/cache/method_cuboid_alternatives.json",
     "vs_main_px": {
-      "centre": 10.55440021758223,
-      "cart_band": 49.28183751981135,
-      "corners": 56.53607151866444
-    },
-    "vs_main_px_max": {
-      "centre": 17.527914335461322,
-      "cart_band": 69.54151926682367,
-      "corners": 68.9736905295621
+      "centre": 11.338735668823212,
+      "cart_band": 53.11710909136599,
+      "corners": 62.652879268329315
     }
   },
   {
+    "method_id": "cuboid_k1_ppfree_point",
     "method": "cuboid_k1_ppfree_point",
     "fx": 1395.3262133764897,
     "fy": 1395.3262133764897,
@@ -892,27 +1418,41 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 19.637690883401092,
+    "rms": 13.453696795868696,
     "unc": {
-      "f_1sigma_cov": 11.607016794894994,
-      "cx_1sigma_cov": 22.248948449734833,
-      "cy_1sigma_cov": 29.197959888825174,
-      "k1_1sigma_cov": 0.0047461600667368115
+      "fx_px_1sigma": 11.607016794894994,
+      "fy_px_1sigma": 11.607016794894994,
+      "cx_px_1sigma": 22.248948449734833,
+      "cy_px_1sigma": 29.197959888825174,
+      "k1_1sigma": 0.0047461600667368115,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma_cov",
+        "fy_px_1sigma": "f_1sigma_cov",
+        "cx_px_1sigma": "cx_1sigma_cov",
+        "cy_px_1sigma": "cy_1sigma_cov",
+        "k1_1sigma": "k1_1sigma_cov"
+      },
+      "method_native": {
+        "f_1sigma_cov": 11.607016794894994,
+        "cx_1sigma_cov": 22.248948449734833,
+        "cy_1sigma_cov": 29.197959888825174,
+        "k1_1sigma_cov": 0.0047461600667368115
+      }
     },
     "model": "k1_ppfree|point",
     "file": "work/cache/method_cuboid_alternatives.json",
     "vs_main_px": {
-      "centre": 67.58835425428063,
-      "cart_band": 60.742305087178366,
-      "corners": 185.26879499600105
-    },
-    "vs_main_px_max": {
-      "centre": 70.70602274757857,
-      "cart_band": 131.55239793186175,
-      "corners": 414.49224847887064
+      "centre": 65.92727279745395,
+      "cart_band": 56.77107375497235,
+      "corners": 176.58522974182932
     }
   },
   {
+    "method_id": "cuboid_k1k2_ppfree_point",
     "method": "cuboid_k1k2_ppfree_point",
     "fx": 1338.2076650207482,
     "fy": 1338.2076650207482,
@@ -923,28 +1463,43 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 7.782677350053473,
+    "rms": 6.12582035052549,
     "unc": {
-      "f_1sigma_cov": 8.48766858361081,
-      "cx_1sigma_cov": 30.983239903235482,
-      "cy_1sigma_cov": 36.46282808300489,
-      "k1_1sigma_cov": 0.028947176314091574,
-      "k2_1sigma_cov": 0.02743660527832169
+      "fx_px_1sigma": 8.48766858361081,
+      "fy_px_1sigma": 8.48766858361081,
+      "cx_px_1sigma": 30.983239903235482,
+      "cy_px_1sigma": 36.46282808300489,
+      "k1_1sigma": 0.028947176314091574,
+      "k2_1sigma": 0.02743660527832169,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma_cov",
+        "fy_px_1sigma": "f_1sigma_cov",
+        "cx_px_1sigma": "cx_1sigma_cov",
+        "cy_px_1sigma": "cy_1sigma_cov",
+        "k1_1sigma": "k1_1sigma_cov",
+        "k2_1sigma": "k2_1sigma_cov"
+      },
+      "method_native": {
+        "f_1sigma_cov": 8.48766858361081,
+        "cx_1sigma_cov": 30.983239903235482,
+        "cy_1sigma_cov": 36.46282808300489,
+        "k1_1sigma_cov": 0.028947176314091574,
+        "k2_1sigma_cov": 0.02743660527832169
+      }
     },
     "model": "k1k2_ppfree|point",
     "file": "work/cache/method_cuboid_alternatives.json",
     "vs_main_px": {
-      "centre": 7.8488470168805,
-      "cart_band": 21.94763111415763,
-      "corners": 32.698239809645344
-    },
-    "vs_main_px_max": {
-      "centre": 14.957005530127965,
-      "cart_band": 46.77765066916677,
-      "corners": 114.25486227774043
+      "centre": 8.534315578692183,
+      "cart_band": 25.56878452242883,
+      "corners": 33.95593629669233
     }
   },
   {
+    "method_id": "cuboid_k1k2k3_ppfree_point",
     "method": "cuboid_k1k2k3_ppfree_point",
     "fx": 1344.091551490479,
     "fy": 1344.091551490479,
@@ -955,29 +1510,45 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.13278039485973867,
-    "rms": 8.77791634451293,
+    "rms": 7.277545663007348,
     "unc": {
-      "f_1sigma_cov": 9.019271848700326,
-      "cx_1sigma_cov": 11.185077492375555,
-      "cy_1sigma_cov": 13.144934327818751,
-      "k1_1sigma_cov": 0.0526386598711454,
-      "k2_1sigma_cov": 0.11786358001465445,
-      "k3_1sigma_cov": 0.08171055998358054
+      "fx_px_1sigma": 9.019271848700326,
+      "fy_px_1sigma": 9.019271848700326,
+      "cx_px_1sigma": 11.185077492375555,
+      "cy_px_1sigma": 13.144934327818751,
+      "k1_1sigma": 0.0526386598711454,
+      "k2_1sigma": 0.11786358001465445,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": 0.08171055998358054,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma_cov",
+        "fy_px_1sigma": "f_1sigma_cov",
+        "cx_px_1sigma": "cx_1sigma_cov",
+        "cy_px_1sigma": "cy_1sigma_cov",
+        "k1_1sigma": "k1_1sigma_cov",
+        "k2_1sigma": "k2_1sigma_cov",
+        "k3_1sigma": "k3_1sigma_cov"
+      },
+      "method_native": {
+        "f_1sigma_cov": 9.019271848700326,
+        "cx_1sigma_cov": 11.185077492375555,
+        "cy_1sigma_cov": 13.144934327818751,
+        "k1_1sigma_cov": 0.0526386598711454,
+        "k2_1sigma_cov": 0.11786358001465445,
+        "k3_1sigma_cov": 0.08171055998358054
+      }
     },
     "model": "k1k2k3_ppfree|point",
     "file": "work/cache/method_cuboid_alternatives.json",
     "vs_main_px": {
-      "centre": 43.668000177381614,
-      "cart_band": 33.66997411630935,
-      "corners": 93.53059825317872
-    },
-    "vs_main_px_max": {
-      "centre": 46.00510067647884,
-      "cart_band": 74.2451705779882,
-      "corners": 852.5218091230772
+      "centre": 40.43157647345494,
+      "cart_band": 29.971298591065917,
+      "corners": 87.23602204119419
     }
   },
   {
+    "method_id": "cuboid_k1k2_ppfree_fxfy_point",
     "method": "cuboid_k1k2_ppfree_fxfy_point",
     "fx": 1325.485726277789,
     "fy": 1332.7682914030643,
@@ -988,29 +1559,44 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 7.583168664225387,
+    "rms": 5.957076774144664,
     "unc": {
-      "fx_1sigma_cov": 13.327082211678,
-      "fy_1sigma_cov": 8.87392584838036,
-      "cx_1sigma_cov": 32.498089629143905,
-      "cy_1sigma_cov": 35.13037434925439,
-      "k1_1sigma_cov": 0.0301736334639076,
-      "k2_1sigma_cov": 0.02996322018736006
+      "fx_px_1sigma": 13.327082211678,
+      "fy_px_1sigma": 8.87392584838036,
+      "cx_px_1sigma": 32.498089629143905,
+      "cy_px_1sigma": 35.13037434925439,
+      "k1_1sigma": 0.0301736334639076,
+      "k2_1sigma": 0.02996322018736006,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "fx_1sigma_cov",
+        "fy_px_1sigma": "fy_1sigma_cov",
+        "cx_px_1sigma": "cx_1sigma_cov",
+        "cy_px_1sigma": "cy_1sigma_cov",
+        "k1_1sigma": "k1_1sigma_cov",
+        "k2_1sigma": "k2_1sigma_cov"
+      },
+      "method_native": {
+        "fx_1sigma_cov": 13.327082211678,
+        "fy_1sigma_cov": 8.87392584838036,
+        "cx_1sigma_cov": 32.498089629143905,
+        "cy_1sigma_cov": 35.13037434925439,
+        "k1_1sigma_cov": 0.0301736334639076,
+        "k2_1sigma_cov": 0.02996322018736006
+      }
     },
     "model": "k1k2_ppfree_fxfy|point",
     "file": "work/cache/method_cuboid_alternatives.json",
     "vs_main_px": {
-      "centre": 8.674752419124138,
-      "cart_band": 27.242948080060415,
-      "corners": 33.08020624338935
-    },
-    "vs_main_px_max": {
-      "centre": 15.16178708728736,
-      "cart_band": 50.51270389304516,
-      "corners": 101.4881918040735
+      "centre": 9.250089642441967,
+      "cart_band": 31.151603715210364,
+      "corners": 36.54250625350883
     }
   },
   {
+    "method_id": "cuboid_k1k2p1p2_ppfree_point",
     "method": "cuboid_k1k2p1p2_ppfree_point",
     "fx": 1354.4185437387375,
     "fy": 1354.4185437387375,
@@ -1021,30 +1607,47 @@
     "p1": 0.012903469661110696,
     "p2": 0.02350820160845036,
     "k3": 0.0,
-    "rms": 9.580618478984487,
+    "rms": 7.068309791585319,
     "unc": {
-      "f_1sigma_cov": 9.054783112160735,
-      "cx_1sigma_cov": 34.24382197267807,
-      "cy_1sigma_cov": 51.803103808748034,
-      "k1_1sigma_cov": 0.02622796157319692,
-      "k2_1sigma_cov": 0.039613895695692,
-      "p1_1sigma_cov": 0.0026724517966386276,
-      "p2_1sigma_cov": 0.003516590767112479
+      "fx_px_1sigma": 9.054783112160735,
+      "fy_px_1sigma": 9.054783112160735,
+      "cx_px_1sigma": 34.24382197267807,
+      "cy_px_1sigma": 51.803103808748034,
+      "k1_1sigma": 0.02622796157319692,
+      "k2_1sigma": 0.039613895695692,
+      "p1_1sigma": 0.0026724517966386276,
+      "p2_1sigma": 0.003516590767112479,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma_cov",
+        "fy_px_1sigma": "f_1sigma_cov",
+        "cx_px_1sigma": "cx_1sigma_cov",
+        "cy_px_1sigma": "cy_1sigma_cov",
+        "k1_1sigma": "k1_1sigma_cov",
+        "k2_1sigma": "k2_1sigma_cov",
+        "p1_1sigma": "p1_1sigma_cov",
+        "p2_1sigma": "p2_1sigma_cov"
+      },
+      "method_native": {
+        "f_1sigma_cov": 9.054783112160735,
+        "cx_1sigma_cov": 34.24382197267807,
+        "cy_1sigma_cov": 51.803103808748034,
+        "k1_1sigma_cov": 0.02622796157319692,
+        "k2_1sigma_cov": 0.039613895695692,
+        "p1_1sigma_cov": 0.0026724517966386276,
+        "p2_1sigma_cov": 0.003516590767112479
+      }
     },
     "model": "k1k2p1p2_ppfree|point",
     "file": "work/cache/method_cuboid_alternatives.json",
     "vs_main_px": {
-      "centre": 19.738212395394584,
-      "cart_band": 18.58902974606113,
-      "corners": 44.876376673554134
-    },
-    "vs_main_px_max": {
-      "centre": 25.861859821939838,
-      "cart_band": 45.66222228864092,
-      "corners": 102.10546699326365
+      "centre": 19.527732898119886,
+      "cart_band": 22.223978005475765,
+      "corners": 40.93914026354325
     }
   },
   {
+    "method_id": "lines_joint",
     "method": "lines_joint (independent implementation 40_lines_indep: straightness + VP consistency with a random member-direction error)",
     "fx": 1473.0413211037371,
     "fy": 1473.0413211037371,
@@ -1055,45 +1658,56 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 0.20206817757023018,
+    "rms": 8.045351782941644,
     "unc": {
       "fx_px_1sigma": 21.90701090462185,
       "fy_px_1sigma": 21.90701090462185,
-      "cx_1sigma": 8.414993606336047,
-      "cy_1sigma": 45.86317759784233,
+      "cx_px_1sigma": 8.414993606336047,
+      "cy_px_1sigma": 45.86317759784233,
       "k1_1sigma": 0.014040771771062893,
       "k2_1sigma": 0.014113213087904568,
-      "f_1sigma_robust": 21.58334003756454,
-      "cy_1sigma_robust": 22.749337138325217,
-      "f_profile_1sigma_formal": 20.82311201658922,
-      "how": "stratified bootstrap (150 replicates; resampled members + random direction errors, everything re-fitted); formal errors (Gauss-Newton) in details.se_formal; HEADLINE 1-sigma = statistical (+) systematic in quadrature (review): systematic = half-range of the central values over the credible variants (radial model k1k2 / k1k2k3 / division-2; the two visible pieces of the blue floor line treated separately or as one straight line; straightness weighting), see details.review; *_stat / *_sys kept",
-      "fx_px_1sigma_stat": 20.58675418281443,
-      "fx_px_1sigma_sys": 7.490172160344059,
-      "fy_px_1sigma_stat": 20.58675418281443,
-      "fy_px_1sigma_sys": 7.490172160344059,
-      "cx_1sigma_stat": 4.495370173035014,
-      "cx_1sigma_sys": 7.113632293144178,
-      "cy_1sigma_stat": 21.975642051770635,
-      "cy_1sigma_sys": 40.25546193727848,
-      "k1_1sigma_stat": 0.011908894555860427,
-      "k1_1sigma_sys": 0.007437842589385346,
-      "k2_1sigma_stat": 0.011967874844987412,
-      "k2_1sigma_sys": 0.00748015744214775
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "fx_px_1sigma",
+        "fy_px_1sigma": "fy_px_1sigma",
+        "cx_px_1sigma": "cx_1sigma",
+        "cy_px_1sigma": "cy_1sigma",
+        "k1_1sigma": "k1_1sigma",
+        "k2_1sigma": "k2_1sigma"
+      },
+      "method_native": {
+        "cx_1sigma": 8.414993606336047,
+        "cy_1sigma": 45.86317759784233,
+        "f_1sigma_robust": 21.58334003756454,
+        "cy_1sigma_robust": 22.749337138325217,
+        "f_profile_1sigma_formal": 20.82311201658922,
+        "how": "stratified bootstrap (150 replicates; resampled members + random direction errors, everything re-fitted); formal errors (Gauss-Newton) in details.se_formal; HEADLINE 1-sigma = statistical (+) systematic in quadrature (review): systematic = half-range of the central values over the credible variants (radial model k1k2 / k1k2k3 / division-2; the two visible pieces of the blue floor line treated separately or as one straight line; straightness weighting), see details.review; *_stat / *_sys kept",
+        "fx_px_1sigma_stat": 20.58675418281443,
+        "fx_px_1sigma_sys": 7.490172160344059,
+        "fy_px_1sigma_stat": 20.58675418281443,
+        "fy_px_1sigma_sys": 7.490172160344059,
+        "cx_1sigma_stat": 4.495370173035014,
+        "cx_1sigma_sys": 7.113632293144178,
+        "cy_1sigma_stat": 21.975642051770635,
+        "cy_1sigma_sys": 40.25546193727848,
+        "k1_1sigma_stat": 0.011908894555860427,
+        "k1_1sigma_sys": 0.007437842589385346,
+        "k2_1sigma_stat": 0.011967874844987412,
+        "k2_1sigma_sys": 0.00748015744214775
+      }
     },
     "model": "fx=fy, zero skew, pp free (= distortion centre), k1,k2; common vertical for both carts' posts, cart X axes _|_ vertical, scene verticals own direction",
     "file": "work/cache/method_lines_joint.json",
     "vs_main_px": {
-      "centre": 4.7497162495698975,
-      "cart_band": 6.408123768117385,
-      "corners": 12.117462335655452
-    },
-    "vs_main_px_max": {
-      "centre": 6.301359866962145,
-      "cart_band": 10.796586042086592,
-      "corners": 15.478096634606533
+      "centre": 4.564307300857803,
+      "cart_band": 3.1063781648497844,
+      "corners": 9.294220347917943
     }
   },
   {
+    "method_id": "lines_joint_indep_mergedfloor",
     "method": "lines_joint_indep_mergedfloor (edges only; the two pieces of the blue floor line treated as one straight line)",
     "fx": 1479.0133017004798,
     "fy": 1479.0133017004798,
@@ -1104,28 +1718,39 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": null,
+    "rms": 8.136563512903237,
     "unc": {
       "fx_px_1sigma": 20.944604603528706,
       "fy_px_1sigma": 20.944604603528706,
-      "cx_1sigma": 6.958414547908235,
-      "cy_1sigma": 42.03094439405763,
-      "how": "stratified bootstrap, 60 replicates (statistical only)"
+      "cx_px_1sigma": 6.958414547908235,
+      "cy_px_1sigma": 42.03094439405763,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "fx_px_1sigma",
+        "fy_px_1sigma": "fy_px_1sigma",
+        "cx_px_1sigma": "cx_1sigma",
+        "cy_px_1sigma": "cy_1sigma"
+      },
+      "method_native": {
+        "cx_1sigma": 6.958414547908235,
+        "cy_1sigma": 42.03094439405763,
+        "how": "stratified bootstrap, 60 replicates (statistical only)"
+      }
     },
     "model": "ALTERNATIVE (review): as the main model, but the two visible pieces of the blue floor line (left of cart 310 / between the carts) are one straight 3D line (assumption: one straight painted line under cart 310)",
     "file": "work/cache/method_lines_joint_indep_mergedfloor.json",
     "vs_main_px": {
-      "centre": 1.6849319595279653,
-      "cart_band": 6.913665224541834,
-      "corners": 9.243830551403134
-    },
-    "vs_main_px_max": {
-      "centre": 2.799889119920036,
-      "cart_band": 8.925145700441696,
-      "corners": 13.635794317834268
+      "centre": 0.8578611662196534,
+      "cart_band": 2.8601968658037444,
+      "corners": 3.913631893330419
     }
   },
   {
+    "method_id": "lines_joint@lines_joint_lc",
     "method": "lines_joint (edges only: straightness + VP orthogonality)",
     "fx": 1424.6375139164827,
     "fy": 1424.6375139164827,
@@ -1136,28 +1761,41 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 0.32364591251091257,
+    "rms": 7.078171988851024,
     "unc": {
-      "f_1sigma": 123.86375615962629,
-      "cx_1sigma": 5.687200842518507,
-      "cy_1sigma": 8.04259978593089,
+      "fx_px_1sigma": 123.86375615962629,
+      "fy_px_1sigma": 123.86375615962629,
+      "cx_px_1sigma": 5.687200842518507,
+      "cy_px_1sigma": 8.04259978593089,
       "k1_1sigma": 0.06851067260181987,
-      "k2_1sigma": 0.04706358924303972
+      "k2_1sigma": 0.04706358924303972,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma",
+        "fy_px_1sigma": "f_1sigma",
+        "cx_px_1sigma": "cx_1sigma",
+        "cy_px_1sigma": "cy_1sigma",
+        "k1_1sigma": "k1_1sigma",
+        "k2_1sigma": "k2_1sigma"
+      },
+      "method_native": {
+        "f_1sigma": 123.86375615962629,
+        "cx_1sigma": 5.687200842518507,
+        "cy_1sigma": 8.04259978593089
+      }
     },
     "model": "fx=fy, pp free, k1,k2",
     "file": "work/cache/method_lines_joint_lc.json",
     "vs_main_px": {
-      "centre": 2.2662060151174543,
-      "cart_band": 9.969426401686809,
-      "corners": 14.209597266216013
-    },
-    "vs_main_px_max": {
-      "centre": 3.2546552589936812,
-      "cart_band": 14.492573803234817,
-      "corners": 14.895419625354112
+      "centre": 3.1944829527078182,
+      "cart_band": 13.926494051395624,
+      "corners": 19.63248049794734
     }
   },
   {
+    "method_id": "markers_only",
     "method": "markers_only",
     "fx": 1326.0052845490318,
     "fy": 1326.0052845490318,
@@ -1168,29 +1806,40 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 5.7414539597783865,
+    "rms": 5.741453959778374,
     "unc": {
-      "f_1sigma": 19.85180426678281,
-      "k1_1sigma": 0.016872022859028377,
-      "k2_1sigma": 0.008731260311741311,
-      "f_1sigma_bootstrap": 34.842697215376575,
-      "k1_1sigma_bootstrap": 0.03938788455004623,
-      "k2_1sigma_bootstrap": 0.03301483934842337
+      "fx_px_1sigma": 34.842697215376575,
+      "fy_px_1sigma": 34.842697215376575,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": 0.03938788455004623,
+      "k2_1sigma": 0.03301483934842337,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma_bootstrap",
+        "fy_px_1sigma": "f_1sigma_bootstrap",
+        "k1_1sigma": "k1_1sigma_bootstrap",
+        "k2_1sigma": "k2_1sigma_bootstrap"
+      },
+      "method_native": {
+        "f_1sigma": 19.85180426678281,
+        "f_1sigma_bootstrap": 34.842697215376575,
+        "k1_1sigma_bootstrap": 0.03938788455004623,
+        "k2_1sigma_bootstrap": 0.03301483934842337
+      }
     },
     "model": "fx=fy, pp fixed, dist k1+k2",
     "file": "work/cache/method_markers.json",
     "vs_main_px": {
-      "centre": 9.364199969538026,
-      "cart_band": 39.35388915127222,
-      "corners": 50.24472764282139
-    },
-    "vs_main_px_max": {
-      "centre": 15.610921491874963,
-      "cart_band": 49.56432976120558,
-      "corners": 64.00699136370652
+      "centre": 10.086007305487694,
+      "cart_band": 43.07369869308517,
+      "corners": 55.51965566865393
     }
   },
   {
+    "method_id": "markers_only_k1_ppfix",
     "method": "markers_only_k1_ppfix",
     "fx": 1358.1019758072014,
     "fy": 1358.1019758072014,
@@ -1201,25 +1850,36 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 5.907881815564183,
+    "rms": 5.907881815564197,
     "unc": {
-      "f_1sigma": 22.990041212075717,
-      "k1_1sigma": 0.007207711025772807
+      "fx_px_1sigma": 22.990041212075717,
+      "fy_px_1sigma": 22.990041212075717,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": 0.007207711025772807,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma",
+        "fy_px_1sigma": "f_1sigma",
+        "k1_1sigma": "k1_1sigma"
+      },
+      "method_native": {
+        "f_1sigma": 22.990041212075717
+      }
     },
     "model": "fx=fy, pp fixed, dist k1",
     "file": "work/cache/method_markers_alternatives.json",
     "vs_main_px": {
-      "centre": 7.020379658960104,
-      "cart_band": 24.716927265783237,
-      "corners": 15.409713508035233
-    },
-    "vs_main_px_max": {
-      "centre": 12.447988206469889,
-      "cart_band": 28.691090776768224,
-      "corners": 25.550857171022514
+      "centre": 7.983809207813848,
+      "cart_band": 29.145073094797976,
+      "corners": 20.38220273569724
     }
   },
   {
+    "method_id": "markers_only_k1_ppfree",
     "method": "markers_only_k1_ppfree",
     "fx": 1374.496677288472,
     "fy": 1374.496677288472,
@@ -1230,27 +1890,40 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 5.8588351420102445,
+    "rms": 5.858832780211197,
     "unc": {
-      "f_1sigma": 25.869645740508496,
-      "cx_1sigma": 76.6163638372137,
-      "cy_1sigma": 41.124162081707965,
-      "k1_1sigma": 0.011271061084323072
+      "fx_px_1sigma": 25.869645740508496,
+      "fy_px_1sigma": 25.869645740508496,
+      "cx_px_1sigma": 76.6163638372137,
+      "cy_px_1sigma": 41.124162081707965,
+      "k1_1sigma": 0.011271061084323072,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma",
+        "fy_px_1sigma": "f_1sigma",
+        "cx_px_1sigma": "cx_1sigma",
+        "cy_px_1sigma": "cy_1sigma",
+        "k1_1sigma": "k1_1sigma"
+      },
+      "method_native": {
+        "f_1sigma": 25.869645740508496,
+        "cx_1sigma": 76.6163638372137,
+        "cy_1sigma": 41.124162081707965
+      }
     },
     "model": "fx=fy, pp free, dist k1",
     "file": "work/cache/method_markers_alternatives.json",
     "vs_main_px": {
-      "centre": 5.539812850503582,
-      "cart_band": 16.59705336853397,
-      "corners": 12.03091528814182
-    },
-    "vs_main_px_max": {
-      "centre": 8.964361114304143,
-      "cart_band": 24.364771402327186,
-      "corners": 19.3662653323019
+      "centre": 6.496968162805378,
+      "cart_band": 20.68608933806916,
+      "corners": 8.773132635613251
     }
   },
   {
+    "method_id": "markers_only_k1k2_ppfree",
     "method": "markers_only_k1k2_ppfree",
     "fx": 1308.6611913971294,
     "fy": 1308.6611913971294,
@@ -1261,28 +1934,41 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 5.335388009214028,
+    "rms": 5.335388009214021,
     "unc": {
-      "f_1sigma": 20.903761789278853,
-      "cx_1sigma": 25.95188905163263,
-      "cy_1sigma": 25.71625947202183,
+      "fx_px_1sigma": 20.903761789278853,
+      "fy_px_1sigma": 20.903761789278853,
+      "cx_px_1sigma": 25.95188905163263,
+      "cy_px_1sigma": 25.71625947202183,
       "k1_1sigma": 0.06591128879122789,
-      "k2_1sigma": 0.10546635105801618
+      "k2_1sigma": 0.10546635105801618,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma",
+        "fy_px_1sigma": "f_1sigma",
+        "cx_px_1sigma": "cx_1sigma",
+        "cy_px_1sigma": "cy_1sigma",
+        "k1_1sigma": "k1_1sigma",
+        "k2_1sigma": "k2_1sigma"
+      },
+      "method_native": {
+        "f_1sigma": 20.903761789278853,
+        "cx_1sigma": 25.95188905163263,
+        "cy_1sigma": 25.71625947202183
+      }
     },
     "model": "fx=fy, pp free, dist k1+k2",
     "file": "work/cache/method_markers_alternatives.json",
     "vs_main_px": {
-      "centre": 21.02293973656674,
-      "cart_band": 59.35663793040386,
-      "corners": 76.37400827511334
-    },
-    "vs_main_px_max": {
-      "centre": 35.67572320275692,
-      "cart_band": 91.4033089063364,
-      "corners": 770.6421968279336
+      "centre": 18.7050531973803,
+      "cart_band": 61.665149759007704,
+      "corners": 77.63028200279714
     }
   },
   {
+    "method_id": "markers_only_k1k2k3_ppfree",
     "method": "markers_only_k1k2k3_ppfree",
     "fx": 1304.0385563757627,
     "fy": 1304.0385563757627,
@@ -1293,29 +1979,41 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.16110816890599616,
-    "rms": 5.3539117423770985,
+    "rms": 5.353911655561937,
     "unc": {
-      "f_1sigma": 16.304084925715387,
-      "cx_1sigma": NaN,
-      "cy_1sigma": 36.09867263392403,
+      "fx_px_1sigma": 16.304084925715387,
+      "fy_px_1sigma": 16.304084925715387,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": 36.09867263392403,
       "k1_1sigma": 0.028387906218032073,
       "k2_1sigma": 0.028387905681273147,
-      "k3_1sigma": 0.1034889597464078
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": 0.1034889597464078,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma",
+        "fy_px_1sigma": "f_1sigma",
+        "cy_px_1sigma": "cy_1sigma",
+        "k1_1sigma": "k1_1sigma",
+        "k2_1sigma": "k2_1sigma",
+        "k3_1sigma": "k3_1sigma"
+      },
+      "method_native": {
+        "f_1sigma": 16.304084925715387,
+        "cx_1sigma": NaN,
+        "cy_1sigma": 36.09867263392403
+      }
     },
     "model": "fx=fy, pp free, dist k1+k2+k3",
     "file": "work/cache/method_markers_alternatives.json",
     "vs_main_px": {
-      "centre": 10.76635832648797,
-      "cart_band": 36.50249776954094,
-      "corners": 76.6398612303567
-    },
-    "vs_main_px_max": {
-      "centre": 16.29497545662455,
-      "cart_band": 44.7223879990527,
-      "corners": 192.35578442787903
+      "centre": 11.654233365682382,
+      "cart_band": 40.72113686429367,
+      "corners": 79.67283344770262
     }
   },
   {
+    "method_id": "markers_only_k1k2_ppfree_fxfy",
     "method": "markers_only_k1k2_ppfree_fxfy",
     "fx": 1297.620569487888,
     "fy": 1314.992015121752,
@@ -1326,29 +2024,42 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 5.255976880087876,
+    "rms": 5.2559768800878715,
     "unc": {
-      "fx_1sigma": 21.321316957695412,
-      "fy_1sigma": 21.29837256369707,
-      "cx_1sigma": 21.98892228305776,
-      "cy_1sigma": 23.620538679847737,
+      "fx_px_1sigma": 21.321316957695412,
+      "fy_px_1sigma": 21.29837256369707,
+      "cx_px_1sigma": 21.98892228305776,
+      "cy_px_1sigma": 23.620538679847737,
       "k1_1sigma": 0.07396818488098413,
-      "k2_1sigma": 0.11560611786129675
+      "k2_1sigma": 0.11560611786129675,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "fx_1sigma",
+        "fy_px_1sigma": "fy_1sigma",
+        "cx_px_1sigma": "cx_1sigma",
+        "cy_px_1sigma": "cy_1sigma",
+        "k1_1sigma": "k1_1sigma",
+        "k2_1sigma": "k2_1sigma"
+      },
+      "method_native": {
+        "fx_1sigma": 21.321316957695412,
+        "fy_1sigma": 21.29837256369707,
+        "cx_1sigma": 21.98892228305776,
+        "cy_1sigma": 23.620538679847737
+      }
     },
     "model": "fx,fy, pp free, dist k1+k2",
     "file": "work/cache/method_markers_alternatives.json",
     "vs_main_px": {
-      "centre": 18.867207039485706,
-      "cart_band": 58.901924502289894,
-      "corners": 73.06093883483263
-    },
-    "vs_main_px_max": {
-      "centre": 32.123038827518414,
-      "cart_band": 88.03799426008773,
-      "corners": 699.0596153876185
+      "centre": 17.05736589809279,
+      "cart_band": 61.410371908482276,
+      "corners": 77.36823295053404
     }
   },
   {
+    "method_id": "markers_only_k1k2p1p2_ppfree",
     "method": "markers_only_k1k2p1p2_ppfree",
     "fx": 1318.4494148874444,
     "fy": 1318.4494148874444,
@@ -1359,30 +2070,43 @@
     "p1": 0.010548381616072737,
     "p2": -0.0031936186116087698,
     "k3": 0.0,
-    "rms": 5.022330058808879,
+    "rms": 5.022330058808861,
     "unc": {
-      "f_1sigma": 20.168457400193017,
-      "cx_1sigma": 27.66542196207923,
-      "cy_1sigma": 26.61238151070695,
+      "fx_px_1sigma": 20.168457400193017,
+      "fy_px_1sigma": 20.168457400193017,
+      "cx_px_1sigma": 27.66542196207923,
+      "cy_px_1sigma": 26.61238151070695,
       "k1_1sigma": 0.0843545711216166,
       "k2_1sigma": 0.14170541027045075,
       "p1_1sigma": 0.002973872574549302,
-      "p2_1sigma": 0.003565154087627174
+      "p2_1sigma": 0.003565154087627174,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma",
+        "fy_px_1sigma": "f_1sigma",
+        "cx_px_1sigma": "cx_1sigma",
+        "cy_px_1sigma": "cy_1sigma",
+        "k1_1sigma": "k1_1sigma",
+        "k2_1sigma": "k2_1sigma",
+        "p1_1sigma": "p1_1sigma",
+        "p2_1sigma": "p2_1sigma"
+      },
+      "method_native": {
+        "f_1sigma": 20.168457400193017,
+        "cx_1sigma": 27.66542196207923,
+        "cy_1sigma": 26.61238151070695
+      }
     },
     "model": "fx=fy, pp free, dist k1+k2+p1+p2",
     "file": "work/cache/method_markers_alternatives.json",
     "vs_main_px": {
-      "centre": 14.907728721653957,
-      "cart_band": 50.552148112262266,
-      "corners": 64.73270870613528
-    },
-    "vs_main_px_max": {
-      "centre": 26.157338037287758,
-      "cart_band": 79.4213889394362,
-      "corners": 517.9239679045592
+      "centre": 13.771154875127621,
+      "cart_band": 53.37117924686706,
+      "corners": 70.24195095852656
     }
   },
   {
+    "method_id": "sticker_shape",
     "method": "sticker_shape (horizontal squares: shape + common cart orientation + nadir; positions/heights free)",
     "fx": 1601.1030235491662,
     "fy": 1601.1030235491662,
@@ -1393,30 +2117,42 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 1.4611990989782944,
+    "rms": 11.10379396332889,
     "unc": {
       "fx_px_1sigma": 173.61997359706336,
-      "fx_px_1sigma_bootstrap_stickers": 169.29176309690558,
-      "fx_px_1sigma_covariance": 173.61997359706336,
-      "cx_1sigma": 48.65670224148931,
-      "cy_1sigma": 26.43630763443602,
-      "fx_spread_over_variants_px": 1549.9119187457406,
-      "note": "too weak to constrain f usefully; the corner RMS of the shape model (1.5 px) shows that the stickers of one cart are not mutually parallel / axis-aligned (end plates tilted), which biases it; shelf-only variant is cleaner"
+      "fy_px_1sigma": 169.29176309690558,
+      "cx_px_1sigma": 48.65670224148931,
+      "cy_px_1sigma": 26.43630763443602,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "fx_px_1sigma",
+        "fy_px_1sigma": "fx_px_1sigma_bootstrap_stickers",
+        "cx_px_1sigma": "cx_1sigma",
+        "cy_px_1sigma": "cy_1sigma"
+      },
+      "method_native": {
+        "fx_px_1sigma_bootstrap_stickers": 169.29176309690558,
+        "fx_px_1sigma_covariance": 173.61997359706336,
+        "cx_1sigma": 48.65670224148931,
+        "cy_1sigma": 26.43630763443602,
+        "fx_spread_over_variants_px": 1549.9119187457406,
+        "note": "too weak to constrain f usefully; the corner RMS of the shape model (1.5 px) shows that the stickers of one cart are not mutually parallel / axis-aligned (end plates tilted), which biases it; shelf-only variant is cleaner"
+      }
     },
     "model": "fx=fy, pp free; k1,k2 fixed from the plumb-line fit in pixel units",
     "file": "work/cache/method_markershape.json",
     "vs_main_px": {
-      "centre": 10.555482421658288,
-      "cart_band": 43.645346721822975,
-      "corners": 54.90745437995692
-    },
-    "vs_main_px_max": {
-      "centre": 19.066940510040492,
-      "cart_band": 57.44190989072025,
-      "corners": 76.7916102588499
+      "centre": 9.621396973719,
+      "cart_band": 39.52706706454114,
+      "corners": 49.08430658471603
     }
   },
   {
+    "method_id": "plumb_line",
     "method": "plumb_line (independent implementation 40_lines_indep; distortion from the straightness of verified straight edges)",
     "fx": 1479.3058025573798,
     "fy": 1479.3058025573798,
@@ -1427,48 +2163,57 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 0.20207060222473286,
+    "rms": 8.18759237754014,
     "unc": {
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": 9.87469526653601,
+      "cy_px_1sigma": 50.23310686907036,
       "k1_1sigma": 0.024752183429460853,
       "k2_1sigma": 0.02011620075016141,
-      "k1_1sigma_f_fixed": 0.007467767967978229,
-      "k2_1sigma_f_fixed": 0.009486718295512375,
-      "k1_over_f2_px-2": -1.596100254983755e-07,
-      "k1_over_f2_1sigma": 3.4125175529070656e-09,
-      "k2_over_f4_px-4": 1.957107457098958e-14,
-      "k2_over_f4_1sigma": 1.9809985674880285e-15,
-      "cx_1sigma": 9.87469526653601,
-      "cy_1sigma": 50.23310686907036,
-      "fx_px_1sigma": 47.51845266181189,
-      "fy_px_1sigma": 47.51845266181189,
-      "how": "cluster bootstrap over physical edge members (resampled with replacement, 300 replicates, distortion re-fitted); k1,k2 with the f samples of the vanishing-point bootstrap (same replicates re-estimate plumb + VPs); f is NOT from straightness; HEADLINE 1-sigma = statistical (+) systematic in quadrature (review): systematic = half-range of the central values over the credible variants (radial model k1k2 / k1k2k3 / division-2; the two visible pieces of the blue floor line treated separately or as one straight line; straightness weighting), see details.review; *_stat / *_sys kept",
-      "fx_px_1sigma_stat": 46.74159108327971,
-      "fx_px_1sigma_sys": 8.557277977039462,
-      "fy_px_1sigma_stat": 46.74159108327971,
-      "fy_px_1sigma_sys": 8.557277977039462,
-      "cx_1sigma_stat": 6.772105040431316,
-      "cx_1sigma_sys": 7.186668207752007,
-      "cy_1sigma_stat": 26.7243896817012,
-      "cy_1sigma_sys": 42.534362835947434,
-      "k1_1sigma_stat": 0.02388789976215062,
-      "k1_1sigma_sys": 0.006483735765677123,
-      "k2_1sigma_stat": 0.018694397043623183,
-      "k2_1sigma_sys": 0.0074283949677011185
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "cx_px_1sigma": "cx_1sigma",
+        "cy_px_1sigma": "cy_1sigma",
+        "k1_1sigma": "k1_1sigma",
+        "k2_1sigma": "k2_1sigma"
+      },
+      "method_native": {
+        "k1_1sigma_f_fixed": 0.007467767967978229,
+        "k2_1sigma_f_fixed": 0.009486718295512375,
+        "k1_over_f2_px-2": -1.596100254983755e-07,
+        "k1_over_f2_1sigma": 3.4125175529070656e-09,
+        "k2_over_f4_px-4": 1.957107457098958e-14,
+        "k2_over_f4_1sigma": 1.9809985674880285e-15,
+        "cx_1sigma": 9.87469526653601,
+        "cy_1sigma": 50.23310686907036,
+        "how": "cluster bootstrap over physical edge members (resampled with replacement, 300 replicates, distortion re-fitted); k1,k2 with the f samples of the vanishing-point bootstrap (same replicates re-estimate plumb + VPs); f is NOT from straightness; HEADLINE 1-sigma = statistical (+) systematic in quadrature (review): systematic = half-range of the central values over the credible variants (radial model k1k2 / k1k2k3 / division-2; the two visible pieces of the blue floor line treated separately or as one straight line; straightness weighting), see details.review; *_stat / *_sys kept",
+        "fx_px_1sigma_stat": 46.74159108327971,
+        "fx_px_1sigma_sys": 8.557277977039462,
+        "fy_px_1sigma_stat": 46.74159108327971,
+        "fy_px_1sigma_sys": 8.557277977039462,
+        "cx_1sigma_stat": 6.772105040431316,
+        "cx_1sigma_sys": 7.186668207752007,
+        "cy_1sigma_stat": 26.7243896817012,
+        "cy_1sigma_sys": 42.534362835947434,
+        "k1_1sigma_stat": 0.02388789976215062,
+        "k1_1sigma_sys": 0.006483735765677123,
+        "k2_1sigma_stat": 0.018694397043623183,
+        "k2_1sigma_sys": 0.0074283949677011185
+      }
     },
     "model": "k1,k2 radial (pixel units: k1/f^2, k2/f^4), distortion centre FREE (= principal point in the OpenCV form); f taken from the vanishing-point result (S1, pp = this centre) because straightness alone determines only k_i/f^(2i)",
     "file": "work/cache/method_plumbline.json",
     "vs_main_px": {
-      "centre": 5.7414312801560445,
-      "cart_band": 8.551353282197127,
-      "corners": 15.14008139506215
-    },
-    "vs_main_px_max": {
-      "centre": 7.788692791704913,
-      "cart_band": 14.218596266664655,
-      "corners": 19.202427757779837
+      "centre": 5.463460809889764,
+      "cart_band": 4.9834274745249205,
+      "corners": 11.938583265548065
     }
   },
   {
+    "method_id": "plumb_line@plumbline_lc",
     "method": "plumb_line (distortion only, centre = image centre; f taken from the VP method)",
     "fx": 1418.817105766932,
     "fy": 1418.817105766932,
@@ -1479,27 +2224,36 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 0.2352245118076012,
+    "rms": 7.2164241721865885,
     "unc": {
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
       "k1_1sigma": 0.010896285549811112,
       "k2_1sigma": 0.014427569904493056,
-      "k1_over_f2_px": -1.727862234250039e-07,
-      "k2_over_f4_px": 2.5081310848588966e-14
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "k1_1sigma": "k1_1sigma",
+        "k2_1sigma": "k2_1sigma"
+      },
+      "method_native": {
+        "k1_over_f2_px": -1.727862234250039e-07,
+        "k2_over_f4_px": 2.5081310848588966e-14
+      }
     },
     "model": "k1,k2 radial, distortion centre fixed at image centre",
     "file": "work/cache/method_plumbline_lc.json",
     "vs_main_px": {
-      "centre": 3.7139999061023836,
-      "cart_band": 13.120511776510636,
-      "corners": 24.088418837106865
-    },
-    "vs_main_px_max": {
-      "centre": 6.610784157908398,
-      "cart_band": 23.322887853178603,
-      "corners": 27.929351658010184
+      "centre": 4.407991347501864,
+      "cart_band": 17.055155580439205,
+      "corners": 29.229237913724404
     }
   },
   {
+    "method_id": "two_cart_consistency",
     "method": "two_cart_consistency (floor normals of the two cart poses parallel)",
     "fx": 1377.53356006687,
     "fy": 1377.53356006687,
@@ -1510,30 +2264,40 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 6.5521259118626745,
+    "rms": 6.5521259118626665,
     "unc": {
       "fx_px_1sigma": 80.67741604012487,
-      "fx_px_1sigma_statistical": 58.853634395139686,
-      "fx_px_1sigma_covariance": 23.28741471543704,
-      "fx_px_1sigma_bootstrap_stickers": 54.05040792989462,
-      "fx_px_systematic_half_diff_all_vs_shelf_only": 55.18238104136708,
-      "cx_cy_note": "pp from the joint fit at this f (not separately profiled)",
-      "note": "f where the x-component (camera frame) of the difference of the two cart Z axes vanishes; the y-component is weakly determined; the camera-height difference h(80)-h(310) is insensitive to f (|dh| < 5 mm over f = 1100..1800 with pp fixed) and gives no usable constraint"
+      "fy_px_1sigma": 54.05040792989462,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "fx_px_1sigma",
+        "fy_px_1sigma": "fx_px_1sigma_bootstrap_stickers"
+      },
+      "method_native": {
+        "fx_px_1sigma_statistical": 58.853634395139686,
+        "fx_px_1sigma_covariance": 23.28741471543704,
+        "fx_px_1sigma_bootstrap_stickers": 54.05040792989462,
+        "fx_px_systematic_half_diff_all_vs_shelf_only": 55.18238104136708,
+        "cx_cy_note": "pp from the joint fit at this f (not separately profiled)",
+        "note": "f where the x-component (camera frame) of the difference of the two cart Z axes vanishes; the y-component is weakly determined; the camera-height difference h(80)-h(310) is insensitive to f (|dh| < 5 mm over f = 1100..1800 with pp fixed) and gives no usable constraint"
+      }
     },
     "model": "fx=fy; pp free (common); k1,k2 fixed from the plumb-line fit in pixel units",
     "file": "work/cache/method_twocart.json",
     "vs_main_px": {
-      "centre": 5.639653094441856,
-      "cart_band": 26.00717172511076,
-      "corners": 41.45839846342522
-    },
-    "vs_main_px_max": {
-      "centre": 9.513805180499622,
-      "cart_band": 40.99181365665322,
-      "corners": 45.78667329869813
+      "centre": 6.424074892881698,
+      "cart_band": 29.789773390130804,
+      "corners": 46.837967184110525
     }
   },
   {
+    "method_id": "vanishing_points",
     "method": "vanishing_points (independent implementation 40_lines_indep; VP MLE per direction group, f from orthogonality)",
     "fx": 1479.3058025573798,
     "fy": 1479.3058025573798,
@@ -1544,44 +2308,55 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 0.387717396636349,
+    "rms": 8.18759237754014,
     "unc": {
       "fx_px_1sigma": 47.51845266181189,
       "fy_px_1sigma": 47.51845266181189,
-      "f_1sigma_robust": 33.77393669715764,
-      "cx_1sigma": 8.935174733709712,
-      "cy_1sigma": 48.699315483764636,
+      "cx_px_1sigma": 8.935174733709712,
+      "cy_px_1sigma": 48.699315483764636,
       "k1_1sigma": 0.02524821834798631,
       "k2_1sigma": 0.02051435211867517,
-      "f_systematic_frames_assumption": 41.71260591157579,
-      "how": "stratified bootstrap (300): cart-X members and all non-VP edges resampled by cluster, members of the small groups (posts, scene verticals) rotated by a random direction error (sigma_psi from the redundancy of the cart-X groups); plumb-line distortion AND centre re-estimated in every replicate, then VPs and f; HEADLINE 1-sigma = statistical (+) systematic in quadrature (review): systematic = half-range of the central values over the credible variants (radial model k1k2 / k1k2k3 / division-2; the two visible pieces of the blue floor line treated separately or as one straight line; straightness weighting), see details.review; *_stat / *_sys kept",
-      "fx_px_1sigma_stat": 46.74159108327971,
-      "fx_px_1sigma_sys": 8.557277977039462,
-      "fy_px_1sigma_stat": 46.74159108327971,
-      "fy_px_1sigma_sys": 8.557277977039462,
-      "cx_1sigma_stat": 5.309345307437725,
-      "cx_1sigma_sys": 7.186668207752007,
-      "cy_1sigma_stat": 23.716055884721044,
-      "cy_1sigma_sys": 42.534362835947434,
-      "k1_1sigma_stat": 0.02388789976215062,
-      "k1_1sigma_sys": 0.008175620753253954,
-      "k2_1sigma_stat": 0.018694397043623183,
-      "k2_1sigma_sys": 0.008447376043740754
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "fx_px_1sigma",
+        "fy_px_1sigma": "fy_px_1sigma",
+        "cx_px_1sigma": "cx_1sigma",
+        "cy_px_1sigma": "cy_1sigma",
+        "k1_1sigma": "k1_1sigma",
+        "k2_1sigma": "k2_1sigma"
+      },
+      "method_native": {
+        "f_1sigma_robust": 33.77393669715764,
+        "cx_1sigma": 8.935174733709712,
+        "cy_1sigma": 48.699315483764636,
+        "f_systematic_frames_assumption": 41.71260591157579,
+        "how": "stratified bootstrap (300): cart-X members and all non-VP edges resampled by cluster, members of the small groups (posts, scene verticals) rotated by a random direction error (sigma_psi from the redundancy of the cart-X groups); plumb-line distortion AND centre re-estimated in every replicate, then VPs and f; HEADLINE 1-sigma = statistical (+) systematic in quadrature (review): systematic = half-range of the central values over the credible variants (radial model k1k2 / k1k2k3 / division-2; the two visible pieces of the blue floor line treated separately or as one straight line; straightness weighting), see details.review; *_stat / *_sys kept",
+        "fx_px_1sigma_stat": 46.74159108327971,
+        "fx_px_1sigma_sys": 8.557277977039462,
+        "fy_px_1sigma_stat": 46.74159108327971,
+        "fy_px_1sigma_sys": 8.557277977039462,
+        "cx_1sigma_stat": 5.309345307437725,
+        "cx_1sigma_sys": 7.186668207752007,
+        "cy_1sigma_stat": 23.716055884721044,
+        "cy_1sigma_sys": 42.534362835947434,
+        "k1_1sigma_stat": 0.02388789976215062,
+        "k1_1sigma_sys": 0.008175620753253954,
+        "k2_1sigma_stat": 0.018694397043623183,
+        "k2_1sigma_sys": 0.008447376043740754
+      }
     },
     "model": "fx=fy, zero skew; pp = distortion centre of the plumb-line fit (k1,k2, centre free); f from cart-X _|_ cart-vertical of both carts (common vertical from the posts of both carts); pp NOT determinable from the vanishing points alone",
     "file": "work/cache/method_vanishing.json",
     "vs_main_px": {
-      "centre": 5.7414312801560445,
-      "cart_band": 8.551353282197127,
-      "corners": 15.14008139506215
-    },
-    "vs_main_px_max": {
-      "centre": 7.788692791704913,
-      "cart_band": 14.218596266664655,
-      "corners": 19.202427757779837
+      "centre": 5.463460809889764,
+      "cart_band": 4.9834274745249205,
+      "corners": 11.938583265548065
     }
   },
   {
+    "method_id": "vanishing_points@vanishing_lc",
     "method": "vanishing_points (f, pp from orthogonal VPs; distortion from plumb-line)",
     "fx": 1418.817105766932,
     "fy": 1418.817105766932,
@@ -1592,23 +2367,35 @@
     "p1": 0.0,
     "p2": 0.0,
     "k3": 0.0,
-    "rms": 0.36905205038428396,
+    "rms": 7.244349378507715,
     "unc": {
-      "f_1sigma": 113.96800539105072,
-      "cx_1sigma": 6.5307670659046835,
-      "cy_1sigma": 5.135038600303744
+      "fx_px_1sigma": 113.96800539105072,
+      "fy_px_1sigma": 113.96800539105072,
+      "cx_px_1sigma": 6.5307670659046835,
+      "cy_px_1sigma": 5.135038600303744,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {
+        "fx_px_1sigma": "f_1sigma",
+        "fy_px_1sigma": "f_1sigma",
+        "cx_px_1sigma": "cx_1sigma",
+        "cy_px_1sigma": "cy_1sigma"
+      },
+      "method_native": {
+        "f_1sigma": 113.96800539105072,
+        "cx_1sigma": 6.5307670659046835,
+        "cy_1sigma": 5.135038600303744
+      }
     },
     "model": "fx=fy, pp free; k1,k2 from plumb-line",
     "file": "work/cache/method_vanishing_lc.json",
     "vs_main_px": {
-      "centre": 2.6996621445232485,
-      "cart_band": 12.907169624552427,
-      "corners": 23.125108775164904
-    },
-    "vs_main_px_max": {
-      "centre": 4.56488695123246,
-      "cart_band": 22.405509532197893,
-      "corners": 25.962417833656808
+      "centre": 3.5201182627084693,
+      "cart_band": 16.823973471971193,
+      "corners": 28.55683295560344
     }
   }
 ]

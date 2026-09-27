@@ -9,56 +9,70 @@ Kamera Tracer WEB007, obraz 1920×1080, 7 fotiek z 2026-08-11 08:58. Všetko je 
 
 | parameter | hodnota | 1σ | stav |
 |---|---|---|---|
-| fx = fy | **1455,7 px** | ± 34 px (2,3 %) | určené len spojením nálepiek a hrán; samotné hrany dávajú f krehko |
-| cx | **927,6 px** | ± 12 px | určené |
-| cy | **502,3 px** | ± 35 px | len konzistentné (426–513 podľa predpokladov o čiarach na podlahe) |
-| k1 | **−0,345** | ± 0,021 | určené spolu s k2 (silná korelácia −0,93) |
-| k2 | **+0,096** | ± 0,024 | určené spolu s k1 |
-| p1, p2 | 0 (fixované) | – | dáta ich neurčia (voľné iba absorbujú nesúlad geometrie) |
-| k3 | 0 (fixované) | (±0,015 ako systematika) | len konzistentné (−0,02…−0,03), zlepšenie nevýznamné |
+| fx = fy | **1468,6 px** | ± 31 px (2,1 %) | určené, ale len spojením hrán a nálepiek (kap. 6, M6); samotné hrany dávajú f krehko |
+| cx | **928,2 px** | ± 11 px | určené |
+| cy | **503,2 px** | ± 29 px | len konzistentné (nesú ho úbežníky; rozumné alternatívne predpoklady o čiarach na podlahe a zvisliciach dávajú 426–513) |
+| k1 | **−0,352** | ± 0,016 | určené spolu s k2 (korelácia −0,88) |
+| k2 | **+0,099** | ± 0,021 | určené spolu s k1 |
+| p1, p2 | 0 (fixované) | – | dáta ich neurčia (voľné iba pohltia nesúlad geometrie) |
+| k3 | 0 (fixované) | – | len konzistentné (−0,03 ± 0,025), zlepšenie nevýznamné; vplyv je v systematike |
 
-`K = [[1455.68, 0, 927.59], [0, 1455.68, 502.32], [0, 0, 1]]`, `dist = [-0.3450, 0.0955, 0, 0, 0]`.
-V pixelových jednotkách, ktoré nezávisia od f: k1/f² = −1,63·10⁻⁷ px⁻², k2/f⁴ = 2,13·10⁻¹⁴ px⁻⁴.
-Model je invertovateľný až po rohy obrazu (nie je prehnutý).
+`K = [[1468.63, 0, 928.21], [0, 1468.63, 503.23], [0, 0, 1]]`, `dist = [-0.3516, 0.0994, 0, 0, 0]`.
+V pixelových jednotkách, ktoré nezávisia od f: k1/f² = −1,63·10⁻⁷ px⁻², k2/f⁴ = 2,14·10⁻¹⁴ px⁻⁴.
+Model je invertovateľný až po rohy obrazu (radiálna funkcia nie je prehnutá). k1 a k2 sú silno korelované: na ďalšie výpočty
+treba použiť kovarianciu (`uncertainty_details.covariance` v `lens_result.json`) alebo priamo neistotu zobrazenia nižšie,
+nie jednotlivé σ ako nezávislé.
 
-**Neistota zobrazenia** (1σ posun priemetu pevného lúča, s kompenzáciou rotácie kamery, medián oblasti / max):
+**Neistota zobrazenia** (1σ posun priemetu pevného lúča po kompenzácii rotácie kamery; medián oblasti / max):
 
 | oblasť | 1σ [px] | max v oblasti [px] |
 |---|---|---|
-| stred (r < 150 px) | **3,2** | 4,4 |
-| pás vozíkov | **10,9** | 15,9 |
-| rohy (200×150 px) | **16,1** | 19,7 |
+| stred (r < 150 px) | **3,0** | 3,6 |
+| pás vozíkov | **9,2** | 13,6 |
+| rohy (200×150 px) | **13,7** | 17,8 |
 
-Pri použití objektívu so súčasne odhadovanou pózou určuje veľkosť chyby hlavne neistota f: 1 % vo f je ~7 px v páse vozíkov.
+Pri použití objektívu so súčasne odhadovanou pózou určuje veľkosť chyby hlavne neistota f: 1 % vo f posunie zobrazenie
+o ~4,6 px v páse vozíkov (medián, max 6,4) a ~6,2 px v rohoch. Ak by sa lúče porovnávali
+bez nového odhadu pózy (bez kompenzácie rotácie), je neistota 32 / 33 / 35 px (stred / pás / rohy),
+lebo vtedy sa naplno prejaví neistota hlavného bodu (kap. 10).
 
 **Najdôležitejšie zistenie:** geometria nálepiek podľa výkresu **nie je konzistentná so žiadnou dierkovou kamerou**
-(RMS 5 px aj pri úplne voľnej projektívnej kamere, šum je ~0,15 px). Top-nálepky vychádzajú voči nálepkám
-na policiach o ~60–80 mm vyššie a koncové dosky sú naklonené (kap. 5). Podľa zadania rozmery neupravujem. Hlavný výsledok
-preto vznikol zo všetkých nálepiek s geometriou z výkresu **spolu so 61 overenými hranami konštrukcie**, ktoré nepoužívajú
-žiadne rozmery. Každý blok dát má váhu podľa vlastného rozptylu. Nálepky samotné by s výkresom dali f ≈ 1300–1360,
-cy ≈ 480–540 a skreslenie, ktoré sa prehne ešte vo vnútri obrazu a odporuje priamosti hrán. Tento výsledok je vychýlený
-(kap. 5, 9) a uvádzam ho len v porovnaní.
+(RMS 4,9–5,1 px aj pri úplne voľnej projektívnej kamere 3×4, šum detekcie je ~0,15 px). Top-nálepky vychádzajú voči
+nálepkám na policiach o ~60–80 mm vyššie a koncové dosky sú naklonené (kap. 5, diagnostické fity; dvojpomer dáva +50…+85 mm
+na troch zo štyroch koncov, na konci 80/X0 0 mm, kde však nesedí pomer rozostupov políc). Podľa zadania rozmery neupravujem:
+hlavný výsledok používa **všetkých 20 nálepiek s geometriou z výkresu spolu so 61 overenými hranami konštrukcie**
+(tie nepoužívajú žiadne rozmery), váhy blokov dát sú určené z ich vlastného rozptylu (variančné komponenty).
+Nálepky samy by s výkresom dali f ≈ 1300–1375 a cy 290–540 podľa modelu, so skreslením, ktoré odporuje priamosti hrán.
+Tento výsledok je vychýlený (kap. 5, 9.4) a uvádzam ho len v porovnaní.
+
+**Čo v hlavnom fite nesie ktorý parameter** (kap. 6, M6): skreslenie nesie priamosť hrán; f a cy hlavne úbežníky hrán
+(bez nich f = 1405, cy = 427); zo strán nálepiek prispievajú k f hlavne dve strany na konci 80/X0
+(bez nich f = 1443); 62 rohov nálepiek má na f malý vplyv (bez nich f = 1471), lebo ich blok má
+kvôli nesúladu geometrie malú váhu (σ ≈ 10,7 px na súradnicu).
 
 **Porovnanie metód v skratke** (podrobne kap. 8):
 
 | metóda | f [px] | pp [px] | poznámka |
 |---|---|---|---|
-| hlavný: nálepky (výkres) + hrany | 1456 ± 34 | (928, 502) | |
-| len hrany, spoločná zvislica | 1473 ± 22 | (931, 438 ± 46) | bez rozmerov |
-| len hrany, podlahová čiara ako jedna priamka | 1479 ± 21 | (939, 509) | |
+| **hlavný: nálepky (výkres) + hrany** | **1469 ± 31** | (928, 503) | |
+| hlavný model, samostatné váhy top / police | 1473 | (929, 504) | variant v systematike |
+| hlavný model, stĺpiky ∥ zvislica scény | 1467 | (931, 507) | variant v systematike |
+| hlavný model, podlahové čiary len na priamosť | 1469 | (928, 492) | variant v systematike |
+| len hrany, spoločná zvislica (nezávislá impl.) | 1473 ± 22 | (931, 438 ± 46) | bez rozmerov |
+| len hrany, modrá čiara ako jedna priamka | 1479 ± 21 | (939, 509) | bez rozmerov |
 | len hrany, samostatné zvislice | 1425 ± 124 | (927, 503) | f nestabilné |
 | úbežníky (+ plumb-line) | 1479 ± 48 | (929, 426) | |
 | štúdia modelov, spoločné dáta | 1434 ± 43 | (927, 502) | |
 | dva vozíky na jednej podlahe | 1378 ± 81 | – | konzistenčná kontrola |
 | model vozíka ako kvádra (výkres) | 1359 ± 58 | stred obrazu | vychýlené geometriou |
-| len nálepky (výkres) | 1300–1375 | – | vychýlené, RMS 5,3–5,9 px |
+| len nálepky (výkres) | 1300–1375 | cy 290–540 | vychýlené, RMS 5,0–5,9 px |
 
 ## 2. Dáta a predspracovanie
 
 * **Vstup:** 7 fotiek 1920×1080 (`data/stills/`), statická scéna, pevná kamera. ChArUco fotky nie sú priložené
   (`data/charuco_photos/` je prázdny), takže kalibrácia stojí len na vozíkoch a scéne.
 * **Chvenie medzi snímkami (rolling-shutter / vibrácie):** snímky sa líšia o zvislý posun a zvislú mierku,
-  `dy = a_f + b_f·(y−540)` s |a_f| ≤ 1 px a |b_f| ≤ 6·10⁻⁴; `dx` je ~0,05 px (`work/02_initial_calib.py`).
+  `dy = a_f + b_f·(y−540)` s |a_f| ≤ 1,0 px a |b_f| ≤ 6,3·10⁻⁴; `dx` je ~0,05 px (`work/02_initial_calib.py`).
   Každú snímku som týmto modelom zarovnal na spoločný priemer a vytvoril priemerný obraz
   (`work/03_mean_image.py`). Po kompenzácii je rozptyl rohov medzi snímkami ~0,13 px (medián), priemer 7 snímok má teda šum ~0,05 px.
   Neznáma absolútna deformácia priemerného snímku je ~1,5·10⁻⁴ vo zvislej mierke (≈ 0,2 px vo fy), čo je zanedbateľné.
@@ -71,21 +85,26 @@ cy ≈ 480–540 a skreslenie, ktoré sa prehne ešte vo vnútri obrazu a odporu
   detektor, 8 ďalších (šikmé, čiastočne zakryté) sa našlo riadenou detekciou: predikcia polohy,
   vyrovnanie výrezu podľa tvaru susednej nálepky a vlastné čítanie bitovej mriežky 6×6 len z viditeľných buniek.
   **ID každej nálepky je potvrdené z obsahu obrazu** (Hammingova vzdialenosť 0 k očakávanému kódu na ≥ 9 plne
-  viditeľných bitoch; test proti všetkým 1000 kódom × 4 natočenia). Pri 310:5 a 310:7 je jednoznačnosť len medzi id
-  použitými na vozíkoch (9 plne viditeľných bitov), čo je uvedené v `results/detections.json`.
+  viditeľných bitoch; test proti všetkým 1000 kódom × 4 natočenia). Pri piatich nálepkách (80:8, 310:4, 310:5, 310:7, 310:8)
+  existuje v slovníku aj iný kód so vzdialenosťou 0 na viditeľných bitoch, takže ich id je jednoznačné len medzi id
+  použitými na vozíkoch (spolu s polohou na vozíku). Je to uvedené pri každej nálepke v `results/detections.json`.
 * **Rohy:** každú stranu čierneho štvorca som sub-pixelovo dohľadal pozdĺž normály a rohy vypočítal ako priesečníky
-  priamok strán (vzniká menší bias než pri cornerSubPix). Výsledok je priemer zo 7 zarovnaných snímok. Roh je platný len vtedy, keď sú obe jeho strany viditeľné
-  a rovné. **Platných rohov je 62 z 80**, 18 je zakrytých (hranou dosky, susednou kartičkou, stĺpikom, lemom police).
+  priamok strán (vzniká menší bias než pri cornerSubPix). Výsledok je priemer zo 7 zarovnaných snímok. Roh je platný len vtedy,
+  keď sú obe jeho strany viditeľné a rovné. **Platných rohov je 62 z 80**, 18 je zakrytých (hranou dosky, susednou kartičkou,
+  stĺpikom, lemom police). Pri čiastočne zakrytých nálepkách sa **viditeľné strany** (13 strán) používajú ako presné priamky
+  modelu (priamka na nálepke podľa výkresu); tým sa využije aj nálepka, ktorej niektorý roh nie je vidieť.
 * **Šum a systematika detekcie:**
   - rozptyl rohu medzi snímkami: medián 0,13 px (hranová metóda), 0,20 px (ArUco cornerSubPix);
   - hranové rohy vs. ArUco rohy: RMS 0,44 px, v priemere 0,16 px dovnútra po uhlopriečke;
   - **systematický posun hrán k čiernej strane o 0,66 ± 0,23 px** (tónová krivka alebo doostrenie kamery). Zmeral som ho na vnútornej
     mriežke kódu (hrany buniek musia ležať na mriežke 15 mm), vo všetkých snímkach je rovnaký. Opravené rohy sú v
-    `corners_px_bias_corrected`. Na výsledok nálepkových fitov má malý vplyv (RMS 5,34 → 5,26 px, f bez zmeny).
-* **Natočenie v rovine (rot_k):** top-nálepky majú 0, nálepky na policiach 2. Druhé najlepšie natočenie je horšie o ≥ 25 px RMS, takže voľba je jednoznačná.
+    `corners_px_bias_corrected`. Vplyv na hlavný výsledok je v kap. 9.5 (rohy aj strany nálepiek).
+* **Natočenie v rovine (rot_k):** top-nálepky majú 0, nálepky na policiach 2. Druhé najlepšie natočenie je horšie
+  o ≥ 20 px RMS (najmenší rozdiel pri 80:8: 9,5 vs. 30,2 px), takže voľba je jednoznačná.
 * Súbor `results/detections.json` obsahuje všetko na zopakovanie výpočtu: rohy (v spoločnom snímku aj v súradniciach
-  jednotlivých fotiek), priradenie rohov k fyzickým rohom (`corners_3d_mm`, vzorec cez rot_k), platnosť, rozptyly
-  a spôsob potvrdenia id. Obrázky: `results/markers_overlay.png`, `markers_crops.png`, `markers_rect_views.png`,
+  jednotlivých fotiek), priradenie rohov k fyzickým rohom (`corners_3d_mm`, vzorec cez rot_k), platnosť, rozptyly,
+  spôsob potvrdenia id a **strany čiastočne zakrytých nálepiek použité v hlavnom fite** (`sticker_sides_used`: body v px
+  a presná 3D priamka). Obrázky: `results/markers_overlay.png`, `markers_crops.png`, `markers_rect_views.png`,
   `markers_edge_bias.png`.
 
 ## 4. Hrany konštrukcie (`work/10_edges_*`, `work/12_review_edges_*`, `work/13_edges_dedupe.py`, `work/91_merge_edges.py`)
@@ -103,16 +122,21 @@ cy ≈ 480–540 a skreslenie, ktoré sa prehne ešte vo vnútri obrazu a odporu
   - scéna: 26 (biela páska a modrá čiara na podlahe, škára, zvislé hrany modrého objektu a stĺpika, rúry a rámy na
     pravej strane, rúrka regálu pri ľavom okraji).
 * **Vyradené ako nerovné:** priečne priehradky políc (y_lip*, y_div*), vnútorná hrana dosky 80/X0 a ďalšie.
-  Nezávislá implementácia vyradila aj oblúkový lem E vozíka 80 (0,74–0,80 px, fyzicky ohnutý).
+* **Lem E vozíka 80:** nezávislá implementácia čiarových metód ho vyradila ako mierne ohnutý (0,74–0,80 px). Hlavný fit
+  však tri hrany tohto lemu používa (`cart80_x_E_front`, `cart80_x_E_front_in`, `cart80_x_A_front_in`, revízia ich
+  prijala). Bez nich vychádza f = 1468 (zmena −1 px); variant je zahrnutý v systematike.
 * **Hrany koncových dosiek sú rovné, ale nie sú rovnobežné s osami vozíka na presnosť úbežníkov** (napr. predná hrana dosky
   310/X0 je o 5,9° mimo úbežníka piatich lemov políc). Preto ich v skupinách úbežníkov nepoužívam, slúžia len na priamosť.
+  Keďže všetky hrany v smere hĺbky vozíka (os Y) sú hrany koncových dosiek, **úbežník osi Y sa nepoužíva** (kap. 6, M3).
 * Výstupy: `results/edges.json` (všetky hrany vrátane vyradených, s dôvodmi), `results/edges_cart310.png`,
-  `edges_cart80.png`, `edges_scene.png`, `edges_all.png`; výrezy v `work/cache/edgecrops_*`, `review_*`.
+  `edges_cart80.png`, `edges_scene.png` (s názvami hrán, konečný stav po revízii; `*` = len priamosť),
+  `edges_all.png`; výrezy v `work/cache/edgecrops_*`, `review_*`.
 
 ## 5. Nesúlad nálepiek s výkresom – pozorovanie (`work/42_geomdiag_*`, `work/41_cuboid_*`)
 
 Podľa zadania sú rozmery vozíka a polohy nálepiek presné. Hlavný výsledok ich preto nemení a všetko nižšie je
-**len pozorovanie**. Zisťuje, kde a o koľko sa dáta s výkresom rozchádzajú; žiadny rozmer tým neupravujem.
+**len pozorovanie**. Zisťuje, kde a o koľko sa dáta s výkresom rozchádzajú; žiadny rozmer tým neupravujem a chybu
+nalepenia nepredpokladám.
 
 **Pozorovanie (nezávisí od ohniska, hlavného bodu ani pózy):**
 
@@ -142,18 +166,25 @@ Podľa zadania sú rozmery vozíka a polohy nálepiek presné. Hlavný výsledok
 | bočný rozptyl nálepiek nad sebou | 0 mm | 1–6 mm | 0,2–3 px | všetky 4 stĺpce |
 | zadná horná tyč vozíka 80 (model s výkresom) | Z = 0 | −56 mm | −17 px | pravý vozík |
 
-* Najkompaktnejšie vysvetlenie je, že **top-nálepky (koncové dosky) sú o +60 až +80 mm vyššie voči nálepkám na policiach**,
-  alebo ekvivalentne, že police sú nižšie. Medzi týmito dvoma možnosťami sa z dát rozhodnúť nedá.
-  Samotný tento prvok zníži RMS z 5,3 na 2,9 px. Keď k tomu uvoľním aj sklony dosiek, klesne na 1,9 px.
-  Žiadny kompaktný prvok nezníži RMS na úroveň šumu, časť nesúladu je nálepka po nálepke (kartičky, ohnuté dosky).
+* Najkompaktnejší opis je, že **top-nálepky (koncové dosky) vychádzajú o +60 až +80 mm vyššie voči nálepkám na policiach**,
+  alebo ekvivalentne, že police vychádzajú nižšie. Samotný tento prvok zníži RMS z 5,3 na 2,9 px. Keď k tomu uvoľním aj
+  sklony dosiek, klesne na 2,3 px (s voľnou veľkosťou kódu na 1,9 px). Žiadny kompaktný prvok nezníži RMS na úroveň šumu;
+  časť nesúladu je nálepka po nálepke (pozorované lokálne nerovnosti podkladu; príčinu z fotiek určiť nemožno).
+* **Top alebo police?** Z nálepiek samých je pozorovateľný len relatívny posun. Jediná nezávislá kontrola je zadná horná tyč
+  vozíka 80 (Z = 0 podľa výkresu, v žiadnom fite nepoužitá, `work/cache/cuboid_diag.md`): sedí na +1,5 px, len ak sa
+  zdvihnú top-dosky (+65 mm); pri hypotézach s nižšími policami zostáva na −17…−19 px. To **naznačuje skôr top-dosky
+  nad úrovňou rámu** než nižšie police. Je to však jedna hrana, teda len náznak.
 * Na výrezoch vidno, že koncové dosky sú tenké (~10 mm) biele dosky s potlačeným hárkom, nie krabice.
   60–90 mm vysoká bočná stena by mala 20–35 px a nie je viditeľná. Zadné rohy dosiek vozíka 80 sú zdvihnuté, doska
   310/X0 má previsnutú chlopňu. Fyzickú príčinu (rám, výšky políc, uchytenie) z fotiek určiť nemožno.
-* **Dôsledok pre objektív:** nálepky s geometriou z výkresu vynútia f ≈ 1300–1360 px, cy ≈ 480 a skreslenie
-  k1 ≈ −0,09, k2 ≈ −0,23 (pri f0 = 1300). Také skreslenie **sa prehne ešte vo vnútri obrazu** (nie je invertovateľné po
-  rohy) a odporuje priamosti 61 hrán. Keď sa uvoľní výška dosiek, nálepky samé dajú k1 = −0,295, k2 = 0,105 (pri 1300),
-  teda prakticky rovnaké skreslenie ako plumb-line (−0,29; 0,07), a f ≈ 1430–1495.
-  **Nálepky a hrany sa teda zhodnú na objektíve, len ak sa pripustí táto odchýlka geometrie.**
+* **Dôsledok pre objektív:** nálepky s geometriou z výkresu vynútia f ≈ 1300–1375 px, hlavný bod podľa modelu
+  (cy 290–540) a skreslenie, ktoré odporuje priamosti 61 hrán. Bez bariéry proti prehnutiu sú tieto fity prehnuté
+  vo vnútri obrazu (fold margin −0,02 … −0,21); s bariérou buď sedia na bariére, alebo prejdú do iného minima
+  (cy ≈ 290 px, k2 ≈ +0,37), ktoré síce nie je prehnuté, ale hrany narovná len na 1,6 px RMS (hlavný objektív 0,23 px).
+  Keď sa uvoľní výška dosiek, nálepky samé dajú k1 = −0,295, k2 = 0,105 (pri 1300), teda prakticky rovnaké skreslenie
+  ako plumb-line (−0,29; 0,07), a f ≈ 1430–1495.
+  **Nálepky a hrany sa teda zhodnú na objektíve, len ak sa pripustí táto odchýlka geometrie.** Hlavný výsledok ju
+  nepripúšťa (rozmery z výkresu), ale nálepky v ňom majú váhu podľa ich skutočného rozptylu voči modelu.
   Obrázky: `results/geomdiag_*.png`, `results/cuboid_overlay.png`, `results/cuboid_offsets.png`,
   `results/residuals_stickers_main.png`, `results/predicted_stickers_crops.png`; podrobne `work/cache/geometry_diagnosis.md`,
   `work/cache/cuboid_offsets.md`.
@@ -164,260 +195,352 @@ Všetky rezíduá hrán sa merajú **v skreslenom obraze**. Rezíduum je vzdiale
 skreslenej priamky ("forward"). Meranie v neskreslenom obraze by šum systematicky ťahal k slabšiemu skresleniu
 (syntetický test: pri σ = 0,2 px je k1 vychýlené o +0,01 až +0,04). Každý fit má navyše **bariéru proti prehnutiu**:
 radiálne skreslenie musí byť monotónne až po rohy obrazu, inak nie je invertovateľné.
-Všetky modely z nálepiek s geometriou výkresu sú prehnuté (fold margin −0,03 až −0,27).
 
 | # | metóda | čo používa | skript |
 |---|---|---|---|
 | M1 | nálepky (BA) | 62 rohov, rozmery z výkresu; 2 pózy vozíkov | `20_markers_ba.py` |
 | M2 | plumb-line | priamosť 61 hrán (len skreslenie a jeho stred) | `30_lines_methods.py`, `40_lines_indep_a_plumb.py` |
-| M3 | úbežníky | smery osí X/Y/Z vozíkov, zvislice scény, rovnobežné čiary na podlahe; kolmosť → f, pp | `30_lines_methods.py`, `40_lines_indep_b_vp.py` |
+| M3 | úbežníky | smery osí X a Z vozíkov, zvislice scény, rovnobežné čiary na podlahe; kolmosť → f, pp | `30_lines_methods.py`, `40_lines_indep_b_vp.py` |
 | M4 | spoločný fit z čiar | M2 + M3 naraz (bez rozmerov) | `30_lines_methods.py`, `40_lines_indep_c_joint.py` |
 | M5 | model vozíka (kváder s policami) | nálepky + presné hrany modelu (výkres) + kontrola predikcie všetkých hrán | `41_cuboid_*.py` |
-| M6 | **kombinovaný (hlavný)** | nálepky (výkres, robustné váhy po nálepkách) + hrany (úbežníky vrátane podlahy, priamosť) + viditeľné strany čiastočne zakrytých nálepiek | `50_combined.py`, `combined.py` |
+| M6 | **kombinovaný (hlavný)** | všetky nálepky (výkres, jedna spoločná váha pre všetky rohy) + hrany (úbežníky vrátane podlahy, priamosť) + viditeľné strany čiastočne zakrytých nálepiek | `50_combined.py`, `combined.py` |
 | M7 | dva vozíky na jednej podlahe | súhlas normál podlahy z póz oboch vozíkov ako funkcia f | `42_geomdiag_d_twocart.py` |
 | M8 | tvar nálepiek | každá nálepka ako vodorovný štvorec (bez polôh a výšok) + nadir | `42_geomdiag_e_markershape.py` |
 | M9 | iné modely objektívu | Brown (rôzne sady), racionálny, Kannala-Brandt, divízny; tie isté dáta | `43_altmodels_*.py` |
 
 Poznámky k jednotlivým metódam:
 
-* **M1 – nálepky:** výber modelu pomocou leave-one-out (najlepší model s LOO 8,2 px), profil f,
-  klastrový bootstrap po nálepkách, vynechanie radu a vozíka. Všetky modely majú RMS 5,0–5,7 px a sú prehnuté vo vnútri obrazu.
+* **M1 – nálepky:** výber modelu pomocou leave-one-out (najlepší model k1,k2 s pp v strede, LOO 8,4 px), profil f,
+  klastrový bootstrap po nálepkách, vynechanie radu a vozíka. Všetky modely majú RMS 5,0–5,9 px (max 9,5–11,7 px).
+  Bez bariéry sú prehnuté vo vnútri obrazu; s bariérou sedia na bariére, alebo (voľný pp) prejdú do minima s cy ≈ 290 px.
   Výsledok je **vychýlený** geometriou (kap. 5), nie zašumený.
 * **M2 – plumb-line:** skreslenie je určené v pixelových jednotkách (k1/f², k2/f⁴), f z priamosti určiť nemožno.
   Model k1 samotný nestačí (0,51 px, naráža na bariéru). Pre k1, k2 (voľný stred) je rezíduum 0,217 px,
   čo zodpovedá vlastnej nerovnosti hrán. Stred skreslenia je v x určený (924–938), v y len voľne (423–516 podľa modelu).
 * **M3 – úbežníky:** VP skupín s ML smerom; smerová chyba jedného člena ~0,16°, čo je ďaleko nad šumom bodov.
-  Kolmosť osí vozíka a spoločná zvislica oboch vozíkov (stĺpiky sa zhodujú na 0,07–0,38°) dávajú f.
-  Hlavný bod zo samotných úbežníkov určiť nemožno (berie sa stred skreslenia). Zvislice scény sa od stĺpikov vozíkov
-  líšia o 0,5–0,8° (podlaha nie je dokonale vodorovná / predmety nie sú presne zvislé), preto majú vlastný smer.
+  f dáva kolmosť osi X (lemy políc) a osi Z (stĺpiky) vozíkov a kolmosť podlahových smerov na zvislicu.
+  **Úbežník hĺbky (os Y) sa použiť nedal:** jediné hrany v smere Y sú hrany koncových dosiek, ktoré nie sú rovnobežné
+  s osami vozíka (kap. 4). Hlavný bod zo samotných úbežníkov určiť nemožno (berie sa stred skreslenia). Zvislice scény sa
+  od stĺpikov vozíkov líšia o 0,5–0,8° (podlaha nie je dokonale vodorovná / predmety nie sú presne zvislé), preto majú
+  vlastný smer.
 * **M4 – spoločný fit z čiar:** f závisí od toho, či majú oba vozíky spoločnú zvislicu: so spoločnou 1473 px,
   so samostatnými 1425–1446 px, keďže vozík 80 má len dve krátke hrany stĺpika. Vynechanie jednej krátkej hrany stĺpika
-  vozíka 310 posunie f o ~100 px, takže **f zo samotných hrán je krehké** (jackknife σ ≈ 150 px).
-* **M5 – kváder:** s rozmermi z výkresu f = 1359 ± 58 px, rezíduá 6 px; lemy políc sedia na −2…+9 px.
-  Zadná horná tyč vozíka 80 je −17 px (−56 mm) mimo; po uvoľnení výšky top-dosky (+65 mm) na +1,5 px.
-* **M6 – kombinovaný:** blokové váhy sa určujú variančnými komponentmi (každý blok má redukované χ² ≈ 1).
-  Nálepky majú robustnú váhu 1/(1+(RMS_nálepky/1,5 px)²), takže nálepky, ktoré nesedia s ostatnými dátami,
-  sa samy potlačia. Váhy aj rezíduá sú v tabuľke (kap. 9). Rozmery z výkresu sa nemenia.
-* **M7, M8:** len konzistenčné kontroly; M8 je na f príliš slabá (± 170 px).
-* **M9:** dáta podporujú práve 2 radiálne stupne voľnosti. k3 je len konzistentné, p1, p2 a fx ≠ fy nie sú určené.
-  Voľba medzi primeranými modelmi pridá 0,4 / 2,0 / 2,7 px (stred / pás / rohy). Nie-Brownove modely sa dajú
-  previesť na Brown [k1, k2, p1, p2, k3] s chybou pod 0,1 px (medián).
+  vozíka 310 posunie f o ~100 px, takže **f zo samotných hrán je krehké** (jackknife σ ≈ 110–150 px).
+* **M5 – kváder:** s rozmermi z výkresu f = 1359 ± 36 px (bootstrap; ± 58 vrátane geometrie), rezíduá 6 px, sedí na
+  bariére proti prehnutiu. Lemy políc sedia na −2…+9 px. Mimo predikcie sú: zadná horná tyč vozíka 80 (−17 px, −56 mm;
+  po zdvihnutí top-dosky o +65 mm +1,5 px), zadné pozdĺžniky `cart310_x_back_inner` a `cart80_x_back_low` (−75…−79 px),
+  ktoré som priradil hornej zadnej hrane, hoci sú to zjavne nižšie rúrky rámu (výkres ich neobsahuje), `cart80_x_back_rail_in`
+  (−29 px) a `cart310_x_B_inner_fall` (+13 px, vnútorná hrana ohybu lemu). Podrobne `work/cache/cuboid_offsets.md`.
+* **M6 – kombinovaný (hlavný):** jeden fit všetkých blokov: rohy nálepiek (M), strany čiastočne zakrytých nálepiek (L),
+  úbežníkové skupiny hrán (V) a priamosť hrán koncových dosiek a scény (S). Váhy blokov sú **variančné komponenty**
+  iterované do konvergencie (relatívna zmena σ bloku < 0,5 %; každý blok má potom redukované χ² ≈ 1): σ rohov 10,7 px (na súradnicu),
+  strán 1,37 px, úbežníkov 0,36 px, priamosti 0,23 px. Všetky nálepky majú v rámci bloku rovnakú váhu;
+  rozmery z výkresu sa nemenia. Keďže nesúlad geometrie zväčší rozptyl rohov, dostanú rohy ako blok malú váhu.
+  **Vplyv jednotlivých blokov na f** (fit bez bloku, váhy ostatných blokov ponechané):
+
+  | vynechaný blok | f | cx | cy | k1 |
+  |---|---|---|---|---|
+  | – (hlavný) | 1468,6 | 928,2 | 503,2 | −0,352 |
+  | rohy nálepiek (62) | 1471 | 928 | 503 | −0,352 |
+  | strany nálepiek (13) | 1436 | 927 | 501 | −0,335 |
+  | úbežníky | 1405 | 925 | 427 | −0,316 |
+  | len strany 80:3/1 a 80:7/3 (znova vážené) | 1443 | 928 | 502 | −0,339 |
+
+  f teda nesú hlavne úbežníky hrán; zo strán nálepiek prispievajú najmä dve strany na konci 80/X0 (+26 px),
+  kde podľa kap. 5 nesedí pomer rozostupov políc. Preto sú v systematike aj tieto varianty: bez týchto dvoch strán,
+  samostatné variančné komponenty pre top a pre police (RMS top-rohov 22,2 px na bod, polic 2,9 px → f 1473),
+  robustné váhy po nálepkách (f 1476), stĺpiky oboch vozíkov rovnobežné so zvislicou scény (f 1467),
+  čiary na podlahe len na priamosť (cy 492) a bez lemu E vozíka 80 (f 1468).
+* **M7 – dva vozíky:** f, pri ktorom sú normály podlahy z póz oboch vozíkov rovnobežné: 1378 ± 81 px (len konzistencia;
+  geometria z výkresu). **Výška kamery nad podlahou** z póz oboch vozíkov sa zhoduje na |Δh| < 5 mm pre každé f
+  v rozsahu 1100–1800, je teda konzistentná, ale f neobmedzuje.
+* **M8 – tvar nálepiek:** len konzistenčná kontrola; na f príliš slabá (± 170 px).
+* **M9 – modely objektívu:** dáta podporujú práve 2 radiálne stupne voľnosti. k3 je len konzistentné, p1, p2 a fx ≠ fy nie sú
+  určené (kap. 7).
 
 ## 7. Výber modelu (primerane dátam)
 
 Zo štúdie 16 modelov na rovnakých dátach (`work/43_altmodels_*`, `results/altmodels_*.png`, `work/cache/altmodels_summary.md`):
 
 * **Radiálne skreslenie potrebuje práve 2 stupne voľnosti.** k1 samotné hrany nenarovná (0,29–0,51 px, naráža
-  na bariéru prehnutia, ΔQAIC +302). Všetky dvoj- a trojparametrové radiálne tvary (Brown k1k2, k1k2k3, divízny l1l2,
-  racionálny k4, Kannala-Brandt k1k2) dosiahnu 0,228–0,229 px. To je hranica daná vlastnou nerovnosťou hrán
-  a ich mapovania sa líšia o ≤ 0,4 / 2,0 / 2,7 px (stred / pás / rohy).
-* **k3** vychádza −0,02 až −0,03 ± 0,02: je len konzistentné, preto ho fixujem na 0 a jeho vplyv je v systematike.
+  na bariéru prehnutia, ΔQAIC +315, ΔQBIC +302). Všetky dvoj- a trojparametrové radiálne tvary (Brown k1k2, k1k2k3,
+  divízny l1l2, racionálny k4, Kannala-Brandt k1k2) dosiahnu 0,228–0,229 px. To je hranica daná vlastnou nerovnosťou hrán.
+  Ich zobrazenia sa od Brown k1,k2 líšia o 0,4 / 2,0 / 2,7 px (RMS cez modely; max 0,5 / 2,3 / 3,9 px; stred / pás / rohy).
+* **k3** vychádza −0,03 ± 0,02 (štúdia modelov −0,031 ± 0,025; kombinovaný fit −0,022): je len konzistentné, preto ho
+  fixujem na 0 a jeho vplyv je v systematike.
 * **p1, p2:** na hranách vychádzajú ~0 (−0,001 ± 0,006; 0,0015 ± 0,003) a fit je nestabilný. S nálepkami s geometriou z výkresu
   vyskočí p1 na 0,009 a f na 1389, lebo tangenciálne členy len pohlcujú nesúlad geometrie. Preto p1 = p2 = 0.
-* **fx ≠ fy** nie je určené (fx 1383 ± 91 vs. fy 1426 ± 34 z hrán), preto fx = fy (štvorcové pixely).
+* **fx ≠ fy** nie je určené (fx 1383 ± 91 vs. fy 1426 ± 34 z hrán; kombinovaný fit fx/fy − 1 = −2,2 %), preto fx = fy.
 * **Hlavný bod voľný:** fixácia do stredu obrazu stojí ΔQAIC +21…+24 a zhoršuje krížovú predikciu. cx je určené,
   cy len konzistentné.
-* Nie-Brownove modely sa dajú previesť na OpenCV Brown s chybou ≤ 0,1 px (medián). Brown k1, k2 je teda primeraný.
+* Prevod na OpenCV Brown [k1, k2, p1, p2, k3]: Kannala-Brandt k1,k2, divízny l1,l2 a racionálny k4 sa prevedú s chybou
+  ≤ 0,08 px (medián); pri racionálnom k1..k6 je to 0,2–0,45 px. Brown k1, k2 je teda primeraný model.
 
 ## 8. Porovnanie všetkých metód
 
 Tabuľka je vygenerovaná zo súborov metód (`work/97_report_tables.py`). Všetky metódy sú aj v `results/lens_by_method.json`
-(48 záznamov vrátane variantov) a na grafe `results/methods_comparison.png`. Stĺpec „Δ mapovania“ je posun
-zobrazenia metódy voči hlavnému výsledku po kompenzácii rotácie (medián oblasti). Uvedené ± sú neistoty, ktoré udáva sama metóda.
+(53 záznamov vrátane variantov, jednotný tvar a `method_id`) a na grafe `results/methods_comparison.png`.
+Stĺpec „Δ zobrazenia“ je posun zobrazenia metódy voči hlavnému výsledku po kompenzácii rotácie (medián oblasti). Neistoty
+metód sú ich vlastné (bootstrap alebo klastrové), okrem hlavného riadku, ktorý má celkovú neistotu.
 
-| metóda | rozmery z výkresu | f [px] | cx | cy | k1 | k2 | k3 | fold | Δ mapovania vs hlavný: stred / pás / rohy [px] | neistota zobrazenia metódy (stred / pás / rohy) | pozn. |
+| metóda | rozmery z výkresu | f [px] | cx | cy | k1 | k2 | k3 | prehnutie | Δ zobrazenia vs hlavný: stred / pás / rohy [px] | neistota zobrazenia metódy (stred / pás / rohy) | pozn. |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| M6 kombinovaný – HLAVNÝ | áno (všetky nálepky, plná váha) | 1456 ± 14 stat. (± 34 celkovo) | 928 ± 5 (± 12) | 502 ± 9 (± 35) | -0.345 | +0.096 | +0.000 | ok | 0.0 / 0.0 / 0.0 | 1.7 / 6.0 / 9.0 | nálepky + 61 hrán + strany zakrytých nálepiek |
-| M6 kombinovaný, robustné váhy nálepiek | áno (top-nálepky ~0 váha) | 1475 | 930 | 504 | -0.356 | +0.103 | +0.000 | ok | 1.3 / 5.9 / 7.6 | – / – / – | Cauchy váhy po nálepkách |
-| M6 kombinovaný, k1,k2,k3 | áno | 1455 | 930 | 504 | -0.358 | +0.131 | -0.024 | ok | 0.1 / 0.9 / 1.2 | – / – / – | k3 len konzistentné |
-| M6 kombinovaný, pp v strede obrazu | áno | 1458 | 960 | 540 | -0.368 | +0.113 | +0.000 | ok | 3.0 / 2.1 / 9.8 | – / – / – |  |
-| M6 kombinovaný, fx≠fy | áno | 1439/1452 | 928 | 505 | -0.342 | +0.093 | +0.000 | ok | 0.8 / 4.8 / 9.3 | – / – / – | fx≠fy neurčené |
-| M6 kombinovaný, +p1,p2 | áno | 1389 | 945 | 449 | -0.310 | +0.077 | +0.000 | ok | 4.8 / 19.5 / 21.8 | – / – / – | p1,p2 pohltia nesúlad geometrie |
-| M4 spoločný fit z čiar (nezávislá impl., spoločná zvislica) | nie | 1473 ± 22 | 931 ± 8 | 438 ± 46 | -0.349 | +0.095 | +0.000 | ok | 4.7 / 6.4 / 11.9 | 3.3 / 7.0 / 11.8 |  |
-| M4 spoločný fit z čiar, podlahová čiara ako 1 priamka | nie | 1479 ± 21 | 939 ± 7 | 509 ± 42 | -0.362 | +0.109 | +0.000 | ok | 1.6 / 6.9 / 9.2 | – / – / – |  |
-| M4 spoločný fit z čiar (orchestrátor, samostatné zvislice) | nie | 1425 ± 124 | 927 ± 6 | 503 ± 8 | -0.333 | +0.090 | +0.000 | ok | 2.2 / 10.0 / 14.2 | – / – / – |  |
-| M3 úbežníky (nezávislá impl.) | nie | 1479 ± 48 | 929 ± 9 | 426 ± 49 | -0.349 | +0.094 | +0.000 | ok | 5.6 / 8.6 / 14.9 | 4.8 / 14.9 / 22.1 | pp = stred skreslenia |
-| M3 úbežníky (orchestrátor) | nie | 1419 ± 114 | 941 ± 7 | 513 ± 5 | -0.348 | +0.102 | +0.000 | ok | 2.6 / 12.9 / 23.2 | – / – / – |  |
-| M2 plumb-line (skreslenie; f z M3) | nie | 1479 ± 48 | 929 ± 10 | 426 ± 50 | -0.349 | +0.094 | +0.000 | ok | 5.6 / 8.6 / 14.9 | 3.5 / 2.5 / 7.9 | len k1/f², k2/f⁴ a stred |
-| M9 Brown k1,k2 (štúdia modelov, spoločné dáta) | áno | 1434 ± 43 | 927 ± 10 | 502 ± 43 | -0.336 | +0.091 | +0.000 | ok | 1.5 / 6.8 / 9.3 | 4.3 / 15.5 / 22.1 |  |
-| M9 Brown k1,k2,k3 | áno | 1432 ± 44 | 931 ± 10 | 505 ± 35 | -0.353 | +0.137 | -0.031 | ok | 1.7 / 8.5 / 11.5 | 4.1 / 15.1 / 21.1 |  |
-| M9 divízny l1,l2 | áno | 1431 | 935 | 508 | -0.356 | +0.138 | -0.028 | ok | 1.7 / 9.0 / 13.0 | 1.8 / 7.6 / 10.7 | prevedený na Brown |
-| M9 Kannala-Brandt k1,k2 | áno | 1431 | 931 | 506 | -0.354 | +0.140 | -0.032 | ok | 1.8 / 8.9 / 11.9 | 1.8 / 7.7 / 10.8 | prevedený na Brown |
-| M7 dva vozíky (normály podlahy) | áno | 1378 ± 81 | 955 | 522 | -0.328 | +0.090 | +0.000 | ok | 5.5 / 26.0 / 41.6 | 5.9 / 25.9 / 35.8 | len konzistencia |
-| M8 tvar nálepiek | nie (len štvorce) | 1601 ± 174 | 979 ± 49 | 471 ± 26 | -0.443 | +0.165 | +0.000 | ok | 10.4 / 43.6 / 54.1 | 12.8 / 49.4 / 70.9 | príliš slabé |
-| M5 kváder s policami (výkres) | áno | 1359 ± 36 | 960 | 540 | -0.210 | +0.000 | +0.000 | ok | 6.6 / 24.1 / 14.1 | 2.9 / 13.4 / 21.9 | vychýlené geometriou |
-| M1 len nálepky (výkres), model s najlepším LOO | áno | 1326 ± 20 | 960 | 540 | -0.246 | +0.025 | +0.000 | na bariére | 9.0 / 39.3 / 50.1 | 2.9 / 15.4 / 36.9 | vychýlené; bez bariéry prehnuté |
+| **M6 kombinovaný – HLAVNÝ** | áno (všetky nálepky) | 1469 ± 31 | 928 ± 11 | 503 ± 29 | −0,352 | +0,099 | +0,000 | nie | 0,0 / 0,0 / 0,0 | 3,0 / 9,2 / 13,7 | celková neistota |
+| M6, samostatné váhy top / police | áno | 1473 | 929 | 504 | −0,354 | +0,101 | +0,000 | nie | 0,3 / 1,2 / 1,4 | – / – / – | variant |
+| M6, robustné váhy nálepiek | áno (top-nálepky ~0 váha) | 1476 | 930 | 505 | −0,357 | +0,103 | +0,000 | nie | 0,5 / 2,2 / 2,7 | – / – / – | variant |
+| M6, stĺpiky ∥ zvislica scény | áno | 1467 | 931 | 507 | −0,354 | +0,102 | +0,000 | nie | 0,3 / 0,9 / 2,1 | – / – / – | variant |
+| M6, bez strán 80:3/1, 80:7/3 | áno | 1443 | 928 | 502 | −0,339 | +0,092 | +0,000 | nie | 1,8 / 8,1 / 11,0 | – / – / – | variant |
+| M6, bez lemu E vozíka 80 | áno | 1468 | 931 | 505 | −0,352 | +0,100 | +0,000 | nie | 0,2 / 0,4 / 0,7 | – / – / – | variant |
+| M6, podlahové čiary len na priamosť | áno | 1469 | 928 | 492 | −0,350 | +0,098 | +0,000 | nie | 0,8 / 0,5 / 1,6 | – / – / – | variant |
+| M6 kombinovaný, k1,k2,k3 | áno | 1470 | 930 | 505 | −0,364 | +0,132 | −0,022 | nie | 0,1 / 0,2 / 0,4 | – / – / – | k3 len konzistentné |
+| M6 kombinovaný, pp v strede obrazu | áno | 1467 | 960 | 540 | −0,372 | +0,116 | +0,000 | nie | 3,0 / 2,7 / 11,0 | – / – / – |  |
+| M6 kombinovaný, fx≠fy | áno | 1431/1463 | 928 | 509 | −0,345 | +0,095 | +0,000 | nie | 1,6 / 10,5 / 20,3 | – / – / – | fx≠fy neurčené |
+| M6 kombinovaný, +p1,p2 | áno | 1398 | 946 | 453 | −0,314 | +0,079 | +0,000 | nie | 4,9 / 20,6 / 24,5 | – / – / – | p1,p2 pohltia nesúlad geometrie |
+| M4 spoločný fit z čiar (nezávislá impl., spoločná zvislica) | nie | 1473 ± 22 | 931 ± 8 | 438 ± 46 | −0,349 | +0,095 | +0,000 | nie | 4,5 / 3,1 / 9,3 | 3,3 / 7,0 / 11,8 |  |
+| M4 spoločný fit z čiar, podlahová čiara ako 1 priamka | nie | 1479 ± 21 | 939 ± 7 | 509 ± 42 | −0,362 | +0,109 | +0,000 | nie | 0,9 / 2,9 / 3,9 | – / – / – |  |
+| M4 spoločný fit z čiar (orchestrátor, samostatné zvislice) | nie | 1425 ± 124 | 927 ± 6 | 503 ± 8 | −0,333 | +0,090 | +0,000 | nie | 3,0 / 14,0 / 19,6 | – / – / – |  |
+| M3 úbežníky (nezávislá impl.) | nie | 1479 ± 48 | 929 ± 9 | 426 ± 49 | −0,349 | +0,094 | +0,000 | nie | 5,4 / 4,9 / 11,8 | 4,8 / 14,9 / 22,1 | pp = stred skreslenia |
+| M3 úbežníky (orchestrátor) | nie | 1419 ± 114 | 941 ± 7 | 513 ± 5 | −0,348 | +0,102 | +0,000 | nie | 3,5 / 16,9 / 28,6 | – / – / – |  |
+| M2 plumb-line (skreslenie; f z M3) | nie | 1479 ± 48 | 929 ± 10 | 426 ± 50 | −0,349 | +0,094 | +0,000 | nie | 5,4 / 4,9 / 11,8 | 3,5 / 2,5 / 7,9 | len k1/f², k2/f⁴ a stred |
+| M9 Brown k1,k2 (štúdia modelov, spoločné dáta) | áno | 1434 ± 43 | 927 ± 10 | 502 ± 43 | −0,336 | +0,091 | +0,000 | nie | 2,3 / 10,7 / 14,7 | 4,3 / 15,5 / 22,1 |  |
+| M9 Brown k1,k2,k3 | áno | 1432 ± 44 | 931 ± 10 | 505 ± 35 | −0,353 | +0,137 | −0,031 | na bariére | 2,7 / 12,4 / 16,9 | 4,1 / 15,1 / 21,1 |  |
+| M9 divízny l1,l2 | áno | 1431 | 935 | 508 | −0,356 | +0,138 | −0,028 | nie | 2,7 / 12,9 / 18,4 | 1,8 / 7,6 / 10,7 | prevedený na Brown |
+| M9 Kannala-Brandt k1,k2 | áno | 1431 | 931 | 506 | −0,354 | +0,140 | −0,032 | na bariére | 2,7 / 12,8 / 17,3 | 1,8 / 7,7 / 10,8 | prevedený na Brown |
+| M7 dva vozíky (normály podlahy) | áno | 1378 ± 81 | 955 | 522 | −0,328 | +0,090 | +0,000 | nie | 6,4 / 29,9 / 47,0 | 5,9 / 25,9 / 35,8 | len konzistencia |
+| M8 tvar nálepiek | nie (len štvorce) | 1601 ± 174 | 979 ± 49 | 471 ± 26 | −0,443 | +0,165 | +0,000 | nie | 9,7 / 39,4 / 48,4 | 12,8 / 49,4 / 70,9 | príliš slabé |
+| M5 kváder s policami (výkres) | áno | 1359 ± 58 | 960 | 540 | −0,210 | +0,000 | +0,000 | na bariére | 7,5 / 28,5 / 19,0 | 2,9 / 13,4 / 21,9 | vychýlené geometriou |
+| M1 len nálepky (výkres) | áno | 1326 ± 35 | 960 | 540 | −0,246 | +0,025 | +0,000 | na bariére | 10,1 / 43,1 / 55,4 | 2,9 / 15,4 / 36,9 | vychýlené geometriou |
 
 **Prečo sa metódy líšia – čo z toho vyplýva:**
 
-1. **Nálepky s geometriou z výkresu verzus hrany (f ~1300–1360 vs. ~1430–1480).** Rozdiel nespôsobuje objektív, ale geometria.
-   Nálepky nesedia so žiadnou dierkovou kamerou a samy vynútia prehnuté, nefyzikálne skreslenie. Keď sa uvoľní výška
+1. **Nálepky s geometriou z výkresu verzus hrany (f ~1300–1375 vs. ~1430–1480).** Rozdiel nespôsobuje objektív, ale geometria.
+   Nálepky nesedia so žiadnou dierkovou kamerou a samy vynútia skreslenie, ktoré odporuje priamosti hrán. Keď sa uvoľní výška
    top-dosiek (+60–80 mm), dajú nálepky rovnaké skreslenie ako hrany a f = 1430–1495. Syntetický test so zdvihnutými doskami
-   (scenár T2_c) reprodukuje presne tento vzor: fity len z nálepiek sú vychýlené o −115 až −143 px vo f, kombinovaný odhad nie (+0,1 px).
-2. **Hrany medzi sebou (f 1425 vs. 1473–1479).** Rozdiel spôsobuje jediný predpoklad: či majú oba vozíky rovnakú zvislicu.
+   (scenár T2_c) reprodukuje presne tento vzor: fity len z nálepiek sú vychýlené o −115 až −143 px vo f, kombinovaný odhad nie
+   (−0,6 px).
+2. **Hrany medzi sebou (f 1425 vs. 1473–1479).** Rozdiel spôsobuje hlavne predpoklad, či majú oba vozíky rovnakú zvislicu.
    Vozík 80 má len dve krátke, takmer kolineárne hrany stĺpika, takže jeho vlastná zvislica je slabo určená. Hrany samotné dávajú f
-   krehko: vynechanie jednej krátkej hrany stĺpika posunie f o ~100 px.
-3. **cy (426–513).** Hlavne ho určuje skupina čiar na podlahe (modrá čiara a biela páska považované za rovnobežné).
-   Bez nej je cy ≈ 440–500 ± 30. Ak sa obe časti modrej čiary berú ako jedna priamka, vychádza cy = 509.
-   Nálepky s uvoľnenou geometriou dávajú cy ≈ 390. **cy je z dát len konzistentné.**
-4. **Zvislice scény verzus stĺpiky vozíkov** sa líšia o 0,5–0,8°. Podlaha alebo predmety nie sú presne zvislé, preto
-   majú zvislice scény vo všetkých fitoch vlastný smer.
+   krehko: vynechanie jednej krátkej hrany stĺpika posunie f o ~100 px. V hlavnom fite tento predpoklad mení f o
+   −2 px (variant so spoločnou zvislicou).
+3. **Hlavný fit verzus hrany samé (f 1469 vs. 1436).** Rozdiel spôsobujú strany čiastočne zakrytých nálepiek, hlavne
+   dve na konci 80/X0 (kap. 6, M6). Bez nich je hlavný fit na 1443.
+4. **cy (426–513).** Určujú ho hlavne úbežníky: bez nich vychádza v hlavnom fite cy = 427. V hlavnom fite
+   posunie predpoklad o rovnobežnosti čiar na podlahe cy len o 11 px (čiary len na priamosť: 492).
+   Nižšie hodnoty 426–438 vychádzajú z čiarových fitov bez nálepiek so spoločnou zvislicou; 509, ak sa obe časti modrej čiary
+   berú ako jedna priamka. Nálepky s uvoľnenou geometriou dávajú cy ≈ 390. **cy je z dát len konzistentné.**
+5. **Zvislice scény verzus stĺpiky vozíkov** sa líšia o 0,5–0,8°. Podlaha alebo predmety nie sú presne zvislé, preto
+   majú zvislice scény vo všetkých fitoch vlastný smer. V hlavnom fite zvierajú osi Z oboch vozíkov 0,63°.
 
 ## 9. Overenie
 
 ### 9.1 Reziduá
 
-* **Hlavný fit, bloky:** priamosť hrán 0,23 px, konzistencia s úbežníkmi 0,36 px, strany zakrytých nálepiek 1,7 px,
-  rohy nálepiek 14 px na bod (v spoločnom fite). S hlavným objektívom a pózou vozíka fitovanou len z jeho nálepiek je to
-  **7,6 px RMS (max 13,6 px)**, čo je nesúlad geometrie, nie šum. Tabuľka po nálepkách je nižšie, obrázky
+* **Hlavný fit, bloky:** priamosť hrán 0,23 px, konzistencia s úbežníkmi 0,36 px, strany zakrytých nálepiek 1,4 px,
+  rohy nálepiek 15,2 px na bod (v spoločnom fite, póza určená hlavne hranami).
+* **Rohy nálepiek s hlavným objektívom a pózou vozíka fitovanou z jeho nálepiek (metóda najmenších štvorcov):**
+  **7,9 px RMS (max 13,7 px)**. To je nesúlad geometrie, nie šum (šum ~0,15 px). Obrázky
   `results/residuals_stickers_main.png` (šípky ×10) a `results/predicted_stickers_crops.png` (výrezy: detegované zelené,
   predpovedané červené). Reziduá hrán: `results/residuals_edges_main.png`. Obraz po odstránení skreslenia je
   `results/undistorted_mean.png`: hrany políc, pásky aj modrá čiara sú vizuálne rovné.
-* **Len nálepky, s geometriou z výkresu:** RMS 5,3–5,9 px (max 9,6–11,4 px) pri šume ~0,13 px (medián rozptylu medzi snímkami).
-  Po vozíkoch 5,3 / 5,4 px, po radoch top 4,9 / A 8,0 / B 3,6 / C 5,4 px (`results/markers_residuals.png`).
 
-Reziduá nálepiek s hlavným objektívom (geometria z výkresu, póza vozíka robustne z jeho nálepiek; `work/cache/final_sticker_residuals.json`):
+Reziduá rohov nálepiek s hlavným objektívom (geometria z výkresu, póza vozíka metódou najmenších štvorcov):
 
-| vozík | id | poloha | RMS [px] | priemerný posun (x, y) [px] |
+| skupina | RMS [px] | max [px] | počet rohov |
+|---|---|---|---|
+| všetky | 7,9 | 13,7 | 62 |
+| vozík 80 | 8,1 | 12,3 | 34 |
+| vozík 310 | 7,6 | 13,7 | 28 |
+| rad top | 6,6 | 10,6 | 32 |
+| rad A | 11,0 | 13,7 | 10 |
+| rad B | 8,3 | 10,6 | 13 |
+| rad C | 7,0 | 9,7 | 7 |
+| každá zo 7 fotiek zvlášť (póza pre fotku) | 7,78–7,90 | 13,5–13,8 | 61–62 |
+
+Po nálepkách (rovnaká definícia):
+
+| vozík:id | poloha | RMS [px] | max [px] | rohov |
 |---|---|---|---|---|
-| 80 | 0 | TOP-TL | 2.9 | (-1.5, +0.9) |
-| 80 | 1 | TOP-TR | 3.3 | (-1.2, -2.6) |
-| 80 | 2 | TOP-BR | 5.6 | (-3.2, -4.4) |
-| 80 | 3 | A-LEFT | 7.6 | (+6.7, -2.8) |
-| 80 | 4 | A-RIGHT | 14.8 | (+6.1, +13.5) |
-| 80 | 5 | B-LEFT | 8.9 | (+6.7, -5.7) |
-| 80 | 6 | B-RIGHT | 10.1 | (+2.4, +9.8) |
-| 80 | 7 | C-LEFT | 8.8 | (-4.9, -7.3) |
-| 80 | 8 | C-RIGHT | 7.3 | (-4.8, +5.5) |
-| 80 | 92 | TOP-BL | 5.0 | (-2.9, +2.8) |
-| 310 | 0 | TOP-TL | 5.1 | (-2.8, -3.0) |
-| 310 | 1 | TOP-TR | 3.5 | (+1.7, -2.3) |
-| 310 | 2 | TOP-BR | 8.8 | (+5.9, +6.1) |
-| 310 | 3 | A-LEFT | 15.5 | (-0.1, +15.5) |
-| 310 | 4 | A-RIGHT | 10.2 | (-10.0, +0.6) |
-| 310 | 5 | B-LEFT | 12.3 | (+7.2, +9.9) |
-| 310 | 6 | B-RIGHT | 5.8 | (-4.9, -2.4) |
-| 310 | 7 | C-LEFT | 10.1 | (+5.4, +8.5) |
-| 310 | 8 | C-RIGHT | 2.1 | (+0.4, -1.8) |
-| 310 | 322 | TOP-BL | 3.9 | (+0.3, +1.3) |
+| 80:0 | TOP-TL | 3,7 | 4,1 | 4 |
+| 80:1 | TOP-TR | 6,7 | 8,0 | 4 |
+| 80:2 | TOP-BR | 8,9 | 10,3 | 4 |
+| 80:3 | A-LEFT | 7,1 | 8,0 | 2 |
+| 80:4 | A-RIGHT | 11,9 | 12,3 | 4 |
+| 80:5 | B-LEFT | 9,4 | 10,6 | 4 |
+| 80:6 | B-RIGHT | 7,9 | 8,4 | 4 |
+| 80:7 | C-LEFT | 9,3 | 9,7 | 2 |
+| 80:8 | C-RIGHT | 5,7 | 5,8 | 2 |
+| 80:92 | TOP-BL | 6,8 | 7,8 | 4 |
+| 310:0 | TOP-TL | 6,6 | 8,0 | 4 |
+| 310:1 | TOP-TR | 4,5 | 5,7 | 4 |
+| 310:2 | TOP-BR | 9,2 | 10,6 | 4 |
+| 310:3 | A-LEFT | 13,6 | 13,7 | 2 |
+| 310:4 | A-RIGHT | 9,5 | 10,1 | 2 |
+| 310:5 | B-LEFT | 10,4 | 10,4 | 1 |
+| 310:6 | B-RIGHT | 6,9 | 7,9 | 4 |
+| 310:7 | C-LEFT | 7,9 | 7,9 | 1 |
+| 310:8 | C-RIGHT | 4,7 | 5,6 | 2 |
+| 310:322 | TOP-BL | 3,8 | 5,2 | 4 |
+
+* **Len nálepky, s geometriou z výkresu (M1):** RMS 5,0–5,9 px (max 9,5–11,7 px) pri šume ~0,13 px podľa modelu.
+  Najlepší model (k1,k2, pp v strede): po vozíkoch 5,7 / 5,8 px, po radoch top 5,6 / A 8,6 / B 3,4 / C 4,6 px
+  (`results/markers_residuals.png`).
 
 ### 9.2 Profil ohniska (`results/f_profiles.png`, `results/combined_f_profile.png`)
 
-* **Len nálepky:** RMS má minimum pri f ≈ 1310–1360 a rastie o ~1 px na každých ~100 px posunu f. Minimum je plytké a
+* **Len nálepky:** RMS má minimum pri f ≈ 1300–1375 a rastie o 0,5–1 px na každých 100 px posunu f. Minimum je plytké a
   vychýlené geometriou.
-* **Len hrany:** RMS hrán má minimum pri f ≈ 1430–1440 (so samostatnými zvislicami) a je veľmi plochý:
-  +0,005 px pri ±30 px. f zo samotných hrán je slabé.
-* **Kombinovaný (hlavný):** minimum χ² pri 1456. Zvýšenie χ² vážené blokmi je prudké len formálne. Reálnu neistotu
-  (±34 px) určuje bootstrap, rozptyl alternatív a syntetický test.
+* **Len hrany:** RMS priamosti má minimum pri f ≈ 1430–1440 (so samostatnými zvislicami) a je veľmi plochý:
+  +0,002 px pri ±30 px, +0,005 px pri ±50 px. f zo samotných hrán je slabé.
+* **Kombinovaný (hlavný):** f je pevne nastavené a všetko ostatné sa refituje (váhy blokov hlavného fitu). Minimum je pri
+  1469 px (mriežka po 31 px). Formálne Δχ² = 1 zodpovedá ±3,3 px (kovariancia). Pri f 1437 / 1500 px je Δχ²
+  94 / 88; RMS blokov rohy 10,2 / 11,4 (v minime 10,7), strany
+  1,95 / 1,37 (1,37), úbežníky 0,36 / 0,37 (0,36), priamosť
+  0,2317 / 0,2312 (0,2314) px. Nižšie f odmietajú hlavne strany nálepiek, vyššie f rohy nálepiek a úbežníky (samotné úbežníky majú minimum okolo 1440 px, rohy okolo 1310 px, strany okolo 1480 px).
+  Legenda obrázka: M = rohy nálepiek, L = strany čiastočne zakrytých nálepiek, V = úbežníky, S = priamosť.
+  Formálna krivka je úzka; reálnu neistotu (±31 px) určuje bootstrap, rozptyl alternatív a syntetický test.
 
 ### 9.3 Krížová validácia
 
-* **Len nálepky** (`20_markers_ba.py`): vynechanie jednej nálepky dáva predikčnú chybu 8,4–9,1 px (v rámci fitu 5,3–5,9).
-  Vynechanie radu: top 16–22 px, A 10–11, B 5–6, C 8–10 px. Vynechanie vozíka (vnútorné parametre z jedného vozíka,
-  póza druhého refitovaná): 5,5–6 px pre jednoduché modely a 20–90 px pre modely s voľným pp alebo k2, ktoré sa prehýbajú.
-* **Kombinovaný (hlavný), vynechanie radu / vozíka / oblasti hrán** (`51_combined_cv.py`):
+* **Len nálepky** (`20_markers_ba.py`): vynechanie jednej nálepky dáva predikčnú chybu 8,4–9,1 px (v rámci fitu 5,0–5,9).
+  Vynechanie radu: top 16–22 px, A 10–11, B 4,7–6, C 8–11 px. Vynechanie vozíka (vnútorné parametre z jedného vozíka,
+  póza druhého refitovaná): 5,8–6,0 px pre modely s pp v strede, 5,5–87 px pre modely s voľným pp (k1: 9,5 px).
+* **Kombinovaný (hlavný)** (`51_combined_cv.py`): vynechá sa rad, vozík, oblasť hrán alebo jedna nálepka, fit sa zopakuje
+  (vrátane váh blokov) a vynechané dáta sa predpovedajú. Pri vynechanom rade / nálepke sa použije póza redukovaného fitu,
+  pri vynechanom vozíku sa jeho póza refituje z jeho nálepiek. Pre porovnanie je uvedené RMS tých istých bodov v hlavnom fite.
 
-| záhyb | f | cx | cy | k1 | k2 | predikcia vynechaných dát |
-|---|---|---|---|---|---|---|
-| vynechaný rad top (8 nálepiek) | 1474 | 929 | 504 | -0.355 | +0.101 | rohy vynechaných nálepiek: 22.6 px RMS (v rámci fitu ~7,6) |
-| vynechaný rad A | 1428 | 928 | 501 | -0.333 | +0.089 | rohy vynechaných nálepiek: 9.0 px RMS (v rámci fitu ~7,6) |
-| vynechaný rad B | 1474 | 930 | 505 | -0.356 | +0.102 | rohy vynechaných nálepiek: 10.0 px RMS (v rámci fitu ~7,6) |
-| vynechaný rad C | 1436 | 927 | 501 | -0.335 | +0.090 | rohy vynechaných nálepiek: 8.7 px RMS (v rámci fitu ~7,6) |
-| vynechané nálepky vozíka 80 | 1437 | 927 | 502 | -0.336 | +0.091 | nálepky vozíka, len póza refitovaná: 7.5 px RMS |
-| vynechané nálepky vozíka 310 | 1483 | 927 | 503 | -0.357 | +0.102 | nálepky vozíka, len póza refitovaná: 7.8 px RMS |
-| vynechané hrany vozíka 310 | 1484 | 911 | 497 | -0.343 | +0.087 | priamosť vynechaných hrán: 0.251 px (v rámci fitu 0,231) |
-| vynechané hrany vozíka 80 | 1431 | 943 | 503 | -0.336 | +0.092 | priamosť vynechaných hrán: 0.253 px (v rámci fitu 0,231) |
-| vynechané hrany scény | 1473 | 934 | 533 | -0.365 | +0.117 | priamosť vynechaných hrán: 0.223 px (v rámci fitu 0,231) |
-| **rozptyl cez záhyby (std)** | **23** | 8 | 10 | 0.011 | 0.009 | |
+| vynechané | f | cx | cy | k1 | k2 | predikcia vynechaných [px] | tie isté body v hlavnom fite [px] | trénovacie rohy v spoločnom fite [px/bod] |
+|---|---|---|---|---|---|---|---|---|
+| rad top | 1474 | 929 | 504 | −0,355 | +0,102 | 22,6 | 20,1 | 2,9 |
+| rad A | 1428 | 928 | 501 | −0,333 | +0,089 | 9,0 | 6,4 | 14,4 |
+| rad B | 1475 | 931 | 506 | −0,357 | +0,104 | 9,9 | 8,0 | 17,3 |
+| rad C | 1435 | 927 | 501 | −0,335 | +0,090 | 8,7 | 4,0 | 11,6 |
+| vozík 80 | 1437 | 927 | 502 | −0,336 | +0,091 | 7,5 (póza refit.) | 8,1 (póza z nálepiek) | 12,9 |
+| vozík 310 | 1484 | 927 | 503 | −0,358 | +0,103 | 7,8 (póza refit.) | 7,6 (póza z nálepiek) | 15,1 |
+| hrany vozíka 310 | 1484 | 911 | 497 | −0,344 | +0,087 | priamosť 0,25 | 0,23 (všetky hrany) | 14,8 |
+| hrany vozíka 80 | 1431 | 943 | 503 | −0,335 | +0,092 | priamosť 0,25 | 0,23 (všetky hrany) | 10,7 |
+| hrany scény | 1474 | 935 | 534 | −0,365 | +0,117 | priamosť 0,22 | 0,23 (všetky hrany) | 15,2 |
+| **σ cez 9 foldov** | 25 | 8 | 11 | 0,012 | 0,010 | | | |
 
+  Vynechanie jednej nálepky (20 fitov): f 1442–1475 px (σ 8), cy 502–506,
+  zobrazenie sa zmení najviac o 1,8 / 8,3 / 11,2 px. f sa pohne o viac ako 5 px len pri
+  vynechaní nálepiek 80:3 (−26 px), 310:4 (+5 px), 310:5 (+6 px), 80:7 (−24 px). Predikčná chyba vynechanej nálepky: police 0,8–12,8 px,
+  top-nálepky 10–26 px; predikcia je v priemere o 6 % horšia než RMS tých istých bodov
+  v hlavnom fite, takže fit nie je preučený na jednotlivé nálepky, ale geometria top-dosiek sa z ostatných dát predpovedať nedá.
+  Najjasnejšie to ukazuje vynechanie celého top-radu: bez neho majú zvyšné rohy v spoločnom fite 2,9 px na bod
+  a top-rad sa predpovedá s chybou 22,6 px.
 * **Jackknife po hranách** (štúdia modelov, spoločné dáta): f 1413–1457 pri vynechaní jedného člena. Samotné hrany:
   vynechanie jednej krátkej hrany stĺpika vozíka 310 posunie f o ~+100 px.
 
-### 9.4 Syntetický round-trip (`work/44_synth_*`, `work/cache/synthetic_report.md`, `results/synthetic_*.png`)
+### 9.4 Syntetický round-trip (`work/45_synth_main.py`, `work/44_synth_*`, `results/synthetic_*.png`)
 
 Syntetické dáta majú presne reálnu geometriu a viditeľnosť (tie isté nálepky a rohy, tie isté hrany prevedené na ideálne priamky)
-a vznikli zo známeho objektívu. Použité scenáre:
+a vznikli zo známeho objektívu. Pravda T2: f = 1420, pp (935, 505), k1 −0,33, k2 0,09 (blízko výsledku); T1: f = 1250,
+pp (955, 530), k1 −0,26, k2 0,06. Scenáre:
 
 * **a** – len šum detekcie;
-* **b** – realistický šum: náhodná chyba polohy nálepiek 5 mm a výšky radov 33 mm, kalibrovaná tak, aby RMS nálepiek
-  bolo 5,4 px ako v reálnych dátach, plus ohyby a smerové chyby hrán z reálnych reziduí;
-* **c** – systematicky zdvihnuté top-dosky podľa diagnostiky.
+* **b** – realistický: šum detekcie + náhodná odchýlka 3D bodov od výkresu (σ 5 mm na nálepku) a výšok radov (σ 33 mm),
+  nastavená tak, aby RMS nálepiek bolo ako v reálnych dátach (5,1–5,4 px). Je to štatistický model nesúladu neznámeho
+  pôvodu, nie tvrdenie o nalepení. K tomu ohyby a smerové chyby hrán z reálnych reziduí;
+* **c** – systematicky zdvihnuté top-dosky podľa diagnostiky (kap. 5).
 
-| scenár | odhad | chyba f (bias ± scatter) | chyba zobrazenia stred / pás / rohy [px] |
-|---|---|---|---|
-| a (T2) | kombinovaný | +0,1 ± 0,3 | 0,1 / 0,1 / 0,3 |
-| a (T2) | len nálepky k1k2 pp voľný | +0,1 ± 0,3 | – / 0,1 / 0,6 |
-| b (T2) | **kombinovaný** | **+1 ± 36 (robustne 17)** | **2,9 / 10,9 / 16,1** |
-| b (T2) | spoločný fit z čiar | +13 ± 26 | – / 8,9 / 13,3 |
-| b (T2) | len nálepky (rôzne modely) | −19…+11 ± 65–100 | 21–62 / 45–186 v rohoch |
-| c (T2) | kombinovaný | +0,1 ± 0,6 | – / 0,2 / 0,6 |
-| c (T2) | len nálepky | **−115 až −143** | 32–38 / 49–97 v rohoch |
+**Hlavný odhad presne v tej podobe, v akej dal výsledok** (`45_synth_main.py`, váhy blokov iterované do konvergencie):
 
-* **Postup vráti známy objektív.** Kombinovaný odhad je nevychýlený vo všetkých scenároch.
-* **Formálne kovariancie podhodnocujú chybu 9–15×.** Bootstrap ju naopak prekrýva (pomer 0,4–1,0).
+| scenár | pravda | replík | odchýlka f (± chyba priemeru) | rozptyl f | RMSE f | RMSE cx / cy | RMSE k1 / k2 | RMSE zobrazenia stred / pás / rohy [px] |
+|---|---|---|---|---|---|---|---|---|
+| a | T2 | 8 | +0,1 ± 0,1 | 0,3 | 0,3 | 0,5 / 0,3 | 0,000 / 0,001 | 0,0 / 0,1 / 0,3 |
+| **b** | T2 | 30 | +0,3 ± 4,0 | 21,9 | 21,5 | 5,7 / 4,0 | 0,012 / 0,008 | 1,6 / 7,0 / 10,0 |
+| c | T2 | 8 | −0,6 ± 0,3 | 0,9 | 1,0 | 1,8 / 1,5 | 0,001 / 0,002 | 0,1 / 0,4 / 1,1 |
+| b | T1 | 30 | −7,7 ± 2,8 | 15,1 | 16,7 | 7,7 / 5,2 | 0,007 / 0,004 | 1,4 / 6,2 / 9,2 |
+
+* **Postup vráti známy objektív.** V scenároch a a c je hlavný odhad nevychýlený (f +0,1, resp. −0,6 px).
+  V realistickom scenári b je odchýlka f +0,3 ± 4,0 px (T2) a −7,7 ± 2,8 px (T1);
+  pri T2 je odchýlka nevýznamná, pri T1 je malá, ale štatisticky významná (2,8σ, 0,6 % f); voči rozptylu je malá a RMSE ju obsahuje. Rozptyl f v scenári b (T2) je 22 px.
 * **Hlavný výsledok berie konzervatívne väčšiu z dvoch hodnôt:** empirický rozpočet (bootstrap ⊕ rozptyl alternatív)
-  a RMSE zo scenára b. Tak vznikli hodnoty f ± 34, k1 ± 0,021 a zobrazenie 3,2 / 10,9 / 16,1 px.
+  a RMSE zo scenára b (T2, pravda blízko odhadu; 30 replík, RMSE má teda samo neistotu ~±13 %).
+  S pravdou T1 by vyšlo f ± 17 px a zobrazenie 1,4 / 6,2 / 9,2 px.
+* **Staršia štúdia** (`work/44_synth_*`, `work/cache/synthetic_report.md`, `results/synthetic_*.png`; pravda T2: f = 1400,
+  pp (935, 410), k1 −0,32, k2 0,08; 9 replík) porovnala všetky metódy: fity len z nálepiek sú
+  v scenári b rozptýlené o 65–100 px vo f (v rohoch 45–186 px zobrazenia) a v scenári c vychýlené o −115 až −143 px;
+  spoločný fit z čiar má v scenári b RMSE f ~27 px. **Formálne kovariancie podhodnocujú chybu 9–15×**, bootstrap ju naopak
+  skôr nadhodnocuje (pomer 0,4–1,0). Na reálnych dátach je bootstrapový rozptyl f hlavného odhadu 24 px,
+  teda porovnateľný s rozptylom v scenári b; scenár b je realistický.
 * Metóda plumb-line s pevným stredom (stred obrazu) je vychýlená, ak skutočný stred nie je v strede obrazu
   (T2: k1 o −0,018). Preto je stred skreslenia v hlavnom fite voľný (= hlavný bod).
 
 ### 9.5 Citlivosť na malé chyby detekcie rohov a hrán
 
-Na reálnych dátach pre hlavný (kombinovaný) odhad:
+Na reálnych dátach pre hlavný odhad (`work/46_sensitivity_main.py`): každá porucha sa aplikuje na pozorovania a celý fit
+sa zopakuje (vrátane váh blokov).
 
-| porucha | veľkosť | Δf [px] | Δcx, Δcy [px] | zmena zobrazenia stred / pás / rohy [px] |
-|---|---|---|---|---|
-| dilatácia alebo erózia čierneho štvorca | ±0,3 px na stranu | ∓0,9 | < 0,1 | 0,07 / 0,3 / 0,4 |
-| posun všetkých rohov v x alebo y | 0,2 px | < 0,3 | < 0,02 | < 0,1 |
-| zvislá mierka rohov (rolling-shutter) | 5·10⁻⁴ | +0,05 | < 0,03 | < 0,03 |
-| zvislá mierka celého obrazu | 5·10⁻⁴ | +2,0 | 0,3; 1,1 | 0,14 / 0,6 / 1,0 |
-| ArUco rohy namiesto hranových | 0,44 px RMS | −0,04 | < 0,01 | < 0,02 |
-| rohy opravené o posun hrán k čiernej | 0,96 px RMS | −0,04 | < 0,01 | < 0,02 |
-| hrany posunuté k tmavej strane | ±0,3 px | ±0,9 | ±0,3 (y) | 0,07 / 0,27 / 0,47 |
-| hrany posunuté von od stredu | 0,3 px | −0,7 | −0,3; +1,0 | 0,10 / 0,22 / 0,27 |
+| porucha | veľkosť | Δf [px] | Δcx, Δcy [px] | Δk1 | zmena zobrazenia stred / pás / rohy [px] |
+|---|---|---|---|---|---|
+| dilatácia čierneho štvorca | +0,3 px na stranu | −1,03 | +0,02; −0,01 | +0,0004 | 0,07 / 0,33 / 0,45 |
+| erózia čierneho štvorca | −0,3 px na stranu | −0,28 | −0,11; −0,09 | +0,0002 | 0,02 / 0,08 / 0,09 |
+| posun všetkých rohov a strán v x | 0,2 px | −0,08 | +0,01; +0,01 | +0,0000 | 0,01 / 0,02 / 0,04 |
+| posun všetkých rohov a strán v y | 0,2 px | −0,29 | −0,00; −0,01 | +0,0001 | 0,02 / 0,09 / 0,12 |
+| zvislá mierka rohov (rolling-shutter) | 5·10⁻⁴ | +0,46 | −0,01; +0,01 | −0,0002 | 0,03 / 0,15 / 0,20 |
+| zvislá mierka celého obrazu | 5·10⁻⁴ | +0,87 | +0,00; −0,15 | −0,0001 | 0,07 / 0,29 / 0,54 |
+| ArUco rohy namiesto hranových | 0,44 px RMS | +0,03 | −0,01; −0,01 | −0,0000 | 0,00 / 0,01 / 0,01 |
+| rohy opravené o posun hrán k čiernej | 0,96 px RMS | +0,01 | −0,02; −0,01 | +0,0000 | 0,00 / 0,01 / 0,01 |
+| strany nálepiek opravené o posun hrán k čiernej | 0,66 px von | −3,54 | −0,10; −0,18 | +0,0017 | 0,26 / 1,11 / 1,50 |
+| rohy aj strany opravené | – | −3,53 | −0,11; −0,19 | +0,0017 | 0,25 / 1,10 / 1,49 |
+| hrany posunuté k tmavej strane | +0,3 px | +0,28 | +0,05; +0,07 | −0,0002 | 0,02 / 0,08 / 0,06 |
+| hrany posunuté k svetlej strane | 0,3 px | −0,27 | −0,06; −0,07 | +0,0002 | 0,02 / 0,08 / 0,05 |
+| hrany posunuté von od stredu | 0,3 px | +0,13 | +0,02; +0,19 | +0,0001 | 0,02 / 0,05 / 0,16 |
+| jednotlivé fotky namiesto priemeru 7 | 7 fotiek | −0,02 … +0,01 | | | max 0,00 / 0,01 / 0,01 |
 
-**Chyby detekcie sú zanedbateľné** voči modelovej a geometrickej neistote: menej než 1 px zobrazenia pri poruchách
-0,3 px. Pri samotných nálepkách sú citlivosti väčšie (až 2–3 px zobrazenia v páse, desiatky px v rohoch pri
-prehnutých modeloch).
+**Chyby detekcie sú malé** voči modelovej a geometrickej neistote: poruchy 0,2–0,3 px menia zobrazenie o menej než
+0,3 px v páse vozíkov. Najväčší je vplyv známeho posunu hrán k čiernej (0,66 px, kap. 3) na stranách
+nálepiek: oprava by posunula f o −3,5 px a zobrazenie o ≤ 1,5 px. Hlavný výsledok používa rohy aj strany
+bez tejto opravy (merané rovnako; pri rohoch oprava nemení nič), rozdiel je hlboko pod celkovou neistotou.
+Pri samotných nálepkách sú citlivosti väčšie (až 2–3 px zobrazenia v páse, desiatky px v rohoch).
 
 ## 10. Neistota zobrazenia
 
 `results/mapping_uncertainty.png` ukazuje mapu 1σ posunu priemetu po celom obraze v troch zložkách: štatistická
-(bootstrap: prevzorkovanie nálepiek a hrán v rámci skupín úbežníkov, 36 replík, každá s celým fitom), systematická
-(rozptyl 11 prijateľných alternatívnych metód a modelov voči hlavnému výsledku) a celková.
+(bootstrap: prevzorkovanie nálepiek a hrán v rámci skupín úbežníkov, 100 replík, každá s celým fitom vrátane váh),
+systematická (rozptyl 15 prijateľných alternatívnych metód, modelov a modelových rozhodnutí voči hlavnému výsledku)
+a rozpočet spolu (bez syntetického testu).
 
-| oblasť | štatistická | systematická | rozpočet spolu | syntetický test (scenár b) | **výsledok** |
-|---|---|---|---|---|---|
-| stred | 1,6 | 2,7 | 3,2 | 2,9 | **3,2 px** |
-| pás vozíkov | 5,5 | 7,1 | 9,0 | 10,9 | **10,9 px** |
-| rohy | 7,9 | 11,0 | 13,5 | 16,1 | **16,1 px** |
+| oblasť | štatistická | systematická | rozpočet spolu | syntetický test (scenár b, T2) | **výsledok (1σ)** | max v oblasti |
+|---|---|---|---|---|---|---|
+| stred | 1,6 | 2,5 | 3,0 | 1,6 | **3,0 px** | 3,6 |
+| pás vozíkov | 5,8 | 7,1 | 9,2 | 7,0 | **9,2 px** | 13,6 |
+| rohy | 8,4 | 10,7 | 13,7 | 10,0 | **13,7 px** | 17,8 |
 
 * Definícia: posun priemetu pevného lúča po kompenzácii rotácie kamery. Čistú rotáciu pohltí póza, takže
-  ide o chybu, ktorá sa prejaví pri súčasnom odhade pózy. Bez kompenzácie rotácie sú čísla väčšie
-  (hlavne v strede, kde sa prejaví posun hlavného bodu).
-* Dominuje neistota f (1 % vo f ≈ 7 px v páse vozíkov, ≈ 10 px v rohoch). Samotné skreslenie (pri pevnom f) je
-  určené na ~2 / 1,3 / 5 px (plumb-line).
-* Modely ohodnotené ako prehnuté (všetky modely len z nálepiek s výkresom) nemajú v rohoch zmysluplné zobrazenie.
-  Ich mapovanie sa v štatistike nepoužíva.
+  ide o chybu, ktorá sa prejaví pri súčasnom odhade pózy. **Bez kompenzácie rotácie** je rozpočet
+  32 / 33 / 35 px (stred / pás / rohy). Dominujú ho alternatívy s iným hlavným bodom (cy 426–438,
+  pp v strede obrazu); týka sa to len porovnania lúčov bez nového odhadu pózy.
+* Dominuje neistota f: 1 % vo f ≈ 4,6 px v páse vozíkov (medián, max 6,4) a ≈ 6,2 px
+  v rohoch (pri pevnom skreslení v pixelových jednotkách). Samotné skreslenie (pri pevnom f) je určené na ~2 / 1,3 / 5 px
+  (plumb-line).
+* Syntetický test dáva vo všetkých oblastiach menšie hodnoty než empirický rozpočet, výsledkom je teda rozpočet (bootstrap ⊕ alternatívy).
+* Hrany siahajú do vzdialenosti ~1057 px od hlavného bodu, rohy obrazu sú 1055–1147 px, takže rohy sú len mierna extrapolácia.
+  Modely vyhodnotené ako prehnuté (modely len z nálepiek bez bariéry) nemajú v rohoch zmysluplné zobrazenie a v štatistike nie sú.
 
 ## 11. Čo je určené, čo len konzistentné, čo sa určiť nedá
 
 **Určené z dát:**
-* Radiálny profil skreslenia (k1 a k2 spolu, v pixelových jednotkách k1/f² = −1,63·10⁻⁷, k2/f⁴ = 2,1·10⁻¹⁴):
-  z priamosti 61 hrán s rezíduom 0,22 px, zhodne v dvoch nezávislých implementáciách.
-* cx = 928 ± 12 px.
-* f = 1456 ± 34 px, ale len spojením nálepiek a hrán (hrany samé ±50–120 px, nálepky samé sú vychýlené).
-* Neplatnosť geometrie výkresu voči obrazu: nezávisí od objektívu (dvojpomer, všeobecná projektívna kamera).
+* Radiálny profil skreslenia (k1 a k2 spolu; v pixelových jednotkách hlavného výsledku k1/f² = −1,63·10⁻⁷, k2/f⁴ = 2,14·10⁻¹⁴):
+  z priamosti 61 hrán s rezíduom 0,22 px, zhodne v dvoch nezávislých implementáciách (samotné hrany: −1,60·10⁻⁷, 1,96·10⁻¹⁴).
+* cx = 928 ± 11 px.
+* f = 1469 ± 31 px, ale len spojením hrán a nálepiek: úbežníky hrán + strany nálepiek. Hrany samé dávajú f s neistotou
+  ±21–48 px (bootstrap) až ±110–156 px (jackknife, iná implementácia); nálepky samé sú vychýlené.
+* Nesúlad geometrie výkresu s obrazom: nezávisí od objektívu (dvojpomer, všeobecná projektívna kamera).
 
 **Len konzistentné s dátami:**
-* cy v rozsahu ~426–513 px podľa predpokladu o čiarach na podlahe (hlavná hodnota 502 ± 35).
-* k3 ≈ −0,02…−0,03 (nevýznamné zlepšenie).
-* Konkrétna fyzikálna príčina nesúladu: top vyššie o 60–80 mm, alebo police nižšie; sklony dosiek 4–13°.
+* cy = 503 ± 29 px: nesú ho úbežníky a predpoklad o rovnobežnosti čiar na podlahe; rôzne rozumné predpoklady dávajú
+  426–513 px.
+* k3 ≈ −0,03 (nevýznamné zlepšenie).
+* Opis nesúladu geometrie: top-nálepky vyššie o 60–80 mm voči policiam, sklony dosiek 4–13°. Jediná nezávislá kontrola
+  (zadná horná tyč vozíka 80) naznačuje skôr zdvihnuté top-dosky než nižšie police (kap. 5); je to len náznak.
 
 **Z dát sa určiť nedá:**
 * p1, p2 (tangenciálne) a fx ≠ fy (pomer strán pixla); predpokladá sa 0 a 1.
-* Či je posunutá top-doska, alebo police (pozorovateľný je len relatívny posun).
+* Príčina nesúladu geometrie (rám, výšky políc, uchytenie dosiek).
 * Skreslenie za rohmi obrazu (extrapolácia), ani to, či má objektív skutočne tvar Brown k1, k2, alebo iný
-  dvojparametrový radiálny tvar. V obraze sa líšia o ≤ 2,7 px a tento rozdiel je v systematike.
+  dvojparametrový radiálny tvar. V obraze sa líšia o ≤ 2,7 px (RMS; max 3,9 px) a tento rozdiel je v systematike.
 
 ## 12. Čo by meranie najviac spresnilo
 
@@ -433,8 +556,9 @@ Poradie podľa očakávaného prínosu:
    s presnosťou ~±15 px a hlavný bod.
 3. **Pridať priame 3D referencie so známymi rozmermi v rohoch obrazu:** napríklad dlhé rovné latky alebo pásky na podlahe
    v dvoch kolmých smeroch cez celé zorné pole (priamosť + kolmosť = úbežníky) a zvislé tyče pri okrajoch.
-   Dnes sú rohy obrazu pokryté slabo (vľavo hore regál, hore v strede pohyblivá osoba), hlavný bod v y určuje
-   najmä jedna skupina čiar na podlahe.
+   Dnes sú rohy obrazu pokryté slabo (vľavo hore regál, hore v strede pohyblivá osoba), hlavný bod v y určujú
+   najmä úbežníky a jedna skupina čiar na podlahe. Chýba aj úbežník hĺbky vozíka (os Y): dlhá rovná hrana pozdĺž boku vozíka
+   (napr. páska na podlahe rovnobežne s vozíkom) by pridala tretí kolmý smer.
 4. **Nálepky na pevných, rovných podložkách** namiesto papiera na doskách, viac nálepiek na rôznych výškach a
    ďalej od stredu (rohy obrazu); ideálne aj zvisle, aby sa zlepšila kondícia f.
 5. **Viac záberov s pohybom vozíka** (ten istý vozík v rôznych polohách a natočeniach). Každá póza pridá nezávislú
@@ -454,38 +578,42 @@ sa necommitujú a vytvoria sa znova v krokoch 1–3).
 |---|---|---|
 | 1 | `01_detect_markers_initial.py`, `02_initial_calib.py` | prvá detekcia, chvenie snímok, počiatočný fit |
 | 2 | `03_mean_image.py` | priemerný obraz so skompenzovaným chvením |
-| 3 | `11_markers_a_guided.py`, `11_markers_b_corners.py`, `11_markers_c_fit.py`, `11_markers_d_diag.py`, `12_review_markers_check.py`, `12_review_markers.py`, `12_review_markers_plot.py` | `results/detections.json`, `markers_*.png` |
+| 3 | `11_markers_a_guided.py`, `11_markers_b_corners.py`, `11_markers_c_fit.py`, `11_markers_d_diag.py`, `12_review_markers_check.py`, `12_review_markers.py`, `12_review_markers_plot.py`, `93_detections_sides.py` | `results/detections.json`, `markers_*.png` |
 | 4 | `10_edges_cart310_trace.py` (+ `_summary`, `_boardcheck`), `10_edges_cart80_trace.py`, `10_edges_scene_trace.py` / `_final.py`, `12_review_edges_{cart310,cart80,scene}.py`, `13_edges_dedupe.py`, `91_merge_edges.py` | `results/edges.json`, `edges_*.png` |
 | 5 | `20_markers_ba.py` | metóda M1 |
-| 6 | `30_lines_methods.py 40` (orchestrátor) a `40_lines_indep_{a,b,c,d,e,g,h,i,j,f}_*.py` (nezávislá implementácia) | M2–M4 |
+| 6 | `30_lines_methods.py 40` (40 = počet bootstrap replík; orchestrátor) a `40_lines_indep_{a,b,c,d,e,g,h,i,j,f}_*.py` (nezávislá implementácia) | M2–M4 |
 | 7 | `41_cuboid_{fit,predict,diag}.py` | M5 |
 | 8 | `42_geomdiag_{a,b,c,f,d,e,g,h}_*.py` | diagnostika geometrie, M7, M8 |
 | 9 | `43_altmodels_{fit,diaggeom,report,review}.py` | M9 |
-| 10 | `run_combined.sh` (= `50_combined.py fit`, 3× `boot`, `finalize`), `51_combined_cv.py all` | hlavná metóda M6 |
-| 11 | `44_synth_{a_setup,b_roundtrip,c_sensitivity,d_report}.py` | syntetický test a citlivosti |
-| 12 | `92_extract_alternatives.py`, `95_final.py`, `96_plots.py`, `98_finalize_json.py`, `90_compare_methods.py`, `97_report_tables.py` | `results/lens_result.json`, `lens_alternatives.json`, `lens_by_method.json`, grafy, tabuľky |
+| 10 | `run_combined.sh` (= `50_combined.py fit`, 4× `boot` po 25 replík, `finalize`), `51_combined_cv.py all` | hlavná metóda M6, varianty, vplyv blokov, krížová validácia |
+| 11 | `SYNTH_T2=1400,935,410,-0.32,0.08` + `44_synth_{a_setup,b_roundtrip,c_sensitivity,d_report}.py` (štúdia všetkých metód); `SYNTH_SETUP=cache/synthetic_setup_main.json python3 44_synth_a_setup.py`, potom `45_synth_main.py 30 4` a `46_sensitivity_main.py` (hlavný odhad) | syntetický test a citlivosti |
+| 12 | `92_extract_alternatives.py`, `95_final.py`, `96_plots.py`, `98_finalize_json.py`, `90_compare_methods.py`, `97_report_tables.py`, `99_assemble_report.py` | `results/lens_result.json`, `lens_alternatives.json`, `lens_by_method.json`, grafy, `REPORT.md` |
 
 Zdieľané moduly: `common.py` (model kamery, špecifikácia, kontrola prehnutia), `calib.py` (BA), `edgelib.py` (sub-pixelové hrany),
 `lineselfcal.py` (plumb-line, úbežníky, spoločný fit z čiar), `combined.py` (spoločný odhad), `evaltools.py`
-(neistota zobrazenia), `markerdata.py`, `linedata.py`, `altmodels.py`, `synthlines.py`.
+(neistota zobrazenia), `markerdata.py`, `linedata.py`, `altmodels.py`, `synthlines.py`, `resultnorm.py` (jednotný tvar výsledkov).
 
 **Rozhodnutia a predpoklady (zapísané podľa zadania):**
+* **Rozmery a polohy nálepiek** presne podľa výkresu vo všetkých hlavných výpočtoch; nesúlad je opísaný ako pozorovanie (kap. 5).
 * **Chvenie medzi snímkami:** modelujem ho ako zvislý posun a mierku pre každú snímku a pracujem s priemerom 7 snímok.
 * **Rezíduá hrán:** merajú sa v skreslenom obraze (forward). Model nesmie byť prehnutý vo vnútri obrazu (bariéra).
-* **Hrany koncových dosiek** sa nepoužívajú v úbežníkoch (nie sú rovnobežné s osami vozíka), len na priamosť.
+* **Hrany koncových dosiek** sa nepoužívajú v úbežníkoch (nie sú rovnobežné s osami vozíka), len na priamosť; preto nie je
+  k dispozícii úbežník osi Y.
 * **Čiary na podlahe:** biela páska (obe hrany) tvorí jednu skupinu. Modrá čiara vľavo, biela priečna páska
-  a modrá čiara nad ňou sa považujú za rovnobežné, čo určuje cy (variant bez tohto predpokladu je v systematike).
-* **Zvislice scény** majú vlastný smer, nie sú viazané na stĺpiky vozíkov.
-* **Váhy v hlavnom fite:** blokové variančné komponenty. Všetky nálepky majú plnú váhu (geometria z výkresu). Robustná
-  varianta (top-nálepky prakticky vyradené, f = 1475) je alternatíva a patrí do systematiky.
-* **Neistoty:** konzervatívne väčšia z hodnôt (rozpočet: bootstrap ⊕ alternatívy; syntetický round-trip, scenár b).
+  a modrá čiara nad ňou sa považujú za rovnobežné (variant bez tohto predpokladu je v systematike).
+* **Zvislice scény** majú vlastný smer, nie sú viazané na stĺpiky vozíkov (variant so spoločnou zvislicou je v systematike).
+* **Váhy v hlavnom fite:** blokové variančné komponenty iterované do konvergencie; všetky rohy nálepiek majú spoločnú váhu.
+  Iné rozumné váženia (samostatne top / police, robustné po nálepkách) sú alternatívy v systematike.
+* **Neistoty:** konzervatívne väčšia z hodnôt (rozpočet: bootstrap ⊕ alternatívy; syntetický round-trip hlavného odhadu, scenár b).
 
 ## 14. Súbory vo `results/`
 
-* **Výsledky:** `lens_result.json` (hlavný), `lens_alternatives.json` (6 rovnocenne podporených variantov), `lens_by_method.json`
-  (každá metóda a variant zvlášť, pole `method`).
-* **Detekcie a hrany:** `detections.json` (rohy nálepiek s priradením k fyzickým rohom), `edges.json` (všetky hrany
-  s bodmi a overením).
+* **Výsledky:** `lens_result.json` (hlavný; `uncertainty_details` s kovarianciou, `mapping_uncertainty_details`, `rms_details`
+  s reziduami po nálepkách / radoch / vozíkoch / fotkách, `determination`), `lens_alternatives.json` (7 rovnocenne
+  podporených variantov v rovnakom tvare), `lens_by_method.json` (každá metóda a variant zvlášť, pole `method` a `method_id`,
+  jednotné kľúče neistôt a rovnaká definícia `rms_reprojection_error_px`).
+* **Detekcie a hrany:** `detections.json` (rohy nálepiek s priradením k fyzickým rohom, strany čiastočne zakrytých nálepiek),
+  `edges.json` (všetky hrany s bodmi a overením).
 * **Obrázky:**
   - hrany: `edges_all.png`, `edges_cart310.png`, `edges_cart80.png`, `edges_scene.png`;
   - nálepky: `markers_overlay.png`, `markers_crops.png`, `markers_rect_views.png`, `markers_edge_bias.png`;
@@ -493,7 +621,7 @@ Zdieľané moduly: `common.py` (model kamery, špecifikácia, kontrola prehnutia
     `markers_residuals.png`, `markers_complete_residuals.png`;
   - profil ohniska: `f_profiles.png`, `combined_f_profile.png`, `markers_f_profile.png`, `cuboid_f_profile.png`;
   - neistota a porovnanie: `mapping_uncertainty.png`, `methods_comparison.png`, `undistorted_mean.png`;
-  - diagnostika geometrie: `geomdiag_*.png`, `cuboid_*.png`;
+  - diagnostika geometrie: `geomdiag_*.png`, `cuboid_*.png` (`cuboid_overlay.png` je s objektívom metódy M5, nie hlavným);
   - čiarové metódy (nezávislá implementácia): `40_lines_indep_*.png`;
   - modely objektívu: `altmodels_*.png`;
-  - syntetický test a citlivosti: `synthetic_*.png`.
+  - syntetický test a citlivosti (štúdia všetkých metód): `synthetic_*.png`.

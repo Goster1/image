@@ -11,7 +11,7 @@ Kamera Tracer WEB007, obraz 1920×1080, 7 fotiek z 2026-08-11 08:58. Všetko je 
 |---|---|---|---|
 | fx = fy | **{{f1}} px** | ± {{sf0}} px ({{sfpct}} %) | určené, ale len spojením hrán a nálepiek (kap. 6, M6); samotné hrany dávajú f krehko |
 | cx | **{{cx1}} px** | ± {{scx0}} px | určené |
-| cy | **{{cy1}} px** | ± {{scy0}} px | len konzistentné (nesie ho hlavne predpoklad o rovnobežnosti čiar na podlahe) |
+| cy | **{{cy1}} px** | ± {{scy0}} px | len konzistentné (nesú ho úbežníky; rozumné alternatívne predpoklady o čiarach na podlahe a zvisliciach dávajú 426–513) |
 | k1 | **{{k1_3}}** | ± {{sk1_3}} | určené spolu s k2 (korelácia {{rho_k1k2}}) |
 | k2 | **{{k2_3}}** | ± {{sk2_3}} | určené spolu s k1 |
 | p1, p2 | 0 (fixované) | – | dáta ich neurčia (voľné iba pohltia nesúlad geometrie) |

@@ -10,6 +10,7 @@ Usage: python3 45_synth_main.py [NREP_B=30] [NWORKERS=4]
 Writes work/cache/synthetic_main.json (per-scenario bias, scatter, RMSE, mapping RMSE per region).
 """
 import importlib
+import os
 import sys
 import time
 from multiprocessing import Pool
@@ -18,6 +19,7 @@ import numpy as np
 
 from common import CACHE, K_from, save_json
 
+os.environ.setdefault("SYNTH_SETUP", f"{CACHE}/synthetic_setup_main.json")  # truths T1 / T2 of the main-estimator study
 B = importlib.import_module("44_synth_b_roundtrip")
 L = B.L
 NREP_B = int(sys.argv[1]) if len(sys.argv) > 1 else 30

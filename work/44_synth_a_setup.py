@@ -4,6 +4,7 @@ calibration of the 'realistic' unknown-geometry errors.
 Writes work/cache/synthetic_setup.json (read by 44_synth_b_roundtrip.py / 44_synth_c_sensitivity.py).
 """
 import importlib
+import os
 import time
 
 import numpy as np
@@ -56,7 +57,9 @@ print(f"edge white sigma median {np.median(sig):.3f} (IQR {np.percentile(sig,25)
 # ------------------------------------------------------------------ true lenses
 TRUTHS = {
     "T1": dict(f=1250.0, cx=955.0, cy=530.0, k1=-0.26, k2=0.06, note="prescribed test lens"),
-    "T2": dict(f=1420.0, cx=935.0, cy=505.0, k1=-0.33, k2=0.09,
+    # SYNTH_T2="f,cx,cy,k1,k2" overrides T2; the all-methods study (synthetic_setup.json / synthetic_report.*) was run with
+    # SYNTH_T2="1400,935,410,-0.32,0.08", the main-estimator study (SYNTH_SETUP=cache/synthetic_setup_main.json) with the default
+    "T2": dict(**dict(zip(("f", "cx", "cy", "k1", "k2"), map(float, os.environ.get("SYNTH_T2", "1420,935,505,-0.33,0.09").split(",")))),
                note="near the current edge-based estimates (commit d37a155 pipeline on the reviewed edges: lines joint f 1425, pp (927,503), "
                     "k1 -0.333, k2 0.090; VP f 1419, pp (941,513))"),
 }
@@ -152,5 +155,5 @@ save_json(dict(
     geometry_noise=dict(sigma_sticker_mm=s_s, sigma_row_mm=s_r, target_sticker_part_px=target_sticker_part, real_rms_px=real_rms,
                         synthetic_median_rms_px=final_rms, diagnosed_whatif_rms_px=float(np.median(rc)),
                         diagnosed_offsets={f"{k[0]}:{k[1]}": v.tolist() for k, v in off_c.items()}),
-    runtime_s=time.time() - t0), f"{CACHE}/synthetic_setup.json")
+    runtime_s=time.time() - t0), os.environ.get("SYNTH_SETUP", f"{CACHE}/synthetic_setup.json"))
 print("done", round(time.time() - t0, 1), "s")

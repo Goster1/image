@@ -38,7 +38,7 @@ NB_MARK = (6, 40)  # (replicates with bootstrap, bootstrap size) markers
 NB_LINE = (3, 12)
 NB_COMB = (2, 6)
 
-SETUP = load_json(f"{CACHE}/synthetic_setup.json")
+SETUP = load_json(os.environ.get("SYNTH_SETUP", f"{CACHE}/synthetic_setup.json"))
 M, E, S = L.load_real()
 NE = len(E)
 init = load_json(f"{CACHE}/initial_calib.json")

@@ -135,7 +135,8 @@ for r, v in RD["per_row"].items():
     t.append(f"| rad {r} | {num(v['rms_px'])} | {num(v['max_px'])} | {v['n_corners']} |")
 ph = RD["per_photo"]
 t.append(f"| každá zo 7 fotiek zvlášť (póza pre fotku) | {num(min(v['rms_px'] for v in ph.values()), 2)}–{num(max(v['rms_px'] for v in ph.values()), 2)} | "
-         f"{num(min(v['max_px'] for v in ph.values()))}–{num(max(v['max_px'] for v in ph.values()))} | 62 |")
+         f"{num(min(v['max_px'] for v in ph.values()))}–{num(max(v['max_px'] for v in ph.values()))} | "
+         f"{min(v['n_corners'] for v in ph.values())}–{max(v['n_corners'] for v in ph.values())} |")
 T["TABLE_RESID"] = "Reziduá rohov nálepiek s hlavným objektívom (geometria z výkresu, póza vozíka metódou najmenších štvorcov):\n\n" + "\n".join(t)
 DET = {(m["cart"], m["id"]): m for m in load_json(f"{RESULTS}/detections.json")["markers"]}
 t = ["| vozík:id | poloha | RMS [px] | max [px] | rohov |", "|---|---|---|---|---|"]
@@ -192,6 +193,8 @@ held_sh = [v["heldout_stickers_pred_rms_px"] for k, v in st.items() if (int(k.sp
 V.update(loo_top_lo=num(min(held_top), 0), loo_top_hi=num(max(held_top), 0), loo_shelf_lo=num(min(held_sh), 1), loo_shelf_hi=num(max(held_sh), 1))
 hh = np.array([v["heldout_stickers_pred_rms_px"] for v in st.values()])
 ii = np.array([v["heldout_points_rms_in_main_fit_px"] for v in st.values()])
+big = [k[8:].replace("_", ":") + f" ({num(v['intrinsics']['f'] - f, 0, True)} px)" for k, v in st.items() if abs(v["intrinsics"]["f"] - f) > 5]
+V["loo_big"] = ", ".join(big) if big else "žiadnej"
 V["loo_infl"] = num(100 * (np.sqrt(np.mean(hh ** 2)) / np.sqrt(np.mean(ii ** 2)) - 1), 0)
 
 # ---------------- synthetic
@@ -211,9 +214,17 @@ V.update(syn_a_bias_f=num(SYN["T2_a"]["bias"][0], 1, True), syn_c_bias_f=num(SYN
          syn_t1_bias_se=num(s1["bias_se"][0], 1), syn_b_std_f=num(sb["std"][0], 0), syn_b_n=str(sb["n"]),
          syn_rmse_relerr=num(100 / np.sqrt(2 * (sb["n"] - 1)), 0), syn_t1_rmse_f=num(s1["rmse"][0], 0),
          syn_t1_map=" / ".join(num(s1["mapping_rmse"][k]["median"]) for k in ("centre", "cart_band", "corners")))
-z = [abs(sb["bias"][0]) / sb["bias_se"][0], abs(s1["bias"][0]) / s1["bias_se"][0]]
-V["syn_bias_comment"] = ("v rámci 2σ nevychýlené" if max(z) < 2 else
-                         f"mierne vychýlené (až {num(max(z), 1)}σ), ale odchýlka je malá voči rozptylu a je obsiahnutá v RMSE, z ktorého sa berie neistota")
+z2, z1 = abs(sb["bias"][0]) / sb["bias_se"][0], abs(s1["bias"][0]) / s1["bias_se"][0]
+V["syn_bias_comment"] = (("pri T2 je odchýlka nevýznamná" if z2 < 2 else f"pri T2 je odchýlka {num(z2, 1)}σ") + ", " +
+                         ("pri T1 tiež." if z1 < 2 else f"pri T1 je malá, ale štatisticky významná ({num(z1, 1)}σ, "
+                          f"{num(100 * abs(s1['bias'][0]) / s1['truth'][0], 1)} % f); voči rozptylu je malá a RMSE ju obsahuje."))
+bs = boot[:, 0].std(ddof=1)
+V["boot_vs_syn"] = ("teda porovnateľný s rozptylom v scenári b; scenár b je realistický." if abs(bs / sb["std"][0] - 1) < 0.3 else
+                    ("väčší než v scenári b; bootstrap je teda konzervatívnejší." if bs > sb["std"][0] else "menší než v scenári b; scenár b je teda pesimistický."))
+syn_small = all((BUD["regions"][k].get("synthetic_rmse") or 0) <= BUD["regions"][k].get("budget_median", BUD["regions"][k]["total_median"]) for k in ("centre", "cart_band", "corners"))
+V["syn_vs_budget"] = ("Syntetický test dáva vo všetkých oblastiach menšie hodnoty než empirický rozpočet, výsledkom je teda rozpočet "
+                      "(bootstrap ⊕ alternatívy)." if syn_small else
+                      "Tam, kde syntetický test dáva viac než empirický rozpočet, berie sa hodnota zo syntetického testu.")
 
 # ---------------- sensitivity
 if SENS:
@@ -231,11 +242,11 @@ if SENS:
             continue
         r = SENS[k]
         dp = dict(zip(r["names"], r["dparams"]))
-        t.append(f"| {a} | {b} | {num(dp['f'], 1, True)} | {num(dp['cx'], 1, True)}; {num(dp['cy'], 1, True)} | {num(dp['k1'], 4, True)} | "
+        t.append(f"| {a} | {b} | {num(dp['f'], 2, True)} | {num(dp['cx'], 2, True)}; {num(dp['cy'], 2, True)} | {num(dp['k1'], 4, True)} | "
                  f"{num(r['map']['centre'], 2)} / {num(r['map']['cart_band'], 2)} / {num(r['map']['corners'], 2)} |")
     fr = SENS.get("_frames_summary")
     if fr:
-        t.append(f"| jednotlivé fotky namiesto priemeru 7 | 7 fotiek | {num(fr['df_range'][0], 1, True)} … {num(fr['df_range'][1], 1, True)} | | | "
+        t.append(f"| jednotlivé fotky namiesto priemeru 7 | 7 fotiek | {num(fr['df_range'][0], 2, True)} … {num(fr['df_range'][1], 2, True)} | | | "
                  f"max {num(fr['map_max']['centre'], 2)} / {num(fr['map_max']['cart_band'], 2)} / {num(fr['map_max']['corners'], 2)} |")
     T["TABLE_SENS"] = "\n".join(t)
     small = [SENS[k]["map"]["cart_band"] for k, _, _ in labs if k in SENS and "bias" not in k]
@@ -255,7 +266,7 @@ T["TABLE_BUDGET"] = "\n".join(t)
 
 # ---------------- methods table
 mt = open(f"{CACHE}/report_tables.md").read().split("\n")
-T["TABLE_METHODS"] = "\n".join(x for x in mt if x.startswith("|"))
+T["TABLE_METHODS"] = "\n".join(re.sub(r"(?<![\w/:])-(?=\d)", "−", re.sub(r"(?<=\d)\.(?=\d)", ",", x)) for x in mt if x.startswith("|"))
 
 # ---------------- files section
 ALT = load_json(f"{RESULTS}/lens_alternatives.json")

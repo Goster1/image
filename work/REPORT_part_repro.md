@@ -16,7 +16,7 @@ sa necommitujú a vytvoria sa znova v krokoch 1–3).
 | 8 | `42_geomdiag_{a,b,c,f,d,e,g,h}_*.py` | diagnostika geometrie, M7, M8 |
 | 9 | `43_altmodels_{fit,diaggeom,report,review}.py` | M9 |
 | 10 | `run_combined.sh` (= `50_combined.py fit`, 4× `boot` po 25 replík, `finalize`), `51_combined_cv.py all` | hlavná metóda M6, varianty, vplyv blokov, krížová validácia |
-| 11 | `44_synth_{a_setup,b_roundtrip,c_sensitivity,d_report}.py` (štúdia všetkých metód), `45_synth_main.py 30 4` (hlavný odhad), `46_sensitivity_main.py` | syntetický test a citlivosti |
+| 11 | `SYNTH_T2=1400,935,410,-0.32,0.08` + `44_synth_{a_setup,b_roundtrip,c_sensitivity,d_report}.py` (štúdia všetkých metód); `SYNTH_SETUP=cache/synthetic_setup_main.json python3 44_synth_a_setup.py`, potom `45_synth_main.py 30 4` a `46_sensitivity_main.py` (hlavný odhad) | syntetický test a citlivosti |
 | 12 | `92_extract_alternatives.py`, `95_final.py`, `96_plots.py`, `98_finalize_json.py`, `90_compare_methods.py`, `97_report_tables.py`, `99_assemble_report.py` | `results/lens_result.json`, `lens_alternatives.json`, `lens_by_method.json`, grafy, `REPORT.md` |
 
 Zdieľané moduly: `common.py` (model kamery, špecifikácia, kontrola prehnutia), `calib.py` (BA), `edgelib.py` (sub-pixelové hrany),

@@ -15,6 +15,7 @@ Edge perturbations (structural edges): +-0.3 px along the normal towards the dar
 Writes work/cache/synthetic_sensitivity.json
 """
 import importlib
+import os
 import sys
 import time
 from multiprocessing import Pool
@@ -26,7 +27,7 @@ from common import CACHE, K_from, load_json, project, save_json
 
 L = importlib.import_module("44_synth_lib")
 NW = int(sys.argv[1]) if len(sys.argv) > 1 else 3
-SETUP = load_json(f"{CACHE}/synthetic_setup.json")
+SETUP = load_json(os.environ.get("SYNTH_SETUP", f"{CACHE}/synthetic_setup.json"))
 M, E, S = L.load_real()
 NE = len(E)
 MF = load_json(f"{CACHE}/markers_final.json")

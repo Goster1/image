@@ -4,6 +4,7 @@ Reads work/cache/synthetic_setup.json, synthetic_roundtrip_raw.pkl, synthetic_se
 Writes work/cache/synthetic_report.json / .md and results/synthetic_*.png.
 """
 import importlib
+import os
 import pickle
 
 import matplotlib
@@ -15,7 +16,7 @@ import numpy as np
 from common import CACHE, RESULTS, load_json, save_json
 
 L = importlib.import_module("44_synth_lib")
-SETUP = load_json(f"{CACHE}/synthetic_setup.json")
+SETUP = load_json(os.environ.get("SYNTH_SETUP", f"{CACHE}/synthetic_setup.json"))
 import glob
 
 RAW = None
