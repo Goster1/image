@@ -1,7 +1,7 @@
 """Final assembly: main lens, uncertainty budget, mapping uncertainty, plots, results/*.json.
 
-Main estimate: work/cache/method_combined.json (robust combined: stickers with drawing geometry, cluster-robust
-weights + verified edges). Uncertainty = statistical (cluster bootstrap of the main method) (+) systematic
+Main estimate: work/cache/method_combined.json (combined: ALL stickers with the drawing geometry at full weight +
+verified edges, block weights by variance components). Uncertainty = statistical (cluster bootstrap of the main method) (+) systematic
 (RMS deviation of the plausible alternative estimates listed in ALTS from the main one, evaluated on the
 MAPPING, rotation-compensated, and on the parameters) (+) sensitivity terms from the synthetic/sensitivity study.
 """
@@ -29,6 +29,7 @@ ALTS = [
     ("alt_brown_k1k2_joint", f"{CACHE}/method_alt_brown_k1k2.json", None),      # model-choice study, joint data, non-robust
     ("alt_brown_k1k2k3_joint", f"{CACHE}/method_alt_brown_k1k2k3.json", None),
     ("alt_division_l1l2", f"{CACHE}/method_alt_division_l1l2.json", None),
+    ("combined_k1k2_robust", f"{CACHE}/method_combined_alternatives.json", "combined_k1k2_robust"),  # top stickers ~0 weight
     ("combined_k1k2k3", f"{CACHE}/method_combined_alternatives.json", "combined_k1k2k3"),
     ("combined_k1k2p1p2", f"{CACHE}/method_combined_alternatives.json", "combined_k1k2p1p2"),
     ("combined_k1k2_ppfixed", f"{CACHE}/method_combined_alternatives.json", "combined_k1k2_ppfixed"),

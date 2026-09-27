@@ -49,7 +49,10 @@ for e in LINES:
     if e["id"] in FLOOR:
         e["vp_group"] = FLOOR[e["id"]]
 EDGES = LINES + SIDES
-ROBUST_C = 1.5  # px: sticker weight 1/(1+(rms/c)^2)
+ROBUST_C = 1.5  # px: sticker weight 1/(1+(rms/c)^2) (robust variant)
+MAIN_ROBUST = os.environ.get("COMBINED_MAIN", "nonrobust") == "robust"
+# main = all stickers with FULL weight (drawing geometry, as required) + all edges; block weights = variance
+# components (each block reduced chi2 ~ 1). The cluster-robust variant is reported as an alternative.
 print(f"stickers {len(M)}, corners {len(PTS)}, partial-sticker sides {len(SIDES)}, edges total {len(EDGES)}")
 
 SPECS = {
@@ -61,7 +64,8 @@ SPECS = {
 }  # k1-only omitted: the plumb-line shows it cannot straighten the edges (RMS 0.51 px, runs into the fold barrier)
 
 
-def run(spec, pts, edges, x0=None, sig=None, use=("M", "L", "V", "S"), loss="linear", robust=True):
+def run(spec, pts, edges, x0=None, sig=None, use=("M", "L", "V", "S"), loss="linear", robust=None):
+    robust = MAIN_ROBUST if robust is None else robust
     cb = Combined(pts, edges, spec, use=use, sig=sig)
     if x0 is None:
         K0 = K_from(1420.0, 1420.0, (W - 1) / 2, (H - 1) / 2)
@@ -96,16 +100,17 @@ if MODE == "fit":
         print(f"{name:14s} " + " ".join(f"{n}={v:.5g}±{e:.2g}" for n, v, e in zip(cb.inames, r.x[: cb.ni], s)),
               "| blocks", {k: (round(v[0], 3) if v[0] else None, v[1]) for k, v in br.items()})
 
-    # NON-robust variant (all stickers with full weight, block variance components only)
-    cb_r, r_r = run(SPECS["k1k2"], PTS, EDGES, robust=False)
+    # the OTHER variant (robust if the main is non-robust and vice versa)
+    cb_r, r_r = run(SPECS["k1k2"], PTS, EDGES, robust=not MAIN_ROBUST)
     Kr, dr = lens_of(cb_r, r_r.x)
-    summary["k1k2_nonrobust"] = dict(names=cb_r.inames, x=r_r.x[: cb_r.ni].tolist(), block_rms=cb_r.block_rms(r_r.x), K=Kr.tolist(), dist=dr.tolist(),
+    summary["k1k2_nonrobust" if MAIN_ROBUST else "k1k2_robust"] = dict(names=cb_r.inames, x=r_r.x[: cb_r.ni].tolist(), block_rms=cb_r.block_rms(r_r.x), K=Kr.tolist(), dist=dr.tolist(),
                                      sticker_rms=cb_r.sticker_rms(r_r.x))
-    print("non-robust k1k2", np.round(r_r.x[: cb_r.ni], 4), "sticker rms", {M[g]['role'] + f"@{M[g]['cart']}": round(v, 2) for g, v in cb_r.sticker_rms(r_r.x).items()})
+    print("other variant (robust)" if not MAIN_ROBUST else "other variant (non-robust)", np.round(r_r.x[: cb_r.ni], 4), "sticker rms", {M[g]['role'] + f"@{M[g]['cart']}": round(v, 2) for g, v in cb_r.sticker_rms(r_r.x).items()})
     # sticker weights / residuals of the main (robust) fit
     cbm, rm = fits["k1k2"]
     srm = cbm.sticker_rms(rm.x)
-    sticker_table = [dict(cart=M[g]["cart"], id=M[g]["id"], role=M[g]["role"], rms_px=v, weight=1.0 / (1.0 + (v / ROBUST_C) ** 2)) for g, v in sorted(srm.items())]
+    sticker_table = [dict(cart=M[g]["cart"], id=M[g]["id"], role=M[g]["role"], rms_px=v,
+                          weight=(1.0 / (1.0 + (v / ROBUST_C) ** 2)) if MAIN_ROBUST else 1.0) for g, v in sorted(srm.items())]
     for t in sticker_table:
         print(f"   sticker {t['cart']}:{t['id']:3d} {t['role']:8s} rms {t['rms_px']:6.2f} px  weight {t['weight']:.3f}")
     # data-subset variants (information content of each source)
@@ -210,7 +215,8 @@ plt.close(fig)
 
 unc = {f"{n}_1sigma": float(v) for n, v in zip(cb.inames, rstd(boot))}
 unc.update({f"{n}_1sigma_cov": float(v) for n, v in zip(cb.inames, summary["k1k2"]["sigma_cov"])})
-out = lens_json(K, d, method="combined_robust (stickers with drawing geometry, cluster-robust IRLS weights + edges: VPs incl. floor lines, straightness, sides of partly hidden stickers)",
+out = lens_json(K, d, method=("combined_robust (stickers with drawing geometry, cluster-robust IRLS weights" if MAIN_ROBUST else
+                               "combined (ALL stickers with the drawing geometry at full weight") + " + verified edges: VPs incl. floor lines, straightness, sides of partly hidden stickers; block weights by variance components)",
                 model="fx=fy, pp free, k1,k2 (p1=p2=k3=0)", rms_reprojection_error_px=summary["k1k2"]["block_rms"]["M"][0],
                 uncertainty=unc, mapping_uncertainty_px={k: v["rms_median_px"] for k, v in mstats.items() if k != "whole_image"},
                 data_used=f"{len(PTS)} valid sticker corners of {len(M)} stickers (7-frame means), {len(EDGES)} edges incl. {len(SIDES)} sides of partly hidden stickers",
@@ -227,6 +233,11 @@ for name in SPECS:
                           rms_reprojection_error_px=s["block_rms"]["M"][0],
                           uncertainty={f"{n}_1sigma_cov": v for n, v in zip(s["names"], s["sigma_cov"])},
                           details=dict(block_rms=s["block_rms"])))
+other = "k1k2_nonrobust" if MAIN_ROBUST else "k1k2_robust"
+so = summary[other]
+alts.append(lens_json(np.array(so["K"]), so["dist"], method=f"combined_{other}", model=other + " (stickers " +
+                      ("full weight" if MAIN_ROBUST else "cluster-robust IRLS weights, c=1.5 px") + ")",
+                      rms_reprojection_error_px=None, details=dict(block_rms=so["block_rms"], sticker_rms=so.get("sticker_rms"))))
 save_json(alts, f"{CACHE}/method_combined_alternatives{TAG}.json")
 save_json(dict(summary=summary, profile=prof.tolist(), boot=boot.tolist(), mapping=mstats, mapping_raw=mstats_raw, sticker_table=sticker_table),
           f"{CACHE}/combined_full{TAG}.json")
