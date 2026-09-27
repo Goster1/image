@@ -2,7 +2,7 @@
 
 | metóda | rozmery z výkresu | f [px] | cx | cy | k1 | k2 | k3 | prehnutie | Δ zobrazenia vs hlavný: stred / pás / rohy [px] | neistota zobrazenia metódy (stred / pás / rohy) | pozn. |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| **M6 kombinovaný – HLAVNÝ** | áno (všetky nálepky) | 1469 ± 31 | 928 ± 11 | 503 ± 29 | -0.352 | +0.099 | +0.000 | nie | 0.0 / 0.0 / 0.0 | 3.0 / 9.2 / 13.7 | celková neistota |
+| **M6 kombinovaný – HLAVNÝ** | áno (všetky nálepky) | 1469 ± 47 | 928 ± 19 | 503 ± 29 | -0.352 | +0.099 | +0.000 | nie | 0.0 / 0.0 / 0.0 | 4.0 / 15.3 / 21.6 | celková neistota |
 | M6, samostatné váhy top / police | áno | 1473 | 929 | 504 | -0.354 | +0.101 | +0.000 | nie | 0.3 / 1.2 / 1.4 | – / – / – | variant |
 | M6, robustné váhy nálepiek | áno (top-nálepky ~0 váha) | 1476 | 930 | 505 | -0.357 | +0.103 | +0.000 | nie | 0.5 / 2.2 / 2.7 | – / – / – | variant |
 | M6, stĺpiky ∥ zvislica scény | áno | 1467 | 931 | 507 | -0.354 | +0.102 | +0.000 | nie | 0.3 / 0.9 / 2.1 | – / – / – | variant |
@@ -15,9 +15,9 @@
 | M6 kombinovaný, +p1,p2 | áno | 1398 | 946 | 453 | -0.314 | +0.079 | +0.000 | nie | 4.9 / 20.6 / 24.5 | – / – / – | p1,p2 pohltia nesúlad geometrie |
 | M4 spoločný fit z čiar (nezávislá impl., spoločná zvislica) | nie | 1473 ± 22 | 931 ± 8 | 438 ± 46 | -0.349 | +0.095 | +0.000 | nie | 4.5 / 3.1 / 9.3 | 3.3 / 7.0 / 11.8 |  |
 | M4 spoločný fit z čiar, podlahová čiara ako 1 priamka | nie | 1479 ± 21 | 939 ± 7 | 509 ± 42 | -0.362 | +0.109 | +0.000 | nie | 0.9 / 2.9 / 3.9 | – / – / – |  |
-| M4 spoločný fit z čiar (orchestrátor, samostatné zvislice) | nie | 1425 ± 124 | 927 ± 6 | 503 ± 8 | -0.333 | +0.090 | +0.000 | nie | 3.0 / 14.0 / 19.6 | – / – / – |  |
+| M4 spoločný fit z čiar (prvá implementácia, samostatné zvislice) | nie | 1425 ± 124 | 927 ± 6 | 503 ± 8 | -0.333 | +0.090 | +0.000 | nie | 3.0 / 14.0 / 19.6 | – / – / – | cy ± len štatistická |
 | M3 úbežníky (nezávislá impl.) | nie | 1479 ± 48 | 929 ± 9 | 426 ± 49 | -0.349 | +0.094 | +0.000 | nie | 5.4 / 4.9 / 11.8 | 4.8 / 14.9 / 22.1 | pp = stred skreslenia |
-| M3 úbežníky (orchestrátor) | nie | 1419 ± 114 | 941 ± 7 | 513 ± 5 | -0.348 | +0.102 | +0.000 | nie | 3.5 / 16.9 / 28.6 | – / – / – |  |
+| M3 úbežníky (prvá implementácia, `30_lines_methods.py`) | nie | 1419 ± 114 | 941 ± 7 | 513 ± 5 | -0.348 | +0.102 | +0.000 | nie | 3.5 / 16.9 / 28.6 | – / – / – | cy ± len štatistická |
 | M2 plumb-line (skreslenie; f z M3) | nie | 1479 ± 48 | 929 ± 10 | 426 ± 50 | -0.349 | +0.094 | +0.000 | nie | 5.4 / 4.9 / 11.8 | 3.5 / 2.5 / 7.9 | len k1/f², k2/f⁴ a stred |
 | M9 Brown k1,k2 (štúdia modelov, spoločné dáta) | áno | 1434 ± 43 | 927 ± 10 | 502 ± 43 | -0.336 | +0.091 | +0.000 | nie | 2.3 / 10.7 / 14.7 | 4.3 / 15.5 / 22.1 |  |
 | M9 Brown k1,k2,k3 | áno | 1432 ± 44 | 931 ± 10 | 505 ± 35 | -0.353 | +0.137 | -0.031 | na bariére | 2.7 / 12.4 / 16.9 | 4.1 / 15.1 / 21.1 |  |

@@ -29,11 +29,11 @@
   "model": "fx=fy, pp free, k1,k2 (p1=p2=k3=0)",
   "rms_reprojection_error_px": 10.720441531238835,
   "uncertainty": {
-    "f_1sigma": 22.371756877755843,
-    "cx_1sigma": 5.876056815026345,
-    "cy_1sigma": 7.458906314009539,
-    "k1_1sigma": 0.012809039277311751,
-    "k2_1sigma": 0.010555239355069294,
+    "f_1sigma": 41.39318836432983,
+    "cx_1sigma": 5.571727781490097,
+    "cy_1sigma": 8.271927168182742,
+    "k1_1sigma": 0.01826215317822555,
+    "k2_1sigma": 0.013531180031541301,
     "f_1sigma_cov": 3.2840884223911617,
     "cx_1sigma_cov": 2.318436911499443,
     "cy_1sigma_cov": 2.7211541754166038,
@@ -41,9 +41,9 @@
     "k2_1sigma_cov": 0.002390300682653936
   },
   "mapping_uncertainty_px": {
-    "centre": 2.0120719771320403,
-    "cart_band": 7.8466384777729035,
-    "corners": 11.121282040649575
+    "centre": 3.5059776830066047,
+    "cart_band": 14.830489343667363,
+    "corners": 20.50660158737012
   },
   "data_used": "62 valid sticker corners of 20 stickers (7-frame means), 74 edges incl. 13 sides of partly hidden stickers",
   "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
@@ -1041,44 +1041,44 @@
     "bootstrap_n": 100,
     "mapping": {
       "centre": {
-        "rms_median_px": 2.0120719771320403,
-        "rms_max_px": 2.799261050070652,
+        "rms_median_px": 3.5059776830066047,
+        "rms_max_px": 4.828021438291587,
         "n_points": 44
       },
       "cart_band": {
-        "rms_median_px": 7.8466384777729035,
-        "rms_max_px": 11.357849457882269,
+        "rms_median_px": 14.830489343667363,
+        "rms_max_px": 21.300800775985813,
         "n_points": 536
       },
       "corners": {
-        "rms_median_px": 11.121282040649575,
-        "rms_max_px": 13.253059652451203,
+        "rms_median_px": 20.50660158737012,
+        "rms_max_px": 21.64184745964273,
         "n_points": 88
       },
       "whole_image": {
-        "rms_median_px": 8.97065286147911,
-        "rms_max_px": 13.253059652451203
+        "rms_median_px": 16.926298610686384,
+        "rms_max_px": 21.64184745964273
       }
     },
     "mapping_raw": {
       "centre": {
-        "rms_median_px": 15.683094506536383,
-        "rms_max_px": 16.436273866460056,
+        "rms_median_px": 16.008934966056696,
+        "rms_max_px": 17.461708657164248,
         "n_points": 44
       },
       "cart_band": {
-        "rms_median_px": 17.19873090011557,
-        "rms_max_px": 19.473381159504413,
+        "rms_median_px": 21.47486363680824,
+        "rms_max_px": 25.742261872456496,
         "n_points": 536
       },
       "corners": {
-        "rms_median_px": 19.36298951120544,
-        "rms_max_px": 23.224811363641287,
+        "rms_median_px": 25.840220617475595,
+        "rms_max_px": 28.66255477438127,
         "n_points": 88
       },
       "whole_image": {
-        "rms_median_px": 17.92516170292137,
-        "rms_max_px": 23.224811363641287
+        "rms_median_px": 23.237849700935485,
+        "rms_max_px": 28.66255477438127
       }
     },
     "sticker_table": [

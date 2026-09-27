@@ -7,18 +7,18 @@ from common import CACHE, fold_margin, load_json, project
 
 # standard key -> candidate keys in the method files, in order of preference (cluster/bootstrap/incl. systematics
 # first, formal covariance last). native_k* of non-Brown models are NOT mapped (different coefficients).
-STD_KEYS = {
+STD_KEYS = {  # formal (Gauss-Newton) covariances are NOT used as standard keys: they underestimate the error 9-15x
     "fx_px_1sigma": ["fx_px_1sigma", "f_1sigma_incl_geometry", "f_1sigma_bootstrap", "f_1sigma", "fx_1sigma", "fx_px_1sigma_bootstrap_stickers",
-                     "f_1sigma_robust", "native_f_1sigma", "f_1sigma_cov", "fx_1sigma_cov", "fx_px_1sigma_covariance"],
+                     "f_1sigma_robust", "native_f_1sigma"],
     "fy_px_1sigma": ["fy_px_1sigma", "f_1sigma_incl_geometry", "f_1sigma_bootstrap", "f_1sigma", "fy_1sigma", "fx_px_1sigma_bootstrap_stickers",
-                     "f_1sigma_robust", "native_f_1sigma", "f_1sigma_cov", "fy_1sigma_cov", "fx_px_1sigma_covariance"],
-    "cx_px_1sigma": ["cx_px_1sigma", "cx_1sigma", "native_cx_1sigma", "cx_1sigma_cov"],
-    "cy_px_1sigma": ["cy_px_1sigma", "cy_1sigma", "cy_1sigma_robust", "native_cy_1sigma", "cy_1sigma_cov"],
-    "k1_1sigma": ["k1_1sigma_bootstrap", "k1_1sigma", "k1_1sigma_cov"],
-    "k2_1sigma": ["k2_1sigma_bootstrap", "k2_1sigma", "k2_1sigma_cov"],
-    "p1_1sigma": ["p1_1sigma", "p1_1sigma_cov"],
-    "p2_1sigma": ["p2_1sigma", "p2_1sigma_cov"],
-    "k3_1sigma": ["k3_1sigma", "k3_1sigma_cov"],
+                     "f_1sigma_robust", "native_f_1sigma"],
+    "cx_px_1sigma": ["cx_px_1sigma", "cx_1sigma", "native_cx_1sigma"],
+    "cy_px_1sigma": ["cy_px_1sigma", "cy_1sigma", "cy_1sigma_robust", "native_cy_1sigma"],
+    "k1_1sigma": ["k1_1sigma_bootstrap", "k1_1sigma"],
+    "k2_1sigma": ["k2_1sigma_bootstrap", "k2_1sigma"],
+    "p1_1sigma": ["p1_1sigma"],
+    "p2_1sigma": ["p2_1sigma"],
+    "k3_1sigma": ["k3_1sigma"],
 }
 EDGE_ONLY_WORDS = ("lines_joint", "plumb", "vanishing")
 
@@ -98,6 +98,35 @@ def normalise(obj, method_id, K=None, d=None):
         o["geometry_assumptions"] = ("no dimensions used (straightness, parallelism, perpendicularity of the cart axes only)" if edge_only else
                                      "drawing dimensions and sticker positions exactly as specified (not fitted)")
     fm = fold_margin(K, d)
-    o["radial_map_folds_inside_image"] = bool(fm <= 0)
+    mono = monotonic_to_corners(K, d)
+    o["radial_map_folds_inside_image"] = bool(fm <= 0 or mono < 0.02)
     o["fold_margin"] = float(fm) if fm < 1.0 else None  # large values only mean 'monotonic far beyond the image'
+    o["min_radial_slope_to_corners"] = mono
+    notes = []
+    if mono < 0.05:
+        notes.append("radial map (nearly) flat or folding inside the image (min slope %.3f)" % mono)
+    if abs(K[0, 2] - 959.5) > 150 or K[1, 2] < 300:
+        notes.append("principal point far from all other estimates")
+    if notes:
+        o["plausibility_note"] = "local minimum / not a credible lens: " + "; ".join(notes)
+    elif 0 < fm < 0.05:
+        o["fit_constraint_note"] = "the fit is held by the fold barrier (its unconstrained optimum would fold inside the image)"
     return o
+
+
+def monotonic_to_corners(K, d, n=40000):
+    """Minimum relative slope d r_d / d r of the radial distortion map between the centre and the undistorted radius of
+    the farthest image corner (the corner's pixel radius is a DISTORTED radius). -1 if the map never reaches it
+    (folds before the corner); values near 0 mean a nearly flat, ill-conditioned mapping inside the image."""
+    cx, cy, f = K[0, 2], K[1, 2], K[0, 0]
+    rc = max(np.hypot(x - cx, y - cy) for x in (0, 1919) for y in (0, 1079)) / f
+    r = np.linspace(0, 4.0, n)
+    r2 = r * r
+    rd = r * (1 + d[0] * r2 + d[1] * r2 ** 2 + (d[4] if len(d) > 4 else 0) * r2 ** 3)
+    sl = np.diff(rd) / np.diff(r)
+    run = np.maximum.accumulate(rd)
+    hit = np.nonzero(run >= rc)[0]
+    if not len(hit):
+        return -1.0
+    j = hit[0]
+    return float(np.min(sl[: max(j, 1)]))

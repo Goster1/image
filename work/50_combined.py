@@ -214,7 +214,10 @@ if MODE == "boot":
             bp += [dict(p, mi=1000 * q + mi) for p in PTS if p["mi"] == mi]
         if len({p["cart"] for p in bp}) < 2:
             continue
-        be = stratified_resample(LINES, rng) + SIDES  # edges resampled within their VP group; sticker sides follow stickers
+        bs = []  # traced sides of partly hidden stickers follow their sticker (same cluster)
+        for q, mi in enumerate(pick_m):
+            bs += [dict(e, id=f"{e['id']}#m{q}", sticker_mi=1000 * q + mi) for e in SIDES if e["sticker_mi"] == mi]
+        be = stratified_resample(LINES, rng) + bs  # edges resampled within their VP group
         try:
             cbb, rb = run(SPECS["k1k2"], bp, be, x0=xmain.copy(), sig=dict(FIT["sig_main"]))
             boot.append(rb.x[: cb.ni].tolist())

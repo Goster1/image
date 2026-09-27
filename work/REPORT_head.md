@@ -10,7 +10,7 @@ Kamera Tracer WEB007, obraz 1920×1080, 7 fotiek z 2026-08-11 08:58. Všetko je 
 | parameter | hodnota | 1σ | stav |
 |---|---|---|---|
 | fx = fy | **{{f1}} px** | ± {{sf0}} px ({{sfpct}} %) | určené, ale len spojením hrán a nálepiek (kap. 6, M6); samotné hrany dávajú f krehko |
-| cx | **{{cx1}} px** | ± {{scx0}} px | určené |
+| cx | **{{cx1}} px** | ± {{scx0}} px | určené (vynechanie hrán vozíka 310 / 80 posunie cx o {{cv_dcx_310}} / {{cv_dcx_80}} px) |
 | cy | **{{cy1}} px** | ± {{scy0}} px | len konzistentné (nesú ho úbežníky; rozumné alternatívne predpoklady o čiarach na podlahe a zvisliciach dávajú 426–513) |
 | k1 | **{{k1_3}}** | ± {{sk1_3}} | určené spolu s k2 (korelácia {{rho_k1k2}}) |
 | k2 | **{{k2_3}}** | ± {{sk2_3}} | určené spolu s k1 |
@@ -45,10 +45,13 @@ hlavný výsledok používa **všetkých 20 nálepiek s geometriou z výkresu sp
 Nálepky samy by s výkresom dali f ≈ 1300–1375 a cy 290–540 podľa modelu, so skreslením, ktoré odporuje priamosti hrán.
 Tento výsledok je vychýlený (kap. 5, 9.4) a uvádzam ho len v porovnaní.
 
-**Čo v hlavnom fite nesie ktorý parameter** (kap. 6, M6): skreslenie nesie priamosť hrán; f a cy hlavne úbežníky hrán
-(bez nich f = {{inf_novp_f}}, cy = {{inf_novp_cy}}); zo strán nálepiek prispievajú k f hlavne dve strany na konci 80/X0
-(bez nich f = {{v_nosides_f}}); 62 rohov nálepiek má na f malý vplyv (bez nich f = {{inf_nocorners_f}}), lebo ich blok má
-kvôli nesúladu geometrie malú váhu (σ ≈ {{sigM}} px na súradnicu).
+**Čo v hlavnom fite nesie ktorý parameter** (kap. 6, M6, 9.2): skreslenie nesie priamosť hrán. Hrany samé (úbežníky
++ priamosť, bez rozmerov) dávajú f = {{inf_edges_f}} px; na {{f0}} px ho posunú strany čiastočne zakrytých nálepiek
+(samostatne minimum pri ~1480 px), z toho +{{v_nosides_df}} px len dve strany na konci 80/X0 (bez nich f = {{v_nosides_f}}),
+kde podľa kap. 5 nesedí pomer rozostupov políc. Úbežníky sú nutné (bez nich f = {{inf_novp_f}}, cy = {{inf_novp_cy}}) a nesú cy;
+62 rohov nálepiek má na f malý vplyv (bez nich f = {{inf_nocorners_f}}), lebo ich blok má kvôli nesúladu geometrie malú váhu
+(σ ≈ {{sigM}} px na súradnicu). Preto je rozdelenie f z bootstrapu asymetrické (medián {{boot_med_f}} px, 68 % interval
+{{boot_lo_f}}–{{boot_hi_f}} px, kap. 10): neistota f (± {{sf0}} px) odráža hlavne to, či sa tieto dve strany započítajú.
 
 **Porovnanie metód v skratke** (podrobne kap. 8):
 

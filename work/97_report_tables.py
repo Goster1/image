@@ -5,6 +5,7 @@ import numpy as np
 
 from common import CACHE, RESULTS, fold_margin, load_json
 from evaltools import grid, mapping_displacement, region_defs
+from resultnorm import monotonic_to_corners
 
 main = load_json(f"{RESULTS}/lens_result.json")
 K0 = np.array(main["camera_matrix"])
@@ -26,9 +27,9 @@ ROWS = [  # (label, file, method-name-in-list or None, uses dimensions?, note)
     ("M6 kombinovaný, +p1,p2", "method_combined_alternatives.json", "combined_k1k2p1p2", "áno", "p1,p2 pohltia nesúlad geometrie"),
     ("M4 spoločný fit z čiar (nezávislá impl., spoločná zvislica)", "method_lines_joint.json", None, "nie", ""),
     ("M4 spoločný fit z čiar, podlahová čiara ako 1 priamka", "method_lines_joint_indep_mergedfloor.json", None, "nie", ""),
-    ("M4 spoločný fit z čiar (orchestrátor, samostatné zvislice)", "method_lines_joint_lc.json", None, "nie", ""),
+    ("M4 spoločný fit z čiar (prvá implementácia, samostatné zvislice)", "method_lines_joint_lc.json", None, "nie", "cy ± len štatistická"),
     ("M3 úbežníky (nezávislá impl.)", "method_vanishing.json", None, "nie", "pp = stred skreslenia"),
-    ("M3 úbežníky (orchestrátor)", "method_vanishing_lc.json", None, "nie", ""),
+    ("M3 úbežníky (prvá implementácia, `30_lines_methods.py`)", "method_vanishing_lc.json", None, "nie", "cy ± len štatistická"),
     ("M2 plumb-line (skreslenie; f z M3)", "method_plumbline.json", None, "nie", "len k1/f², k2/f⁴ a stred"),
     ("M9 Brown k1,k2 (štúdia modelov, spoločné dáta)", "method_alt_brown_k1k2.json", None, "áno", ""),
     ("M9 Brown k1,k2,k3", "method_alt_brown_k1k2k3.json", None, "áno", ""),
@@ -80,6 +81,7 @@ for lab, fn, nm, dims, note in ROWS:
     cxs = g(u, "cx_px_1sigma", "cx_1sigma")
     cys = g(u, "cy_px_1sigma", "cy_1sigma")
     fm = fold_margin(K, d)
+    mono = monotonic_to_corners(K, d)
     try:
         D = mapping_displacement(K0, d0, K, d, uv)
         r = np.hypot(D[:, 0], D[:, 1])
@@ -92,7 +94,7 @@ for lab, fn, nm, dims, note in ROWS:
     if abs(K[0, 0] - K[1, 1]) > 0.5:
         fstr = f"{K[0,0]:.0f}/{K[1,1]:.0f}"
     lines.append(f"| {lab} | {dims} | {fstr} | {K[0,2]:.0f}" + (f" ± {cxs:.0f}" if cxs else "") + f" | {K[1,2]:.0f}" + (f" ± {cys:.0f}" if cys else "") +
-                 f" | {d[0]:+.3f} | {d[1]:+.3f} | {d[4]:+.3f} | {'nie' if fm > 0.05 else ('na bariére' if fm > 0 else 'PREHNUTÝ')} | {dm} | {mus} | {note} |")
+                 f" | {d[0]:+.3f} | {d[1]:+.3f} | {d[4]:+.3f} | {'PREHNUTÝ' if (fm <= 0 or mono < 0.02) else ('na bariére' if fm < 0.05 else 'nie')} | {dm} | {mus} | {note} |")
 out = ["## Tabuľka metód (automaticky, 97_report_tables.py)", "", *lines, ""]
 
 open(f"{CACHE}/report_tables.md", "w").write("\n".join(out))

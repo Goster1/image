@@ -11,11 +11,11 @@ sa necommitujú a vytvoria sa znova v krokoch 1–3).
 | 3 | `11_markers_a_guided.py`, `11_markers_b_corners.py`, `11_markers_c_fit.py`, `11_markers_d_diag.py`, `12_review_markers_check.py`, `12_review_markers.py`, `12_review_markers_plot.py`, `93_detections_sides.py` | `results/detections.json`, `markers_*.png` |
 | 4 | `10_edges_cart310_trace.py` (+ `_summary`, `_boardcheck`), `10_edges_cart80_trace.py`, `10_edges_scene_trace.py` / `_final.py`, `12_review_edges_{cart310,cart80,scene}.py`, `13_edges_dedupe.py`, `91_merge_edges.py` | `results/edges.json`, `edges_*.png` |
 | 5 | `20_markers_ba.py` | metóda M1 |
-| 6 | `30_lines_methods.py 40` (40 = počet bootstrap replík; orchestrátor) a `40_lines_indep_{a,b,c,d,e,g,h,i,j,f}_*.py` (nezávislá implementácia) | M2–M4 |
+| 6 | `30_lines_methods.py 40` (40 = počet bootstrap replík; prvá implementácia) a `40_lines_indep_{a,b,c,d,e,g,h,i,j,f}_*.py` (nezávislá implementácia) | M2–M4 |
 | 7 | `41_cuboid_{fit,predict,diag}.py` | M5 |
 | 8 | `42_geomdiag_{a,b,c,f,d,e,g,h}_*.py` | diagnostika geometrie, M7, M8 |
 | 9 | `43_altmodels_{fit,diaggeom,report,review}.py` | M9 |
-| 10 | `run_combined.sh` (= `50_combined.py fit`, 4× `boot` po 25 replík, `finalize`), `51_combined_cv.py all` | hlavná metóda M6, varianty, vplyv blokov, krížová validácia |
+| 10 | `run_combined.sh` (= `50_combined.py fit`, 4× `boot` po 25 replík, `finalize`; `run_combined_boot.sh` len bootstrap), `51_combined_cv.py all` | hlavná metóda M6, varianty, vplyv blokov, krížová validácia |
 | 11 | `SYNTH_T2=1400,935,410,-0.32,0.08` + `44_synth_{a_setup,b_roundtrip,c_sensitivity,d_report}.py` (štúdia všetkých metód); `SYNTH_SETUP=cache/synthetic_setup_main.json python3 44_synth_a_setup.py`, potom `45_synth_main.py 30 4` a `46_sensitivity_main.py` (hlavný odhad) | syntetický test a citlivosti |
 | 12 | `92_extract_alternatives.py`, `95_final.py`, `96_plots.py`, `98_finalize_json.py`, `90_compare_methods.py`, `97_report_tables.py`, `99_assemble_report.py` | `results/lens_result.json`, `lens_alternatives.json`, `lens_by_method.json`, grafy, `REPORT.md` |
 
@@ -34,4 +34,5 @@ Zdieľané moduly: `common.py` (model kamery, špecifikácia, kontrola prehnutia
 * **Zvislice scény** majú vlastný smer, nie sú viazané na stĺpiky vozíkov (variant so spoločnou zvislicou je v systematike).
 * **Váhy v hlavnom fite:** blokové variančné komponenty iterované do konvergencie; všetky rohy nálepiek majú spoločnú váhu.
   Iné rozumné váženia (samostatne top / police, robustné po nálepkách) sú alternatívy v systematike.
-* **Neistoty:** konzervatívne väčšia z hodnôt (rozpočet: bootstrap ⊕ alternatívy; syntetický round-trip hlavného odhadu, scenár b).
+* **Neistoty:** konzervatívne najväčšia z hodnôt: rozpočet (bootstrap ⊕ alternatívy), syntetický round-trip hlavného odhadu
+  (scenár b), jackknife z krížovej validácie.

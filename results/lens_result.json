@@ -28,76 +28,166 @@
   "model": "OpenCV pinhole + Brown-Conrady, fx = fy, principal point free, radial k1, k2; p1 = p2 = k3 = 0 fixed (k3 only consistent with the data, p1/p2 and fx != fy not determined - REPORT.md ch. 7)",
   "rms_reprojection_error_px": 7.885676645444518,
   "uncertainty": {
-    "fx_px_1sigma": 30.96372006312467,
-    "fy_px_1sigma": 30.96372006312467,
-    "cx_px_1sigma": 10.63421419236742,
-    "cy_px_1sigma": 28.91943264803664,
-    "k1_1sigma": 0.01633572478901646,
-    "k2_1sigma": 0.020514899287374037,
+    "fx_px_1sigma": 46.60099244989342,
+    "fy_px_1sigma": 46.60099244989342,
+    "cx_px_1sigma": 18.813682752660373,
+    "cy_px_1sigma": 29.1397165456165,
+    "k1_1sigma": 0.020887571804298965,
+    "k2_1sigma": 0.0221932613190193,
     "p1_1sigma": null,
     "p2_1sigma": null,
     "k3_1sigma": null,
-    "note": "1-sigma = max(stat (+) sys, synthetic round-trip RMSE); p1=p2=k3=0 fixed (not determined); fx=fy fitted as one parameter; k1 and k2 are strongly correlated (-0.9) - use uncertainty_details.covariance or the mapping uncertainty, not the individual sigmas combined as independent"
+    "note": "1-sigma = max(stat (+) sys, synthetic round-trip RMSE, cross-validation jackknife); p1=p2=k3=0 fixed (not determined); fx=fy fitted as one parameter; k1 and k2 are strongly correlated (-0.9) - use uncertainty_details.covariance or the mapping uncertainty, not the individual sigmas combined as independent"
   },
   "mapping_uncertainty_px": {
-    "centre": 3.0132065774729626,
-    "cart_band": 9.18711618229404,
-    "corners": 13.651064415647731
+    "centre": 4.028340913293676,
+    "cart_band": 15.282795379699945,
+    "corners": 21.561712668005935
   },
   "data_used": "all 7 stills (jitter-compensated 7-frame mean); 20 ArUco stickers (ids 0-8 + 92 on cart 80, 0-8 + 322 on cart 310): 62 valid corners + 13 traced sides of partly hidden stickers (results/detections.json); 61 verified straight structural edges (cart 310: 18, cart 80: 17, scene incl. floor lines: 26; results/edges.json) as straightness + vanishing-point groups: cart X (shelf lips) and cart Z (posts) of both carts, scene verticals, 2 floor-line groups. No cart-Y (depth) group: the only depth-direction edges are end-board edges, which are not parallel to the cart axes and are used for straightness only",
   "geometry_assumptions": "Rozmery vozíka, výšky políc a polohy nálepiek sú použité presne podľa spec/cart-marker-layout.json (nie sú fitované). Dáta s nimi nie sú úplne konzistentné: top-nálepky vychádzajú voči nálepkám na policiach ~+60..+80 mm vyššie, koncové dosky naklonené 4-13 deg, RMS 4.9-5.1 px aj pre všeobecnú projektívnu kameru 3x4 (metrický fit 5.3 px) - opísané ako pozorovanie v REPORT.md kap. 5 (kde, koľko px). Hrany nepoužívajú žiadne rozmery, len priamosť, rovnobežnosť a kolmosť osí vozíka.",
   "uncertainty_details": {
-    "rule": "final 1-sigma = max(budget = statistical (+) systematic, synthetic round-trip RMSE of the same estimator, scenario T2_b: realistic detection noise + random sticker/row geometry deviations sized to the real sticker RMS + edge bows/direction deviations)",
-    "statistical": "cluster bootstrap over stickers and edges (edges resampled within their vanishing-point group), 100 replicates, robust 1-sigma = half of the 16-84 % range",
+    "rule": "final 1-sigma = max(budget = statistical (+) systematic; synthetic round-trip RMSE of the same estimator, scenario T2_b (detection noise + random sticker/row geometry deviations sized to the real sticker RMS + edge bows/direction deviations); jackknife over the cross-validation partitions (stickers, rows, carts, edge regions; largest))",
+    "statistical": "cluster bootstrap: stickers resampled with their corners AND their traced sides, structural edges resampled within their vanishing-point group; 100 replicates, each a full refit incl. block weights; robust 1-sigma = half of the 16-84 % range",
     "systematic": "RMS deviation of the plausible alternative methods/models/modelling choices from the main estimate: lines_joint_indep, lines_joint_lc, vanishing_indep, lines_joint_indep_mergedfloor, alt_brown_k1k2_joint, alt_brown_k1k2k3_joint, alt_division_l1l2, combined_k1k2_robust, combined_k1k2k3, combined_k1k2_ppfixed, combined_k1k2_common_vertical, combined_k1k2_rowblocks, combined_k1k2_no_80_3_7_sides, combined_k1k2_no_bent_lip, combined_k1k2_floor_straight_only",
     "components": {
       "f": {
-        "stat": 22.371756877755843,
+        "stat": 41.39318836432983,
         "sys": 21.40692538292534,
-        "budget": 30.96372006312467,
-        "synthetic_rmse": 21.516875311346407
+        "budget": 46.60099244989342,
+        "synthetic_rmse": 21.516875311346407,
+        "jackknife_cv": 37.65136028143289
       },
       "cx": {
-        "stat": 5.876056815026345,
+        "stat": 5.571727781490097,
         "sys": 8.863321487779347,
-        "budget": 10.63421419236742,
-        "synthetic_rmse": 5.670725944331715
+        "budget": 10.469126910433346,
+        "synthetic_rmse": 5.670725944331715,
+        "jackknife_cv": 18.813682752660373
       },
       "cy": {
-        "stat": 7.458906314009539,
+        "stat": 8.271927168182742,
         "sys": 27.940978889136225,
-        "budget": 28.91943264803664,
-        "synthetic_rmse": 4.006218870271154
+        "budget": 29.1397165456165,
+        "synthetic_rmse": 4.006218870271154,
+        "jackknife_cv": 22.818575170217738
       },
       "k1": {
-        "stat": 0.012809039277311751,
+        "stat": 0.01826215317822555,
         "sys": 0.010138264998251508,
-        "budget": 0.01633572478901646,
-        "synthetic_rmse": 0.011933661150379629
+        "budget": 0.020887571804298965,
+        "synthetic_rmse": 0.011933661150379629,
+        "jackknife_cv": 0.01944809200945055
       },
       "k2": {
-        "stat": 0.010555239355069294,
+        "stat": 0.013531180031541301,
         "sys": 0.017591134554891454,
-        "budget": 0.020514899287374037,
-        "synthetic_rmse": 0.007964418037195123
+        "budget": 0.0221932613190193,
+        "synthetic_rmse": 0.007964418037195123,
+        "jackknife_cv": 0.018382606652402007
       },
       "p1": {
         "stat": 0.0,
         "sys": 6.7696175642252286e-09,
         "budget": 6.7696175642252286e-09,
-        "synthetic_rmse": 0.0
+        "synthetic_rmse": 0.0,
+        "jackknife_cv": 0.0
       },
       "p2": {
         "stat": 0.0,
         "sys": 2.6537601771358955e-09,
         "budget": 2.6537601771358955e-09,
-        "synthetic_rmse": 0.0
+        "synthetic_rmse": 0.0,
+        "jackknife_cv": 0.0
       },
       "k3": {
         "stat": 0.0,
         "sys": 0.012262396604959433,
         "budget": 0.012262396604959433,
-        "synthetic_rmse": 0.0
+        "synthetic_rmse": 0.0,
+        "jackknife_cv": 0.0
+      }
+    },
+    "jackknife_cv": {
+      "stickers": {
+        "n": 20,
+        "params": {
+          "f": 35.56480970285521,
+          "cx": 2.726856314889801,
+          "cy": 3.0160440597410867,
+          "k1": 0.017527373242900674,
+          "k2": 0.010095068163469023
+        },
+        "mapping": {
+          "centre": 2.4560790054065094,
+          "cart_band": 11.13252114137564,
+          "corners": 15.069276446312337
+        },
+        "mapping_max": {
+          "centre": 3.7620965141195435,
+          "cart_band": 15.582405604627045,
+          "corners": 16.105598166956902
+        }
+      },
+      "rows": {
+        "n": 4,
+        "params": {
+          "f": 37.65136028143289,
+          "cx": 2.329061873343601,
+          "cy": 3.199140801282472,
+          "k1": 0.01944809200945055,
+          "k2": 0.011388474840391747
+        },
+        "mapping": {
+          "centre": 2.604627155102063,
+          "cart_band": 11.708346340643828,
+          "corners": 15.660772128706185
+        },
+        "mapping_max": {
+          "centre": 3.983250950588605,
+          "cart_band": 16.177173750868377,
+          "corners": 17.310947319800253
+        }
+      },
+      "carts": {
+        "n": 2,
+        "params": {
+          "f": 23.72288735224072,
+          "cx": 0.07722986399141973,
+          "cy": 0.8953883886717051,
+          "k1": 0.010985915298652227,
+          "k2": 0.00594040746089667
+        },
+        "mapping": {
+          "centre": 1.6594203155727532,
+          "cart_band": 7.44460048574649,
+          "corners": 10.161305198016695
+        },
+        "mapping_max": {
+          "centre": 2.513768191358904,
+          "cart_band": 10.518903840994168,
+          "corners": 10.61793431841666
+        }
+      },
+      "edge_regions": {
+        "n": 3,
+        "params": {
+          "f": 32.75435562251582,
+          "cx": 18.813682752660373,
+          "cy": 22.818575170217738,
+          "k1": 0.017691243149453965,
+          "k2": 0.018382606652402007
+        },
+        "mapping": {
+          "centre": 2.887652214843392,
+          "cart_band": 10.66640042531439,
+          "corners": 16.57549938884698
+        },
+        "mapping_max": {
+          "centre": 4.464182528039346,
+          "cart_band": 16.632547026909027,
+          "corners": 17.858611020614227
+        }
       }
     },
     "order": [
@@ -110,135 +200,141 @@
     "correlation_bootstrap": [
       [
         1.0,
-        0.091,
-        0.243,
-        -0.757,
-        0.402
+        -0.049,
+        0.132,
+        -0.904,
+        0.624
       ],
       [
-        0.091,
+        -0.049,
         1.0,
-        0.188,
-        -0.36,
-        0.448
+        0.143,
+        -0.133,
+        0.281
       ],
       [
-        0.243,
-        0.188,
+        0.132,
+        0.143,
         1.0,
-        -0.4,
-        0.369
+        -0.269,
+        0.321
       ],
       [
-        -0.757,
-        -0.36,
-        -0.4,
+        -0.904,
+        -0.133,
+        -0.269,
         1.0,
-        -0.88
+        -0.884
       ],
       [
-        0.402,
-        0.448,
-        0.369,
-        -0.88,
+        0.624,
+        0.281,
+        0.321,
+        -0.884,
         1.0
       ]
     ],
     "covariance": [
       [
-        958.7519601475491,
-        30.041297899630756,
-        217.8430931451824,
-        -0.38310245714619523,
-        0.2550482957362089
+        2171.6524973150235,
+        -43.33423132631335,
+        179.32768708293273,
+        -0.879671954869444,
+        0.6456871820891733
       ],
       [
-        30.041297899630763,
-        113.08651148914863,
-        57.85587210820747,
-        -0.06252808395761436,
-        0.09782920829090981
+        -43.33423132631335,
+        353.9546587177503,
+        78.32442919335612,
+        -0.052459272140645545,
+        0.11725803509795543
       ],
       [
-        217.8430931451824,
-        57.85587210820747,
-        836.3335846843274,
-        -0.1889207138331843,
-        0.21866266324580536
+        179.32768708293275,
+        78.32442919335614,
+        849.123080358876,
+        -0.16398868500711214,
+        0.20739663293849775
       ],
       [
-        -0.3831024571461952,
-        -0.06252808395761437,
-        -0.1889207138331843,
-        0.00026685590438248685,
-        -0.00029505760992304067
+        -0.8796719548694439,
+        -0.05245927214064554,
+        -0.1639886850071121,
+        0.00043629065587974514,
+        -0.0004097224423740905
       ],
       [
-        0.2550482957362089,
-        0.09782920829090981,
-        0.21866266324580536,
-        -0.00029505760992304067,
-        0.0004208610927710998
+        0.6456871820891732,
+        0.11725803509795545,
+        0.20739663293849772,
+        -0.00040972244237409043,
+        0.0004925408479742782
       ]
     ],
     "covariance_note": "final 1-sigma values combined with the bootstrap correlation matrix (order f, cx, cy, k1, k2)"
   },
   "mapping_uncertainty_details": {
-    "definition": "1-sigma displacement of the projection of a fixed viewing ray [px], median over the region (centre: r<150 px around the image centre; cart_band: both cart footprints; corners: 200x150 px corner boxes), rotation-compensated (a pure camera rotation is absorbed by the pose); final value = max(budget median, synthetic T2_b RMSE median)",
+    "definition": "1-sigma displacement of the projection of a fixed viewing ray [px], median over the region (centre: r<150 px around the image centre; cart_band: both cart footprints; corners: 200x150 px corner boxes), rotation-compensated (a pure camera rotation is absorbed by the pose); final value = max(budget median, synthetic T2_b RMSE median, cross-validation jackknife median)",
     "max_in_region": {
-      "centre": 3.6438687248288684,
-      "cart_band": 13.55593066950837,
-      "corners": 17.76439900715136
+      "centre": 5.412604691055713,
+      "cart_band": 22.77312919256965,
+      "corners": 23.555931367403215
     },
     "components": {
       "centre": {
-        "stat_median": 1.64798653615988,
+        "stat_median": 3.1234464548402285,
         "sys_median": 2.479366241967949,
         "sens": 0.0,
-        "total_median": 3.0132065774729626,
-        "total_max": 3.6438687248288684,
+        "total_median": 4.028340913293676,
+        "total_max": 5.412604691055713,
+        "jackknife_cv": 2.887652214843392,
+        "jackknife_cv_max": 4.464182528039346,
         "synthetic_rmse": 1.6270759105682373,
-        "budget_median": 3.0132065774729626
+        "budget_median": 4.028340913293676
       },
       "cart_band": {
-        "stat_median": 5.807748251751818,
+        "stat_median": 13.559470360919406,
         "sys_median": 7.090627925734486,
         "sens": 0.0,
-        "total_median": 9.18711618229404,
-        "total_max": 13.55593066950837,
+        "total_median": 15.282795379699945,
+        "total_max": 22.77312919256965,
+        "jackknife_cv": 11.708346340643828,
+        "jackknife_cv_max": 16.177173750868377,
         "synthetic_rmse": 6.975308418273926,
-        "budget_median": 9.18711618229404
+        "budget_median": 15.282795379699945
       },
       "corners": {
-        "stat_median": 8.366595017967029,
+        "stat_median": 18.639661031554535,
         "sys_median": 10.72775159779314,
         "sens": 0.0,
-        "total_median": 13.651064415647731,
-        "total_max": 17.76439900715136,
+        "total_median": 21.561712668005935,
+        "total_max": 23.555931367403215,
+        "jackknife_cv": 16.57549938884698,
+        "jackknife_cv_max": 17.858611020614227,
         "synthetic_rmse": 10.034910202026367,
-        "budget_median": 13.651064415647731
+        "budget_median": 21.561712668005935
       }
     },
     "without_rotation_compensation": {
-      "centre": 31.575050043955667,
-      "cart_band": 33.344684795005975,
-      "corners": 34.89499630982277
+      "centre": 32.12710054464436,
+      "cart_band": 36.15707152197609,
+      "corners": 39.90372701961797
     },
     "without_rotation_compensation_components": {
       "centre": {
-        "stat_median": 11.804407699286052,
+        "stat_median": 13.129914687493551,
         "sys_median": 29.273556118054604,
-        "total_median": 31.575050043955667
+        "total_median": 32.12710054464436
       },
       "cart_band": {
-        "stat_median": 14.53860222417437,
+        "stat_median": 20.15287843574341,
         "sys_median": 29.96442681851532,
-        "total_median": 33.344684795005975
+        "total_median": 36.15707152197609
       },
       "corners": {
-        "stat_median": 16.440096792144598,
+        "stat_median": 24.187251425714848,
         "sys_median": 30.71204844306265,
-        "total_median": 34.89499630982277
+        "total_median": 39.90372701961797
       }
     },
     "without_rotation_compensation_note": "budget (bootstrap (+) alternatives) with a camera rotation counted as error; dominated by the principal-point / f alternatives; only relevant when rays are compared without re-estimating the camera pose"
@@ -433,8 +529,8 @@
   "determination": {
     "determined": [
       "radial distortion profile (k1, k2 jointly, correlation -0.88; in pixel units k1/f^2 = -1.630e-07 px^-2, k2/f^4 = 2.136e-14 px^-4)",
-      "cx = 928 +- 11 px",
-      "f = 1469 +- 31 px (2.1 %): mainly from the vanishing points of the edges (+ sticker sides at the 80/X0 end); edges alone give f only fragile"
+      "cx = 928 +- 19 px",
+      "f = 1469 +- 47 px (3.2 %): mainly from the vanishing points of the edges (+ sticker sides at the 80/X0 end); edges alone give f only fragile"
     ],
     "consistent_only": [
       "cy = 503 +- 29 px: carried by the vanishing-point groups (without them cy 427); floor lines as straightness only: cy 492; edge-only fits give 426-509 depending on the floor-line / vertical assumptions",

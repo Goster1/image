@@ -139,6 +139,36 @@ for n, fn in regs.items():
     reg_out[n] = dict(stat_median=float(np.nanmedian(sig_stat_map[m])), sys_median=float(np.nanmedian(sig_sys_map[m])),
                       sens=s_sens, total_median=float(np.sqrt(np.nanmedian(sig_tot_map[m]) ** 2 + s_sens ** 2)),
                       total_max=float(np.sqrt(np.nanmax(sig_tot_map[m]) ** 2 + s_sens ** 2)))
+# ---- jackknife over the cross-validation partitions of the main estimator (51_combined_cv.py): leave-one-out
+# estimates are correlated, so their scatter is scaled by (n-1): sigma_jk = sqrt((n-1)/n * sum (theta_i - mean)^2).
+# Per partition (stickers, rows, carts, edge regions) for the parameters and the mapping; the largest counts.
+import glob  # noqa: E402
+
+JK_PARTS = {"stickers": "sticker_", "rows": "row_", "carts": "cart_", "edge_regions": "edges_"}
+jk = {}
+for pname, pref in JK_PARTS.items():
+    fl = sorted(glob.glob(f"{CACHE}/combined_cv_{pref}*.json"))
+    if len(fl) < 2:
+        continue
+    X = []
+    for fn_ in fl:
+        i_ = load_json(fn_)["intrinsics"]
+        X.append([i_["f"], i_["cx"], i_["cy"], i_["k1"], i_["k2"]])
+    X = np.array(X)
+    nn = len(X)
+    sp = np.sqrt((nn - 1) / nn * np.sum((X - X.mean(0)) ** 2, 0))
+    Dj = np.array([mapping_displacement(K0, d0, K_from(x[0], x[0], x[1], x[2]), np.array([x[3], x[4], 0, 0, 0]), uv) for x in X])
+    Dm = np.nanmean(Dj, 0)
+    smap = np.sqrt((nn - 1) / nn * np.nansum(np.sum((Dj - Dm) ** 2, 2), 0))
+    jk[pname] = dict(n=nn, params=dict(zip(["f", "cx", "cy", "k1", "k2"], sp.tolist())),
+                     mapping={n: float(np.nanmedian(smap[fn(uv)])) for n, fn in regs.items()},
+                     mapping_max={n: float(np.nanmax(smap[fn(uv)])) for n, fn in regs.items()})
+    print(f"jackknife {pname:12s} n={nn:2d}", {k: round(v, 4) for k, v in jk[pname]["params"].items()}, {k: round(v, 2) for k, v in jk[pname]["mapping"].items()})
+for n in reg_out:
+    if jk:
+        best = max(jk.values(), key=lambda q: q["mapping"][n])
+        reg_out[n]["jackknife_cv"] = best["mapping"][n]
+        reg_out[n]["jackknife_cv_max"] = best["mapping_max"][n]
 if os.path.exists(f"{CACHE}/synthetic_main.json"):
     try:
         rt = synth_rt()
@@ -151,6 +181,10 @@ if os.path.exists(f"{CACHE}/synthetic_main.json"):
                 reg_out[n]["total_max"] = float(max(reg_out[n]["total_max"], rt["mapping"]["total"][n]["max"]))
     except Exception as ex:  # noqa
         print("synthetic mapping not usable:", ex)
+for n in reg_out:
+    if reg_out[n].get("jackknife_cv") is not None:
+        reg_out[n]["total_median"] = float(max(reg_out[n]["total_median"], reg_out[n]["jackknife_cv"]))
+        reg_out[n]["total_max"] = float(max(reg_out[n]["total_max"], reg_out[n]["jackknife_cv_max"]))
 print("mapping 1-sigma per region:", {k: round(v["total_median"], 2) for k, v in reg_out.items()})
 
 # ---- parameter uncertainties
@@ -178,27 +212,33 @@ if os.path.exists(f"{CACHE}/synthetic_main.json"):
     except Exception as ex:  # noqa
         print("synthetic report not usable:", ex)
 s_syn = np.array([syn.get(n, 0.0) for n in pnames])
-s_tot = np.maximum(s_bud, s_syn)
+s_jk = np.zeros(8)
+for q in jk.values():
+    s_jk[:5] = np.maximum(s_jk[:5], [q["params"][k] for k in ("f", "cx", "cy", "k1", "k2")])
+s_tot = np.maximum(np.maximum(s_bud, s_syn), s_jk)
 for n, v, a, b, c, e in zip(pnames, p0, s_stat, s_sys, s_syn, s_tot):
     print(f"  {n:3s} {v:10.5f}  stat {a:.5f}  sys {b:.5f}  synthetic {c:.5f}  final {e:.5f}")
 
 unc = {"fx_px_1sigma": float(s_tot[0]), "fy_px_1sigma": float(s_tot[0]), "cx_px_1sigma": float(s_tot[1]),
        "cy_px_1sigma": float(s_tot[2]), "k1_1sigma": float(s_tot[3]), "k2_1sigma": float(s_tot[4]),
        "p1_1sigma": None, "p2_1sigma": None, "k3_1sigma": None,
-       "note": "1-sigma = max(stat (+) sys, synthetic round-trip RMSE); p1=p2=k3=0 fixed (not determined); fx=fy fitted as "
+       "note": "1-sigma = max(stat (+) sys, synthetic round-trip RMSE, cross-validation jackknife); p1=p2=k3=0 fixed (not determined); fx=fy fitted as "
                "one parameter; k1 and k2 are strongly correlated (-0.9) - use uncertainty_details.covariance or the "
                "mapping uncertainty, not the individual sigmas combined as independent"}
 corr = np.corrcoef(pb[:, :5].T)
 cov = (s_tot[:5, None] * corr * s_tot[None, :5])
 unc_details = {
-    "rule": "final 1-sigma = max(budget = statistical (+) systematic, synthetic round-trip RMSE of the same estimator, scenario "
-            f"{SYN_SCEN}: realistic detection noise + random sticker/row geometry deviations sized to the real sticker RMS + "
-            "edge bows/direction deviations)",
-    "statistical": "cluster bootstrap over stickers and edges (edges resampled within their vanishing-point group), "
-                   f"{len(boot)} replicates, robust 1-sigma = half of the 16-84 % range",
+    "rule": "final 1-sigma = max(budget = statistical (+) systematic; synthetic round-trip RMSE of the same estimator, scenario "
+            f"{SYN_SCEN} (detection noise + random sticker/row geometry deviations sized to the real sticker RMS + edge bows/direction "
+            "deviations); jackknife over the cross-validation partitions (stickers, rows, carts, edge regions; largest))",
+    "statistical": "cluster bootstrap: stickers resampled with their corners AND their traced sides, structural edges resampled "
+                   f"within their vanishing-point group; {len(boot)} replicates, each a full refit incl. block weights; robust "
+                   "1-sigma = half of the 16-84 % range",
     "systematic": "RMS deviation of the plausible alternative methods/models/modelling choices from the main estimate: "
                   + ", ".join(a["name"] for a in alts),
-    "components": {n: {"stat": float(a), "sys": float(b), "budget": float(c), "synthetic_rmse": float(e)} for n, a, b, c, e in zip(pnames, s_stat, s_sys, s_bud, s_syn)},
+    "components": {n: {"stat": float(a), "sys": float(b), "budget": float(c), "synthetic_rmse": float(e), "jackknife_cv": float(j)}
+                   for n, a, b, c, e, j in zip(pnames, s_stat, s_sys, s_bud, s_syn, s_jk)},
+    "jackknife_cv": jk,
     "order": ["f", "cx", "cy", "k1", "k2"],
     "correlation_bootstrap": corr.round(3).tolist(),
     "covariance": cov.tolist(),
@@ -214,7 +254,7 @@ out["mapping_uncertainty_details"] = {
     "definition": "1-sigma displacement of the projection of a fixed viewing ray [px], median over the region (centre: r<150 px "
                   "around the image centre; cart_band: both cart footprints; corners: 200x150 px corner boxes), "
                   "rotation-compensated (a pure camera rotation is absorbed by the pose); final value = max(budget median, "
-                  f"synthetic {SYN_SCEN} RMSE median)",
+                  f"synthetic {SYN_SCEN} RMSE median, cross-validation jackknife median)",
     "max_in_region": {k: v["total_max"] for k, v in reg_out.items()},
     "components": reg_out,
     "without_rotation_compensation": {k: v["total_median"] for k, v in reg_raw.items()},

@@ -72,7 +72,7 @@ for mi, m in enumerate(M):
     cv2.putText(t, f"{m['cart']}:{m['id']} {m['role']} {rms:.1f}px", (4, 18), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (255, 0, 255), 2)
     tiles.append(t)
 ax.set_title("Main lens, drawing geometry: detected sticker (green) vs predicted (red), residual x10 (yellow). "
-             "Poses fitted per cart (robust).")
+             "Poses fitted per cart (least squares).")
 ax.set_axis_off()
 fig.tight_layout()
 fig.savefig(f"{RESULTS}/residuals_stickers_main.png")

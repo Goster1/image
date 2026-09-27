@@ -329,6 +329,8 @@
     "mapping_uncertainty_note": "not evaluated (or not meaningful) for this method; see REPORT.md",
     "radial_map_folds_inside_image": true,
     "fold_margin": -0.008799919179429017,
+    "min_radial_slope_to_corners": -1.0,
+    "plausibility_note": "local minimum / not a credible lens: radial map (nearly) flat or folding inside the image (min slope -1.000)",
     "source_file": "work/cache/method_alt_brown_k1.json",
     "mapping_difference_vs_main_px": {
       "centre": 5.455993259805705,
@@ -883,6 +885,7 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 13.38 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.4409058124832954,
     "source_file": "work/cache/method_alt_brown_k1k2.json",
     "mapping_difference_vs_main_px": {
       "centre": 2.4779699718336436,
@@ -1216,6 +1219,7 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 13.39 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.4417837509719697,
     "source_file": "work/cache/method_alt_brown_k1k2_fxfy.json",
     "mapping_difference_vs_main_px": {
       "centre": 2.272545659170722,
@@ -1541,6 +1545,7 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 13.33 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.4621223974245049,
     "source_file": "work/cache/method_alt_brown_k1k2_ppfixed.json",
     "mapping_difference_vs_main_px": {
       "centre": 3.5514822417031997,
@@ -2123,6 +2128,8 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 13.48 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": 0.04650987436018572,
+    "min_radial_slope_to_corners": 0.3223627762259585,
+    "fit_constraint_note": "the fit is held by the fold barrier (its unconstrained optimum would fold inside the image)",
     "source_file": "work/cache/method_alt_brown_k1k2k3.json",
     "mapping_difference_vs_main_px": {
       "centre": 2.7053911904917394,
@@ -2465,6 +2472,7 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 11.08 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.45134539479484576,
     "source_file": "work/cache/method_alt_brown_k1k2p1p2.json",
     "mapping_difference_vs_main_px": {
       "centre": 6.88514602588708,
@@ -2795,6 +2803,8 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 13.71 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": 0.040441245138558846,
+    "min_radial_slope_to_corners": 0.37308430492653566,
+    "fit_constraint_note": "the fit is held by the fold barrier (its unconstrained optimum would fold inside the image)",
     "source_file": "work/cache/method_alt_division_l1.json",
     "mapping_difference_vs_main_px": {
       "centre": 3.962769282843166,
@@ -3123,6 +3133,7 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 13.50 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": 0.07263535303870616,
+    "min_radial_slope_to_corners": 0.363949275936003,
     "source_file": "work/cache/method_alt_division_l1l2.json",
     "mapping_difference_vs_main_px": {
       "centre": 2.6951835408410876,
@@ -3459,6 +3470,8 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 13.49 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": 0.04563219213888958,
+    "min_radial_slope_to_corners": 0.32397301563413056,
+    "fit_constraint_note": "the fit is held by the fold barrier (its unconstrained optimum would fold inside the image)",
     "source_file": "work/cache/method_alt_kb_k1k2.json",
     "mapping_difference_vs_main_px": {
       "centre": 2.7623419873790658,
@@ -3803,6 +3816,7 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 13.35 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.4422140293947115,
     "source_file": "work/cache/method_alt_kb_k1k4.json",
     "mapping_difference_vs_main_px": {
       "centre": 2.794515682285569,
@@ -4174,6 +4188,7 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 13.31 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": 0.18871513512706062,
+    "min_radial_slope_to_corners": 0.3628076479539571,
     "source_file": "work/cache/method_alt_rational_k1k6.json",
     "mapping_difference_vs_main_px": {
       "centre": 2.727515738666833,
@@ -4533,6 +4548,8 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 13.48 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": 0.041748920912237475,
+    "min_radial_slope_to_corners": 0.3155238878964964,
+    "fit_constraint_note": "the fit is held by the fold barrier (its unconstrained optimum would fold inside the image)",
     "source_file": "work/cache/method_alt_rational_k4.json",
     "mapping_difference_vs_main_px": {
       "centre": 2.8018593540307717,
@@ -4570,12 +4587,12 @@
     "model": "OpenCV pinhole + Brown-Conrady, fx = fy, principal point free, radial k1, k2; p1 = p2 = k3 = 0 fixed (k3 only consistent with the data, p1/p2 and fx != fy not determined - REPORT.md ch. 7)",
     "rms_reprojection_error_px": 7.885676645444518,
     "uncertainty": {
-      "fx_px_1sigma": 30.96372006312467,
-      "fy_px_1sigma": 30.96372006312467,
-      "cx_px_1sigma": 10.63421419236742,
-      "cy_px_1sigma": 28.91943264803664,
-      "k1_1sigma": 0.01633572478901646,
-      "k2_1sigma": 0.020514899287374037,
+      "fx_px_1sigma": 46.60099244989342,
+      "fy_px_1sigma": 46.60099244989342,
+      "cx_px_1sigma": 18.813682752660373,
+      "cy_px_1sigma": 29.1397165456165,
+      "k1_1sigma": 0.020887571804298965,
+      "k2_1sigma": 0.0221932613190193,
       "p1_1sigma": null,
       "p2_1sigma": null,
       "k3_1sigma": null,
@@ -4588,68 +4605,158 @@
         "k2_1sigma": "k2_1sigma"
       },
       "method_native": {
-        "note": "1-sigma = max(stat (+) sys, synthetic round-trip RMSE); p1=p2=k3=0 fixed (not determined); fx=fy fitted as one parameter; k1 and k2 are strongly correlated (-0.9) - use uncertainty_details.covariance or the mapping uncertainty, not the individual sigmas combined as independent"
+        "note": "1-sigma = max(stat (+) sys, synthetic round-trip RMSE, cross-validation jackknife); p1=p2=k3=0 fixed (not determined); fx=fy fitted as one parameter; k1 and k2 are strongly correlated (-0.9) - use uncertainty_details.covariance or the mapping uncertainty, not the individual sigmas combined as independent"
       }
     },
     "mapping_uncertainty_px": {
-      "centre": 3.0132065774729626,
-      "cart_band": 9.18711618229404,
-      "corners": 13.651064415647731
+      "centre": 4.028340913293676,
+      "cart_band": 15.282795379699945,
+      "corners": 21.561712668005935
     },
     "data_used": "all 7 stills (jitter-compensated 7-frame mean); 20 ArUco stickers (ids 0-8 + 92 on cart 80, 0-8 + 322 on cart 310): 62 valid corners + 13 traced sides of partly hidden stickers (results/detections.json); 61 verified straight structural edges (cart 310: 18, cart 80: 17, scene incl. floor lines: 26; results/edges.json) as straightness + vanishing-point groups: cart X (shelf lips) and cart Z (posts) of both carts, scene verticals, 2 floor-line groups. No cart-Y (depth) group: the only depth-direction edges are end-board edges, which are not parallel to the cart axes and are used for straightness only",
     "geometry_assumptions": "Rozmery vozíka, výšky políc a polohy nálepiek sú použité presne podľa spec/cart-marker-layout.json (nie sú fitované). Dáta s nimi nie sú úplne konzistentné: top-nálepky vychádzajú voči nálepkám na policiach ~+60..+80 mm vyššie, koncové dosky naklonené 4-13 deg, RMS 4.9-5.1 px aj pre všeobecnú projektívnu kameru 3x4 (metrický fit 5.3 px) - opísané ako pozorovanie v REPORT.md kap. 5 (kde, koľko px). Hrany nepoužívajú žiadne rozmery, len priamosť, rovnobežnosť a kolmosť osí vozíka.",
     "uncertainty_details": {
-      "rule": "final 1-sigma = max(budget = statistical (+) systematic, synthetic round-trip RMSE of the same estimator, scenario T2_b: realistic detection noise + random sticker/row geometry deviations sized to the real sticker RMS + edge bows/direction deviations)",
-      "statistical": "cluster bootstrap over stickers and edges (edges resampled within their vanishing-point group), 100 replicates, robust 1-sigma = half of the 16-84 % range",
+      "rule": "final 1-sigma = max(budget = statistical (+) systematic; synthetic round-trip RMSE of the same estimator, scenario T2_b (detection noise + random sticker/row geometry deviations sized to the real sticker RMS + edge bows/direction deviations); jackknife over the cross-validation partitions (stickers, rows, carts, edge regions; largest))",
+      "statistical": "cluster bootstrap: stickers resampled with their corners AND their traced sides, structural edges resampled within their vanishing-point group; 100 replicates, each a full refit incl. block weights; robust 1-sigma = half of the 16-84 % range",
       "systematic": "RMS deviation of the plausible alternative methods/models/modelling choices from the main estimate: lines_joint_indep, lines_joint_lc, vanishing_indep, lines_joint_indep_mergedfloor, alt_brown_k1k2_joint, alt_brown_k1k2k3_joint, alt_division_l1l2, combined_k1k2_robust, combined_k1k2k3, combined_k1k2_ppfixed, combined_k1k2_common_vertical, combined_k1k2_rowblocks, combined_k1k2_no_80_3_7_sides, combined_k1k2_no_bent_lip, combined_k1k2_floor_straight_only",
       "components": {
         "f": {
-          "stat": 22.371756877755843,
+          "stat": 41.39318836432983,
           "sys": 21.40692538292534,
-          "budget": 30.96372006312467,
-          "synthetic_rmse": 21.516875311346407
+          "budget": 46.60099244989342,
+          "synthetic_rmse": 21.516875311346407,
+          "jackknife_cv": 37.65136028143289
         },
         "cx": {
-          "stat": 5.876056815026345,
+          "stat": 5.571727781490097,
           "sys": 8.863321487779347,
-          "budget": 10.63421419236742,
-          "synthetic_rmse": 5.670725944331715
+          "budget": 10.469126910433346,
+          "synthetic_rmse": 5.670725944331715,
+          "jackknife_cv": 18.813682752660373
         },
         "cy": {
-          "stat": 7.458906314009539,
+          "stat": 8.271927168182742,
           "sys": 27.940978889136225,
-          "budget": 28.91943264803664,
-          "synthetic_rmse": 4.006218870271154
+          "budget": 29.1397165456165,
+          "synthetic_rmse": 4.006218870271154,
+          "jackknife_cv": 22.818575170217738
         },
         "k1": {
-          "stat": 0.012809039277311751,
+          "stat": 0.01826215317822555,
           "sys": 0.010138264998251508,
-          "budget": 0.01633572478901646,
-          "synthetic_rmse": 0.011933661150379629
+          "budget": 0.020887571804298965,
+          "synthetic_rmse": 0.011933661150379629,
+          "jackknife_cv": 0.01944809200945055
         },
         "k2": {
-          "stat": 0.010555239355069294,
+          "stat": 0.013531180031541301,
           "sys": 0.017591134554891454,
-          "budget": 0.020514899287374037,
-          "synthetic_rmse": 0.007964418037195123
+          "budget": 0.0221932613190193,
+          "synthetic_rmse": 0.007964418037195123,
+          "jackknife_cv": 0.018382606652402007
         },
         "p1": {
           "stat": 0.0,
           "sys": 6.7696175642252286e-09,
           "budget": 6.7696175642252286e-09,
-          "synthetic_rmse": 0.0
+          "synthetic_rmse": 0.0,
+          "jackknife_cv": 0.0
         },
         "p2": {
           "stat": 0.0,
           "sys": 2.6537601771358955e-09,
           "budget": 2.6537601771358955e-09,
-          "synthetic_rmse": 0.0
+          "synthetic_rmse": 0.0,
+          "jackknife_cv": 0.0
         },
         "k3": {
           "stat": 0.0,
           "sys": 0.012262396604959433,
           "budget": 0.012262396604959433,
-          "synthetic_rmse": 0.0
+          "synthetic_rmse": 0.0,
+          "jackknife_cv": 0.0
+        }
+      },
+      "jackknife_cv": {
+        "stickers": {
+          "n": 20,
+          "params": {
+            "f": 35.56480970285521,
+            "cx": 2.726856314889801,
+            "cy": 3.0160440597410867,
+            "k1": 0.017527373242900674,
+            "k2": 0.010095068163469023
+          },
+          "mapping": {
+            "centre": 2.4560790054065094,
+            "cart_band": 11.13252114137564,
+            "corners": 15.069276446312337
+          },
+          "mapping_max": {
+            "centre": 3.7620965141195435,
+            "cart_band": 15.582405604627045,
+            "corners": 16.105598166956902
+          }
+        },
+        "rows": {
+          "n": 4,
+          "params": {
+            "f": 37.65136028143289,
+            "cx": 2.329061873343601,
+            "cy": 3.199140801282472,
+            "k1": 0.01944809200945055,
+            "k2": 0.011388474840391747
+          },
+          "mapping": {
+            "centre": 2.604627155102063,
+            "cart_band": 11.708346340643828,
+            "corners": 15.660772128706185
+          },
+          "mapping_max": {
+            "centre": 3.983250950588605,
+            "cart_band": 16.177173750868377,
+            "corners": 17.310947319800253
+          }
+        },
+        "carts": {
+          "n": 2,
+          "params": {
+            "f": 23.72288735224072,
+            "cx": 0.07722986399141973,
+            "cy": 0.8953883886717051,
+            "k1": 0.010985915298652227,
+            "k2": 0.00594040746089667
+          },
+          "mapping": {
+            "centre": 1.6594203155727532,
+            "cart_band": 7.44460048574649,
+            "corners": 10.161305198016695
+          },
+          "mapping_max": {
+            "centre": 2.513768191358904,
+            "cart_band": 10.518903840994168,
+            "corners": 10.61793431841666
+          }
+        },
+        "edge_regions": {
+          "n": 3,
+          "params": {
+            "f": 32.75435562251582,
+            "cx": 18.813682752660373,
+            "cy": 22.818575170217738,
+            "k1": 0.017691243149453965,
+            "k2": 0.018382606652402007
+          },
+          "mapping": {
+            "centre": 2.887652214843392,
+            "cart_band": 10.66640042531439,
+            "corners": 16.57549938884698
+          },
+          "mapping_max": {
+            "centre": 4.464182528039346,
+            "cart_band": 16.632547026909027,
+            "corners": 17.858611020614227
+          }
         }
       },
       "order": [
@@ -4662,135 +4769,141 @@
       "correlation_bootstrap": [
         [
           1.0,
-          0.091,
-          0.243,
-          -0.757,
-          0.402
+          -0.049,
+          0.132,
+          -0.904,
+          0.624
         ],
         [
-          0.091,
+          -0.049,
           1.0,
-          0.188,
-          -0.36,
-          0.448
+          0.143,
+          -0.133,
+          0.281
         ],
         [
-          0.243,
-          0.188,
+          0.132,
+          0.143,
           1.0,
-          -0.4,
-          0.369
+          -0.269,
+          0.321
         ],
         [
-          -0.757,
-          -0.36,
-          -0.4,
+          -0.904,
+          -0.133,
+          -0.269,
           1.0,
-          -0.88
+          -0.884
         ],
         [
-          0.402,
-          0.448,
-          0.369,
-          -0.88,
+          0.624,
+          0.281,
+          0.321,
+          -0.884,
           1.0
         ]
       ],
       "covariance": [
         [
-          958.7519601475491,
-          30.041297899630756,
-          217.8430931451824,
-          -0.38310245714619523,
-          0.2550482957362089
+          2171.6524973150235,
+          -43.33423132631335,
+          179.32768708293273,
+          -0.879671954869444,
+          0.6456871820891733
         ],
         [
-          30.041297899630763,
-          113.08651148914863,
-          57.85587210820747,
-          -0.06252808395761436,
-          0.09782920829090981
+          -43.33423132631335,
+          353.9546587177503,
+          78.32442919335612,
+          -0.052459272140645545,
+          0.11725803509795543
         ],
         [
-          217.8430931451824,
-          57.85587210820747,
-          836.3335846843274,
-          -0.1889207138331843,
-          0.21866266324580536
+          179.32768708293275,
+          78.32442919335614,
+          849.123080358876,
+          -0.16398868500711214,
+          0.20739663293849775
         ],
         [
-          -0.3831024571461952,
-          -0.06252808395761437,
-          -0.1889207138331843,
-          0.00026685590438248685,
-          -0.00029505760992304067
+          -0.8796719548694439,
+          -0.05245927214064554,
+          -0.1639886850071121,
+          0.00043629065587974514,
+          -0.0004097224423740905
         ],
         [
-          0.2550482957362089,
-          0.09782920829090981,
-          0.21866266324580536,
-          -0.00029505760992304067,
-          0.0004208610927710998
+          0.6456871820891732,
+          0.11725803509795545,
+          0.20739663293849772,
+          -0.00040972244237409043,
+          0.0004925408479742782
         ]
       ],
       "covariance_note": "final 1-sigma values combined with the bootstrap correlation matrix (order f, cx, cy, k1, k2)"
     },
     "mapping_uncertainty_details": {
-      "definition": "1-sigma displacement of the projection of a fixed viewing ray [px], median over the region (centre: r<150 px around the image centre; cart_band: both cart footprints; corners: 200x150 px corner boxes), rotation-compensated (a pure camera rotation is absorbed by the pose); final value = max(budget median, synthetic T2_b RMSE median)",
+      "definition": "1-sigma displacement of the projection of a fixed viewing ray [px], median over the region (centre: r<150 px around the image centre; cart_band: both cart footprints; corners: 200x150 px corner boxes), rotation-compensated (a pure camera rotation is absorbed by the pose); final value = max(budget median, synthetic T2_b RMSE median, cross-validation jackknife median)",
       "max_in_region": {
-        "centre": 3.6438687248288684,
-        "cart_band": 13.55593066950837,
-        "corners": 17.76439900715136
+        "centre": 5.412604691055713,
+        "cart_band": 22.77312919256965,
+        "corners": 23.555931367403215
       },
       "components": {
         "centre": {
-          "stat_median": 1.64798653615988,
+          "stat_median": 3.1234464548402285,
           "sys_median": 2.479366241967949,
           "sens": 0.0,
-          "total_median": 3.0132065774729626,
-          "total_max": 3.6438687248288684,
+          "total_median": 4.028340913293676,
+          "total_max": 5.412604691055713,
+          "jackknife_cv": 2.887652214843392,
+          "jackknife_cv_max": 4.464182528039346,
           "synthetic_rmse": 1.6270759105682373,
-          "budget_median": 3.0132065774729626
+          "budget_median": 4.028340913293676
         },
         "cart_band": {
-          "stat_median": 5.807748251751818,
+          "stat_median": 13.559470360919406,
           "sys_median": 7.090627925734486,
           "sens": 0.0,
-          "total_median": 9.18711618229404,
-          "total_max": 13.55593066950837,
+          "total_median": 15.282795379699945,
+          "total_max": 22.77312919256965,
+          "jackknife_cv": 11.708346340643828,
+          "jackknife_cv_max": 16.177173750868377,
           "synthetic_rmse": 6.975308418273926,
-          "budget_median": 9.18711618229404
+          "budget_median": 15.282795379699945
         },
         "corners": {
-          "stat_median": 8.366595017967029,
+          "stat_median": 18.639661031554535,
           "sys_median": 10.72775159779314,
           "sens": 0.0,
-          "total_median": 13.651064415647731,
-          "total_max": 17.76439900715136,
+          "total_median": 21.561712668005935,
+          "total_max": 23.555931367403215,
+          "jackknife_cv": 16.57549938884698,
+          "jackknife_cv_max": 17.858611020614227,
           "synthetic_rmse": 10.034910202026367,
-          "budget_median": 13.651064415647731
+          "budget_median": 21.561712668005935
         }
       },
       "without_rotation_compensation": {
-        "centre": 31.575050043955667,
-        "cart_band": 33.344684795005975,
-        "corners": 34.89499630982277
+        "centre": 32.12710054464436,
+        "cart_band": 36.15707152197609,
+        "corners": 39.90372701961797
       },
       "without_rotation_compensation_components": {
         "centre": {
-          "stat_median": 11.804407699286052,
+          "stat_median": 13.129914687493551,
           "sys_median": 29.273556118054604,
-          "total_median": 31.575050043955667
+          "total_median": 32.12710054464436
         },
         "cart_band": {
-          "stat_median": 14.53860222417437,
+          "stat_median": 20.15287843574341,
           "sys_median": 29.96442681851532,
-          "total_median": 33.344684795005975
+          "total_median": 36.15707152197609
         },
         "corners": {
-          "stat_median": 16.440096792144598,
+          "stat_median": 24.187251425714848,
           "sys_median": 30.71204844306265,
-          "total_median": 34.89499630982277
+          "total_median": 39.90372701961797
         }
       },
       "without_rotation_compensation_note": "budget (bootstrap (+) alternatives) with a camera rotation counted as error; dominated by the principal-point / f alternatives; only relevant when rays are compared without re-estimating the camera pose"
@@ -4985,8 +5098,8 @@
     "determination": {
       "determined": [
         "radial distortion profile (k1, k2 jointly, correlation -0.88; in pixel units k1/f^2 = -1.630e-07 px^-2, k2/f^4 = 2.136e-14 px^-4)",
-        "cx = 928 +- 11 px",
-        "f = 1469 +- 31 px (2.1 %): mainly from the vanishing points of the edges (+ sticker sides at the 80/X0 end); edges alone give f only fragile"
+        "cx = 928 +- 19 px",
+        "f = 1469 +- 47 px (3.2 %): mainly from the vanishing points of the edges (+ sticker sides at the 80/X0 end); edges alone give f only fragile"
       ],
       "consistent_only": [
         "cy = 503 +- 29 px: carried by the vanishing-point groups (without them cy 427); floor lines as straightness only: cy 492; edge-only fits give 426-509 depending on the floor-line / vertical assumptions",
@@ -5002,6 +5115,7 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 13.66 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.4403636286114068,
     "source_file": "work/cache/method_combined.json",
     "mapping_difference_vs_main_px": {
       "centre": 0.0,
@@ -5040,24 +5154,16 @@
     "model": "k1k2k3",
     "rms_reprojection_error_px": 7.919339874219954,
     "uncertainty": {
-      "fx_px_1sigma": 3.368504995358294,
-      "fy_px_1sigma": 3.368504995358294,
-      "cx_px_1sigma": 2.408212800575098,
-      "cy_px_1sigma": 2.806363731690342,
-      "k1_1sigma": 0.004922126554597275,
-      "k2_1sigma": 0.010505972764115572,
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
       "p1_1sigma": null,
       "p2_1sigma": null,
-      "k3_1sigma": 0.006801236182683073,
-      "standard_keys_from": {
-        "fx_px_1sigma": "f_1sigma_cov",
-        "fy_px_1sigma": "f_1sigma_cov",
-        "cx_px_1sigma": "cx_1sigma_cov",
-        "cy_px_1sigma": "cy_1sigma_cov",
-        "k1_1sigma": "k1_1sigma_cov",
-        "k2_1sigma": "k2_1sigma_cov",
-        "k3_1sigma": "k3_1sigma_cov"
-      },
+      "k3_1sigma": null,
+      "standard_keys_from": {},
       "method_native": {
         "f_1sigma_cov": 3.368504995358294,
         "cx_1sigma_cov": 2.408212800575098,
@@ -5100,6 +5206,7 @@
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
     "radial_map_folds_inside_image": false,
     "fold_margin": 0.11672702483336284,
+    "min_radial_slope_to_corners": 0.37429824180964794,
     "source_file": "work/cache/method_combined_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 0.11431967078685834,
@@ -5138,25 +5245,16 @@
     "model": "k1k2p1p2",
     "rms_reprojection_error_px": 6.279264152236935,
     "uncertainty": {
-      "fx_px_1sigma": 5.3275986035717455,
-      "fy_px_1sigma": 5.3275986035717455,
-      "cx_px_1sigma": 5.376604379223938,
-      "cy_px_1sigma": 4.160903992027312,
-      "k1_1sigma": 0.0032072689315625147,
-      "k2_1sigma": 0.002452453891529758,
-      "p1_1sigma": 0.0005579455373856905,
-      "p2_1sigma": 0.0008320595590693046,
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
       "k3_1sigma": null,
-      "standard_keys_from": {
-        "fx_px_1sigma": "f_1sigma_cov",
-        "fy_px_1sigma": "f_1sigma_cov",
-        "cx_px_1sigma": "cx_1sigma_cov",
-        "cy_px_1sigma": "cy_1sigma_cov",
-        "k1_1sigma": "k1_1sigma_cov",
-        "k2_1sigma": "k2_1sigma_cov",
-        "p1_1sigma": "p1_1sigma_cov",
-        "p2_1sigma": "p2_1sigma_cov"
-      },
+      "standard_keys_from": {},
       "method_native": {
         "f_1sigma_cov": 5.3275986035717455,
         "cx_1sigma_cov": 5.376604379223938,
@@ -5200,6 +5298,7 @@
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.43496098901964403,
     "source_file": "work/cache/method_combined_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 4.92009771527408,
@@ -5238,23 +5337,16 @@
     "model": "k1k2_fxfy",
     "rms_reprojection_error_px": 8.74647259498368,
     "uncertainty": {
-      "fx_px_1sigma": 12.26253111648951,
-      "fy_px_1sigma": 3.8535754768964727,
-      "cx_px_1sigma": 2.3058807751650785,
-      "cy_px_1sigma": 3.103452743108785,
-      "k1_1sigma": 0.003247750217525233,
-      "k2_1sigma": 0.002624006920399694,
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
       "p1_1sigma": null,
       "p2_1sigma": null,
       "k3_1sigma": null,
-      "standard_keys_from": {
-        "fx_px_1sigma": "fx_1sigma_cov",
-        "fy_px_1sigma": "fy_1sigma_cov",
-        "cx_px_1sigma": "cx_1sigma_cov",
-        "cy_px_1sigma": "cy_1sigma_cov",
-        "k1_1sigma": "k1_1sigma_cov",
-        "k2_1sigma": "k2_1sigma_cov"
-      },
+      "standard_keys_from": {},
       "method_native": {
         "fx_1sigma_cov": 12.26253111648951,
         "fy_1sigma_cov": 3.8535754768964727,
@@ -5297,6 +5389,7 @@
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.43197965580415426,
     "source_file": "work/cache/method_combined_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 1.368841831115498,
@@ -5335,21 +5428,16 @@
     "model": "k1k2_ppfixed",
     "rms_reprojection_error_px": 8.152263751640021,
     "uncertainty": {
-      "fx_px_1sigma": 3.0140081139936017,
-      "fy_px_1sigma": 3.0140081139936017,
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
       "cx_px_1sigma": null,
       "cy_px_1sigma": null,
-      "k1_1sigma": 0.0017820288571810334,
-      "k2_1sigma": 0.0012442437374941369,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
       "p1_1sigma": null,
       "p2_1sigma": null,
       "k3_1sigma": null,
-      "standard_keys_from": {
-        "fx_px_1sigma": "f_1sigma_cov",
-        "fy_px_1sigma": "f_1sigma_cov",
-        "k1_1sigma": "k1_1sigma_cov",
-        "k2_1sigma": "k2_1sigma_cov"
-      },
+      "standard_keys_from": {},
       "method_native": {
         "f_1sigma_cov": 3.0140081139936017,
         "k1_1sigma_cov": 0.0017820288571810334,
@@ -5389,6 +5477,7 @@
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.4609251536373773,
     "source_file": "work/cache/method_combined_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 3.0333324252724263,
@@ -5478,6 +5567,7 @@
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.4462012911539192,
     "source_file": "work/cache/method_combined_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 0.3424226937653946,
@@ -5571,6 +5661,7 @@
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.44191626290799174,
     "source_file": "work/cache/method_combined_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 0.2732545313072926,
@@ -5660,6 +5751,7 @@
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.44028412258004995,
     "source_file": "work/cache/method_combined_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 1.869371499854201,
@@ -5749,6 +5841,7 @@
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.44230160225921045,
     "source_file": "work/cache/method_combined_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 0.2202598960578006,
@@ -5838,6 +5931,7 @@
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.43604018975059494,
     "source_file": "work/cache/method_combined_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 0.7886310317269082,
@@ -5942,6 +6036,7 @@
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.4439862349463178,
     "source_file": "work/cache/method_combined_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 0.5381793192739135,
@@ -7164,6 +7259,8 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 11.15 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": 0.029862325437975512,
+    "min_radial_slope_to_corners": 0.29144958327344883,
+    "fit_constraint_note": "the fit is held by the fold barrier (its unconstrained optimum would fold inside the image)",
     "source_file": "work/cache/method_cuboid.json",
     "mapping_difference_vs_main_px": {
       "centre": 7.883433104541011,
@@ -7202,21 +7299,16 @@
     "model": "k1k2_ppfix|cluster",
     "rms_reprojection_error_px": 5.7645336592756315,
     "uncertainty": {
-      "fx_px_1sigma": 13.257144280344834,
-      "fy_px_1sigma": 13.257144280344834,
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
       "cx_px_1sigma": null,
       "cy_px_1sigma": null,
-      "k1_1sigma": 0.04732033332018724,
-      "k2_1sigma": 0.07283025102043884,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
       "p1_1sigma": null,
       "p2_1sigma": null,
       "k3_1sigma": null,
-      "standard_keys_from": {
-        "fx_px_1sigma": "f_1sigma_cov",
-        "fy_px_1sigma": "f_1sigma_cov",
-        "k1_1sigma": "k1_1sigma_cov",
-        "k2_1sigma": "k2_1sigma_cov"
-      },
+      "standard_keys_from": {},
       "method_native": {
         "f_1sigma_cov": 13.257144280344834,
         "k1_1sigma_cov": 0.04732033332018724,
@@ -7259,6 +7351,8 @@
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
     "radial_map_folds_inside_image": false,
     "fold_margin": 0.029989086081941174,
+    "min_radial_slope_to_corners": 0.24569358400208244,
+    "fit_constraint_note": "the fit is held by the fold barrier (its unconstrained optimum would fold inside the image)",
     "source_file": "work/cache/method_cuboid_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 8.880161205323372,
@@ -7297,22 +7391,16 @@
     "model": "k1_ppfree|cluster",
     "rms_reprojection_error_px": 5.872153951153811,
     "uncertainty": {
-      "fx_px_1sigma": 13.831447411374192,
-      "fy_px_1sigma": 13.831447411374192,
-      "cx_px_1sigma": 64.40699276624507,
-      "cy_px_1sigma": 36.86486510578091,
-      "k1_1sigma": 0.01047862856494822,
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
       "k2_1sigma": null,
       "p1_1sigma": null,
       "p2_1sigma": null,
       "k3_1sigma": null,
-      "standard_keys_from": {
-        "fx_px_1sigma": "f_1sigma_cov",
-        "fy_px_1sigma": "f_1sigma_cov",
-        "cx_px_1sigma": "cx_1sigma_cov",
-        "cy_px_1sigma": "cy_1sigma_cov",
-        "k1_1sigma": "k1_1sigma_cov"
-      },
+      "standard_keys_from": {},
       "method_native": {
         "f_1sigma_cov": 13.831447411374192,
         "cx_1sigma_cov": 64.40699276624507,
@@ -7356,6 +7444,8 @@
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
     "radial_map_folds_inside_image": false,
     "fold_margin": 0.029873509901378048,
+    "min_radial_slope_to_corners": 0.2887366009895782,
+    "fit_constraint_note": "the fit is held by the fold barrier (its unconstrained optimum would fold inside the image)",
     "source_file": "work/cache/method_cuboid_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 6.930587403626237,
@@ -7394,23 +7484,16 @@
     "model": "k1k2_ppfree|cluster",
     "rms_reprojection_error_px": 5.672585897207382,
     "uncertainty": {
-      "fx_px_1sigma": 14.377569261013246,
-      "fy_px_1sigma": 14.377569261013246,
-      "cx_px_1sigma": 56.80067880294488,
-      "cy_px_1sigma": 49.016792235563486,
-      "k1_1sigma": 0.04828803297931241,
-      "k2_1sigma": 0.08101977168504405,
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
       "p1_1sigma": null,
       "p2_1sigma": null,
       "k3_1sigma": null,
-      "standard_keys_from": {
-        "fx_px_1sigma": "f_1sigma_cov",
-        "fy_px_1sigma": "f_1sigma_cov",
-        "cx_px_1sigma": "cx_1sigma_cov",
-        "cy_px_1sigma": "cy_1sigma_cov",
-        "k1_1sigma": "k1_1sigma_cov",
-        "k2_1sigma": "k2_1sigma_cov"
-      },
+      "standard_keys_from": {},
       "method_native": {
         "f_1sigma_cov": 14.377569261013246,
         "cx_1sigma_cov": 56.80067880294488,
@@ -7453,8 +7536,10 @@
     "mapping_uncertainty_note": "not evaluated (or not meaningful) for this method; see REPORT.md",
     "data_used": "see REPORT.md, method table (ch. 6); detections in results/detections.json",
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
-    "radial_map_folds_inside_image": false,
+    "radial_map_folds_inside_image": true,
     "fold_margin": null,
+    "min_radial_slope_to_corners": -3.105304983157227e-07,
+    "plausibility_note": "local minimum / not a credible lens: radial map (nearly) flat or folding inside the image (min slope -0.000)",
     "source_file": "work/cache/method_cuboid_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 7.500671269831496,
@@ -7493,24 +7578,16 @@
     "model": "k1k2k3_ppfree|cluster",
     "rms_reprojection_error_px": 6.0207025969289445,
     "uncertainty": {
-      "fx_px_1sigma": 16.254863725453728,
-      "fy_px_1sigma": 16.254863725453728,
-      "cx_px_1sigma": 28.882474837334808,
-      "cy_px_1sigma": 22.729304502650372,
-      "k1_1sigma": 0.07794349186034227,
-      "k2_1sigma": 0.17798619673131436,
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
       "p1_1sigma": null,
       "p2_1sigma": null,
-      "k3_1sigma": 0.13111053325039732,
-      "standard_keys_from": {
-        "fx_px_1sigma": "f_1sigma_cov",
-        "fy_px_1sigma": "f_1sigma_cov",
-        "cx_px_1sigma": "cx_1sigma_cov",
-        "cy_px_1sigma": "cy_1sigma_cov",
-        "k1_1sigma": "k1_1sigma_cov",
-        "k2_1sigma": "k2_1sigma_cov",
-        "k3_1sigma": "k3_1sigma_cov"
-      },
+      "k3_1sigma": null,
+      "standard_keys_from": {},
       "method_native": {
         "f_1sigma_cov": 16.254863725453728,
         "cx_1sigma_cov": 28.882474837334808,
@@ -7556,6 +7633,8 @@
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.5693899612929435,
+    "plausibility_note": "local minimum / not a credible lens: principal point far from all other estimates",
     "source_file": "work/cache/method_cuboid_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 68.70800684771899,
@@ -7594,23 +7673,16 @@
     "model": "k1k2_ppfree_fxfy|cluster",
     "rms_reprojection_error_px": 5.636049632387791,
     "uncertainty": {
-      "fx_px_1sigma": 16.128219417195726,
-      "fy_px_1sigma": 14.381781791768729,
-      "cx_px_1sigma": 58.847007243636,
-      "cy_px_1sigma": 48.04488048562266,
-      "k1_1sigma": 0.054747754653762484,
-      "k2_1sigma": 0.08360281027729981,
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
       "p1_1sigma": null,
       "p2_1sigma": null,
       "k3_1sigma": null,
-      "standard_keys_from": {
-        "fx_px_1sigma": "fx_1sigma_cov",
-        "fy_px_1sigma": "fy_1sigma_cov",
-        "cx_px_1sigma": "cx_1sigma_cov",
-        "cy_px_1sigma": "cy_1sigma_cov",
-        "k1_1sigma": "k1_1sigma_cov",
-        "k2_1sigma": "k2_1sigma_cov"
-      },
+      "standard_keys_from": {},
       "method_native": {
         "fx_1sigma_cov": 16.128219417195726,
         "fy_1sigma_cov": 14.381781791768729,
@@ -7656,6 +7728,7 @@
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.16167622248019992,
     "source_file": "work/cache/method_cuboid_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 7.714047898132029,
@@ -7694,25 +7767,16 @@
     "model": "k1k2p1p2_ppfree|cluster",
     "rms_reprojection_error_px": 5.156620319593195,
     "uncertainty": {
-      "fx_px_1sigma": 15.92385735594379,
-      "fy_px_1sigma": 15.92385735594379,
-      "cx_px_1sigma": 23.24119016118791,
-      "cy_px_1sigma": 25.655141849156866,
-      "k1_1sigma": 0.05996883384557961,
-      "k2_1sigma": 0.10409554365126165,
-      "p1_1sigma": 0.0031272105082178815,
-      "p2_1sigma": 0.0036795907244743576,
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
       "k3_1sigma": null,
-      "standard_keys_from": {
-        "fx_px_1sigma": "f_1sigma_cov",
-        "fy_px_1sigma": "f_1sigma_cov",
-        "cx_px_1sigma": "cx_1sigma_cov",
-        "cy_px_1sigma": "cy_1sigma_cov",
-        "k1_1sigma": "k1_1sigma_cov",
-        "k2_1sigma": "k2_1sigma_cov",
-        "p1_1sigma": "p1_1sigma_cov",
-        "p2_1sigma": "p2_1sigma_cov"
-      },
+      "standard_keys_from": {},
       "method_native": {
         "f_1sigma_cov": 15.92385735594379,
         "cx_1sigma_cov": 23.24119016118791,
@@ -7759,6 +7823,7 @@
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.783121550119371,
     "source_file": "work/cache/method_cuboid_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 20.17714605068574,
@@ -7797,20 +7862,16 @@
     "model": "k1_ppfix|point",
     "rms_reprojection_error_px": 6.307644569717386,
     "uncertainty": {
-      "fx_px_1sigma": 10.871652180048393,
-      "fy_px_1sigma": 10.871652180048393,
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
       "cx_px_1sigma": null,
       "cy_px_1sigma": null,
-      "k1_1sigma": 0.00773640322162481,
+      "k1_1sigma": null,
       "k2_1sigma": null,
       "p1_1sigma": null,
       "p2_1sigma": null,
       "k3_1sigma": null,
-      "standard_keys_from": {
-        "fx_px_1sigma": "f_1sigma_cov",
-        "fy_px_1sigma": "f_1sigma_cov",
-        "k1_1sigma": "k1_1sigma_cov"
-      },
+      "standard_keys_from": {},
       "method_native": {
         "f_1sigma_cov": 10.871652180048393,
         "k1_1sigma_cov": 0.00773640322162481
@@ -7852,6 +7913,8 @@
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
     "radial_map_folds_inside_image": false,
     "fold_margin": 0.030882261486524065,
+    "min_radial_slope_to_corners": 0.29000316240803226,
+    "fit_constraint_note": "the fit is held by the fold barrier (its unconstrained optimum would fold inside the image)",
     "source_file": "work/cache/method_cuboid_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 11.761473740476436,
@@ -7890,21 +7953,16 @@
     "model": "k1k2_ppfix|point",
     "rms_reprojection_error_px": 6.150598912397476,
     "uncertainty": {
-      "fx_px_1sigma": 10.360987375336451,
-      "fy_px_1sigma": 10.360987375336451,
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
       "cx_px_1sigma": null,
       "cy_px_1sigma": null,
-      "k1_1sigma": 0.028824827338367384,
-      "k2_1sigma": 0.04457883909375976,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
       "p1_1sigma": null,
       "p2_1sigma": null,
       "k3_1sigma": null,
-      "standard_keys_from": {
-        "fx_px_1sigma": "f_1sigma_cov",
-        "fy_px_1sigma": "f_1sigma_cov",
-        "k1_1sigma": "k1_1sigma_cov",
-        "k2_1sigma": "k2_1sigma_cov"
-      },
+      "standard_keys_from": {},
       "method_native": {
         "f_1sigma_cov": 10.360987375336451,
         "k1_1sigma_cov": 0.028824827338367384,
@@ -7947,6 +8005,7 @@
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.6572699634347369,
     "source_file": "work/cache/method_cuboid_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 11.338735668823212,
@@ -7985,22 +8044,16 @@
     "model": "k1_ppfree|point",
     "rms_reprojection_error_px": 13.453696795868696,
     "uncertainty": {
-      "fx_px_1sigma": 11.607016794894994,
-      "fy_px_1sigma": 11.607016794894994,
-      "cx_px_1sigma": 22.248948449734833,
-      "cy_px_1sigma": 29.197959888825174,
-      "k1_1sigma": 0.0047461600667368115,
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
       "k2_1sigma": null,
       "p1_1sigma": null,
       "p2_1sigma": null,
       "k3_1sigma": null,
-      "standard_keys_from": {
-        "fx_px_1sigma": "f_1sigma_cov",
-        "fy_px_1sigma": "f_1sigma_cov",
-        "cx_px_1sigma": "cx_1sigma_cov",
-        "cy_px_1sigma": "cy_1sigma_cov",
-        "k1_1sigma": "k1_1sigma_cov"
-      },
+      "standard_keys_from": {},
       "method_native": {
         "f_1sigma_cov": 11.607016794894994,
         "cx_1sigma_cov": 22.248948449734833,
@@ -8044,6 +8097,8 @@
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
     "radial_map_folds_inside_image": false,
     "fold_margin": 0.36549529375820566,
+    "min_radial_slope_to_corners": 0.6854541681676585,
+    "plausibility_note": "local minimum / not a credible lens: principal point far from all other estimates",
     "source_file": "work/cache/method_cuboid_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 65.92727279745395,
@@ -8082,23 +8137,16 @@
     "model": "k1k2_ppfree|point",
     "rms_reprojection_error_px": 6.12582035052549,
     "uncertainty": {
-      "fx_px_1sigma": 8.48766858361081,
-      "fy_px_1sigma": 8.48766858361081,
-      "cx_px_1sigma": 30.983239903235482,
-      "cy_px_1sigma": 36.46282808300489,
-      "k1_1sigma": 0.028947176314091574,
-      "k2_1sigma": 0.02743660527832169,
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
       "p1_1sigma": null,
       "p2_1sigma": null,
       "k3_1sigma": null,
-      "standard_keys_from": {
-        "fx_px_1sigma": "f_1sigma_cov",
-        "fy_px_1sigma": "f_1sigma_cov",
-        "cx_px_1sigma": "cx_1sigma_cov",
-        "cy_px_1sigma": "cy_1sigma_cov",
-        "k1_1sigma": "k1_1sigma_cov",
-        "k2_1sigma": "k2_1sigma_cov"
-      },
+      "standard_keys_from": {},
       "method_native": {
         "f_1sigma_cov": 8.48766858361081,
         "cx_1sigma_cov": 30.983239903235482,
@@ -8141,8 +8189,10 @@
     "mapping_uncertainty_note": "not evaluated (or not meaningful) for this method; see REPORT.md",
     "data_used": "see REPORT.md, method table (ch. 6); detections in results/detections.json",
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
-    "radial_map_folds_inside_image": false,
+    "radial_map_folds_inside_image": true,
     "fold_margin": null,
+    "min_radial_slope_to_corners": -2.9555618452676255e-07,
+    "plausibility_note": "local minimum / not a credible lens: radial map (nearly) flat or folding inside the image (min slope -0.000); principal point far from all other estimates",
     "source_file": "work/cache/method_cuboid_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 8.534315578692183,
@@ -8181,24 +8231,16 @@
     "model": "k1k2k3_ppfree|point",
     "rms_reprojection_error_px": 7.277545663007348,
     "uncertainty": {
-      "fx_px_1sigma": 9.019271848700326,
-      "fy_px_1sigma": 9.019271848700326,
-      "cx_px_1sigma": 11.185077492375555,
-      "cy_px_1sigma": 13.144934327818751,
-      "k1_1sigma": 0.0526386598711454,
-      "k2_1sigma": 0.11786358001465445,
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
       "p1_1sigma": null,
       "p2_1sigma": null,
-      "k3_1sigma": 0.08171055998358054,
-      "standard_keys_from": {
-        "fx_px_1sigma": "f_1sigma_cov",
-        "fy_px_1sigma": "f_1sigma_cov",
-        "cx_px_1sigma": "cx_1sigma_cov",
-        "cy_px_1sigma": "cy_1sigma_cov",
-        "k1_1sigma": "k1_1sigma_cov",
-        "k2_1sigma": "k2_1sigma_cov",
-        "k3_1sigma": "k3_1sigma_cov"
-      },
+      "k3_1sigma": null,
+      "standard_keys_from": {},
       "method_native": {
         "f_1sigma_cov": 9.019271848700326,
         "cx_1sigma_cov": 11.185077492375555,
@@ -8242,8 +8284,10 @@
     "mapping_uncertainty_note": "not evaluated (or not meaningful) for this method; see REPORT.md",
     "data_used": "see REPORT.md, method table (ch. 6); detections in results/detections.json",
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
-    "radial_map_folds_inside_image": false,
+    "radial_map_folds_inside_image": true,
     "fold_margin": null,
+    "min_radial_slope_to_corners": -1.009251874405584e-06,
+    "plausibility_note": "local minimum / not a credible lens: radial map (nearly) flat or folding inside the image (min slope -0.000); principal point far from all other estimates",
     "source_file": "work/cache/method_cuboid_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 40.43157647345494,
@@ -8282,23 +8326,16 @@
     "model": "k1k2_ppfree_fxfy|point",
     "rms_reprojection_error_px": 5.957076774144664,
     "uncertainty": {
-      "fx_px_1sigma": 13.327082211678,
-      "fy_px_1sigma": 8.87392584838036,
-      "cx_px_1sigma": 32.498089629143905,
-      "cy_px_1sigma": 35.13037434925439,
-      "k1_1sigma": 0.0301736334639076,
-      "k2_1sigma": 0.02996322018736006,
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
       "p1_1sigma": null,
       "p2_1sigma": null,
       "k3_1sigma": null,
-      "standard_keys_from": {
-        "fx_px_1sigma": "fx_1sigma_cov",
-        "fy_px_1sigma": "fy_1sigma_cov",
-        "cx_px_1sigma": "cx_1sigma_cov",
-        "cy_px_1sigma": "cy_1sigma_cov",
-        "k1_1sigma": "k1_1sigma_cov",
-        "k2_1sigma": "k2_1sigma_cov"
-      },
+      "standard_keys_from": {},
       "method_native": {
         "fx_1sigma_cov": 13.327082211678,
         "fy_1sigma_cov": 8.87392584838036,
@@ -8342,8 +8379,10 @@
     "mapping_uncertainty_note": "not evaluated (or not meaningful) for this method; see REPORT.md",
     "data_used": "see REPORT.md, method table (ch. 6); detections in results/detections.json",
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
-    "radial_map_folds_inside_image": false,
+    "radial_map_folds_inside_image": true,
     "fold_margin": null,
+    "min_radial_slope_to_corners": -5.484253609572957e-08,
+    "plausibility_note": "local minimum / not a credible lens: radial map (nearly) flat or folding inside the image (min slope -0.000); principal point far from all other estimates",
     "source_file": "work/cache/method_cuboid_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 9.250089642441967,
@@ -8382,25 +8421,16 @@
     "model": "k1k2p1p2_ppfree|point",
     "rms_reprojection_error_px": 7.068309791585319,
     "uncertainty": {
-      "fx_px_1sigma": 9.054783112160735,
-      "fy_px_1sigma": 9.054783112160735,
-      "cx_px_1sigma": 34.24382197267807,
-      "cy_px_1sigma": 51.803103808748034,
-      "k1_1sigma": 0.02622796157319692,
-      "k2_1sigma": 0.039613895695692,
-      "p1_1sigma": 0.0026724517966386276,
-      "p2_1sigma": 0.003516590767112479,
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
       "k3_1sigma": null,
-      "standard_keys_from": {
-        "fx_px_1sigma": "f_1sigma_cov",
-        "fy_px_1sigma": "f_1sigma_cov",
-        "cx_px_1sigma": "cx_1sigma_cov",
-        "cy_px_1sigma": "cy_1sigma_cov",
-        "k1_1sigma": "k1_1sigma_cov",
-        "k2_1sigma": "k2_1sigma_cov",
-        "p1_1sigma": "p1_1sigma_cov",
-        "p2_1sigma": "p2_1sigma_cov"
-      },
+      "standard_keys_from": {},
       "method_native": {
         "f_1sigma_cov": 9.054783112160735,
         "cx_1sigma_cov": 34.24382197267807,
@@ -8445,8 +8475,10 @@
     "mapping_uncertainty_note": "not evaluated (or not meaningful) for this method; see REPORT.md",
     "data_used": "see REPORT.md, method table (ch. 6); detections in results/detections.json",
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
-    "radial_map_folds_inside_image": false,
+    "radial_map_folds_inside_image": true,
     "fold_margin": null,
+    "min_radial_slope_to_corners": -3.3868838092466375e-07,
+    "plausibility_note": "local minimum / not a credible lens: radial map (nearly) flat or folding inside the image (min slope -0.000); principal point far from all other estimates",
     "source_file": "work/cache/method_cuboid_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 19.527732898119886,
@@ -10959,6 +10991,7 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 14.37 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.4242396082455812,
     "source_file": "work/cache/method_lines_joint.json",
     "mapping_difference_vs_main_px": {
       "centre": 4.564307300857803,
@@ -11034,6 +11067,7 @@
     "geometry_assumptions": "no dimensions used (straightness, parallelism, perpendicularity of the cart axes only)",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.45668383845089394,
     "source_file": "work/cache/method_lines_joint_indep_mergedfloor.json",
     "mapping_difference_vs_main_px": {
       "centre": 0.8578611662196534,
@@ -11134,6 +11168,7 @@
     "mapping_uncertainty_note": "not evaluated (or not meaningful) for this method; see REPORT.md",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.4447981879601393,
     "source_file": "work/cache/method_lines_joint_lc.json",
     "mapping_difference_vs_main_px": {
       "centre": 3.1944829527078182,
@@ -11335,6 +11370,8 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 11.54 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": 0.029827433115066526,
+    "min_radial_slope_to_corners": 0.22610352123793145,
+    "fit_constraint_note": "the fit is held by the fold barrier (its unconstrained optimum would fold inside the image)",
     "source_file": "work/cache/method_markers.json",
     "mapping_difference_vs_main_px": {
       "centre": 10.086007305487694,
@@ -11527,6 +11564,8 @@
     "mapping_uncertainty_note": "not evaluated (or not meaningful) for this method; see REPORT.md",
     "radial_map_folds_inside_image": false,
     "fold_margin": 0.027761709418839264,
+    "min_radial_slope_to_corners": 0.2817337962014118,
+    "fit_constraint_note": "the fit is held by the fold barrier (its unconstrained optimum would fold inside the image)",
     "source_file": "work/cache/method_markers_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 7.983809207813848,
@@ -11736,6 +11775,8 @@
     "mapping_uncertainty_note": "not evaluated (or not meaningful) for this method; see REPORT.md",
     "radial_map_folds_inside_image": false,
     "fold_margin": 0.02812623424059446,
+    "min_radial_slope_to_corners": 0.2787429639448885,
+    "fit_constraint_note": "the fit is held by the fold barrier (its unconstrained optimum would fold inside the image)",
     "source_file": "work/cache/method_markers_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 6.496968162805378,
@@ -11951,6 +11992,8 @@
     "mapping_uncertainty_note": "not evaluated (or not meaningful) for this method; see REPORT.md",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.7522447375719218,
+    "plausibility_note": "local minimum / not a credible lens: principal point far from all other estimates",
     "source_file": "work/cache/method_markers_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 18.7050531973803,
@@ -12170,8 +12213,10 @@
     "method_id": "markers_only_k1k2k3_ppfree",
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 9.54 px",
     "mapping_uncertainty_note": "not evaluated (or not meaningful) for this method; see REPORT.md",
-    "radial_map_folds_inside_image": false,
+    "radial_map_folds_inside_image": true,
     "fold_margin": null,
+    "min_radial_slope_to_corners": -2.5144412978383862e-06,
+    "plausibility_note": "local minimum / not a credible lens: radial map (nearly) flat or folding inside the image (min slope -0.000)",
     "source_file": "work/cache/method_markers_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 11.654233365682382,
@@ -12394,6 +12439,7 @@
     "mapping_uncertainty_note": "not evaluated (or not meaningful) for this method; see REPORT.md",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.7731121077446874,
     "source_file": "work/cache/method_markers_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 17.05736589809279,
@@ -12623,6 +12669,7 @@
     "mapping_uncertainty_note": "not evaluated (or not meaningful) for this method; see REPORT.md",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.7641765431920224,
     "source_file": "work/cache/method_markers_alternatives.json",
     "mapping_difference_vs_main_px": {
       "centre": 13.771154875127621,
@@ -13537,6 +13584,7 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 16.77 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.46435074437410184,
     "source_file": "work/cache/method_markershape.json",
     "mapping_difference_vs_main_px": {
       "centre": 9.621396973719,
@@ -15319,6 +15367,7 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 14.53 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.4142420730293545,
     "source_file": "work/cache/method_plumbline.json",
     "mapping_difference_vs_main_px": {
       "centre": 5.463460809889764,
@@ -15756,6 +15805,7 @@
     "mapping_uncertainty_note": "not evaluated (or not meaningful) for this method; see REPORT.md",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.4643507456402399,
     "source_file": "work/cache/method_plumbline_lc.json",
     "mapping_difference_vs_main_px": {
       "centre": 4.407991347501864,
@@ -16389,6 +16439,7 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 12.93 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.464350745520418,
     "source_file": "work/cache/method_twocart.json",
     "mapping_difference_vs_main_px": {
       "centre": 6.424074892881698,
@@ -21305,6 +21356,7 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 14.53 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.4142420730293545,
     "source_file": "work/cache/method_vanishing.json",
     "mapping_difference_vs_main_px": {
       "centre": 5.463460809889764,
@@ -21401,6 +21453,7 @@
     "mapping_uncertainty_note": "not evaluated (or not meaningful) for this method; see REPORT.md",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.4643507456402399,
     "source_file": "work/cache/method_vanishing_lc.json",
     "mapping_difference_vs_main_px": {
       "centre": 3.5201182627084693,

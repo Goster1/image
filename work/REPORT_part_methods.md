@@ -34,7 +34,8 @@ Poznámky k jednotlivým metódam:
   vlastný smer.
 * **M4 – spoločný fit z čiar:** f závisí od toho, či majú oba vozíky spoločnú zvislicu: so spoločnou 1473 px,
   so samostatnými 1425–1446 px, keďže vozík 80 má len dve krátke hrany stĺpika. Vynechanie jednej krátkej hrany stĺpika
-  vozíka 310 posunie f o ~100 px, takže **f zo samotných hrán je krehké** (jackknife σ ≈ 110–150 px).
+  vozíka 310 posunie f o ~100 px, takže **f zo samotných hrán je krehké** (bootstrap σ 114–124 px v prvej implementácii,
+  jackknife σ 156 px v štúdii modelov).
 * **M5 – kváder:** s rozmermi z výkresu f = 1359 ± 36 px (bootstrap; ± 58 vrátane geometrie), rezíduá 6 px, sedí na
   bariére proti prehnutiu. Lemy políc sedia na −2…+9 px. Mimo predikcie sú: zadná horná tyč vozíka 80 (−17 px, −56 mm;
   po zdvihnutí top-dosky o +65 mm +1,5 px), zadné pozdĺžniky `cart310_x_back_inner` a `cart80_x_back_low` (−75…−79 px),

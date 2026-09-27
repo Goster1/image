@@ -30,9 +30,9 @@
     "model": "k1k2k3",
     "rms_reprojection_error_px": 7.919339874219954,
     "uncertainty": {
-      "fx_px_1sigma": 44.261847245197515,
-      "fy_px_1sigma": 44.261847245197515,
-      "cx_px_1sigma": 9.568323996919602,
+      "fx_px_1sigma": 46.60099244989342,
+      "fy_px_1sigma": 46.60099244989342,
+      "cx_px_1sigma": 18.813682752660373,
       "cy_px_1sigma": 34.83819012452826,
       "k1_1sigma": 0.03068769300185701,
       "k2_1sigma": 0.046280341210657674,
@@ -54,7 +54,12 @@
         "cy_1sigma": 34.83819012452826,
         "cy_1sigma_if_floor_lines_parallel": 8.568759085798979,
         "note": "cluster jackknife/sandwich of the same model in the model study (43_altmodels)"
-      }
+      },
+      "raised_to_main": [
+        "fx_px_1sigma",
+        "fy_px_1sigma",
+        "cx_px_1sigma"
+      ]
     },
     "details": {
       "block_rms": {
@@ -78,8 +83,8 @@
     },
     "mapping_uncertainty_px": {
       "centre": 4.124,
-      "cart_band": 15.078,
-      "corners": 21.087
+      "cart_band": 15.282795379699945,
+      "corners": 21.561712668005935
     },
     "data_used": "all 7 stills (jitter-compensated 7-frame mean); 20 ArUco stickers (ids 0-8 + 92 on cart 80, 0-8 + 322 on cart 310): 62 valid corners + 13 traced sides of partly hidden stickers (results/detections.json); 61 verified straight structural edges (cart 310: 18, cart 80: 17, scene incl. floor lines: 26; results/edges.json) as straightness + vanishing-point groups: cart X (shelf lips) and cart Z (posts) of both carts, scene verticals, 2 floor-line groups. No cart-Y (depth) group: the only depth-direction edges are end-board edges, which are not parallel to the cart axes and are used for straightness only",
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
@@ -88,6 +93,8 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 13.75 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": 0.11672702483336284,
+    "min_radial_slope_to_corners": 0.37429824180964794,
+    "uncertainty_note": "1-sigma = max(own estimate, main result): the alternatives use the same data, and the main-result budget already contains the spread between them",
     "note": "k3 free (only consistent with the data)"
   },
   {
@@ -121,12 +128,12 @@
     "model": "division l1,l2, pp free -> converted to the closest OpenCV Brown [k1,k2,p1,p2,k3] over the full image",
     "rms_reprojection_error_px": 7.235901800311223,
     "uncertainty": {
-      "fx_px_1sigma": 25.730429686062422,
-      "fy_px_1sigma": 25.730429686062422,
-      "cx_px_1sigma": 5.602971765616198,
-      "cy_px_1sigma": 3.8646750127036564,
-      "k1_1sigma": null,
-      "k2_1sigma": null,
+      "fx_px_1sigma": 46.60099244989342,
+      "fy_px_1sigma": 46.60099244989342,
+      "cx_px_1sigma": 18.813682752660373,
+      "cy_px_1sigma": 29.1397165456165,
+      "k1_1sigma": 0.020887571804298965,
+      "k2_1sigma": 0.0221932613190193,
       "p1_1sigma": null,
       "p2_1sigma": null,
       "k3_1sigma": null,
@@ -143,12 +150,20 @@
         "native_l1_1sigma": 0.021355076994247935,
         "native_l2_1sigma": 0.023006648160100916,
         "note": "1-sigma of the NATIVE parameters (see details.native_params); the OpenCV coefficients are a conversion"
-      }
+      },
+      "raised_to_main": [
+        "fx_px_1sigma",
+        "fy_px_1sigma",
+        "cx_px_1sigma",
+        "cy_px_1sigma",
+        "k1_1sigma",
+        "k2_1sigma"
+      ]
     },
     "mapping_uncertainty_px": {
-      "centre": 1.792,
-      "cart_band": 7.628,
-      "corners": 10.74
+      "centre": 4.028340913293676,
+      "cart_band": 15.282795379699945,
+      "corners": 21.561712668005935
     },
     "data_used": "62 valid sticker corners of 20 stickers (7-frame means) + 61 verified straight edges (straightness; VP groups: cart X/Z axes without end-board edges, scene verticals, 2 floor-line groups); block sigmas fixed from the Brown k1,k2 variance components",
     "geometry_assumptions": "drawing dimensions and sticker positions exact (not fitted); edges use no dimensions",
@@ -411,6 +426,8 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 13.50 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": 0.07263535303870616,
+    "min_radial_slope_to_corners": 0.363949275936003,
+    "uncertainty_note": "1-sigma = max(own estimate, main result): the alternatives use the same data, and the main-result budget already contains the spread between them",
     "note": "division model l1, l2 (converted to OpenCV Brown)"
   },
   {
@@ -475,12 +492,12 @@
       }
     },
     "uncertainty": {
-      "fx_px_1sigma": 30.96372006312467,
-      "fy_px_1sigma": 30.96372006312467,
-      "cx_px_1sigma": 10.63421419236742,
-      "cy_px_1sigma": 28.91943264803664,
-      "k1_1sigma": 0.01633572478901646,
-      "k2_1sigma": 0.020514899287374037,
+      "fx_px_1sigma": 46.60099244989342,
+      "fy_px_1sigma": 46.60099244989342,
+      "cx_px_1sigma": 18.813682752660373,
+      "cy_px_1sigma": 29.1397165456165,
+      "k1_1sigma": 0.020887571804298965,
+      "k2_1sigma": 0.0221932613190193,
       "p1_1sigma": null,
       "p2_1sigma": null,
       "k3_1sigma": null,
@@ -497,9 +514,9 @@
       }
     },
     "mapping_uncertainty_px": {
-      "centre": 3.0132065774729626,
-      "cart_band": 9.18711618229404,
-      "corners": 13.651064415647731
+      "centre": 4.028340913293676,
+      "cart_band": 15.282795379699945,
+      "corners": 21.561712668005935
     },
     "data_used": "all 7 stills (jitter-compensated 7-frame mean); 20 ArUco stickers (ids 0-8 + 92 on cart 80, 0-8 + 322 on cart 310): 62 valid corners + 13 traced sides of partly hidden stickers (results/detections.json); 61 verified straight structural edges (cart 310: 18, cart 80: 17, scene incl. floor lines: 26; results/edges.json) as straightness + vanishing-point groups: cart X (shelf lips) and cart Z (posts) of both carts, scene verticals, 2 floor-line groups. No cart-Y (depth) group: the only depth-direction edges are end-board edges, which are not parallel to the cart axes and are used for straightness only",
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
@@ -507,6 +524,8 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 13.70 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.44191626290799174,
+    "uncertainty_note": "1-sigma = max(own estimate, main result): the alternatives use the same data, and the main-result budget already contains the spread between them",
     "note": "separate variance components for top-plate and shelf sticker corners"
   },
   {
@@ -582,12 +601,12 @@
       }
     },
     "uncertainty": {
-      "fx_px_1sigma": 30.96372006312467,
-      "fy_px_1sigma": 30.96372006312467,
-      "cx_px_1sigma": 10.63421419236742,
-      "cy_px_1sigma": 28.91943264803664,
-      "k1_1sigma": 0.01633572478901646,
-      "k2_1sigma": 0.020514899287374037,
+      "fx_px_1sigma": 46.60099244989342,
+      "fy_px_1sigma": 46.60099244989342,
+      "cx_px_1sigma": 18.813682752660373,
+      "cy_px_1sigma": 29.1397165456165,
+      "k1_1sigma": 0.020887571804298965,
+      "k2_1sigma": 0.0221932613190193,
       "p1_1sigma": null,
       "p2_1sigma": null,
       "k3_1sigma": null,
@@ -604,9 +623,9 @@
       }
     },
     "mapping_uncertainty_px": {
-      "centre": 3.0132065774729626,
-      "cart_band": 9.18711618229404,
-      "corners": 13.651064415647731
+      "centre": 4.028340913293676,
+      "cart_band": 15.282795379699945,
+      "corners": 21.561712668005935
     },
     "data_used": "all 7 stills (jitter-compensated 7-frame mean); 20 ArUco stickers (ids 0-8 + 92 on cart 80, 0-8 + 322 on cart 310): 62 valid corners + 13 traced sides of partly hidden stickers (results/detections.json); 61 verified straight structural edges (cart 310: 18, cart 80: 17, scene incl. floor lines: 26; results/edges.json) as straightness + vanishing-point groups: cart X (shelf lips) and cart Z (posts) of both carts, scene verticals, 2 floor-line groups. No cart-Y (depth) group: the only depth-direction edges are end-board edges, which are not parallel to the cart axes and are used for straightness only",
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
@@ -614,6 +633,8 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 13.73 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.4439862349463178,
+    "uncertainty_note": "1-sigma = max(own estimate, main result): the alternatives use the same data, and the main-result budget already contains the spread between them",
     "note": "stickers with cluster-robust weights (top stickers ~0 weight)"
   },
   {
@@ -674,12 +695,12 @@
       "rowblock_rms": null
     },
     "uncertainty": {
-      "fx_px_1sigma": 30.96372006312467,
-      "fy_px_1sigma": 30.96372006312467,
-      "cx_px_1sigma": 10.63421419236742,
-      "cy_px_1sigma": 28.91943264803664,
-      "k1_1sigma": 0.01633572478901646,
-      "k2_1sigma": 0.020514899287374037,
+      "fx_px_1sigma": 46.60099244989342,
+      "fy_px_1sigma": 46.60099244989342,
+      "cx_px_1sigma": 18.813682752660373,
+      "cy_px_1sigma": 29.1397165456165,
+      "k1_1sigma": 0.020887571804298965,
+      "k2_1sigma": 0.0221932613190193,
       "p1_1sigma": null,
       "p2_1sigma": null,
       "k3_1sigma": null,
@@ -696,9 +717,9 @@
       }
     },
     "mapping_uncertainty_px": {
-      "centre": 3.0132065774729626,
-      "cart_band": 9.18711618229404,
-      "corners": 13.651064415647731
+      "centre": 4.028340913293676,
+      "cart_band": 15.282795379699945,
+      "corners": 21.561712668005935
     },
     "data_used": "all 7 stills (jitter-compensated 7-frame mean); 20 ArUco stickers (ids 0-8 + 92 on cart 80, 0-8 + 322 on cart 310): 62 valid corners + 13 traced sides of partly hidden stickers (results/detections.json); 61 verified straight structural edges (cart 310: 18, cart 80: 17, scene incl. floor lines: 26; results/edges.json) as straightness + vanishing-point groups: cart X (shelf lips) and cart Z (posts) of both carts, scene verticals, 2 floor-line groups. No cart-Y (depth) group: the only depth-direction edges are end-board edges, which are not parallel to the cart axes and are used for straightness only",
     "geometry_assumptions": "drawing dimensions and sticker positions exactly as specified (not fitted)",
@@ -706,6 +727,8 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 13.64 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.4462012911539192,
+    "uncertainty_note": "1-sigma = max(own estimate, main result): the alternatives use the same data, and the main-result budget already contains the spread between them",
     "note": "posts of both carts parallel to the scene vertical"
   },
   {
@@ -739,12 +762,12 @@
     "model": "fx=fy, zero skew, pp free (= distortion centre), k1,k2; common vertical for both carts' posts, cart X axes _|_ vertical, scene verticals own direction",
     "rms_reprojection_error_px": 8.045351782941644,
     "uncertainty": {
-      "fx_px_1sigma": 21.90701090462185,
-      "fy_px_1sigma": 21.90701090462185,
-      "cx_px_1sigma": 8.414993606336047,
+      "fx_px_1sigma": 46.60099244989342,
+      "fy_px_1sigma": 46.60099244989342,
+      "cx_px_1sigma": 18.813682752660373,
       "cy_px_1sigma": 45.86317759784233,
-      "k1_1sigma": 0.014040771771062893,
-      "k2_1sigma": 0.014113213087904568,
+      "k1_1sigma": 0.020887571804298965,
+      "k2_1sigma": 0.0221932613190193,
       "p1_1sigma": null,
       "p2_1sigma": null,
       "k3_1sigma": null,
@@ -775,12 +798,19 @@
         "k1_1sigma_sys": 0.007437842589385346,
         "k2_1sigma_stat": 0.011967874844987412,
         "k2_1sigma_sys": 0.00748015744214775
-      }
+      },
+      "raised_to_main": [
+        "fx_px_1sigma",
+        "fy_px_1sigma",
+        "cx_px_1sigma",
+        "k1_1sigma",
+        "k2_1sigma"
+      ]
     },
     "mapping_uncertainty_px": {
-      "centre": 3.334,
-      "cart_band": 6.952,
-      "corners": 11.815
+      "centre": 4.028340913293676,
+      "cart_band": 15.282795379699945,
+      "corners": 21.561712668005935
     },
     "data_used": "58 verified straight_3d edges (mean of the 7 jitter-corrected stills; files edges_cart310/cart80/scene.json, reviewed=True); duplicates removed; rejected as curved: cart80_x_A_front_in, cart80_x_E_front, cart80_x_E_front_in",
     "geometry_assumptions": "no dimensions; cart X axes _|_ posts; both carts upright on one floor (common vertical)",
@@ -3213,6 +3243,8 @@
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 14.37 px",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.4242396082455812,
+    "uncertainty_note": "1-sigma = max(own estimate, main result): the alternatives use the same data, and the main-result budget already contains the spread between them",
     "note": "edges only, no dimensions (common vertical of both carts)"
   },
   {
@@ -3245,12 +3277,12 @@
     "method": "lines_joint_indep_mergedfloor (edges only; the two pieces of the blue floor line treated as one straight line)",
     "model": "ALTERNATIVE (review): as the main model, but the two visible pieces of the blue floor line (left of cart 310 / between the carts) are one straight 3D line (assumption: one straight painted line under cart 310)",
     "uncertainty": {
-      "fx_px_1sigma": 20.944604603528706,
-      "fy_px_1sigma": 20.944604603528706,
-      "cx_px_1sigma": 6.958414547908235,
+      "fx_px_1sigma": 46.60099244989342,
+      "fy_px_1sigma": 46.60099244989342,
+      "cx_px_1sigma": 18.813682752660373,
       "cy_px_1sigma": 42.03094439405763,
-      "k1_1sigma": null,
-      "k2_1sigma": null,
+      "k1_1sigma": 0.020887571804298965,
+      "k2_1sigma": 0.0221932613190193,
       "p1_1sigma": null,
       "p2_1sigma": null,
       "k3_1sigma": null,
@@ -3264,7 +3296,14 @@
         "cx_1sigma": 6.958414547908235,
         "cy_1sigma": 42.03094439405763,
         "how": "stratified bootstrap, 60 replicates (statistical only)"
-      }
+      },
+      "raised_to_main": [
+        "fx_px_1sigma",
+        "fy_px_1sigma",
+        "cx_px_1sigma",
+        "k1_1sigma",
+        "k2_1sigma"
+      ]
     },
     "coefficients_pixel_units": [
       -0.165552570467191,
@@ -3274,15 +3313,17 @@
     "rms_reprojection_error_px": 8.136563512903237,
     "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 13.79 px",
     "mapping_uncertainty_px": {
-      "centre": null,
-      "cart_band": null,
-      "corners": null
+      "centre": 4.028340913293676,
+      "cart_band": 15.282795379699945,
+      "corners": 21.561712668005935
     },
     "mapping_uncertainty_note": "not evaluated (or not meaningful) for this method; see REPORT.md",
     "data_used": "61 verified structural edges (results/edges.json), no dimensions",
     "geometry_assumptions": "no dimensions used (straightness, parallelism, perpendicularity of the cart axes only)",
     "radial_map_folds_inside_image": false,
     "fold_margin": null,
+    "min_radial_slope_to_corners": 0.45668383845089394,
+    "uncertainty_note": "1-sigma = max(own estimate, main result): the alternatives use the same data, and the main-result budget already contains the spread between them",
     "note": "edges only, blue floor line treated as one straight line"
   }
 ]

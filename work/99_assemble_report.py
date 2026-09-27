@@ -169,10 +169,15 @@ for k, nm in lab.items():
     tr = j["train_block_rms"].get("M")
     t.append(f"| {nm} | {num(i['f'], 0)} | {num(i['cx'], 0)} | {num(i['cy'], 0)} | {num(i['k1'], 3, True)} | {num(i['k2'], 3, True)} | {pr} | {inf} | "
              f"{num(tr * np.sqrt(2), 1) if tr else '–'} |")
-fo = np.array(fo)
-sd = fo.std(0, ddof=1)
-t.append(f"| **σ cez 9 foldov** | {num(sd[0], 0)} | {num(sd[1], 0)} | {num(sd[2], 0)} | {num(sd[3], 3)} | {num(sd[4], 3)} | | | |")
+JK = UD.get("jackknife_cv", {})
+for pn, lab_ in (("stickers", "nálepky (20)"), ("rows", "rady (4)"), ("carts", "vozíky (2)"), ("edge_regions", "oblasti hrán (3)")):
+    if pn in JK:
+        q = JK[pn]["params"]
+        t.append(f"| **jackknife σ: {lab_}** | {num(q['f'], 0)} | {num(q['cx'], 0)} | {num(q['cy'], 0)} | {num(q['k1'], 3)} | {num(q['k2'], 3)} | | | |")
 T["TABLE_CV"] = "\n".join(t)
+V["cv_dcx_310"] = num(CV["edges_cart310"]["intrinsics"]["cx"] - cx, 0, True)
+V["cv_dcx_80"] = num(CV["edges_cart80"]["intrinsics"]["cx"] - cx, 0, True)
+V["jk_st_f"] = num(JK["stickers"]["params"]["f"], 0) if "stickers" in JK else "–"
 V["cv_top_train"] = num(CV["row_top"]["train_block_rms"]["M"] * np.sqrt(2), 1)
 V["cv_top_held"] = num(CV["row_top"]["heldout_stickers_pred_rms_px"], 1)
 st = {k: v for k, v in CV.items() if k.startswith("sticker_")}
@@ -193,7 +198,7 @@ held_sh = [v["heldout_stickers_pred_rms_px"] for k, v in st.items() if (int(k.sp
 V.update(loo_top_lo=num(min(held_top), 0), loo_top_hi=num(max(held_top), 0), loo_shelf_lo=num(min(held_sh), 1), loo_shelf_hi=num(max(held_sh), 1))
 hh = np.array([v["heldout_stickers_pred_rms_px"] for v in st.values()])
 ii = np.array([v["heldout_points_rms_in_main_fit_px"] for v in st.values()])
-big = [k[8:].replace("_", ":") + f" ({num(v['intrinsics']['f'] - f, 0, True)} px)" for k, v in st.items() if abs(v["intrinsics"]["f"] - f) > 5]
+big = [k[8:].replace("_", ":") + f" ({num(v['intrinsics']['f'] - f, 1, True)} px)" for k, v in st.items() if abs(v["intrinsics"]["f"] - f) > 5]
 V["loo_big"] = ", ".join(big) if big else "žiadnej"
 V["loo_infl"] = num(100 * (np.sqrt(np.mean(hh ** 2)) / np.sqrt(np.mean(ii ** 2)) - 1), 0)
 
@@ -219,10 +224,9 @@ V["syn_bias_comment"] = (("pri T2 je odchýlka nevýznamná" if z2 < 2 else f"pr
                          ("pri T1 tiež." if z1 < 2 else f"pri T1 je malá, ale štatisticky významná ({num(z1, 1)}σ, "
                           f"{num(100 * abs(s1['bias'][0]) / s1['truth'][0], 1)} % f); voči rozptylu je malá a RMSE ju obsahuje."))
 bs = boot[:, 0].std(ddof=1)
-V["boot_vs_syn"] = ("teda porovnateľný s rozptylom v scenári b; scenár b je realistický." if abs(bs / sb["std"][0] - 1) < 0.3 else
-                    ("väčší než v scenári b; bootstrap je teda konzervatívnejší." if bs > sb["std"][0] else "menší než v scenári b; scenár b je teda pesimistický."))
+V["boot_vs_syn"] = (f"v scenári b je rozptyl f {num(sb['std'][0], 0)} px." )
 syn_small = all((BUD["regions"][k].get("synthetic_rmse") or 0) <= BUD["regions"][k].get("budget_median", BUD["regions"][k]["total_median"]) for k in ("centre", "cart_band", "corners"))
-V["syn_vs_budget"] = ("Syntetický test dáva vo všetkých oblastiach menšie hodnoty než empirický rozpočet, výsledkom je teda rozpočet "
+V["syn_vs_budget_old"] = ("Syntetický test dáva vo všetkých oblastiach menšie hodnoty než empirický rozpočet, výsledkom je teda rozpočet "
                       "(bootstrap ⊕ alternatívy)." if syn_small else
                       "Tam, kde syntetický test dáva viac než empirický rozpočet, berie sa hodnota zo syntetického testu.")
 
@@ -250,19 +254,74 @@ if SENS:
                  f"max {num(fr['map_max']['centre'], 2)} / {num(fr['map_max']['cart_band'], 2)} / {num(fr['map_max']['corners'], 2)} |")
     T["TABLE_SENS"] = "\n".join(t)
     small = [SENS[k]["map"]["cart_band"] for k, _, _ in labs if k in SENS and "bias" not in k]
-    V["sens_max_band"] = num(max(small), 1)
+    V["sens_max_band"] = num(max(small), 2)
     V["sens_sides_df"] = num(dict(zip(SENS["sides_bias_+0.66"]["names"], SENS["sides_bias_+0.66"]["dparams"]))["f"], 1, True) if "sides_bias_+0.66" in SENS else "–"
 else:
     T["TABLE_SENS"] = "(citlivosti neboli prepočítané)"
     V["sens_max_band"] = V["sens_sides_df"] = "–"
 
 # ---------------- mapping budget
-t = ["| oblasť | štatistická | systematická | rozpočet spolu | syntetický test (scenár b, T2) | **výsledok (1σ)** | max v oblasti |", "|---|---|---|---|---|---|---|"]
+t = ["| oblasť | štatistická | systematická | rozpočet spolu | syntetický test (scenár b, T2) | jackknife CV | **výsledok (1σ)** | max v oblasti |",
+     "|---|---|---|---|---|---|---|---|"]
 for k, nm in (("centre", "stred"), ("cart_band", "pás vozíkov"), ("corners", "rohy")):
     r = BUD["regions"][k]
     t.append(f"| {nm} | {num(r['stat_median'])} | {num(r['sys_median'])} | {num(r.get('budget_median', r['total_median']))} | "
-             f"{num(r.get('synthetic_rmse'))} | **{num(r['total_median'])} px** | {num(r['total_max'])} |")
+             f"{num(r.get('synthetic_rmse'))} | {num(r.get('jackknife_cv'))} | **{num(r['total_median'])} px** | {num(r['total_max'])} |")
 T["TABLE_BUDGET"] = "\n".join(t)
+
+# ---------------- extra values (review round 2)
+pp = px("k1k2p1p2")
+V.update(v_p1p2_f=num(pp["f"], 0), v_p1p2_cy=num(pp["cy"], 0), t2_diff=num(f - 1420, 0),
+         syn_t2_rmse_f=num(sb["rmse"][0], 0))
+ms = sb["median_block_sigmas"]
+V.update(syn_sig_M=num(ms["M"], 1), syn_sig_L=num(ms["L"], 2), syn_sig_V=num(ms["V"], 2), syn_sig_S=num(ms["S"], 2))
+V["syn_vs_budget"] = "Výsledná neistota zobrazenia je v každej oblasti najväčšia z troch stĺpcov (rozpočet, syntetický test, jackknife)."
+# f-profile: chi2 contribution of each block relative to the minimum
+cnt = {k: S["k1k2"]["block_rms"][k][1] for k in "MLVS"}
+chi = {k: cnt[k] * prof[:, 2 + j] ** 2 / sig[k] ** 2 for j, k in enumerate("MLVS")}
+for k in "MLV":
+    V[f"dchi_{k}_lo"] = num(chi[k][lo] - chi[k][i0], 0, True)
+    V[f"dchi_{k}_hi"] = num(chi[k][hi] - chi[k][i0], 0, True)
+# radii: farthest used edge point and the image corners from the principal point
+EJ = load_json(f"{RESULTS}/edges.json")
+rr = [np.hypot(*(np.array(e["points"], float) - [cx, cy]).T).max() for b_ in EJ["regions"] for e in b_["edges"]
+      if e.get("straight_3d", False) and e.get("verified", "yes") != "no" and len(e["points"])]
+cr = [np.hypot(x - cx, y - cy) for x in (0, 1919) for y in (0, 1079)]
+V.update(edge_rmax=num(max(rr), 0), corner_rmin=num(min(cr), 0), corner_rmax=num(max(cr), 0))
+# bootstrap asymmetry: replay the random streams of 50_combined.py boot (same seeds) to know which stickers were drawn
+bf = boot[:, 0]
+V.update(boot_med_f=num(np.median(bf), 0), boot_lo_f=num(np.percentile(bf, 16), 0), boot_hi_f=num(np.percentile(bf, 84), 0))
+try:
+    import sys as _sys
+    _argv = _sys.argv
+    _sys.argv = ["50_combined.py", "none"]
+    _ns = {}
+    exec(compile(open("50_combined.py").read().split('if MODE == "fit":')[0], "50c", "exec"), _ns)
+    _sys.argv = _argv
+    from linedata import stratified_resample  # noqa: E402
+    mis = sorted({p_["mi"] for p_ in _ns["PTS"]})
+    i33 = [i for i, m in enumerate(_ns["M"]) if (m["cart"], m["id"]) in ((80, 3), (80, 7))]
+    has = []
+    for sd_ in sorted(int(os.path.basename(q)[14:-5]) for q in glob.glob(f"{CACHE}/combined_boot_*.json")):
+        rng_ = np.random.default_rng(sd_)
+        nb = len(load_json(f"{CACHE}/combined_boot_{sd_}.json")["boot"])
+        k_ = 0
+        while k_ < nb:
+            pick = rng_.choice(mis, len(mis), replace=True)
+            carts_ = {p_["cart"] for q_, mi_ in enumerate(pick) for p_ in _ns["PTS"] if p_["mi"] == mi_}
+            if len(carts_) < 2:
+                continue
+            stratified_resample(_ns["LINES"], rng_)
+            has.append(all(i_ in set(pick) for i_ in i33))
+            k_ += 1
+    has = np.array(has)
+    if len(has) == len(bf):
+        V.update(boot_miss_pct=num(100 * np.mean(~has), 0), boot_miss_f=num(np.median(bf[~has]), 0), boot_both_f=num(np.median(bf[has]), 0))
+    else:
+        raise ValueError("replay length mismatch")
+except Exception as ex:  # noqa
+    print("bootstrap replay failed:", ex)
+    V.update(boot_miss_pct="–", boot_miss_f="–", boot_both_f="–")
 
 # ---------------- methods table
 mt = open(f"{CACHE}/report_tables.md").read().split("\n")

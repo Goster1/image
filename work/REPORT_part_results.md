@@ -9,7 +9,8 @@ Zo štúdie 16 modelov na rovnakých dátach (`work/43_altmodels_*`, `results/al
 * **k3** vychádza −0,03 ± 0,02 (štúdia modelov −0,031 ± 0,025; kombinovaný fit {{v_k3}}): je len konzistentné, preto ho
   fixujem na 0 a jeho vplyv je v systematike.
 * **p1, p2:** na hranách vychádzajú ~0 (−0,001 ± 0,006; 0,0015 ± 0,003) a fit je nestabilný. S nálepkami s geometriou z výkresu
-  vyskočí p1 na 0,009 a f na 1389, lebo tangenciálne členy len pohlcujú nesúlad geometrie. Preto p1 = p2 = 0.
+  vyskočí p1 na 0,009 a f klesne na {{v_p1p2_f}} (kombinovaný fit, cy {{v_p1p2_cy}}; v štúdii modelov 1374), lebo tangenciálne
+  členy len pohlcujú nesúlad geometrie. Preto p1 = p2 = 0.
 * **fx ≠ fy** nie je určené (fx 1383 ± 91 vs. fy 1426 ± 34 z hrán; kombinovaný fit fx/fy − 1 = {{v_fxfy}}), preto fx = fy.
 * **Hlavný bod voľný:** fixácia do stredu obrazu stojí ΔQAIC +21…+24 a zhoršuje krížovú predikciu. cx je určené,
   cy len konzistentné.
@@ -69,15 +70,18 @@ TABLE_STICKERS
 
 * **Len nálepky:** RMS má minimum pri f ≈ 1300–1375 a rastie o 0,5–1 px na každých 100 px posunu f. Minimum je plytké a
   vychýlené geometriou.
-* **Len hrany:** RMS priamosti má minimum pri f ≈ 1430–1440 (so samostatnými zvislicami) a je veľmi plochý:
-  +0,002 px pri ±30 px, +0,005 px pri ±50 px. f zo samotných hrán je slabé.
+* **Len hrany:** RMS spoločného fitu z čiar (priamosť + úbežníky, samostatné zvislice; samotná priamosť od f nezávisí) má
+  minimum pri f ≈ 1430–1440 a je veľmi plochý: +0,002 px pri ±30 px, +0,005 px pri ±50 px. f zo samotných hrán je slabé.
 * **Kombinovaný (hlavný):** f je pevne nastavené a všetko ostatné sa refituje (váhy blokov hlavného fitu). Minimum je pri
   {{prof_min}}. Formálne Δχ² = 1 zodpovedá ±{{sig_cov_f}} px (kovariancia). Pri f {{prof_lo}} / {{prof_hi}} px je Δχ²
   {{prof_dchi_lo}} / {{prof_dchi_hi}}; RMS blokov rohy {{prof_M_lo}} / {{prof_M_hi}} (v minime {{prof_M_0}}), strany
   {{prof_L_lo}} / {{prof_L_hi}} ({{prof_L_0}}), úbežníky {{prof_V_lo}} / {{prof_V_hi}} ({{prof_V_0}}), priamosť
-  {{prof_S_lo}} / {{prof_S_hi}} ({{prof_S_0}}) px. Nižšie f odmietajú hlavne strany nálepiek, vyššie f rohy nálepiek a úbežníky (samotné úbežníky majú minimum okolo 1440 px, rohy okolo 1310 px, strany okolo 1480 px).
+  {{prof_S_lo}} / {{prof_S_hi}} ({{prof_S_0}}) px. Príspevky blokov k Δχ²: pri {{prof_lo}} px strany {{dchi_L_lo}}, rohy {{dchi_M_lo}}, úbežníky {{dchi_V_lo}};
+  pri {{prof_hi}} px strany {{dchi_L_hi}}, rohy {{dchi_M_hi}}, úbežníky {{dchi_V_hi}}. Nižšie f teda odmietajú hlavne strany
+  nálepiek, vyššie f hlavne úbežníky a menej rohy (samotné úbežníky majú minimum okolo 1440 px, rohy okolo 1310 px, strany
+  okolo 1480 px).
   Legenda obrázka: M = rohy nálepiek, L = strany čiastočne zakrytých nálepiek, V = úbežníky, S = priamosť.
-  Formálna krivka je úzka; reálnu neistotu (±{{sf0}} px) určuje bootstrap, rozptyl alternatív a syntetický test.
+  Formálna krivka je úzka; reálnu neistotu (±{{sf0}} px) určuje bootstrap, rozptyl alternatív a jackknife krížovej validácie.
 
 ### 9.3 Krížová validácia
 
@@ -90,7 +94,8 @@ TABLE_STICKERS
 
 TABLE_CV
 
-  Vynechanie jednej nálepky (20 fitov): f {{loo_f_min}}–{{loo_f_max}} px (σ {{loo_f_std}}), cy {{loo_cy_min}}–{{loo_cy_max}},
+  Vynechanie jednej nálepky (20 fitov): f {{loo_f_min}}–{{loo_f_max}} px (jackknife σ_f = {{jk_st_f}} px; leave-one-out odhady
+  sú korelované, preto sa rozptyl násobí (n−1)), cy {{loo_cy_min}}–{{loo_cy_max}},
   zobrazenie sa zmení najviac o {{loo_map_c}} / {{loo_map_b}} / {{loo_map_k}} px. f sa pohne o viac ako 5 px len pri
   vynechaní nálepiek {{loo_big}}. Predikčná chyba vynechanej nálepky: police {{loo_shelf_lo}}–{{loo_shelf_hi}} px,
   top-nálepky {{loo_top_lo}}–{{loo_top_hi}} px; predikcia je v priemere o {{loo_infl}} % horšia než RMS tých istých bodov
@@ -103,11 +108,12 @@ TABLE_CV
 ### 9.4 Syntetický round-trip (`work/45_synth_main.py`, `work/44_synth_*`, `results/synthetic_*.png`)
 
 Syntetické dáta majú presne reálnu geometriu a viditeľnosť (tie isté nálepky a rohy, tie isté hrany prevedené na ideálne priamky)
-a vznikli zo známeho objektívu. Pravda T2: f = 1420, pp (935, 505), k1 −0,33, k2 0,09 (blízko výsledku); T1: f = 1250,
+a vznikli zo známeho objektívu. Pravda T2: f = 1420, pp (935, 505), k1 −0,33, k2 0,09 (blízko odhadov zo samotných hrán;
+  od hlavného výsledku sa f líši o {{t2_diff}} px); T1: f = 1250,
 pp (955, 530), k1 −0,26, k2 0,06. Scenáre:
 
 * **a** – len šum detekcie;
-* **b** – realistický: šum detekcie + náhodná odchýlka 3D bodov od výkresu (σ 5 mm na nálepku) a výšok radov (σ 33 mm),
+* **b** – šum detekcie + náhodná odchýlka 3D bodov od výkresu (σ 5 mm na nálepku) a výšok radov (σ 33 mm),
   nastavená tak, aby RMS nálepiek bolo ako v reálnych dátach (5,1–5,4 px). Je to štatistický model nesúladu neznámeho
   pôvodu, nie tvrdenie o nalepení. K tomu ohyby a smerové chyby hrán z reálnych reziduí;
 * **c** – systematicky zdvihnuté top-dosky podľa diagnostiky (kap. 5).
@@ -117,11 +123,15 @@ pp (955, 530), k1 −0,26, k2 0,06. Scenáre:
 TABLE_SYNTH
 
 * **Postup vráti známy objektív.** V scenároch a a c je hlavný odhad nevychýlený (f {{syn_a_bias_f}}, resp. {{syn_c_bias_f}} px).
-  V realistickom scenári b je odchýlka f {{syn_b_bias_f}} ± {{syn_b_bias_se}} px (T2) a {{syn_t1_bias_f}} ± {{syn_t1_bias_se}} px (T1);
+  V scenári b je odchýlka f {{syn_b_bias_f}} ± {{syn_b_bias_se}} px (T2) a {{syn_t1_bias_f}} ± {{syn_t1_bias_se}} px (T1);
   {{syn_bias_comment}} Rozptyl f v scenári b (T2) je {{syn_b_std_f}} px.
-* **Hlavný výsledok berie konzervatívne väčšiu z dvoch hodnôt:** empirický rozpočet (bootstrap ⊕ rozptyl alternatív)
-  a RMSE zo scenára b (T2, pravda blízko odhadu; {{syn_b_n}} replík, RMSE má teda samo neistotu ~±{{syn_rmse_relerr}} %).
-  S pravdou T1 by vyšlo f ± {{syn_t1_rmse_f}} px a zobrazenie {{syn_t1_map}} px.
+* **Scenár b nereprodukuje štruktúru reziduí hlavného fitu:** medián σ blokov rohy / strany / úbežníky / priamosť je
+  {{syn_sig_M}} / {{syn_sig_L}} / {{syn_sig_V}} / {{syn_sig_S}} px, reálne {{sigM}} / {{sigL}} / {{sigV}} / {{sigS}} px; scenár c
+  neobsahuje nesúlad rozostupov políc na konci 80/X0, kde ležia dve strany nálepiek posúvajúce f o +{{v_nosides_df}} px.
+  RMSE zo syntetického testu ({{syn_b_n}} replík, samo s neistotou ~±{{syn_rmse_relerr}} %) je preto len dolná hranica.
+  RMSE f rastie približne s f (T1: {{syn_t1_rmse_f}} px pri 1250, T2: {{syn_t2_rmse_f}} px pri 1420).
+* **Výsledná neistota je najväčšia z troch hodnôt:** empirický rozpočet (bootstrap ⊕ rozptyl alternatív), RMSE zo scenára b
+  (T2) a jackknife z krížovej validácie (kap. 9.3, 10).
 * **Staršia štúdia** (`work/44_synth_*`, `work/cache/synthetic_report.md`, `results/synthetic_*.png`; pravda T2: f = 1400,
   pp (935, 410), k1 −0,32, k2 0,08; 9 replík) porovnala všetky metódy: fity len z nálepiek sú
   v scenári b rozptýlené o 65–100 px vo f (v rohoch 45–186 px zobrazenia) a v scenári c vychýlené o −115 až −143 px;
@@ -138,8 +148,8 @@ sa zopakuje (vrátane váh blokov).
 
 TABLE_SENS
 
-**Chyby detekcie sú malé** voči modelovej a geometrickej neistote: poruchy 0,2–0,3 px menia zobrazenie o menej než
-{{sens_max_band}} px v páse vozíkov. Najväčší je vplyv známeho posunu hrán k čiernej (0,66 px, kap. 3) na stranách
+**Chyby detekcie sú malé** voči modelovej a geometrickej neistote: poruchy 0,2–0,3 px menia zobrazenie v páse vozíkov
+nanajvýš o {{sens_max_band}} px. Najväčší je vplyv známeho posunu hrán k čiernej (0,66 px, kap. 3) na stranách
 nálepiek: oprava by posunula f o {{sens_sides_df}} px a zobrazenie o ≤ 1,5 px. Hlavný výsledok používa rohy aj strany
 bez tejto opravy (merané rovnako; pri rohoch oprava nemení nič), rozdiel je hlboko pod celkovou neistotou.
 Pri samotných nálepkách sú citlivosti väčšie (až 2–3 px zobrazenia v páse, desiatky px v rohoch).
@@ -147,21 +157,26 @@ Pri samotných nálepkách sú citlivosti väčšie (až 2–3 px zobrazenia v p
 ## 10. Neistota zobrazenia
 
 `results/mapping_uncertainty.png` ukazuje mapu 1σ posunu priemetu po celom obraze v troch zložkách: štatistická
-(bootstrap: prevzorkovanie nálepiek a hrán v rámci skupín úbežníkov, {{n_boot}} replík, každá s celým fitom vrátane váh),
-systematická (rozptyl {{n_alts}} prijateľných alternatívnych metód, modelov a modelových rozhodnutí voči hlavnému výsledku)
-a rozpočet spolu (bez syntetického testu).
+(bootstrap: prevzorkovanie nálepiek spolu s ich rohmi aj stranami a hrán v rámci skupín úbežníkov, {{n_boot}} replík, každá
+s celým fitom vrátane váh), systematická (rozptyl {{n_alts}} prijateľných alternatívnych metód, modelov a modelových rozhodnutí
+voči hlavnému výsledku) a rozpočet spolu (bez syntetického testu a jackknife). Výsledok je najväčšia z hodnôt: rozpočet,
+syntetický test (scenár b), jackknife z krížovej validácie (najväčší cez rozdelenia nálepky / rady / vozíky / oblasti hrán).
 
 TABLE_BUDGET
 
+* **Bootstrap f je asymetrický:** medián {{boot_med_f}} px, 68 % interval {{boot_lo_f}}–{{boot_hi_f}} px. V {{boot_miss_pct}} % replík
+  chýba strana 80:3/1 alebo 80:7/3 a vtedy je f ≈ {{boot_miss_f}} px, s oboma ≈ {{boot_both_f}} px. Hlavná hodnota {{f0}} px leží na hornej
+  strane rozdelenia; ± {{sf0}} px je symetrizovaná neistota.
 * Definícia: posun priemetu pevného lúča po kompenzácii rotácie kamery. Čistú rotáciu pohltí póza, takže
   ide o chybu, ktorá sa prejaví pri súčasnom odhade pózy. **Bez kompenzácie rotácie** je rozpočet
   {{raw_c}} / {{raw_b}} / {{raw_k}} px (stred / pás / rohy). Dominujú ho alternatívy s iným hlavným bodom (cy 426–438,
   pp v strede obrazu); týka sa to len porovnania lúčov bez nového odhadu pózy.
 * Dominuje neistota f: 1 % vo f ≈ {{f1pct_band}} px v páse vozíkov (medián, max {{f1pct_band_max}}) a ≈ {{f1pct_corners}} px
-  v rohoch (pri pevnom skreslení v pixelových jednotkách). Samotné skreslenie (pri pevnom f) je určené na ~2 / 1,3 / 5 px
-  (plumb-line).
+  v rohoch (pri pevnom skreslení v pixelových jednotkách). Samotné skreslenie (pri pevnom f) je určené na ~3,5 / 2,5 / 7,9 px
+  (plumb-line, štatistická ⊕ systematická zložka; len štatistická 1,8 / 1,3 / 5,0 px).
 * {{syn_vs_budget}}
-* Hrany siahajú do vzdialenosti ~1057 px od hlavného bodu, rohy obrazu sú 1055–1147 px, takže rohy sú len mierna extrapolácia.
+* Hrany siahajú do vzdialenosti ~{{edge_rmax}} px od hlavného bodu, rohy obrazu sú {{corner_rmin}}–{{corner_rmax}} px, takže rohy sú len
+  mierna extrapolácia.
   Modely vyhodnotené ako prehnuté (modely len z nálepiek bez bariéry) nemajú v rohoch zmysluplné zobrazenie a v štatistike nie sú.
 
 ## 11. Čo je určené, čo len konzistentné, čo sa určiť nedá
@@ -169,9 +184,10 @@ TABLE_BUDGET
 **Určené z dát:**
 * Radiálny profil skreslenia (k1 a k2 spolu; v pixelových jednotkách hlavného výsledku k1/f² = {{k1f2}}, k2/f⁴ = {{k2f4}}):
   z priamosti 61 hrán s rezíduom 0,22 px, zhodne v dvoch nezávislých implementáciách (samotné hrany: −1,60·10⁻⁷, 1,96·10⁻¹⁴).
-* cx = {{cx0}} ± {{scx0}} px.
+* cx = {{cx0}} ± {{scx0}} px (neistotu určuje jackknife cez oblasti hrán).
 * f = {{f0}} ± {{sf0}} px, ale len spojením hrán a nálepiek: úbežníky hrán + strany nálepiek. Hrany samé dávajú f s neistotou
-  ±21–48 px (bootstrap) až ±110–156 px (jackknife, iná implementácia); nálepky samé sú vychýlené.
+  ±21–48 px (bootstrap, nezávislá implementácia) až ±114–156 px (bootstrap prvej implementácie, jackknife štúdie modelov);
+  nálepky samé sú vychýlené.
 * Nesúlad geometrie výkresu s obrazom: nezávisí od objektívu (dvojpomer, všeobecná projektívna kamera).
 
 **Len konzistentné s dátami:**

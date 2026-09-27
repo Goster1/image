@@ -149,6 +149,16 @@ for fn, nm, note, unc_from in ALT:
         j["data_used"] = L["data_used"]
         j["geometry_assumptions"] = "drawing dimensions and sticker positions exactly as specified (not fitted)"
     a = normalise(j, nm or fn[7:-5])
+    # never quote an alternative as more certain than the main result (same data, the budget covers the choice between them)
+    for k, v in MAIN_UNC.items():
+        if v is not None and (a["uncertainty"].get(k) is None or a["uncertainty"][k] < v):
+            a["uncertainty"][k] = v
+            a["uncertainty"].setdefault("raised_to_main", []).append(k)
+    for k, v in L["mapping_uncertainty_px"].items():
+        if a["mapping_uncertainty_px"].get(k) is None or a["mapping_uncertainty_px"][k] < v:
+            a["mapping_uncertainty_px"][k] = v
+    a["uncertainty_note"] = ("1-sigma = max(own estimate, main result): the alternatives use the same data, and the main-result "
+                             "budget already contains the spread between them")
     a["note"] = note
     alts.append(a)
 save_json(alts, f"{RESULTS}/lens_alternatives.json")

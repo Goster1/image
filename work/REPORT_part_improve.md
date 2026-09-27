@@ -6,10 +6,9 @@ Poradie podľa očakávaného prínosu:
    hlavne rohy a okraje, a byť v rôznych sklonoch (±30–45°) a vzdialenostiach. To je jediná cesta, ako určiť f a hlavný bod
    na ±1–2 px a skreslenie až do rohov, a nezávisí od geometrie vozíkov. Pri webkamere treba zapnúť pevné zaostrenie
    a snímať v tom istom režime (1920×1080, rovnaký softvér) ako stanica.
-2. **Zmerať skutočnú geometriu nálepiek** (meter alebo laserový diaľkomer): výšku povrchu koncových dosiek
-   voči policiam A–C na všetkých 4 koncoch vozíkov, sklon a rovinnosť dosiek, polohu kartičiek na policiach.
-   Dáta ukazujú odchýlku +60–80 mm a sklony 4–13° (kap. 5). S opravenou geometriou by nálepky samy dali f
-   s presnosťou ~±15 px a hlavný bod.
+2. **Premerať výšku a sklon povrchov s nálepkami** (meter alebo laserový diaľkomer): výšku povrchu koncových dosiek
+   voči policiam A–C na všetkých 4 koncoch a sklon a rovinnosť dosiek. Dáta sa s výkresom rozchádzajú o +60–80 mm
+   a 4–13° (kap. 5, pozorovanie); ak sa tento nesúlad vysvetlí, nálepky samy dajú f s presnosťou ~±15 px aj hlavný bod.
 3. **Pridať priame 3D referencie so známymi rozmermi v rohoch obrazu:** napríklad dlhé rovné latky alebo pásky na podlahe
    v dvoch kolmých smeroch cez celé zorné pole (priamosť + kolmosť = úbežníky) a zvislé tyče pri okrajoch.
    Dnes sú rohy obrazu pokryté slabo (vľavo hore regál, hore v strede pohyblivá osoba), hlavný bod v y určujú
