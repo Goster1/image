@@ -35,6 +35,7 @@ CART = dict(w=1600.0, d=450.0)
 _cor = np.array([[0, 0], [W - 1, 0], [0, H - 1], [W - 1, H - 1]], float)
 _n = undistort_points(_cor, K, D)  # normalised undistorted coordinates
 R_LIM = 1.10 * float(np.max(np.hypot(_n[:, 0], _n[:, 1])))
+K_UND = cv2.getOptimalNewCameraMatrix(K, D, (W, H), 1.0, (W, H))[0]  # undistorted view that keeps the whole frame
 COL = {80: (255, 0, 255), 310: (0, 165, 255), "grid": (0, 255, 255), "grid_major": (0, 200, 255), "stk": (0, 255, 0),
        "line": (0, 0, 255), "pts": (255, 255, 0)}
 
@@ -55,7 +56,7 @@ def proj(Xc, cart, distort=True):
     if distort:
         uv = project(np.asarray(Xc, float).reshape(-1, 3), K, D, rvec=POSES[cart][:3], tvec=POSES[cart][3:])
     else:
-        uv = np.column_stack([K[0, 0] * xn + K[0, 2], K[1, 1] * yn + K[1, 2]])
+        uv = np.column_stack([K_UND[0, 0] * xn + K_UND[0, 2], K_UND[1, 1] * yn + K_UND[1, 2]])
     uv[~ok] = np.nan
     return uv
 
@@ -171,7 +172,7 @@ def draw_scene(img, distort=True, scale=1.0, off=(0, 0), th=1):
 def label_grid(img, distort=True):
     for x in np.arange(-5000, 5001, 1000):
         for y in np.arange(-6000, 6001, 1000):
-            uv = proj(tape_to_cart(np.array([x]), np.array([y])), 310, distort)[0]
+            uv = proj(tape_to_cart(np.array([x]), np.array([y])), 310, distort)[0]  # noqa
             if np.isfinite(uv).all() and 0 <= uv[0] < W and 0 <= uv[1] < H:
                 cv2.circle(img, (int(uv[0]), int(uv[1])), 4, COL["grid_major"], -1, cv2.LINE_AA)
                 cv2.putText(img, f"{x / 1000:+.0f},{y / 1000:+.0f}", (int(uv[0]) + 5, int(uv[1]) - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 0), 3, cv2.LINE_AA)
@@ -209,8 +210,15 @@ def line_extension(P, ext=1.2, n=600):
     rad = 1 + D[0] * r2 + D[1] * r2 ** 2 + D[4] * r2 ** 3
     uv = K[:2, 2] + K[0, 0] * xn * rad[:, None]
     uv[np.sqrt(r2) > R_LIM] = np.nan
-    # residual of the traced points to the distorted line (px): distance to the nearest curve sample
-    dd = np.min(np.linalg.norm(np.asarray(P, float)[:, None, :] - uv[None, np.isfinite(uv).all(1), :], axis=2), axis=1)
+    # residual of the traced points to the distorted line (px): perpendicular distance to the polyline segments
+    C = uv[np.isfinite(uv).all(1)]
+    A, B = C[:-1], C[1:]
+    AB = B - A
+    L2 = np.maximum(np.sum(AB ** 2, 1), 1e-12)
+    Pp = np.asarray(P, float)
+    tt = np.clip(np.einsum("pkd,kd->pk", Pp[:, None, :] - A[None], AB) / L2[None], 0, 1)
+    proj_ = A[None] + tt[..., None] * AB[None]
+    dd = np.min(np.linalg.norm(Pp[:, None, :] - proj_, axis=2), axis=1)
     return uv, float(np.sqrt(np.mean(dd ** 2))), float(np.max(dd))
 
 
@@ -238,15 +246,16 @@ def main():
              ("straight 3D line through them, drawn with the main lens and extended 1.2x its length on both sides", COL["line"])]
     cv2.imwrite(f"{RESULTS}/grid_lines.png", with_header(lines, LEG_L))
 
-    und = cv2.undistort(IMG, K, D, None, K)
+    und = cv2.undistort(IMG, K, D, None, K_UND)
     draw_scene(und, distort=False)
     for e in EDGES:
-        U = K[:2, 2] + K[0, 0] * undistort_points(np.asarray(e["points"], float), K, D)
+        U = K_UND[:2, 2] + K_UND[0, 0] * undistort_points(np.asarray(e["points"], float), K, D)
         for p in U[::2]:
             if 0 <= p[0] < W and 0 <= p[1] < H:
                 cv2.circle(und, (int(round(p[0])), int(round(p[1]))), 1, COL["pts"], -1)
-    cv2.imwrite(f"{RESULTS}/grid_undistorted.png", with_header(und, [("UNDISTORTED image (main lens, same K): floor grid, cart models and all "
-                                                                   "straight edges (cyan) must be straight lines here", (255, 255, 255))] + LEG_O[:4]))
+    cv2.imwrite(f"{RESULTS}/grid_undistorted.png", with_header(und, [("UNDISTORTED image (main lens), whole frame kept (new focal length "
+                                                                   f"{K_UND[0, 0]:.0f} px): floor grid, cart models and all straight edges (cyan) "
+                                                                   "must be straight lines here", (255, 255, 255))] + LEG_O[:4]))
     crops(over, lines, CROPS)
 
     st = np.array([s["rms"] for s in stats])
@@ -258,10 +267,10 @@ def main():
                    edge_line_residuals=stats), f"{CACHE}/grid_render.json")
 
 
-CROPS = [(200, 30, 520, 260, "cart 310, X0 end board (top plate)"), (470, 820, 440, 260, "cart 310, X1600 end board"),
+CROPS = [(200, 30, 520, 260, "cart 310, X1600 end board (top plate)"), (470, 820, 440, 260, "cart 310, X0 end board"),
          (1220, 0, 540, 180, "cart 80, X0 end board"), (1250, 840, 420, 240, "cart 80, X1600 end board"),
          (300, 170, 520, 400, "cart 310, shelf lips A-E"), (1150, 170, 520, 420, "cart 80, shelf lips A-E"),
-         (840, 600, 380, 480, "floor: white tape T-junction"), (0, 600, 560, 440, "floor: blue line, left"),
+         (840, 600, 380, 480, "floor: white tape L corner"), (0, 600, 560, 440, "floor: blue line, left"),
          (1600, 80, 320, 720, "scene verticals / rails, right edge"), (0, 0, 300, 640, "left edge: rack")]
 
 

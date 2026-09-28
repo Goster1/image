@@ -162,19 +162,36 @@ S hlavným objektívom a pózami vozíkov z hlavného fitu som do fotky vykresli
 * **drôtený model oboch vozíkov podľa výkresu** (vrchná doska, police A–E, stĺpiky, pôdorys) a predpovedané nálepky;
 * **predĺženia rovných hrán** (`results/grid_lines.png`): každou overenou hranou vedie priamka v 3D, ktorá je vykreslená
   cez objektív a predĺžená o 1,2-násobok dĺžky hrany na obe strany;
-* **obraz po odstránení skreslenia** s tou istou mriežkou (`results/grid_undistorted.png`) a zväčšené výrezy
-  (`results/grid_crops.png`).
+* **obraz po odstránení skreslenia** v celom rozsahu snímky s tou istou mriežkou (`results/grid_undistorted.png`)
+  a zväčšené výrezy (`results/grid_crops.png`).
 
-**Čo ukazuje vizuálna kontrola:**
-* Predĺžené rovné čiary ležia na hranách v celej dĺžke, aj pri silno zakrivených hranách na okrajoch obrazu. Príklady:
-  tyč regálu na ľavom okraji (~600 px), koľajnice a stĺpik vpravo, pásky na podlahe, lemy políc. Tam, kde hrana
-  pokračuje mimo sledovaného úseku (napríklad modrá čiara vľavo dole), predĺženie pokračuje presne po nej.
-  Odchýlka bodov hrany od krivky je v mediáne {{grid_line_med}} px, najviac {{grid_line_max}} px (vzorkovanie krivky pridáva ~0,3 px).
-* Os mriežky ide po bielej páske od kríženia až po spodný okraj obrazu. Priečna os ide po priečnej páske a vľavo
-  pokračuje rovnobežne s modrou čiarou. Mriežka sa k okrajom zakrivuje presne podľa skreslenia.
-* Model vozíkov z výkresu: lemy políc a stĺpiky sedia do ±5 px (lemy vozíka 80 v radoch B a E +9 px). Koncové dosky
-  (vrchná doska) sú mimo o 17–28 px a predpovedané top-nálepky o 5–15 px. Je to nesúlad geometrie z kap. 5, nie chyba
-  objektívu (rovné čiary v tých istých miestach sedia).
+**Čo ukazuje vizuálna kontrola** (vlastná kontrola výrezov a dve nezávislé kontroly celého obrazu po dlaždiciach;
+odchýlky merané kolmo na priamku, nie odhadom okom):
+* **Rovné čiary:** predĺžené priamky ležia na hranách v celej dĺžke, aj pri silno zakrivených hranách na okrajoch obrazu:
+  tyč regálu na ľavom okraji, koľajnice a stĺpik vpravo, pásky na podlahe, lemy políc. Odchýlka bodov hrany od krivky
+  je v mediáne {{grid_line_med}} px, najviac {{grid_line_max}} px. Zvyšok zakrivenia je pri 54 zo 61 hrán pod 0,5 px, najviac 0,8 px,
+  hoci objektív tie hrany ohýba až o 16 px (tyč regálu 16,3 px, zvyšok −0,02 px).
+* **Hrany, ktoré sa pri fite nepoužili:** ~150 ďalších rovných úsekov nájdených v obraze bez skreslenia, vrátane hrán pri
+  okraji obrazu (vzdialenosť 700–1050 px od hlavného bodu), sedí s predpovedaným ohybom do ±0,35 px.
+* **Predĺženie cez medzeru:** priamka vedená modrou čiarou vľavo (x 172–434) a predĺžená cez objektív o 450–700 px dopadne
+  na pokračovanie tej istej čiary za vozíkom 310 s odchýlkou 0,6–1,8 px. Bez korekcie skreslenia by minula o 15–18 px.
+  Objektívy nafitované len na nálepky (f ≈ 1330–1360, k1 ≈ −0,21) minú o 3–8 px a sú tým vylúčené. Rovnaký test so škárou
+  v podlahe je citlivý na cy: nula vychádza pri cy ≈ 510–525, hlavná hodnota 503 je v rámci neistoty ±29 px.
+* **Mriežka na podlahe:** os mriežky ide po stredovej čiare bielej pásky od rohu (L) po spodný okraj obrazu s odchýlkou
+  do 0,2 px. Priečna os ide po priečnej páske do 1,2 px. Hrany modrej čiary vľavo sú s mriežkou rovnobežné do 1 px na
+  240 px. Pomer bunky mriežky k šírke pásky je pozdĺž pásky stály (10,3–10,6).
+* **Model vozíkov z výkresu:**
+  - Lemy políc vozíka 310 sedia do 0–5 px.
+  - Vozík 80 je ako celok posunutý o 3–10 px: lemy aj nálepky na policiach vychádzajú posunuté rovnako, bez zvyšku
+    zakrivenia. Je to kompromis pózy tohto vozíka, ktorú ťahajú top-nálepky, nie chyba objektívu.
+  - Koncové dosky (vrchná doska) sú mimo o 15–30 px, rovnomerne po celej dĺžke.
+  - Predpovedané top-nálepky sú mimo o 9–26 px, všetky smerom od úbežníka stĺpikov. Susedné nálepky na tom istom mieste
+    obrazu sa líšia o 15–20 px, čo objektív spôsobiť nemôže.
+  - Toto je nesúlad geometrie z kap. 5, nie chyba objektívu.
+* **Čo sa overiť nedá:**
+  - Úplné rohy obrazu ďalej ako ~1050 px od hlavného bodu, kde nie je žiadna rovná štruktúra s merateľným ohybom.
+  - Model s k3 sedí na všetky hrany rovnako dobre a od hlavného sa tam líši o 6 px (r = 1100 px) až 17 px (krajný roh).
+  - Zobrazenie v krajných rohoch je teda extrapolácia.
 
 **Číselné kontroly, ktoré fit nevynucuje** (spätné premietnutie na podlahu, `work/cache/grid_checks.json`, citlivosť na f
 v `work/cache/grid_fsens.json`):
@@ -191,7 +208,7 @@ v `work/cache/grid_fsens.json`):
   (z vozíka 80).
 
 **Záver:** objektív so zobrazenými parametrami k obrazu vizuálne aj číselne sedí. Rovné čiary sú rovné v celom obraze
-vrátane okrajov, čo potvrdzuje skreslenie. Mriežka na podlahe drží tvar aj mierku pásky a pásky sú na seba kolmé.
+až po ~1050 px od hlavného bodu, čo potvrdzuje skreslenie. Mriežka na podlahe drží tvar aj mierku pásky a pásky sú na seba kolmé.
 Kontroly na podlahe však f nespresnia; ohnisko ostáva určené na ± {{sf0}} px (kap. 1). Viditeľné odchýlky sú na
 koncových doskách vozíkov a zodpovedajú známemu nesúladu geometrie s výkresom.
 
