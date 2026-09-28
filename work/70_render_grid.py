@@ -265,7 +265,7 @@ CROPS = [(200, 30, 520, 260, "cart 310, X0 end board (top plate)"), (470, 820, 4
          (1600, 80, 320, 720, "scene verticals / rails, right edge"), (0, 0, 300, 640, "left edge: rack")]
 
 
-def crops(over, lin, spec, out=f"{RESULTS}/grid_crops.png", z=2.0):
+def crops(over, lin, spec, out=f"{RESULTS}/grid_crops.png", z=1.5):
     """zoomed crops: overview (grid + drawing models) | straight-line extensions, side by side, one row per region."""
     tiles = []
     for x0, y0, w, h, lab in spec:
