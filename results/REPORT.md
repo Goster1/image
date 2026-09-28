@@ -43,7 +43,9 @@ na troch zo štyroch koncov, na konci 80/X0 0 mm, kde však nesedí pomer rozost
 hlavný výsledok používa **všetkých 20 nálepiek s geometriou z výkresu spolu so 61 overenými hranami konštrukcie**
 (tie nepoužívajú žiadne rozmery), váhy blokov dát sú určené z ich vlastného rozptylu (variančné komponenty).
 Nálepky samy by s výkresom dali f ≈ 1300–1375 a cy 290–540 podľa modelu, so skreslením, ktoré odporuje priamosti hrán.
-Tento výsledok je vychýlený (kap. 5, 9.4) a uvádzam ho len v porovnaní.
+Tento výsledok je vychýlený (kap. 5, 9.4) a uvádzam ho len v porovnaní. Top-nálepky sú navyše merateľne naklonené,
+vonkajší koniec dosky vyššie (zmerané z tvaru nálepiek): 80/X0 +13,7°, 80/X1600 +5,7°, 310/X0 +13,6°, 310/X1600 +2,4° – nevýznamné. Prepočet so sklonom top-nálepiek (viac uhlov, kap. 5.1) objektív prakticky nemení:
+f 1467,2–1469,1 px, posun zobrazenia ≤ 0,45 px v páse vozíkov.
 
 **Čo v hlavnom fite nesie ktorý parameter** (kap. 6, M6, 9.2): skreslenie nesie priamosť hrán. Hrany samé (úbežníky
 + priamosť, bez rozmerov) dávajú f = 1436 px; na 1469 px ho posunú strany čiastočne zakrytých nálepiek
@@ -165,7 +167,7 @@ nalepenia nepredpokladám.
 | výška koncovej dosky 80/X1600 | 0 mm | +71 ± 5 mm (dvojpomer +50…+64) | 24 px | x 1288–1516, y 899–952 (vpravo dole) |
 | výška koncovej dosky 310/X0 | 0 mm | +61 ± 6 mm (dvojpomer +63…+75) | 20 px | x 563–807, y 886–977 (vľavo dole) |
 | výška koncovej dosky 310/X1600 | 0 mm | +81 ± 8 mm (dvojpomer +55…+85) | 20–23 px | x 226–480, y 31–178 (vľavo hore) |
-| sklon koncových dosiek pozdĺž X | 0° | 4–13° (vonkajší koniec vyššie) | 0,7–4 px na roh | horný a dolný okraj obrazu |
+| sklon koncových dosiek pozdĺž X | 0° | zmerané z tvaru nálepiek, vonkajší koniec vyššie: 80/X0 +13,7°, 80/X1600 +5,7°, 310/X0 +13,6°, 310/X1600 +2,4° – nevýznamné; kap. 5.1 | 0,7–4 px na roh | horný a dolný okraj obrazu |
 | bočný rozptyl nálepiek nad sebou | 0 mm | 1–6 mm | 0,2–3 px | všetky 4 stĺpce |
 | zadná horná tyč vozíka 80 (model s výkresom) | Z = 0 | −56 mm | −17 px | pravý vozík |
 
@@ -191,6 +193,85 @@ nalepenia nepredpokladám.
   Obrázky: `results/geomdiag_*.png`, `results/cuboid_overlay.png`, `results/cuboid_offsets.png`,
   `results/residuals_stickers_main.png`, `results/predicted_stickers_crops.png`; podrobne `work/cache/geometry_diagnosis.md`,
   `work/cache/cuboid_offsets.md`.
+
+### 5.1 Sklon top-nálepiek: meranie a prepočet objektívu (`work/60_top_tilt_scan*.py`, `61_top_sticker_orientation*.py`, `62_top_tilt_methods.py`)
+
+Na požiadanie som prepočítal hlavný odhad s top-nálepkami v miernom sklone a vyskúšal viac uhlov. Je to **what-if**
+variant, lebo výkres predpisuje nálepky vodorovne; hlavný výsledok zostáva s geometriou z výkresu.
+
+**Konvencie znamienok:** sklon okolo osi Y vozíka (pozdĺž X): + znamená, že vonkajší koniec dosky je vyššie (smerom k X = 0 pri
+konci X0, k X = 1600 pri konci X1600). Sklon okolo osi X vozíka (pozdĺž Y): + znamená, že zadná strana (väčšie Y) je vyššie.
+
+**1. Zmeraný sklon.** Póza každej nálepky sa určí len z jej štyroch rohov (hlavný objektív, bez polôh a výšok z výkresu) a jej
+normála sa vyjadrí v súradniciach vozíka. Rotácia vozíka sa berie z nálepiek na policiach alebo z úbežníkov hrán; obe dávajú
+zhodu na 0,2–0,6°. Neistota zahŕňa šum rohov, neistotu objektívu (celková kovariancia), zdroj rotácie vozíka a empirickú
+systematiku 0,75° na nálepku (dve nálepky tej istej dosky sa líšia viac, než by dal šum).
+
+| doska | nálepky | sklon okolo Y (+ = vonkajší koniec vyššie) | sklon okolo X (+ = zadná strana vyššie) | celkový uhol | významnosť |
+|---|---|---|---|---|---|
+| 80/X0 | 80:0 +12,6, 80:92 +14,1 | **+13,7 ± 1,3°** | −0,5 ± 1,3° | 13,7° | 10σ |
+| 80/X1600 | 80:1 +6,6, 80:2 +5,1 | **+5,7 ± 0,9°** | −0,4 ± 0,9° | 5,9° | 6σ |
+| 310/X0 | 310:0 +13,0, 310:322 +14,3 | **+13,6 ± 1,1°** | −0,4 ± 1,0° | 13,8° | 13σ |
+| 310/X1600 | 310:1 +1,9, 310:2 +2,8 | **+2,4 ± 1,5°** | +0,5 ± 1,5° | 2,8° | 2σ (nevýznamné) |
+
+* Kontrola: plne viditeľné nálepky na policiach vychádzajú vodorovne v rámci 1,5σ (sklon −1,3 až +2,9°).
+* Sklon okolo osi X (roll) je pri všetkých doskách nulový v rámci neistoty. Predná a zadná nálepka tej istej dosky sa v ňom
+  líšia o 2,5–4,3°; či ide o mierne prehnutie dosky alebo o anizotropnú chybu detekcie, sa rozlíšiť nedá.
+* Nezávislá kontrola z priamej hrany čela každej koncovej dosky dáva zhodné hodnoty v rámci 1σ (táto kontrola je však
+  menej presná).
+* Pri zmene f v rozsahu 1420–1520 px sa sklon mení najviac o ~1,4°. Pri iných modeloch objektívu (17 variantov) vychádzajú
+  dosky X0 na +12,3 až +14,8°.
+* **Tri dosky sú merateľne naklonené, vonkajší koniec vyššie:** 80/X0 a 310/X0 o ~14°, 80/X1600 o ~6°. Doska 310/X1600
+  naklonená preukazne nie je. To zodpovedá staršej diagnostike (kap. 5, geometry_diagnosis.md).
+
+**2. Prepočet hlavného odhadu so sklonom.** Hlavný kombinovaný odhad (variančné komponenty do konvergencie) som prepočítal
+pre rad uhlov a tri definície sklonu:
+
+* **Y okolo stredu:** každá top-nálepka sa otočí okolo osi Y cez svoj stred; stred zostáva presne podľa výkresu.
+* **X okolo stredu:** to isté okolo osi X.
+* **Y s pántom:** celá doska sa otočí okolo pántu 55 mm dnu od stredu nálepky, takže stred nálepky stúpne o 55·sin(uhol) mm.
+
+Ďalej sú prepočítané zmerané sklony dosiek a sklony dosiek nafitované na polohy rohov.
+
+| konfigurácia | f [px] | cy [px] | k1 | RMS rohov všetky / top [px] | σ blok rohov [px] | f len nálepky | Δ zobrazenia pás / rohy [px] |
+|---|---|---|---|---|---|---|---|
+| bez sklonu (výkres = hlavný výsledok) | 1468,6 | 503,2 | −0,3516 | 7,89 / 6,58 | 10,72 | 1300 | 0,00 / 0,00 |
+| Y okolo stredu −10° | 1468,7 | 503,2 | −0,3516 | 8,32 / 7,54 | 10,89 | 1313 | 0,01 / 0,02 |
+| Y okolo stredu +4° | 1468,6 | 503,2 | −0,3516 | 7,81 / 6,42 | 10,69 | 1296 | 0,01 / 0,01 |
+| Y okolo stredu +8° | 1468,6 | 503,2 | −0,3516 | 7,79 / 6,38 | 10,68 | 1293 | 0,01 / 0,02 |
+| Y okolo stredu +10° | 1468,6 | 503,2 | −0,3516 | 7,80 / 6,40 | 10,68 | 1291 | 0,01 / 0,02 |
+| Y okolo stredu +15° | 1468,6 | 503,2 | −0,3516 | 7,85 / 6,55 | 10,69 | 1288 | 0,00 / 0,01 |
+| X okolo stredu −10° | 1468,7 | 503,2 | −0,3516 | 8,04 / 6,90 | 10,79 | 1303 | 0,01 / 0,02 |
+| X okolo stredu +10° | 1468,7 | 503,2 | −0,3516 | 8,07 / 7,04 | 10,77 | 1300 | 0,02 / 0,03 |
+| Y s pántom 55 mm −6° | 1469,0 | 503,2 | −0,3517 | 8,66 / 7,42 | 11,61 | 1293 | 0,10 / 0,15 |
+| Y s pántom 55 mm +6° | 1468,3 | 503,2 | −0,3514 | 7,31 / 6,08 | 9,96 | 1306 | 0,12 / 0,16 |
+| Y s pántom 55 mm +10° | 1468,0 | 503,2 | −0,3513 | 7,04 / 5,93 | 9,53 | 1309 | 0,20 / 0,27 |
+| Y s pántom 55 mm +20° | 1467,4 | 503,1 | −0,3510 | 6,79 / 6,21 | 8,77 | 1314 | 0,38 / 0,52 |
+| Y s pántom 55 mm +30° | 1467,2 | 503,0 | −0,3508 | 7,19 / 7,28 | 8,60 | 1313 | 0,45 / 0,60 |
+| zmerané sklony dosiek, okolo stredu | 1468,6 | 503,2 | −0,3515 | 7,74 / 6,25 | 10,66 | 1292 | 0,02 / 0,02 |
+| zmerané sklony dosiek, pánt 55 mm | 1468,1 | 503,2 | −0,3513 | 7,20 / 6,05 | 9,74 | 1304 | 0,18 / 0,24 |
+| sklony dosiek nafitované na rohy (okolo stredu) | 1468,6 | 503,2 | −0,3515 | 7,72 / 6,20 | 10,65 | 1294 | 0,02 / 0,03 |
+
+(„len nálepky“ = fit len z nálepiek s pp v strede obrazu; všetky tieto objektívy sú prehnuté vo vnútri obrazu.
+„Δ zobrazenia“ je posun voči hlavnému výsledku, medián v páse vozíkov / v rohoch. Úplné tabuľky sú v
+`work/cache/top_tilt_scan.md`, grafy v `results/top_tilt_scan.png` a `results/top_sticker_orientation.png`.)
+
+**Záver prepočtu:**
+* **Objektív sa sklonom top-nálepiek prakticky nemení.** Vo všetkých 58 konfiguráciách je f 1467,2–1469,1 px,
+  cy 503,0–503,2 px a posun zobrazenia voči hlavnému výsledku nanajvýš 0,45 px v páse vozíkov a
+  0,60 px v rohoch. To je hlboko pod neistotou 15,3 / 21,6 px. Dôvod: f a cy nesú úbežníky hrán a strany
+  nálepiek na policiach, zatiaľ čo rohy nálepiek majú v spoločnom fite malú váhu (σ ≈ 10,7 px).
+* **Sklon vysvetlí len malú časť nesúladu.** So zmeraným sklonom okolo stredu nálepky klesne RMS rohov zo 7,89 na
+  7,74 px (top-rad 6,58 → 6,25 px). Pri doske otočenej okolo pántu stúpnu stredy nálepiek
+  o ~13 mm a RMS klesne na 7,20 px. Zvyšok zodpovedá výškovému posunu top-nálepiek o +60–80 mm (kap. 5),
+  ktorý sklon nevytvorí.
+* **Nálepky samé zostávajú so sklonom aj bez neho nekonzistentné s hranami:** fity len z nálepiek dávajú f 1288–1331 px
+  (hrany samé 1436, hlavný výsledok 1469) a objektív sa vo vnútri obrazu prehne.
+* Ak by sa vynechali hrany, objektív na sklon reaguje (f 1352–1387 px, 30–45 px zobrazenia). Stabilitu hlavného výsledku
+  teda dávajú hrany, nie nálepky.
+* Nafitované sklony dosiek (polohy rohov, hlavný objektív) sú +12,3 ± 1,8 / +6,1 ± 2,1 / +15,7 ± 3,4 / −4,7 ± 2,8°
+  (80/X0, 80/X1600, 310/X0, 310/X1600). Pri troch doskách sa zhodujú so zmeraným sklonom. Pri 310/X1600 majú opačné
+  znamienko; tam je sklon z polohy rohov ovplyvnený výškovým nesúladom a priame meranie z tvaru je spoľahlivejšie.
 
 ## 6. Metódy (každá dotiahnutá do čísla s neistotou)
 
@@ -284,7 +365,7 @@ Zo štúdie 16 modelov na rovnakých dátach (`work/43_altmodels_*`, `results/al
 ## 8. Porovnanie všetkých metód
 
 Tabuľka je vygenerovaná zo súborov metód (`work/97_report_tables.py`). Všetky metódy sú aj v `results/lens_by_method.json`
-(53 záznamov vrátane variantov, jednotný tvar a `method_id`) a na grafe `results/methods_comparison.png`.
+(58 záznamov vrátane variantov, jednotný tvar a `method_id`) a na grafe `results/methods_comparison.png`.
 Stĺpec „Δ zobrazenia“ je posun zobrazenia metódy voči hlavnému výsledku po kompenzácii rotácie (medián oblasti). Neistoty
 metód sú ich vlastné (bootstrap alebo klastrové), okrem hlavného riadku, ktorý má celkovú neistotu.
 
@@ -297,6 +378,8 @@ metód sú ich vlastné (bootstrap alebo klastrové), okrem hlavného riadku, kt
 | M6, bez strán 80:3/1, 80:7/3 | áno | 1443 | 928 | 502 | −0,339 | +0,092 | +0,000 | nie | 1,8 / 8,1 / 11,0 | – / – / – | variant |
 | M6, bez lemu E vozíka 80 | áno | 1468 | 931 | 505 | −0,352 | +0,100 | +0,000 | nie | 0,2 / 0,4 / 0,7 | – / – / – | variant |
 | M6, podlahové čiary len na priamosť | áno | 1469 | 928 | 492 | −0,350 | +0,098 | +0,000 | nie | 0,8 / 0,5 / 1,6 | – / – / – | variant |
+| M6, top-nálepky so zmeraným sklonom (what-if) | áno + sklon top | 1469 | 928 | 503 | −0,352 | +0,099 | +0,000 | nie | 0,0 / 0,0 / 0,0 | – / – / – | what-if, kap. 5 |
+| M6, top-dosky so zmeraným sklonom, pánt 55 mm (what-if) | áno + sklon top | 1468 | 928 | 503 | −0,351 | +0,099 | +0,000 | nie | 0,0 / 0,2 / 0,2 | – / – / – | what-if, kap. 5 |
 | M6 kombinovaný, k1,k2,k3 | áno | 1470 | 930 | 505 | −0,364 | +0,132 | −0,022 | nie | 0,1 / 0,2 / 0,4 | – / – / – | k3 len konzistentné |
 | M6 kombinovaný, pp v strede obrazu | áno | 1467 | 960 | 540 | −0,372 | +0,116 | +0,000 | nie | 3,0 / 2,7 / 11,0 | – / – / – |  |
 | M6 kombinovaný, fx≠fy | áno | 1431/1463 | 928 | 509 | −0,345 | +0,095 | +0,000 | nie | 1,6 / 10,5 / 20,3 | – / – / – | fx≠fy neurčené |
@@ -609,6 +692,7 @@ sa necommitujú a vytvoria sa znova v krokoch 1–3).
 | 9 | `43_altmodels_{fit,diaggeom,report,review}.py` | M9 |
 | 10 | `run_combined.sh` (= `50_combined.py fit`, 4× `boot` po 25 replík, `finalize`; `run_combined_boot.sh` len bootstrap), `51_combined_cv.py all` | hlavná metóda M6, varianty, vplyv blokov, krížová validácia |
 | 11 | `SYNTH_T2=1400,935,410,-0.32,0.08` + `44_synth_{a_setup,b_roundtrip,c_sensitivity,d_report}.py` (štúdia všetkých metód); `SYNTH_SETUP=cache/synthetic_setup_main.json python3 44_synth_a_setup.py`, potom `45_synth_main.py 30 4` a `46_sensitivity_main.py` (hlavný odhad) | syntetický test a citlivosti |
+| 11b | `60_top_tilt_scan_fixed.py all`, `61_top_sticker_orientation_fixed.py`, `62_top_tilt_methods.py` (what-if so sklonom top-nálepiek; `*_fixed.py` sú skontrolované a opravené kópie, ktoré vytvorili výstupy) | kap. 5.1, `top_tilt_*`, `top_sticker_orientation.*` |
 | 12 | `92_extract_alternatives.py`, `95_final.py`, `96_plots.py`, `98_finalize_json.py`, `90_compare_methods.py`, `97_report_tables.py`, `99_assemble_report.py` | `results/lens_result.json`, `lens_alternatives.json`, `lens_by_method.json`, grafy, `REPORT.md` |
 
 Zdieľané moduly: `common.py` (model kamery, špecifikácia, kontrola prehnutia), `calib.py` (BA), `edgelib.py` (sub-pixelové hrany),
@@ -645,6 +729,7 @@ Zdieľané moduly: `common.py` (model kamery, špecifikácia, kontrola prehnutia
   - profil ohniska: `f_profiles.png`, `combined_f_profile.png`, `markers_f_profile.png`, `cuboid_f_profile.png`;
   - neistota a porovnanie: `mapping_uncertainty.png`, `methods_comparison.png`, `undistorted_mean.png`;
   - diagnostika geometrie: `geomdiag_*.png`, `cuboid_*.png` (`cuboid_overlay.png` je s objektívom metódy M5, nie hlavným);
+  - sklon top-nálepiek (kap. 5.1): `top_sticker_orientation.png`, `top_tilt_scan.png`;
   - čiarové metódy (nezávislá implementácia): `40_lines_indep_*.png`;
   - modely objektívu: `altmodels_*.png`;
   - syntetický test a citlivosti (štúdia všetkých metód): `synthetic_*.png`.

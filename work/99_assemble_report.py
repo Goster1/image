@@ -323,6 +323,66 @@ except Exception as ex:  # noqa
     print("bootstrap replay failed:", ex)
     V.update(boot_miss_pct="–", boot_miss_f="–", boot_both_f="–")
 
+# ---------------- top-sticker tilt (chapter 5.1): 60_top_tilt_scan_fixed.py, 61_top_sticker_orientation_fixed.py, 62_top_tilt_methods.py
+TJ = load_json(f"{CACHE}/top_tilt_scan.json")
+TO = load_json(f"{CACHE}/top_sticker_orientation.json")
+TM = load_json(f"{CACHE}/top_tilt_measured.json")
+PL = ["80/X0", "80/X1600", "310/X0", "310/X1600"]
+t = ["| doska | nálepky | sklon okolo Y (+ = vonkajší koniec vyššie) | sklon okolo X (+ = zadná strana vyššie) | celkový uhol | významnosť |",
+     "|---|---|---|---|---|---|"]
+ml = []
+for pl in PL:
+    q = TO["plates"][pl]
+    v, sg = q["value"], q["sigma_total"]
+    stx = ", ".join(f"{x['label']} {num(x['value']['pitch_outer'], 1, True)}" for x in TO["stickers"] if x["label"] in q["stickers"])
+    z = abs(v["pitch_outer"]) / sg["pitch_outer"]
+    t.append(f"| {pl} | {stx} | **{num(v['pitch_outer'], 1, True)} ± {num(sg['pitch_outer'], 1)}°** | {num(v['roll'], 1, True)} ± {num(sg['roll'], 1)}° | "
+             f"{num(v['total'], 1)}° | {num(z, 0)}σ{'' if z >= 3 else ' (nevýznamné)'} |")
+    ml.append(f"{pl} {num(v['pitch_outer'], 1, True)}°" + ("" if z >= 3 else " – nevýznamné"))
+T["TABLE_TILT_MEAS"] = "\n".join(t)
+V["tilt_meas_list"] = ", ".join(ml)
+shp = [x["value"]["pitch_outer"] for x in TO["stickers"] if x["row"] != "top" and x.get("kind") == "full"]
+V["tilt_shelf_range"] = f"{num(min(shp), 1, True)} až {num(max(shp), 1, True)}"
+recs = []
+for fam, dd in TJ["scan"].items():
+    for ang, r in dd.items():
+        recs.append(r)
+recs += TJ["common_angle"] + [st["combined_record"] for k in ("Y", "YX") for st in TJ["per_plate"][k]["steps"]]
+recs += [TJ["joint"][k]["record_with_fixed_tilts"] for k in ("Y", "YX")] + [r for r in TJ.get("hinge45", []) if "combined" in r]
+recs += list(TM["records"].values())
+fs_ = [r["combined"]["f"] for r in recs]
+cys_ = [r["combined"]["cy"] for r in recs]
+mb_ = [r["mapping_vs_main"]["cart_band"]["median"] for r in recs if "mapping_vs_main" in r]
+mk_ = [r["mapping_vs_main"]["corners"]["median"] for r in recs if "mapping_vs_main" in r]
+so_ = [r["sticker_only"][k]["f"] for r in recs if "sticker_only" in r for k in ("pp_fixed", "pp_free")]
+V.update(tilt_n_cfg=str(len(recs)), tilt_f_min=num(min(fs_), 1), tilt_f_max=num(max(fs_), 1), tilt_cy_min=num(min(cys_), 1), tilt_cy_max=num(max(cys_), 1),
+         tilt_map_band_max=num(max(mb_), 2), tilt_map_corner_max=num(max(mk_), 2), tilt_only_min=num(min(so_), 0), tilt_only_max=num(max(so_), 0))
+r0 = TJ["scan"]["Y_centre"]["0"]
+rc, rh = TM["records"]["centre"], TM["records"]["hinge"]
+V.update(tilt_rms0=num(r0["stickers_combined_lens"]["overall"]["rms"], 2), tilt_top0=num(r0["stickers_combined_lens"]["top"]["rms"], 2),
+         tilt_rms_meas_c=num(rc["stickers_combined_lens"]["overall"]["rms"], 2), tilt_top_meas_c=num(rc["stickers_combined_lens"]["top"]["rms"], 2),
+         tilt_rms_meas_h=num(rh["stickers_combined_lens"]["overall"]["rms"], 2))
+
+
+def trow(label, r):
+    c = r["combined"]
+    sc = r["stickers_combined_lens"]
+    mv = r["mapping_vs_main"]
+    return (f"| {label} | {num(c['f'], 1)} | {num(c['cy'], 1)} | {num(c['k1'], 4, True)} | {num(sc['overall']['rms'], 2)} / {num(sc['top']['rms'], 2)} | "
+            f"{num(c['sig']['M'], 2)} | {num(r['sticker_only']['pp_fixed']['f'], 0)} | {num(mv['cart_band']['median'], 2)} / {num(mv['corners']['median'], 2)} |")
+
+
+t = ["| konfigurácia | f [px] | cy [px] | k1 | RMS rohov všetky / top [px] | σ blok rohov [px] | f len nálepky | Δ zobrazenia pás / rohy [px] |",
+     "|---|---|---|---|---|---|---|---|", trow("bez sklonu (výkres = hlavný výsledok)", r0)]
+for fam, lab, angs in (("Y_centre", "Y okolo stredu", ["-10", "4", "8", "10", "15"]), ("X_centre", "X okolo stredu", ["-10", "10"]),
+                       ("Y_hinge", "Y s pántom 55 mm", ["-6", "6", "10", "20", "30"])):
+    for a_ in angs:
+        t.append(trow(f"{lab} {num(float(a_), 0, True)}°", TJ["scan"][fam][a_]))
+t.append(trow("zmerané sklony dosiek, okolo stredu", rc))
+t.append(trow("zmerané sklony dosiek, pánt 55 mm", rh))
+t.append(trow("sklony dosiek nafitované na rohy (okolo stredu)", TJ["per_plate"]["Y"]["steps"][-1]["combined_record"]))
+T["TABLE_TILT_SCAN"] = "\n".join(t)
+
 # ---------------- methods table
 mt = open(f"{CACHE}/report_tables.md").read().split("\n")
 T["TABLE_METHODS"] = "\n".join(re.sub(r"(?<![\w/:])-(?=\d)", "−", re.sub(r"(?<=\d)\.(?=\d)", ",", x)) for x in mt if x.startswith("|"))
@@ -345,6 +405,7 @@ FILES = f"""## 14. Súbory vo `results/`
   - profil ohniska: `f_profiles.png`, `combined_f_profile.png`, `markers_f_profile.png`, `cuboid_f_profile.png`;
   - neistota a porovnanie: `mapping_uncertainty.png`, `methods_comparison.png`, `undistorted_mean.png`;
   - diagnostika geometrie: `geomdiag_*.png`, `cuboid_*.png` (`cuboid_overlay.png` je s objektívom metódy M5, nie hlavným);
+  - sklon top-nálepiek (kap. 5.1): `top_sticker_orientation.png`, `top_tilt_scan.png`;
   - čiarové metódy (nezávislá implementácia): `40_lines_indep_*.png`;
   - modely objektívu: `altmodels_*.png`;
   - syntetický test a citlivosti (štúdia všetkých metód): `synthetic_*.png`.

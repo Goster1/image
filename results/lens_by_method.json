@@ -15818,6 +15818,631 @@
     "image_height": 1080,
     "camera_matrix": [
       [
+        1468.579622255519,
+        0.0,
+        928.2134958249824
+      ],
+      [
+        0.0,
+        1468.579622255519,
+        503.23406430990315
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "dist_coeffs": [
+      -0.3515486710366588,
+      0.09937748723564646,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "method": "top_tilt_measured_centre (main estimator, top stickers tilted by the measured plate tilts, each about its centre)",
+    "model": "k1k2, fx = fy, pp free (main combined estimator)",
+    "rms_reprojection_error_px": 7.884770869306325,
+    "uncertainty": {
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {},
+      "method_native": {}
+    },
+    "mapping_uncertainty_px": {
+      "centre": null,
+      "cart_band": null,
+      "corners": null
+    },
+    "data_used": "as the main result (62 sticker corners, 13 sticker sides, 61 edges)",
+    "geometry_assumptions": "WHAT-IF on request, not the drawing: the top stickers are tilted (measured plate pitch/roll from the sticker shapes, each sticker about its own centre); every other dimension and position exactly as in spec/cart-marker-layout.json",
+    "details": {
+      "plate_tilts": {
+        "80/X0": [
+          13.67459148267845,
+          -0.5234033415660057,
+          "centre"
+        ],
+        "80/X1600": [
+          5.738771555938369,
+          -0.37217429407660635,
+          "centre"
+        ],
+        "310/X0": [
+          13.616724443649654,
+          -0.42882011018559746,
+          "centre"
+        ],
+        "310/X1600": [
+          2.4369921723282566,
+          0.5060070761066943,
+          "centre"
+        ]
+      },
+      "block_sigmas": {
+        "M": 10.65866542924375,
+        "L": 1.368172468489945,
+        "V": 0.36478095394570903,
+        "S": 0.23141635571730537
+      },
+      "sticker_rms_combined_lens": {
+        "rms": 7.73734549144551,
+        "max": 13.608478423360896,
+        "n": 62
+      },
+      "sticker_rms_top": {
+        "rms": 6.245719183114376,
+        "max": 10.893445863929127,
+        "n": 32
+      },
+      "sticker_only_pp_fixed": {
+        "f": 1292.0072580389533,
+        "k1": -0.09647510379498606,
+        "k2": -0.2007766038327932,
+        "rms": 5.232459581977592,
+        "folds_inside_image": true
+      },
+      "mapping_vs_main": {
+        "centre": {
+          "median": 0.003614214843817488,
+          "max": 0.0054022955194132916
+        },
+        "cart_band": {
+          "median": 0.01635834672975632,
+          "max": 0.02472026130408193
+        },
+        "corners": {
+          "median": 0.023993720397915405,
+          "max": 0.025739726943090523
+        }
+      },
+      "uncertainty_note": "not evaluated separately; the main-result uncertainty applies (the lens differs from the main result by < 1 px of mapping)"
+    },
+    "method_id": "top_tilt_measured_centre",
+    "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 13.66 px",
+    "mapping_uncertainty_note": "not evaluated (or not meaningful) for this method; see REPORT.md",
+    "radial_map_folds_inside_image": false,
+    "fold_margin": null,
+    "min_radial_slope_to_corners": 0.4403771717713642,
+    "source_file": "work/cache/method_top_tilt.json",
+    "mapping_difference_vs_main_px": {
+      "centre": 0.003689826467721536,
+      "cart_band": 0.01641303707780479,
+      "corners": 0.023933365312430233
+    }
+  },
+  {
+    "image_width": 1920,
+    "image_height": 1080,
+    "camera_matrix": [
+      [
+        1468.06920567574,
+        0.0,
+        928.2123249680712
+      ],
+      [
+        0.0,
+        1468.06920567574,
+        503.21244156298974
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "dist_coeffs": [
+      -0.3513021878529203,
+      0.09923377934552835,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "method": "top_tilt_measured_hinge (main estimator, top plates tilted by the measured tilts about a hinge 55 mm inward)",
+    "model": "k1k2, fx = fy, pp free (main combined estimator)",
+    "rms_reprojection_error_px": 7.87455756378558,
+    "uncertainty": {
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {},
+      "method_native": {}
+    },
+    "mapping_uncertainty_px": {
+      "centre": null,
+      "cart_band": null,
+      "corners": null
+    },
+    "data_used": "as the main result (62 sticker corners, 13 sticker sides, 61 edges)",
+    "geometry_assumptions": "WHAT-IF on request, not the drawing: the top stickers are tilted (measured plate pitch/roll, plate hinged 55 mm inward (sticker centres rise by up to 13 mm)); every other dimension and position exactly as in spec/cart-marker-layout.json",
+    "details": {
+      "plate_tilts": {
+        "80/X0": [
+          13.67459148267845,
+          -0.5234033415660057,
+          "hinge"
+        ],
+        "80/X1600": [
+          5.738771555938369,
+          -0.37217429407660635,
+          "hinge"
+        ],
+        "310/X0": [
+          13.616724443649654,
+          -0.42882011018559746,
+          "hinge"
+        ],
+        "310/X1600": [
+          2.4369921723282566,
+          0.5060070761066943,
+          "hinge"
+        ]
+      },
+      "block_sigmas": {
+        "M": 9.739082045235754,
+        "L": 1.3784487517425303,
+        "V": 0.3647164999701169,
+        "S": 0.2314165789394938
+      },
+      "sticker_rms_combined_lens": {
+        "rms": 7.199741709558102,
+        "max": 11.315093519459301,
+        "n": 62
+      },
+      "sticker_rms_top": {
+        "rms": 6.049993843362915,
+        "max": 11.315093519459301,
+        "n": 32
+      },
+      "sticker_only_pp_fixed": {
+        "f": 1304.3663765763179,
+        "k1": -0.1233792210522443,
+        "k2": -0.1670717721320099,
+        "rms": 4.9007170016103725,
+        "folds_inside_image": true
+      },
+      "mapping_vs_main": {
+        "centre": {
+          "median": 0.039138912186313365,
+          "max": 0.05938046255610631
+        },
+        "cart_band": {
+          "median": 0.1759751979096809,
+          "max": 0.24837184817748903
+        },
+        "corners": {
+          "median": 0.24282400579978508,
+          "max": 0.2645775459786559
+        }
+      },
+      "uncertainty_note": "not evaluated separately; the main-result uncertainty applies (the lens differs from the main result by < 1 px of mapping)"
+    },
+    "method_id": "top_tilt_measured_hinge",
+    "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 13.66 px",
+    "mapping_uncertainty_note": "not evaluated (or not meaningful) for this method; see REPORT.md",
+    "radial_map_folds_inside_image": false,
+    "fold_margin": null,
+    "min_radial_slope_to_corners": 0.4403523443346779,
+    "source_file": "work/cache/method_top_tilt.json",
+    "mapping_difference_vs_main_px": {
+      "centre": 0.04073412983527201,
+      "cart_band": 0.17575991481110548,
+      "corners": 0.24288734586590144
+    }
+  },
+  {
+    "image_width": 1920,
+    "image_height": 1080,
+    "camera_matrix": [
+      [
+        1468.601111581294,
+        0.0,
+        928.21679405022
+      ],
+      [
+        0.0,
+        1468.601111581294,
+        503.23611417283934
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "dist_coeffs": [
+      -0.3515619885765074,
+      0.09938642894901278,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "method": "top_tilt_common_Y_centre_+9.25 (main estimator, all top stickers pitched +9.25 deg, outer end up)",
+    "model": "k1k2, fx = fy, pp free (main combined estimator)",
+    "rms_reprojection_error_px": 7.885234867451146,
+    "uncertainty": {
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {},
+      "method_native": {}
+    },
+    "mapping_uncertainty_px": {
+      "centre": null,
+      "cart_band": null,
+      "corners": null
+    },
+    "data_used": "as the main result (62 sticker corners, 13 sticker sides, 61 edges)",
+    "geometry_assumptions": "WHAT-IF on request, not the drawing: the top stickers are tilted (common pitch +9.25 deg about each sticker centre (best common angle of the scan)); every other dimension and position exactly as in spec/cart-marker-layout.json",
+    "details": {
+      "plate_tilts": {
+        "80/X0": [
+          9.25,
+          0.0,
+          "centre"
+        ],
+        "80/X1600": [
+          9.25,
+          0.0,
+          "centre"
+        ],
+        "310/X0": [
+          9.25,
+          0.0,
+          "centre"
+        ],
+        "310/X1600": [
+          9.25,
+          0.0,
+          "centre"
+        ]
+      },
+      "block_sigmas": {
+        "M": 10.676983362393502,
+        "L": 1.3677250792653495,
+        "V": 0.36478388206807755,
+        "S": 0.23141658384613306
+      },
+      "sticker_rms_combined_lens": {
+        "rms": 7.7928791987504455,
+        "max": 13.650592120531053,
+        "n": 62
+      },
+      "sticker_rms_top": {
+        "rms": 6.385679693814601,
+        "max": 11.55361989735204,
+        "n": 32
+      },
+      "sticker_only_pp_fixed": {
+        "f": 1291.6828986873666,
+        "k1": -0.09532898418555572,
+        "k2": -0.2030550614853684,
+        "rms": 5.320718772785423,
+        "folds_inside_image": true
+      },
+      "mapping_vs_main": {
+        "centre": {
+          "median": 0.0020373366891950667,
+          "max": 0.0033355364041288238
+        },
+        "cart_band": {
+          "median": 0.009898943213568118,
+          "max": 0.01616607788762491
+        },
+        "corners": {
+          "median": 0.01554306896905503,
+          "max": 0.01735122813336726
+        }
+      },
+      "uncertainty_note": "not evaluated separately; the main-result uncertainty applies (the lens differs from the main result by < 1 px of mapping)"
+    },
+    "method_id": "top_tilt_common_Y_centre_+9.25",
+    "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 13.66 px",
+    "mapping_uncertainty_note": "not evaluated (or not meaningful) for this method; see REPORT.md",
+    "radial_map_folds_inside_image": false,
+    "fold_margin": null,
+    "min_radial_slope_to_corners": 0.4403851258097771,
+    "source_file": "work/cache/method_top_tilt.json",
+    "mapping_difference_vs_main_px": {
+      "centre": 0.0021311735393684302,
+      "cart_band": 0.009886155409065634,
+      "corners": 0.015429551901610702
+    }
+  },
+  {
+    "image_width": 1920,
+    "image_height": 1080,
+    "camera_matrix": [
+      [
+        1467.4753085598923,
+        0.0,
+        928.1884119210863
+      ],
+      [
+        0.0,
+        1467.4753085598923,
+        503.1497888392514
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "dist_coeffs": [
+      -0.351001933865543,
+      0.09905206297613053,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "method": "top_tilt_common_Y_hinge_+18.87 (main estimator, all top plates pitched +18.9 deg about a hinge 55 mm inward)",
+    "model": "k1k2, fx = fy, pp free (main combined estimator)",
+    "rms_reprojection_error_px": 7.862609962852975,
+    "uncertainty": {
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {},
+      "method_native": {}
+    },
+    "mapping_uncertainty_px": {
+      "centre": null,
+      "cart_band": null,
+      "corners": null
+    },
+    "data_used": "as the main result (62 sticker corners, 13 sticker sides, 61 edges)",
+    "geometry_assumptions": "WHAT-IF on request, not the drawing: the top stickers are tilted (common pitch +18.87 deg about a hinge 55 mm inward (best of this family; the centres rise by 18 mm)); every other dimension and position exactly as in spec/cart-marker-layout.json",
+    "details": {
+      "plate_tilts": {
+        "80/X0": [
+          18.87,
+          0.0,
+          "hinge"
+        ],
+        "80/X1600": [
+          18.87,
+          0.0,
+          "hinge"
+        ],
+        "310/X0": [
+          18.87,
+          0.0,
+          "hinge"
+        ],
+        "310/X1600": [
+          18.87,
+          0.0,
+          "hinge"
+        ]
+      },
+      "block_sigmas": {
+        "M": 8.824773549286032,
+        "L": 1.391151375835166,
+        "V": 0.3646499650655051,
+        "S": 0.2314162756782405
+      },
+      "sticker_rms_combined_lens": {
+        "rms": 6.785993141272694,
+        "max": 11.9554654000468,
+        "n": 62
+      },
+      "sticker_rms_top": {
+        "rms": 6.139006316318562,
+        "max": 11.9554654000468,
+        "n": 32
+      },
+      "sticker_only_pp_fixed": {
+        "f": 1313.5138283644362,
+        "k1": -0.1742980349874528,
+        "k2": -0.09993818370371335,
+        "rms": 4.8451502228407,
+        "folds_inside_image": true
+      },
+      "mapping_vs_main": {
+        "centre": {
+          "median": 0.0791520768543114,
+          "max": 0.12327207670561528
+        },
+        "cart_band": {
+          "median": 0.3604975148537239,
+          "max": 0.5043657852043305
+        },
+        "corners": {
+          "median": 0.49459349076250203,
+          "max": 0.5508774225095737
+        }
+      },
+      "uncertainty_note": "not evaluated separately; the main-result uncertainty applies (the lens differs from the main result by < 1 px of mapping)"
+    },
+    "method_id": "top_tilt_common_Y_hinge_+18.87",
+    "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 13.65 px",
+    "mapping_uncertainty_note": "not evaluated (or not meaningful) for this method; see REPORT.md",
+    "radial_map_folds_inside_image": false,
+    "fold_margin": null,
+    "min_radial_slope_to_corners": 0.4402836345537524,
+    "source_file": "work/cache/method_top_tilt.json",
+    "mapping_difference_vs_main_px": {
+      "centre": 0.08362306317543369,
+      "cart_band": 0.3605344951161039,
+      "corners": 0.49497087047405525
+    }
+  },
+  {
+    "image_width": 1920,
+    "image_height": 1080,
+    "camera_matrix": [
+      [
+        1468.5672499776088,
+        0.0,
+        928.2081788798156
+      ],
+      [
+        0.0,
+        1468.5672499776088,
+        503.2295233432088
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "dist_coeffs": [
+      -0.35153739276800694,
+      0.09936891859673522,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "method": "top_tilt_fitted_per_plate (main estimator, per-plate pitch fitted to the sticker corners with the main lens)",
+    "model": "k1k2, fx = fy, pp free (main combined estimator)",
+    "rms_reprojection_error_px": 7.884462072606654,
+    "uncertainty": {
+      "fx_px_1sigma": null,
+      "fy_px_1sigma": null,
+      "cx_px_1sigma": null,
+      "cy_px_1sigma": null,
+      "k1_1sigma": null,
+      "k2_1sigma": null,
+      "p1_1sigma": null,
+      "p2_1sigma": null,
+      "k3_1sigma": null,
+      "standard_keys_from": {},
+      "method_native": {}
+    },
+    "mapping_uncertainty_px": {
+      "centre": null,
+      "cart_band": null,
+      "corners": null
+    },
+    "data_used": "as the main result (62 sticker corners, 13 sticker sides, 61 edges)",
+    "geometry_assumptions": "WHAT-IF on request, not the drawing: the top stickers are tilted (per-plate pitch fitted to the corner positions (80/X0 +12.3, 80/X1600 +6.1, 310/X0 +15.7, 310/X1600 -4.7 deg)); every other dimension and position exactly as in spec/cart-marker-layout.json",
+    "details": {
+      "plate_tilts": {
+        "80/X0": [
+          12.34681736510887,
+          0.0,
+          "centre"
+        ],
+        "80/X1600": [
+          6.10763119499072,
+          0.0,
+          "centre"
+        ],
+        "310/X0": [
+          15.7388916759287,
+          0.0,
+          "centre"
+        ],
+        "310/X1600": [
+          -4.713218587453087,
+          0.0,
+          "centre"
+        ]
+      },
+      "block_sigmas": {
+        "M": 10.653820843847045,
+        "L": 1.3684042841336426,
+        "V": 0.36477907270774357,
+        "S": 0.23141593681016165
+      },
+      "sticker_rms_combined_lens": {
+        "rms": 7.721681335317866,
+        "max": 13.5891326077478,
+        "n": 62
+      },
+      "sticker_rms_top": {
+        "rms": 6.204433211741457,
+        "max": 10.128399127166032,
+        "n": 32
+      },
+      "sticker_only_pp_fixed": {
+        "f": 1294.0555523463204,
+        "k1": -0.10391127697279336,
+        "k2": -0.18881664592366687,
+        "rms": 5.226450141937203,
+        "folds_inside_image": true
+      },
+      "mapping_vs_main": {
+        "centre": {
+          "median": 0.0043947870909984595,
+          "max": 0.006703400730948854
+        },
+        "cart_band": {
+          "median": 0.01998466015731517,
+          "max": 0.02855522963789203
+        },
+        "corners": {
+          "median": 0.028135515844441177,
+          "max": 0.030157502698114624
+        }
+      },
+      "uncertainty_note": "not evaluated separately; the main-result uncertainty applies (the lens differs from the main result by < 1 px of mapping)"
+    },
+    "method_id": "top_tilt_fitted_per_plate",
+    "rms_definition": "62 valid sticker corners, drawing geometry, one least-squares pose per cart with these intrinsics fixed (same definition as lens_result.json); max 13.66 px",
+    "mapping_uncertainty_note": "not evaluated (or not meaningful) for this method; see REPORT.md",
+    "radial_map_folds_inside_image": false,
+    "fold_margin": null,
+    "min_radial_slope_to_corners": 0.4403648260524813,
+    "source_file": "work/cache/method_top_tilt.json",
+    "mapping_difference_vs_main_px": {
+      "centre": 0.004569735461894722,
+      "cart_band": 0.0199298107527164,
+      "corners": 0.02815535991375364
+    }
+  },
+  {
+    "image_width": 1920,
+    "image_height": 1080,
+    "camera_matrix": [
+      [
         1377.53356006687,
         0.0,
         955.037355136728

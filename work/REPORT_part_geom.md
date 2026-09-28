@@ -28,7 +28,7 @@ nalepenia nepredpokladám.
 | výška koncovej dosky 80/X1600 | 0 mm | +71 ± 5 mm (dvojpomer +50…+64) | 24 px | x 1288–1516, y 899–952 (vpravo dole) |
 | výška koncovej dosky 310/X0 | 0 mm | +61 ± 6 mm (dvojpomer +63…+75) | 20 px | x 563–807, y 886–977 (vľavo dole) |
 | výška koncovej dosky 310/X1600 | 0 mm | +81 ± 8 mm (dvojpomer +55…+85) | 20–23 px | x 226–480, y 31–178 (vľavo hore) |
-| sklon koncových dosiek pozdĺž X | 0° | 4–13° (vonkajší koniec vyššie) | 0,7–4 px na roh | horný a dolný okraj obrazu |
+| sklon koncových dosiek pozdĺž X | 0° | zmerané z tvaru nálepiek, vonkajší koniec vyššie: {{tilt_meas_list}}; kap. 5.1 | 0,7–4 px na roh | horný a dolný okraj obrazu |
 | bočný rozptyl nálepiek nad sebou | 0 mm | 1–6 mm | 0,2–3 px | všetky 4 stĺpce |
 | zadná horná tyč vozíka 80 (model s výkresom) | Z = 0 | −56 mm | −17 px | pravý vozík |
 
@@ -54,3 +54,60 @@ nalepenia nepredpokladám.
   Obrázky: `results/geomdiag_*.png`, `results/cuboid_overlay.png`, `results/cuboid_offsets.png`,
   `results/residuals_stickers_main.png`, `results/predicted_stickers_crops.png`; podrobne `work/cache/geometry_diagnosis.md`,
   `work/cache/cuboid_offsets.md`.
+
+### 5.1 Sklon top-nálepiek: meranie a prepočet objektívu (`work/60_top_tilt_scan*.py`, `61_top_sticker_orientation*.py`, `62_top_tilt_methods.py`)
+
+Na požiadanie som prepočítal hlavný odhad s top-nálepkami v miernom sklone a vyskúšal viac uhlov. Je to **what-if**
+variant, lebo výkres predpisuje nálepky vodorovne; hlavný výsledok zostáva s geometriou z výkresu.
+
+**Konvencie znamienok:** sklon okolo osi Y vozíka (pozdĺž X): + znamená, že vonkajší koniec dosky je vyššie (smerom k X = 0 pri
+konci X0, k X = 1600 pri konci X1600). Sklon okolo osi X vozíka (pozdĺž Y): + znamená, že zadná strana (väčšie Y) je vyššie.
+
+**1. Zmeraný sklon.** Póza každej nálepky sa určí len z jej štyroch rohov (hlavný objektív, bez polôh a výšok z výkresu) a jej
+normála sa vyjadrí v súradniciach vozíka. Rotácia vozíka sa berie z nálepiek na policiach alebo z úbežníkov hrán; obe dávajú
+zhodu na 0,2–0,6°. Neistota zahŕňa šum rohov, neistotu objektívu (celková kovariancia), zdroj rotácie vozíka a empirickú
+systematiku 0,75° na nálepku (dve nálepky tej istej dosky sa líšia viac, než by dal šum).
+
+TABLE_TILT_MEAS
+
+* Kontrola: plne viditeľné nálepky na policiach vychádzajú vodorovne v rámci 1,5σ (sklon {{tilt_shelf_range}}°).
+* Sklon okolo osi X (roll) je pri všetkých doskách nulový v rámci neistoty. Predná a zadná nálepka tej istej dosky sa v ňom
+  líšia o 2,5–4,3°; či ide o mierne prehnutie dosky alebo o anizotropnú chybu detekcie, sa rozlíšiť nedá.
+* Nezávislá kontrola z priamej hrany čela každej koncovej dosky dáva zhodné hodnoty v rámci 1σ (táto kontrola je však
+  menej presná).
+* Pri zmene f v rozsahu 1420–1520 px sa sklon mení najviac o ~1,4°. Pri iných modeloch objektívu (17 variantov) vychádzajú
+  dosky X0 na +12,3 až +14,8°.
+* **Tri dosky sú merateľne naklonené, vonkajší koniec vyššie:** 80/X0 a 310/X0 o ~14°, 80/X1600 o ~6°. Doska 310/X1600
+  naklonená preukazne nie je. To zodpovedá staršej diagnostike (kap. 5, geometry_diagnosis.md).
+
+**2. Prepočet hlavného odhadu so sklonom.** Hlavný kombinovaný odhad (variančné komponenty do konvergencie) som prepočítal
+pre rad uhlov a tri definície sklonu:
+
+* **Y okolo stredu:** každá top-nálepka sa otočí okolo osi Y cez svoj stred; stred zostáva presne podľa výkresu.
+* **X okolo stredu:** to isté okolo osi X.
+* **Y s pántom:** celá doska sa otočí okolo pántu 55 mm dnu od stredu nálepky, takže stred nálepky stúpne o 55·sin(uhol) mm.
+
+Ďalej sú prepočítané zmerané sklony dosiek a sklony dosiek nafitované na polohy rohov.
+
+TABLE_TILT_SCAN
+
+(„len nálepky“ = fit len z nálepiek s pp v strede obrazu; všetky tieto objektívy sú prehnuté vo vnútri obrazu.
+„Δ zobrazenia“ je posun voči hlavnému výsledku, medián v páse vozíkov / v rohoch. Úplné tabuľky sú v
+`work/cache/top_tilt_scan.md`, grafy v `results/top_tilt_scan.png` a `results/top_sticker_orientation.png`.)
+
+**Záver prepočtu:**
+* **Objektív sa sklonom top-nálepiek prakticky nemení.** Vo všetkých {{tilt_n_cfg}} konfiguráciách je f {{tilt_f_min}}–{{tilt_f_max}} px,
+  cy {{tilt_cy_min}}–{{tilt_cy_max}} px a posun zobrazenia voči hlavnému výsledku nanajvýš {{tilt_map_band_max}} px v páse vozíkov a
+  {{tilt_map_corner_max}} px v rohoch. To je hlboko pod neistotou 15,3 / 21,6 px. Dôvod: f a cy nesú úbežníky hrán a strany
+  nálepiek na policiach, zatiaľ čo rohy nálepiek majú v spoločnom fite malú váhu (σ ≈ 10,7 px).
+* **Sklon vysvetlí len malú časť nesúladu.** So zmeraným sklonom okolo stredu nálepky klesne RMS rohov zo {{tilt_rms0}} na
+  {{tilt_rms_meas_c}} px (top-rad {{tilt_top0}} → {{tilt_top_meas_c}} px). Pri doske otočenej okolo pántu stúpnu stredy nálepiek
+  o ~13 mm a RMS klesne na {{tilt_rms_meas_h}} px. Zvyšok zodpovedá výškovému posunu top-nálepiek o +60–80 mm (kap. 5),
+  ktorý sklon nevytvorí.
+* **Nálepky samé zostávajú so sklonom aj bez neho nekonzistentné s hranami:** fity len z nálepiek dávajú f {{tilt_only_min}}–{{tilt_only_max}} px
+  (hrany samé 1436, hlavný výsledok 1469) a objektív sa vo vnútri obrazu prehne.
+* Ak by sa vynechali hrany, objektív na sklon reaguje (f 1352–1387 px, 30–45 px zobrazenia). Stabilitu hlavného výsledku
+  teda dávajú hrany, nie nálepky.
+* Nafitované sklony dosiek (polohy rohov, hlavný objektív) sú +12,3 ± 1,8 / +6,1 ± 2,1 / +15,7 ± 3,4 / −4,7 ± 2,8°
+  (80/X0, 80/X1600, 310/X0, 310/X1600). Pri troch doskách sa zhodujú so zmeraným sklonom. Pri 310/X1600 majú opačné
+  znamienko; tam je sklon z polohy rohov ovplyvnený výškovým nesúladom a priame meranie z tvaru je spoľahlivejšie.

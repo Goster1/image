@@ -9,6 +9,8 @@
 | M6, bez strán 80:3/1, 80:7/3 | áno | 1443 | 928 | 502 | -0.339 | +0.092 | +0.000 | nie | 1.8 / 8.1 / 11.0 | – / – / – | variant |
 | M6, bez lemu E vozíka 80 | áno | 1468 | 931 | 505 | -0.352 | +0.100 | +0.000 | nie | 0.2 / 0.4 / 0.7 | – / – / – | variant |
 | M6, podlahové čiary len na priamosť | áno | 1469 | 928 | 492 | -0.350 | +0.098 | +0.000 | nie | 0.8 / 0.5 / 1.6 | – / – / – | variant |
+| M6, top-nálepky so zmeraným sklonom (what-if) | áno + sklon top | 1469 | 928 | 503 | -0.352 | +0.099 | +0.000 | nie | 0.0 / 0.0 / 0.0 | – / – / – | what-if, kap. 5 |
+| M6, top-dosky so zmeraným sklonom, pánt 55 mm (what-if) | áno + sklon top | 1468 | 928 | 503 | -0.351 | +0.099 | +0.000 | nie | 0.0 / 0.2 / 0.2 | – / – / – | what-if, kap. 5 |
 | M6 kombinovaný, k1,k2,k3 | áno | 1470 | 930 | 505 | -0.364 | +0.132 | -0.022 | nie | 0.1 / 0.2 / 0.4 | – / – / – | k3 len konzistentné |
 | M6 kombinovaný, pp v strede obrazu | áno | 1467 | 960 | 540 | -0.372 | +0.116 | +0.000 | nie | 3.0 / 2.7 / 11.0 | – / – / – |  |
 | M6 kombinovaný, fx≠fy | áno | 1431/1463 | 928 | 509 | -0.345 | +0.095 | +0.000 | nie | 1.6 / 10.5 / 20.3 | – / – / – | fx≠fy neurčené |

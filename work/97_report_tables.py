@@ -21,6 +21,8 @@ ROWS = [  # (label, file, method-name-in-list or None, uses dimensions?, note)
     ("M6, bez strán 80:3/1, 80:7/3", "method_combined_alternatives.json", "combined_k1k2_no_80_3_7_sides", "áno", "variant"),
     ("M6, bez lemu E vozíka 80", "method_combined_alternatives.json", "combined_k1k2_no_bent_lip", "áno", "variant"),
     ("M6, podlahové čiary len na priamosť", "method_combined_alternatives.json", "combined_k1k2_floor_straight_only", "áno", "variant"),
+    ("M6, top-nálepky so zmeraným sklonom (what-if)", "method_top_tilt.json", 'top_tilt_measured_centre (main estimator, top stickers tilted by the measured plate tilts, each about its centre)', "áno + sklon top", "what-if, kap. 5"),
+    ("M6, top-dosky so zmeraným sklonom, pánt 55 mm (what-if)", "method_top_tilt.json", 'top_tilt_measured_hinge (main estimator, top plates tilted by the measured tilts about a hinge 55 mm inward)', "áno + sklon top", "what-if, kap. 5"),
     ("M6 kombinovaný, k1,k2,k3", "method_combined_alternatives.json", "combined_k1k2k3", "áno", "k3 len konzistentné"),
     ("M6 kombinovaný, pp v strede obrazu", "method_combined_alternatives.json", "combined_k1k2_ppfixed", "áno", ""),
     ("M6 kombinovaný, fx≠fy", "method_combined_alternatives.json", "combined_k1k2_fxfy", "áno", "fx≠fy neurčené"),

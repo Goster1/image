@@ -43,7 +43,9 @@ na troch zo štyroch koncov, na konci 80/X0 0 mm, kde však nesedí pomer rozost
 hlavný výsledok používa **všetkých 20 nálepiek s geometriou z výkresu spolu so 61 overenými hranami konštrukcie**
 (tie nepoužívajú žiadne rozmery), váhy blokov dát sú určené z ich vlastného rozptylu (variančné komponenty).
 Nálepky samy by s výkresom dali f ≈ 1300–1375 a cy 290–540 podľa modelu, so skreslením, ktoré odporuje priamosti hrán.
-Tento výsledok je vychýlený (kap. 5, 9.4) a uvádzam ho len v porovnaní.
+Tento výsledok je vychýlený (kap. 5, 9.4) a uvádzam ho len v porovnaní. Top-nálepky sú navyše merateľne naklonené,
+vonkajší koniec dosky vyššie (zmerané z tvaru nálepiek): {{tilt_meas_list}}. Prepočet so sklonom top-nálepiek (viac uhlov, kap. 5.1) objektív prakticky nemení:
+f {{tilt_f_min}}–{{tilt_f_max}} px, posun zobrazenia ≤ {{tilt_map_band_max}} px v páse vozíkov.
 
 **Čo v hlavnom fite nesie ktorý parameter** (kap. 6, M6, 9.2): skreslenie nesie priamosť hrán. Hrany samé (úbežníky
 + priamosť, bez rozmerov) dávajú f = {{inf_edges_f}} px; na {{f0}} px ho posunú strany čiastočne zakrytých nálepiek
