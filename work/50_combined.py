@@ -1,0 +1,301 @@
+"""Combined estimator: stickers (drawing geometry, exact) + edges (exact cuboid lines, VP groups,
+straightness) + visible sides of partly occluded stickers. Block weights by variance components.
+
+Variants (model x data):
+  combined_<model>           : all blocks
+  combined_markers_robust    : stickers with a robust (Cauchy) loss instead of plain LS
+Outputs: work/cache/method_combined.json (+ _alternatives), combined_full.json, plots results/combined_*.png
+"""
+import sys
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
+
+from combined import Combined
+from common import CACHE, RESULTS, H, W, K_from, lens_json, load_json, save_json
+from evaltools import grid, mapping_displacement, mapping_stats
+from linedata import load_edges, stratified_resample
+from markerdata import load_markers, marker_side_edges, to_points
+
+# usage: python3 50_combined.py fit            -> all fits, variants, f profile (no bootstrap)
+#        python3 50_combined.py boot SEED N   -> N bootstrap replicates -> cache/combined_boot_SEED.json
+#        python3 50_combined.py finalize      -> merge bootstrap files, mapping uncertainty, method files, plots
+import glob
+import os
+
+MODE = sys.argv[1] if len(sys.argv) > 1 else "fit"
+SEED = int(sys.argv[2]) if MODE == "boot" else 777
+NBOOT = int(sys.argv[3]) if MODE == "boot" else 0
+rng = np.random.default_rng(SEED)
+init = load_json(f"{CACHE}/initial_calib.json")
+P0 = {80: np.array(init["poses"]["80"]), 310: np.array(init["poses"]["310"])}
+WHICH = os.environ.get("COMBINED_CORNERS", "final")
+TAG = "" if WHICH == "final" else "_" + WHICH
+M = load_markers(which=WHICH)
+PTS = to_points(M)
+SIDES = marker_side_edges(M, only_partial=True)
+LINES = load_edges(verified_only=True)
+# VP-group policy (same as 30_lines_methods.py): end-board edges straightness only; parallel floor lines.
+FLOOR = {"scene_tapeV_left": "floor_V", "scene_tapeV_right": "floor_V", "scene_tapeH_top": "floor_H",
+         "scene_tapeH_bottom": "floor_H", "scene_blueH_top": "floor_H", "scene_blueL_top": "floor_H", "scene_blueL_bottom": "floor_H"}
+for e in LINES:
+    if "board" in e["id"]:
+        e["vp_group"] = None
+        if e.get("model_line"):
+            e["model_line"] = dict(e["model_line"], exact=False)  # board positions are not reliable (review)
+    if e["id"] in FLOOR:
+        e["vp_group"] = FLOOR[e["id"]]
+EDGES = LINES + SIDES
+ROBUST_C = 1.5  # px: sticker weight 1/(1+(rms/c)^2) (robust variant)
+MAIN_ROBUST = os.environ.get("COMBINED_MAIN", "nonrobust") == "robust"
+# main = all stickers with FULL weight (drawing geometry, as required) + all edges; block weights = variance
+# components (each block reduced chi2 ~ 1). The cluster-robust variant is reported as an alternative.
+print(f"stickers {len(M)}, corners {len(PTS)}, partial-sticker sides {len(SIDES)}, edges total {len(EDGES)}")
+
+SPECS = {
+    "k1k2": dict(f="single", pp="free", dist=["k1", "k2"]),
+    "k1k2k3": dict(f="single", pp="free", dist=["k1", "k2", "k3"]),
+    "k1k2p1p2": dict(f="single", pp="free", dist=["k1", "k2", "p1", "p2"]),
+    "k1k2_fxfy": dict(f="fxfy", pp="free", dist=["k1", "k2"]),
+    "k1k2_ppfixed": dict(f="single", pp="fixed", dist=["k1", "k2"]),
+}  # k1-only omitted: the plumb-line shows it cannot straighten the edges (RMS 0.51 px, runs into the fold barrier)
+
+
+def run(spec, pts, edges, x0=None, sig=None, use=("M", "L", "V", "S"), loss="linear", robust=None, rowblocks=False, **cbkw):
+    robust = MAIN_ROBUST if robust is None else robust
+    cb = Combined(pts, edges, spec, use=use, sig=sig, **cbkw)
+    if x0 is None:
+        K0 = K_from(1420.0, 1420.0, (W - 1) / 2, (H - 1) / 2)
+        x0 = cb.x0(K0, np.array([-0.33, 0.09, 0, 0, 0]), P0)
+    if robust and len(cb.mp):
+        r = cb.solve_irls(x0, c=ROBUST_C, loss=loss)
+    elif rowblocks and len(cb.mp):
+        r = solve_rowblocks(cb, x0, loss=loss)
+    else:
+        r = cb.solve(x0, loss=loss)
+    return cb, r
+
+
+def solve_rowblocks(cb, x0, loss="linear", iters=20):
+    """Variance components with SEPARATE blocks for top-plate and shelf sticker corners (implemented as a relative
+    weight of the top-sticker corners = (rms_shelf / rms_top)^2); all stickers stay in the fit."""
+    top = np.array([M[p["mi"]]["row"] == "top" for p in cb.mp])
+    r = cb.solve(x0, loss=loss)
+    for it in range(iters):
+        w = cb.mw.copy()
+        cb.mw = np.ones(len(cb.mp))
+        e = cb.blocks(r.x)["M"].reshape(-1, 2)
+        cb.mw = w
+        s_top = np.sqrt(np.mean(np.sum(e[top] ** 2, 1)))
+        s_sh = np.sqrt(np.mean(np.sum(e[~top] ** 2, 1)))
+        wt = (s_sh / s_top) ** 2
+        new = np.where(top, wt, 1.0)
+        done = np.max(np.abs(new - cb.mw) / np.maximum(new, 1e-6)) < 0.01
+        cb.mw = new
+        cb.rowblock_rms = dict(top=float(s_top), shelves=float(s_sh), top_weight=float(wt))
+        if done:
+            break
+        r = cb.solve(r.x, loss=loss)
+    return r
+
+
+def lens_of(cb, x):
+    K, d, _, _ = cb.unpack(x)
+    return K, d[:5]
+
+
+if MODE == "fit":
+    summary = {}
+    fits = {}
+    xk = None
+    for name, spec in SPECS.items():
+        cb, r = run(spec, PTS, EDGES)
+        br = cb.block_rms(r.x)
+        K, d = lens_of(cb, r.x)
+        J = r.jac
+        dof = max(len(r.fun) - len(r.x), 1)
+        C = np.linalg.pinv(J.T @ J) * (2 * r.cost / dof)
+        s = np.sqrt(np.diag(C))[: cb.ni]
+        summary[name] = dict(names=cb.inames, x=r.x[: cb.ni].tolist(), sigma_cov=s.tolist(), block_rms=br, sig=cb.sig,
+                             K=K.tolist(), dist=d.tolist())
+        fits[name] = (cb, r)
+        print(f"{name:14s} " + " ".join(f"{n}={v:.5g}±{e:.2g}" for n, v, e in zip(cb.inames, r.x[: cb.ni], s)),
+              "| blocks", {k: (round(v[0], 3) if v[0] else None, v[1]) for k, v in br.items()})
+
+    # the OTHER variant (robust if the main is non-robust and vice versa)
+    cb_r, r_r = run(SPECS["k1k2"], PTS, EDGES, robust=not MAIN_ROBUST)
+    Kr, dr = lens_of(cb_r, r_r.x)
+    summary["k1k2_nonrobust" if MAIN_ROBUST else "k1k2_robust"] = dict(names=cb_r.inames, x=r_r.x[: cb_r.ni].tolist(), block_rms=cb_r.block_rms(r_r.x), K=Kr.tolist(), dist=dr.tolist(),
+                                     sticker_rms=cb_r.sticker_rms(r_r.x))
+    print("other variant (robust)" if not MAIN_ROBUST else "other variant (non-robust)", np.round(r_r.x[: cb_r.ni], 4), "sticker rms", {M[g]['role'] + f"@{M[g]['cart']}": round(v, 2) for g, v in cb_r.sticker_rms(r_r.x).items()})
+    # sticker weights / residuals of the main (robust) fit
+    cbm, rm = fits["k1k2"]
+    srm = cbm.sticker_rms(rm.x)
+    sticker_table = [dict(cart=M[g]["cart"], id=M[g]["id"], role=M[g]["role"], rms_px=v,
+                          weight=(1.0 / (1.0 + (v / ROBUST_C) ** 2)) if MAIN_ROBUST else 1.0) for g, v in sorted(srm.items())]
+    for t in sticker_table:
+        print(f"   sticker {t['cart']}:{t['id']:3d} {t['role']:8s} rms {t['rms_px']:6.2f} px  weight {t['weight']:.3f}")
+    # systematic variants of the main model (same data unless stated; listed in the uncertainty budget)
+    BENT = {"cart80_x_E_front", "cart80_x_E_front_in", "cart80_x_A_front_in"}  # lip of cart 80 bent (edge review)
+    SIDES2 = {"marker_80_3_side1", "marker_80_7_side3"}  # the two most influential sticker sides (end 80/X0)
+    FLOOR_IDS = set(FLOOR)
+    LINES_FS = [dict(e, vp_group=None) if e["id"] in FLOOR_IDS else e for e in LINES]
+    VARIANTS = {
+        "k1k2_common_vertical": dict(edges=EDGES, kw=dict(common_vertical=True)),
+        "k1k2_rowblocks": dict(edges=EDGES, kw=dict(rowblocks=True)),
+        "k1k2_no_80_3_7_sides": dict(edges=[e for e in EDGES if e["id"] not in SIDES2], kw={}),
+        "k1k2_no_bent_lip": dict(edges=[e for e in EDGES if e["id"] not in BENT], kw={}),
+        "k1k2_floor_straight_only": dict(edges=LINES_FS + SIDES, kw={}),
+    }
+    for vn, vd in VARIANTS.items():
+        cbv, rv = run(SPECS["k1k2"], PTS, vd["edges"], x0=fits["k1k2"][1].x.copy() if "common" not in vn else None, **vd["kw"])
+        Kv, dv = lens_of(cbv, rv.x)
+        summary[vn] = dict(names=cbv.inames, x=rv.x[: cbv.ni].tolist(), block_rms=cbv.block_rms(rv.x), sig=dict(cbv.sig), K=Kv.tolist(),
+                           dist=dv.tolist(), vc_iters=getattr(cbv, "vc_iters", None), rowblock_rms=getattr(cbv, "rowblock_rms", None))
+        print(f"variant {vn:26s}", np.round(rv.x[: cbv.ni], 4), {k: round(v, 3) for k, v in cbv.sig.items()}, getattr(cbv, "rowblock_rms", ""), flush=True)
+    # data-subset variants (information content of each source); main block weights kept fixed for the influence part
+    for tag, use in {"no_corners": ("L", "V", "S"), "no_sides": ("M", "V", "S"), "no_vp": ("M", "L", "S")}.items():
+        cbi = Combined(PTS, EDGES, SPECS["k1k2"], use=use, sig=dict(fits["k1k2"][0].sig))
+        xi = cbi.x0(*lens_of(fits["k1k2"][0], fits["k1k2"][1].x), P0)
+        ri = cbi.solve(xi, reweight=False)
+        summary[f"k1k2_influence_{tag}"] = dict(names=cbi.inames, x=ri.x[: cbi.ni].tolist(), block_rms=cbi.block_rms(ri.x), fixed_block_sigmas=True)
+        print(f"influence {tag:12s} (fixed block weights)", np.round(ri.x[: cbi.ni], 4), flush=True)
+    for tag, use in {"edges_only": ("V", "S"), "markers_only_blockM": ("M",), "markers+sides": ("M", "L")}.items():
+        try:
+            cb2, r2 = run(SPECS["k1k2"], PTS, EDGES, use=use, x0=None)
+            summary[f"k1k2_{tag}"] = dict(names=cb2.inames, x=r2.x[: cb2.ni].tolist(), block_rms=cb2.block_rms(r2.x))
+            print(f"subset {tag:20s}", np.round(r2.x[: cb2.ni], 4), {k: v for k, v in cb2.block_rms(r2.x).items() if v[1]})
+        except Exception as ex:  # noqa
+            print("subset", tag, "failed", ex)
+
+    # ------------- profile of f for the main model -------------
+    cb, r = fits["k1k2"]
+    from scipy.optimize import least_squares
+
+    prof = []
+    for fv in np.linspace(r.x[0] * 0.85, r.x[0] * 1.15, 15):
+        rr = least_squares(lambda y: cb.residuals(np.r_[fv, y]), r.x[1:], method="trf", x_scale="jac", max_nfev=200)
+        b = cb.blocks(np.r_[fv, rr.x])
+        prof.append([fv, 2 * rr.cost] + [float(np.sqrt(np.mean(b[k] ** 2))) if len(b[k]) else np.nan for k in ("M", "L", "V", "S")])
+    prof = np.array(prof)
+
+    cbm, rm = fits["k1k2"]
+    save_json(dict(summary=summary, profile=prof.tolist(), sticker_table=sticker_table, x_main=rm.x.tolist(), sig_main=cbm.sig,
+                   mw=cbm.mw.tolist(), inames=cbm.inames), f"{CACHE}/combined_fit{TAG}.json")
+    print("fit done")
+    sys.exit(0)
+
+FIT = load_json(f"{CACHE}/combined_fit{TAG}.json")
+summary = FIT["summary"]
+prof = np.array(FIT["profile"])
+sticker_table = FIT["sticker_table"]
+cb = Combined(PTS, EDGES, SPECS["k1k2"], sig=FIT["sig_main"])
+cb.mw = np.array(FIT["mw"])
+xmain = np.array(FIT["x_main"])
+
+
+class _R:
+    pass
+
+
+r = _R()
+r.x = xmain
+# ------------- cluster bootstrap: resample stickers and edges (stratified by VP group) -------------
+if MODE == "boot":
+    mis = sorted({p["mi"] for p in PTS})
+    boot = []
+    for bi in range(NBOOT):
+        pick_m = rng.choice(mis, len(mis), replace=True)
+        bp = []
+        for q, mi in enumerate(pick_m):
+            bp += [dict(p, mi=1000 * q + mi) for p in PTS if p["mi"] == mi]
+        if len({p["cart"] for p in bp}) < 2:
+            continue
+        bs = []  # traced sides of partly hidden stickers follow their sticker (same cluster)
+        for q, mi in enumerate(pick_m):
+            bs += [dict(e, id=f"{e['id']}#m{q}", sticker_mi=1000 * q + mi) for e in SIDES if e["sticker_mi"] == mi]
+        be = stratified_resample(LINES, rng) + bs  # edges resampled within their VP group
+        try:
+            cbb, rb = run(SPECS["k1k2"], bp, be, x0=xmain.copy(), sig=dict(FIT["sig_main"]))
+            boot.append(rb.x[: cb.ni].tolist())
+        except Exception as ex:  # noqa
+            print("boot fail", ex)
+        print("boot", bi, np.round(boot[-1], 4) if boot else None, flush=True)
+    save_json(dict(seed=SEED, boot=boot), f"{CACHE}/combined_boot{TAG}_{SEED}.json")
+    print("boot done")
+    sys.exit(0)
+
+# finalize
+boot = []
+for fn in sorted(glob.glob(f"{CACHE}/combined_boot{TAG}_*.json")):
+    boot += load_json(fn)["boot"]
+boot = np.array(boot)
+K, d = lens_of(cb, r.x)
+uv, _ = grid(40)
+disp = np.array([mapping_displacement(K, d, *lens_of(cb, np.r_[xb, r.x[cb.ni:]]), uv) for xb in boot])
+mstats, mrms = mapping_stats(disp, uv)
+disp_raw = np.array([mapping_displacement(K, d, *lens_of(cb, np.r_[xb, r.x[cb.ni:]]), uv, compensate=False) for xb in boot])
+mstats_raw, _ = mapping_stats(disp_raw, uv)
+def rstd(a):
+    return 0.5 * (np.percentile(a, 84, axis=0) - np.percentile(a, 16, axis=0))
+
+
+print("bootstrap median", dict(zip(cb.inames, np.round(np.median(boot, 0), 4))), "robust std", dict(zip(cb.inames, np.round(rstd(boot), 4))),
+      "std", dict(zip(cb.inames, np.round(boot.std(0), 4))))
+print("mapping (rot-comp) 1 sigma", {k: round(v["rms_median_px"], 3) for k, v in mstats.items()})
+
+# ------------- plots -------------
+fig, ax = plt.subplots(1, 2, figsize=(14, 5), dpi=110)
+ax[0].plot(prof[:, 0], prof[:, 1] - prof[:, 1].min(), "k-o", ms=3)
+ax[0].set_xlabel("f [px] (fixed, all else refit)")
+ax[0].set_ylabel("delta chi^2 (block-weighted)")
+ax[0].axhline(1, color="r", lw=0.8)
+ax[0].grid(alpha=0.3)
+for j, (k, c) in enumerate(zip("MLVS", "rbgm")):
+    ax[1].plot(prof[:, 0], prof[:, 2 + j], "-o", ms=3, color=c, label={"M": "sticker corners", "L": "sides of partly hidden stickers", "V": "VP groups", "S": "straightness"}[k])
+ax[1].set_xlabel("f [px]")
+ax[1].set_ylabel("block RMS [px]")
+ax[1].legend()
+ax[1].grid(alpha=0.3)
+fig.suptitle("Combined estimator: profile of f")
+fig.tight_layout()
+fig.savefig(f"{RESULTS}/combined_f_profile{TAG}.png")
+plt.close(fig)
+
+unc = {f"{n}_1sigma": float(v) for n, v in zip(cb.inames, rstd(boot))}
+unc.update({f"{n}_1sigma_cov": float(v) for n, v in zip(cb.inames, summary["k1k2"]["sigma_cov"])})
+out = lens_json(K, d, method=("combined_robust (stickers with drawing geometry, cluster-robust IRLS weights" if MAIN_ROBUST else
+                               "combined (all 20 stickers with the drawing geometry, one common weight for all sticker corners") + " + verified edges: VPs incl. floor lines, straightness, sides of partly hidden stickers; block weights by variance components iterated to convergence)",
+                model="fx=fy, pp free, k1,k2 (p1=p2=k3=0)", rms_reprojection_error_px=summary["k1k2"]["block_rms"]["M"][0],
+                uncertainty=unc, mapping_uncertainty_px={k: v["rms_median_px"] for k, v in mstats.items() if k != "whole_image"},
+                data_used=f"{len(PTS)} valid sticker corners of {len(M)} stickers (7-frame means), {len(EDGES)} edges incl. {len(SIDES)} sides of partly hidden stickers",
+                geometry_assumptions="drawing dimensions and sticker positions exactly as specified (not fitted)",
+                details=dict(summary=summary, block_sigmas=cb.sig, bootstrap_n=len(boot), mapping=mstats, mapping_raw=mstats_raw,
+                             sticker_table=sticker_table, robust_c_px=ROBUST_C))
+save_json(out, f"{CACHE}/method_combined{TAG}.json")
+alts = []
+for name in SPECS:
+    if name == "k1k2":
+        continue
+    s = summary[name]
+    alts.append(lens_json(np.array(s["K"]), s["dist"], method=f"combined_{name}", model=name,
+                          rms_reprojection_error_px=s["block_rms"]["M"][0],
+                          uncertainty={f"{n}_1sigma_cov": v for n, v in zip(s["names"], s["sigma_cov"])},
+                          details=dict(block_rms=s["block_rms"])))
+for name, sv in summary.items():  # modelling-choice variants of the main model (VARIANTS in fit mode)
+    if name.startswith("k1k2_") and "K" in sv and name not in ("k1k2_robust", "k1k2_nonrobust") and name not in SPECS:
+        alts.append(lens_json(np.array(sv["K"]), sv["dist"], method=f"combined_{name}", model="k1k2, fx=fy, pp free (" + name[5:] + ")",
+                              rms_reprojection_error_px=None, details=dict(block_rms=sv["block_rms"], block_sigmas=sv.get("sig"),
+                                                                           rowblock_rms=sv.get("rowblock_rms"))))
+other = "k1k2_nonrobust" if MAIN_ROBUST else "k1k2_robust"
+so = summary[other]
+alts.append(lens_json(np.array(so["K"]), so["dist"], method=f"combined_{other}", model=other + " (stickers " +
+                      ("full weight" if MAIN_ROBUST else "cluster-robust IRLS weights, c=1.5 px") + ")",
+                      rms_reprojection_error_px=None, details=dict(block_rms=so["block_rms"], sticker_rms=so.get("sticker_rms"))))
+save_json(alts, f"{CACHE}/method_combined_alternatives{TAG}.json")
+save_json(dict(summary=summary, profile=prof.tolist(), boot=boot.tolist(), mapping=mstats, mapping_raw=mstats_raw, sticker_table=sticker_table),
+          f"{CACHE}/combined_full{TAG}.json")
+print("done")

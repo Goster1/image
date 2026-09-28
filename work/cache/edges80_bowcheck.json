@@ -1,0 +1,176 @@
+[
+  {
+    "id": "cart80_x_A_front_out",
+    "observed_bow": 8.893,
+    "pred_bow_initial": 0.86,
+    "pred_bow_proto_plumb": 8.08
+  },
+  {
+    "id": "cart80_x_A_front_in",
+    "observed_bow": 4.088,
+    "pred_bow_initial": 0.1,
+    "pred_bow_proto_plumb": 2.97
+  },
+  {
+    "id": "cart80_x_B_front_top",
+    "observed_bow": 1.242,
+    "pred_bow_initial": 0.3,
+    "pred_bow_proto_plumb": 0.87
+  },
+  {
+    "id": "cart80_x_B_front_bot",
+    "observed_bow": 0.853,
+    "pred_bow_initial": -0.05,
+    "pred_bow_proto_plumb": 0.59
+  },
+  {
+    "id": "cart80_x_C_front",
+    "observed_bow": 3.176,
+    "pred_bow_initial": -0.01,
+    "pred_bow_proto_plumb": 3.2
+  },
+  {
+    "id": "cart80_x_D_front",
+    "observed_bow": 3.521,
+    "pred_bow_initial": 0.24,
+    "pred_bow_proto_plumb": 3.1
+  },
+  {
+    "id": "cart80_x_E_front",
+    "observed_bow": 4.134,
+    "pred_bow_initial": 0.12,
+    "pred_bow_proto_plumb": 2.96
+  },
+  {
+    "id": "cart80_x_E_front_in",
+    "observed_bow": 4.207,
+    "pred_bow_initial": 0.12,
+    "pred_bow_proto_plumb": 2.98
+  },
+  {
+    "id": "cart80_x_back_rail_out",
+    "observed_bow": 13.244,
+    "pred_bow_initial": 11.48,
+    "pred_bow_proto_plumb": 12.95
+  },
+  {
+    "id": "cart80_x_back_rail_in",
+    "observed_bow": 10.393,
+    "pred_bow_initial": 7.49,
+    "pred_bow_proto_plumb": 9.92
+  },
+  {
+    "id": "cart80_x_back_low",
+    "observed_bow": 10.99,
+    "pred_bow_initial": 7.17,
+    "pred_bow_proto_plumb": 11.32
+  },
+  {
+    "id": "cart80_x_board0_front",
+    "observed_bow": -0.122,
+    "pred_bow_initial": 0.35,
+    "pred_bow_proto_plumb": 0.24
+  },
+  {
+    "id": "cart80_x_board1600_front",
+    "observed_bow": -0.225,
+    "pred_bow_initial": 0.15,
+    "pred_bow_proto_plumb": 0.1
+  },
+  {
+    "id": "cart80_y_board0_outer",
+    "observed_bow": 0.725,
+    "pred_bow_initial": 3.81,
+    "pred_bow_proto_plumb": 0.63
+  },
+  {
+    "id": "cart80_y_board0_inner",
+    "observed_bow": 3.063,
+    "pred_bow_initial": 2.7,
+    "pred_bow_proto_plumb": 1.42
+  },
+  {
+    "id": "cart80_y_board1600_inner",
+    "observed_bow": -0.725,
+    "pred_bow_initial": -2.13,
+    "pred_bow_proto_plumb": -1.02
+  },
+  {
+    "id": "cart80_y_board1600_inner_top",
+    "observed_bow": -0.087,
+    "pred_bow_initial": -2.11,
+    "pred_bow_proto_plumb": -1.01
+  },
+  {
+    "id": "cart80_y_board1600_outer",
+    "observed_bow": -1.325,
+    "pred_bow_initial": -3.44,
+    "pred_bow_proto_plumb": -1.33
+  },
+  {
+    "id": "cart80_y_div1_top",
+    "observed_bow": 2.543,
+    "pred_bow_initial": 1.09,
+    "pred_bow_proto_plumb": 0.9
+  },
+  {
+    "id": "cart80_y_div4_top",
+    "observed_bow": -1.488,
+    "pred_bow_initial": -0.29,
+    "pred_bow_proto_plumb": -0.17
+  },
+  {
+    "id": "cart80_y_div5_top",
+    "observed_bow": -1.489,
+    "pred_bow_initial": -0.22,
+    "pred_bow_proto_plumb": -0.12
+  },
+  {
+    "id": "cart80_u_div1_low",
+    "observed_bow": -1.448,
+    "pred_bow_initial": 1.56,
+    "pred_bow_proto_plumb": 1.14
+  },
+  {
+    "id": "cart80_u_div2_low",
+    "observed_bow": 1.245,
+    "pred_bow_initial": 0.53,
+    "pred_bow_proto_plumb": 0.61
+  },
+  {
+    "id": "cart80_z_post1600_sil",
+    "observed_bow": 0.206,
+    "pred_bow_initial": 0.02,
+    "pred_bow_proto_plumb": 0.07
+  },
+  {
+    "id": "cart80_z_post1600_sil_low",
+    "observed_bow": -0.169,
+    "pred_bow_initial": 0.2,
+    "pred_bow_proto_plumb": 0.18
+  },
+  {
+    "id": "cart80_s_rail_right",
+    "observed_bow": 7.393,
+    "pred_bow_initial": 5.17,
+    "pred_bow_proto_plumb": 6.08
+  },
+  {
+    "id": "cart80_s_frame",
+    "observed_bow": 4.178,
+    "pred_bow_initial": 5.08,
+    "pred_bow_proto_plumb": 3.8
+  },
+  {
+    "id": "cart80_s_frame2",
+    "observed_bow": 8.668,
+    "pred_bow_initial": 11.57,
+    "pred_bow_proto_plumb": 8.26
+  },
+  {
+    "id": "cart80_s_frame3",
+    "observed_bow": 8.746,
+    "pred_bow_initial": 9.34,
+    "pred_bow_proto_plumb": 6.6
+  }
+]

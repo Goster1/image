@@ -1,0 +1,41 @@
+{
+  "image_width": 1920,
+  "image_height": 1080,
+  "camera_matrix": [
+    [
+      1479.0133017004798,
+      0.0,
+      938.974892040332
+    ],
+    [
+      0.0,
+      1479.0133017004798,
+      508.8300619874716
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "dist_coeffs": [
+    -0.36214299422724316,
+    0.10862256751954955,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "method": "lines_joint_indep_mergedfloor (edges only; the two pieces of the blue floor line treated as one straight line)",
+  "model": "ALTERNATIVE (review): as the main model, but the two visible pieces of the blue floor line (left of cart 310 / between the carts) are one straight 3D line (assumption: one straight painted line under cart 310)",
+  "uncertainty": {
+    "fx_px_1sigma": 20.944604603528706,
+    "fy_px_1sigma": 20.944604603528706,
+    "cx_1sigma": 6.958414547908235,
+    "cy_1sigma": 42.03094439405763,
+    "how": "stratified bootstrap, 60 replicates (statistical only)"
+  },
+  "coefficients_pixel_units": [
+    -0.165552570467191,
+    0.022700307720325153
+  ]
+}

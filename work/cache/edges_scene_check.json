@@ -1,0 +1,46 @@
+{
+  "note": "quick consistency check only (f fixed = 1394.0 from method_plumbline.json + solvePnP; undistorted-image residuals)",
+  "n_edges": 28,
+  "centre_fixed": {
+    "k1": -0.3169393338384659,
+    "k2": 0.08221191488333762,
+    "rms_px": 0.2619310255479632
+  },
+  "centre_free": {
+    "k1": -0.30231585526664956,
+    "k2": 0.06875525590083391,
+    "cx": 918.2620238770238,
+    "cy": 516.8680903163482,
+    "rms_px": 0.2538602635199548
+  },
+  "per_edge_rms_px_centre_fixed": {
+    "scene_rack_tube_a": 0.6267374801073962,
+    "scene_joint450": 0.5476786899940597,
+    "scene_trolley_rodA": 0.3870385717782131,
+    "scene_trolley_rodB": 0.3531608055177406,
+    "scene_blue_left_upper": 0.3068911985002848,
+    "scene_tapeH_bottom": 0.30068967767489435,
+    "scene_jointB_V_right": 0.29306342136160446,
+    "scene_blueL_bottom": 0.279462513781958,
+    "scene_rpost_rod": 0.2534013278872374,
+    "scene_wall_railA": 0.25194500514781953,
+    "scene_frame_br": 0.24562102988549242,
+    "scene_blueL_top": 0.23109358178808875,
+    "scene_jointB_V_left": 0.2272759782731699,
+    "scene_leg_right": 0.1900580933744412,
+    "scene_wall_railB": 0.18556462143652086,
+    "scene_pole_top": 0.17529806023669448,
+    "scene_tapeH_top": 0.15490416733618265,
+    "scene_blueH_top": 0.15441966725125458,
+    "scene_tapeV_left": 0.15246882276930765,
+    "scene_roller_br2": 0.14443176809787933,
+    "scene_blue_left_lower": 0.14128472968414224,
+    "scene_tapeV_right": 0.1390659983352638,
+    "scene_beam_lower": 0.13458181583130682,
+    "scene_pole_bottom": 0.11691850544408798,
+    "scene_roller_br1": 0.11553759836405256,
+    "scene_rpost_rodR": 0.1132523623428844,
+    "scene_leg_left": 0.1086643805986502,
+    "scene_blue_right": 0.09893681994471958
+  }
+}

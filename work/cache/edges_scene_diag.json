@@ -1,0 +1,781 @@
+{
+  "classification_lens": {
+    "source": "method_plumbline.json + solvePnP",
+    "K": [
+      [
+        1394.0080690743812,
+        0.0,
+        959.5
+      ],
+      [
+        0.0,
+        1394.0080690743812,
+        539.5
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "dist": [
+      -0.3568910131527206,
+      0.12767233305738585,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "pnp_rms_px": {
+      "80": 6.879822524076749,
+      "310": 6.840712122491144
+    }
+  },
+  "edges": [
+    {
+      "id": "scene_tapeV_left",
+      "n": 169,
+      "length_px": 354.91546178467,
+      "noise_px": 0.12667322141700688,
+      "med_strength": 68.45526931381768,
+      "vp_angles_deg": {
+        "80X": 3.4,
+        "80Y": 86.78,
+        "80Z": 5.41,
+        "310X": 18.71,
+        "310Y": 76.95,
+        "310Z": 5.93
+      },
+      "angle_to_nadir_deg": 5.41,
+      "undist_rms_class_lens": 0.1466917772822635,
+      "kind": "edge",
+      "direction": "floor_plane",
+      "verified": "yes",
+      "kept": true
+    },
+    {
+      "id": "scene_tapeV_right",
+      "n": 176,
+      "length_px": 354.0014169523082,
+      "noise_px": 0.12543856538671563,
+      "med_strength": 68.8433336141972,
+      "vp_angles_deg": {
+        "80X": 3.47,
+        "80Y": 86.95,
+        "80Z": 4.19,
+        "310X": 18.63,
+        "310Y": 76.76,
+        "310Z": 4.71
+      },
+      "angle_to_nadir_deg": 4.19,
+      "undist_rms_class_lens": 0.1465173917349603,
+      "kind": "edge",
+      "direction": "floor_plane",
+      "verified": "yes",
+      "kept": true
+    },
+    {
+      "id": "scene_tapeH_top",
+      "n": 133,
+      "length_px": 276.0064611446174,
+      "noise_px": 0.14461908579734917,
+      "med_strength": 26.722869463162738,
+      "vp_angles_deg": {
+        "80X": 85.05,
+        "80Y": 3.15,
+        "80Z": 83.29,
+        "310X": 74.05,
+        "310Y": 14.18,
+        "310Z": 83.99
+      },
+      "angle_to_nadir_deg": 83.29,
+      "undist_rms_class_lens": 0.1518958247599143,
+      "kind": "edge",
+      "direction": "floor_plane",
+      "verified": "yes",
+      "kept": true
+    },
+    {
+      "id": "scene_tapeH_bottom",
+      "n": 74,
+      "length_px": 152.02620165797833,
+      "noise_px": 0.2526584623521984,
+      "med_strength": 22.869247470106835,
+      "vp_angles_deg": {
+        "80X": 84.18,
+        "80Y": 3.4,
+        "80Z": 80.26,
+        "310X": 74.8,
+        "310Y": 13.84,
+        "310Z": 80.92
+      },
+      "angle_to_nadir_deg": 80.26,
+      "undist_rms_class_lens": 0.29911396930312684,
+      "kind": "edge",
+      "direction": "floor_plane",
+      "verified": "partly",
+      "kept": true
+    },
+    {
+      "id": "scene_blueH_top",
+      "n": 40,
+      "length_px": 84.61118510639122,
+      "noise_px": 0.13273557297410107,
+      "med_strength": 10.86546123182272,
+      "vp_angles_deg": {
+        "80X": 83.6,
+        "80Y": 3.25,
+        "80Z": 74.48,
+        "310X": 75.52,
+        "310Y": 14.09,
+        "310Z": 75.12
+      },
+      "angle_to_nadir_deg": 74.48,
+      "undist_rms_class_lens": 0.15403755952024725,
+      "kind": "edge",
+      "direction": "floor_plane",
+      "verified": "partly",
+      "kept": true
+    },
+    {
+      "id": "scene_blueL_top",
+      "n": 122,
+      "length_px": 255.97470315904314,
+      "noise_px": 0.18602354644203267,
+      "med_strength": 21.22300628159347,
+      "vp_angles_deg": {
+        "80X": 83.0,
+        "80Y": 2.75,
+        "80Z": 40.61,
+        "310X": 63.6,
+        "310Y": 15.26,
+        "310Z": 40.21
+      },
+      "angle_to_nadir_deg": 40.21,
+      "undist_rms_class_lens": 0.23801927469630105,
+      "kind": "edge",
+      "direction": "floor_plane",
+      "verified": "yes",
+      "kept": true
+    },
+    {
+      "id": "scene_blueL_bottom",
+      "n": 130,
+      "length_px": 258.00108119948317,
+      "noise_px": 0.16546559657385285,
+      "med_strength": 22.645037393276816,
+      "vp_angles_deg": {
+        "80X": 83.08,
+        "80Y": 2.79,
+        "80Z": 41.42,
+        "310X": 63.61,
+        "310Y": 15.14,
+        "310Z": 41.02
+      },
+      "angle_to_nadir_deg": 41.02,
+      "undist_rms_class_lens": 0.2902854691339724,
+      "kind": "edge",
+      "direction": "floor_plane",
+      "verified": "yes",
+      "kept": true
+    },
+    {
+      "id": "scene_joint450",
+      "n": 150,
+      "length_px": 326.94588436551794,
+      "noise_px": 0.5041393387455455,
+      "med_strength": 16.53988770672241,
+      "vp_angles_deg": {
+        "80X": 86.37,
+        "80Y": 2.76,
+        "80Z": 82.58,
+        "310X": 73.81,
+        "310Y": 15.57,
+        "310Z": 83.64
+      },
+      "angle_to_nadir_deg": 82.58,
+      "undist_rms_class_lens": 0.5449102752719456,
+      "kind": "dark_line",
+      "direction": "floor_plane",
+      "verified": "partly",
+      "kept": true
+    },
+    {
+      "id": "scene_jointB_H",
+      "n": 66,
+      "length_px": 250.10158412149195,
+      "noise_px": 0.9969228943122217,
+      "med_strength": 5.85547225698398,
+      "vp_angles_deg": {
+        "80X": 85.1,
+        "80Y": 3.49,
+        "80Z": 88.55,
+        "310X": 72.25,
+        "310Y": 12.39,
+        "310Z": 88.07
+      },
+      "angle_to_nadir_deg": 88.07,
+      "undist_rms_class_lens": 1.3759966560088712,
+      "kind": "dark_line",
+      "direction": "floor_plane",
+      "verified": "no",
+      "kept": false
+    },
+    {
+      "id": "scene_jointB_V_left",
+      "n": 48,
+      "length_px": 94.04865825588405,
+      "noise_px": 0.12924428767614607,
+      "med_strength": 13.345846655390424,
+      "vp_angles_deg": {
+        "80X": 5.91,
+        "80Y": 88.19,
+        "80Z": 8.71,
+        "310X": 17.38,
+        "310Y": 76.36,
+        "310Z": 8.29
+      },
+      "angle_to_nadir_deg": 8.29,
+      "undist_rms_class_lens": 0.22935048787053808,
+      "kind": "edge",
+      "direction": "floor_plane",
+      "verified": "partly",
+      "kept": true
+    },
+    {
+      "id": "scene_jointB_V_right",
+      "n": 33,
+      "length_px": 80.05382862846983,
+      "noise_px": 0.18391311336632757,
+      "med_strength": 12.420324745567264,
+      "vp_angles_deg": {
+        "80X": 5.92,
+        "80Y": 88.42,
+        "80Z": 9.82,
+        "310X": 17.36,
+        "310Y": 76.13,
+        "310Z": 9.4
+      },
+      "angle_to_nadir_deg": 9.4,
+      "undist_rms_class_lens": 0.29459483628372446,
+      "kind": "edge",
+      "direction": "floor_plane",
+      "verified": "partly",
+      "kept": true
+    },
+    {
+      "id": "scene_blue_left_upper",
+      "n": 43,
+      "length_px": 101.91921705337214,
+      "noise_px": 0.12851576997675215,
+      "med_strength": 15.838080990689448,
+      "vp_angles_deg": {
+        "80X": 40.76,
+        "80Y": 56.51,
+        "80Z": 0.39,
+        "310X": 61.25,
+        "310Y": 39.33,
+        "310Z": 0.08
+      },
+      "angle_to_nadir_deg": 0.08,
+      "undist_rms_class_lens": 0.3129625657360809,
+      "kind": "edge",
+      "direction": "world_vertical",
+      "verified": "yes",
+      "kept": true
+    },
+    {
+      "id": "scene_blue_left_lower",
+      "n": 32,
+      "length_px": 63.001354306586535,
+      "noise_px": 0.10655919092791664,
+      "med_strength": 19.436307661315574,
+      "vp_angles_deg": {
+        "80X": 43.66,
+        "80Y": 57.18,
+        "80Z": 0.18,
+        "310X": 65.04,
+        "310Y": 41.36,
+        "310Z": 0.51
+      },
+      "angle_to_nadir_deg": 0.18,
+      "undist_rms_class_lens": 0.1481980183178473,
+      "kind": "edge",
+      "direction": "world_vertical",
+      "verified": "yes",
+      "kept": true
+    },
+    {
+      "id": "scene_blue_right",
+      "n": 46,
+      "length_px": 90.03331644500219,
+      "noise_px": 0.08638450192294916,
+      "med_strength": 29.196356178631238,
+      "vp_angles_deg": {
+        "80X": 35.31,
+        "80Y": 62.71,
+        "80Z": 0.13,
+        "310X": 57.11,
+        "310Y": 46.87,
+        "310Z": 0.24
+      },
+      "angle_to_nadir_deg": 0.13,
+      "undist_rms_class_lens": 0.10009388877692087,
+      "kind": "edge",
+      "direction": "world_vertical",
+      "verified": "yes",
+      "kept": true
+    },
+    {
+      "id": "scene_blue_face",
+      "n": 60,
+      "length_px": 159.1278157902168,
+      "noise_px": 0.333837259541465,
+      "med_strength": 3.947013185986087,
+      "vp_angles_deg": {
+        "80X": 38.9,
+        "80Y": 59.44,
+        "80Z": 1.4,
+        "310X": 60.39,
+        "310Y": 43.35,
+        "310Z": 1.02
+      },
+      "angle_to_nadir_deg": 1.02,
+      "undist_rms_class_lens": 0.7565047874279088,
+      "kind": "edge",
+      "direction": "world_vertical",
+      "verified": "no",
+      "kept": false
+    },
+    {
+      "id": "scene_rack_tube_a",
+      "n": 289,
+      "length_px": 608.8364757797386,
+      "noise_px": 0.3370690026867879,
+      "med_strength": 13.826843947422025,
+      "vp_angles_deg": {
+        "80X": 9.61,
+        "80Y": 84.49,
+        "80Z": 82.27,
+        "310X": 26.5,
+        "310Y": 75.22,
+        "310Z": 82.43
+      },
+      "angle_to_nadir_deg": 82.27,
+      "undist_rms_class_lens": 2.1415518578930453,
+      "kind": "edge",
+      "direction": "horizontal_other",
+      "verified": "partly",
+      "kept": true
+    },
+    {
+      "id": "scene_rack_base",
+      "n": 98,
+      "length_px": 240.1212672544503,
+      "noise_px": 0.5154451941068152,
+      "med_strength": 10.456163482947609,
+      "vp_angles_deg": {
+        "80X": 70.25,
+        "80Y": 30.74,
+        "80Z": 0.05,
+        "310X": 88.69,
+        "310Y": 11.78,
+        "310Z": 0.29
+      },
+      "angle_to_nadir_deg": 0.05,
+      "undist_rms_class_lens": 0.678133319874192,
+      "kind": "dark_line",
+      "direction": "unknown",
+      "verified": "no",
+      "kept": false
+    },
+    {
+      "id": "scene_trolley_rodA",
+      "n": 34,
+      "length_px": 67.00464111390988,
+      "noise_px": 0.18006154900264135,
+      "med_strength": 11.007328317206014,
+      "vp_angles_deg": {
+        "80X": 12.11,
+        "80Y": 62.59,
+        "80Z": 68.4,
+        "310X": 8.3,
+        "310Y": 78.49,
+        "310Z": 68.67
+      },
+      "angle_to_nadir_deg": 68.4,
+      "undist_rms_class_lens": 0.36879806293184997,
+      "kind": "edge",
+      "direction": "unknown",
+      "verified": "partly",
+      "kept": true
+    },
+    {
+      "id": "scene_trolley_rodB",
+      "n": 34,
+      "length_px": 65.99930021817545,
+      "noise_px": 0.19548406668447516,
+      "med_strength": 14.284812656701266,
+      "vp_angles_deg": {
+        "80X": 11.4,
+        "80Y": 64.75,
+        "80Z": 65.46,
+        "310X": 9.07,
+        "310Y": 80.9,
+        "310Z": 65.75
+      },
+      "angle_to_nadir_deg": 65.46,
+      "undist_rms_class_lens": 0.350544737961963,
+      "kind": "edge",
+      "direction": "unknown",
+      "verified": "partly",
+      "kept": true
+    },
+    {
+      "id": "scene_rpost_rod",
+      "n": 214,
+      "length_px": 460.0903432888065,
+      "noise_px": 0.09574562275729133,
+      "med_strength": 29.746421681926506,
+      "vp_angles_deg": {
+        "80X": 5.6,
+        "80Y": 83.01,
+        "80Z": 67.93,
+        "310X": 14.8,
+        "310Y": 65.86,
+        "310Z": 67.79
+      },
+      "angle_to_nadir_deg": 67.79,
+      "undist_rms_class_lens": 0.16905453610942855,
+      "kind": "edge",
+      "direction": "horizontal_other",
+      "verified": "yes",
+      "kept": true
+    },
+    {
+      "id": "scene_rpost_rodR",
+      "n": 134,
+      "length_px": 288.3094340710967,
+      "noise_px": 0.07550559723825362,
+      "med_strength": 55.89231257586173,
+      "vp_angles_deg": {
+        "80X": 5.3,
+        "80Y": 82.86,
+        "80Z": 73.48,
+        "310X": 14.62,
+        "310Y": 65.31,
+        "310Z": 73.37
+      },
+      "angle_to_nadir_deg": 73.37,
+      "undist_rms_class_lens": 0.10936493216915304,
+      "kind": "edge",
+      "direction": "horizontal_other",
+      "verified": "yes",
+      "kept": true
+    },
+    {
+      "id": "scene_beam_lower",
+      "n": 33,
+      "length_px": 68.98838107946855,
+      "noise_px": 0.0765173918082294,
+      "med_strength": 24.201264211657357,
+      "vp_angles_deg": {
+        "80X": 89.43,
+        "80Y": 13.99,
+        "80Z": 2.44,
+        "310X": 70.46,
+        "310Y": 32.2,
+        "310Z": 2.43
+      },
+      "angle_to_nadir_deg": 2.43,
+      "undist_rms_class_lens": 0.1250951582455126,
+      "kind": "edge",
+      "direction": "world_vertical",
+      "verified": "partly",
+      "kept": true
+    },
+    {
+      "id": "scene_beam_upper",
+      "n": 44,
+      "length_px": 111.14080724743668,
+      "noise_px": 0.3839886192907846,
+      "med_strength": 9.887213727049689,
+      "vp_angles_deg": {
+        "80X": 87.23,
+        "80Y": 8.52,
+        "80Z": 1.49,
+        "310X": 73.91,
+        "310Y": 27.12,
+        "310Z": 1.48
+      },
+      "angle_to_nadir_deg": 1.48,
+      "undist_rms_class_lens": 1.0570950929391796,
+      "kind": "edge",
+      "direction": "world_vertical",
+      "verified": "no",
+      "kept": false
+    },
+    {
+      "id": "scene_leg_left",
+      "n": 33,
+      "length_px": 64.74579804230198,
+      "noise_px": 0.05991378912962735,
+      "med_strength": 40.59922900915459,
+      "vp_angles_deg": {
+        "80X": 4.76,
+        "80Y": 82.87,
+        "80Z": 89.99,
+        "310X": 13.9,
+        "310Y": 64.16,
+        "310Z": 89.96
+      },
+      "angle_to_nadir_deg": 89.96,
+      "undist_rms_class_lens": 0.10859837514528287,
+      "kind": "edge",
+      "direction": "horizontal_other",
+      "verified": "yes",
+      "kept": true
+    },
+    {
+      "id": "scene_leg_right",
+      "n": 49,
+      "length_px": 96.02914044402189,
+      "noise_px": 0.12453386918401697,
+      "med_strength": 9.44932297838496,
+      "vp_angles_deg": {
+        "80X": 5.01,
+        "80Y": 82.63,
+        "80Z": 89.15,
+        "310X": 13.58,
+        "310Y": 63.93,
+        "310Z": 89.12
+      },
+      "angle_to_nadir_deg": 89.12,
+      "undist_rms_class_lens": 0.19685369832887675,
+      "kind": "edge",
+      "direction": "horizontal_other",
+      "verified": "partly",
+      "kept": true
+    },
+    {
+      "id": "scene_roller_1",
+      "n": 43,
+      "length_px": 84.01833666167633,
+      "noise_px": 0.16174886954828355,
+      "med_strength": 13.463537483783464,
+      "vp_angles_deg": {
+        "80X": 75.64,
+        "80Y": 0.94,
+        "80Z": 1.94,
+        "310X": 86.24,
+        "310Y": 18.05,
+        "310Z": 1.87
+      },
+      "angle_to_nadir_deg": 1.87,
+      "undist_rms_class_lens": 0.2626316914049014,
+      "kind": "edge",
+      "direction": "unknown",
+      "verified": "no",
+      "kept": false
+    },
+    {
+      "id": "scene_roller_2",
+      "n": 62,
+      "length_px": 122.83352006301789,
+      "noise_px": 0.7061157716659414,
+      "med_strength": 22.450479124953198,
+      "vp_angles_deg": {
+        "80X": 76.84,
+        "80Y": 1.1,
+        "80Z": 5.15,
+        "310X": 84.66,
+        "310Y": 19.61,
+        "310Z": 5.12
+      },
+      "angle_to_nadir_deg": 5.12,
+      "undist_rms_class_lens": 1.5033708401860175,
+      "kind": "edge",
+      "direction": "unknown",
+      "verified": "no",
+      "kept": false
+    },
+    {
+      "id": "scene_roller_br1",
+      "n": 54,
+      "length_px": 107.9834357166562,
+      "noise_px": 0.0547100526713598,
+      "med_strength": 49.51433994377717,
+      "vp_angles_deg": {
+        "80X": 73.85,
+        "80Y": 1.05,
+        "80Z": 46.74,
+        "310X": 82.54,
+        "310Y": 15.53,
+        "310Z": 46.93
+      },
+      "angle_to_nadir_deg": 46.74,
+      "undist_rms_class_lens": 0.22655897121833535,
+      "kind": "edge",
+      "direction": "horizontal_other",
+      "verified": "partly",
+      "kept": true
+    },
+    {
+      "id": "scene_roller_br2",
+      "n": 53,
+      "length_px": 105.02355275876134,
+      "noise_px": 0.05861753699898271,
+      "med_strength": 51.51534952785213,
+      "vp_angles_deg": {
+        "80X": 73.66,
+        "80Y": 0.91,
+        "80Z": 47.75,
+        "310X": 82.56,
+        "310Y": 15.28,
+        "310Z": 47.94
+      },
+      "angle_to_nadir_deg": 47.75,
+      "undist_rms_class_lens": 0.25728231450802935,
+      "kind": "edge",
+      "direction": "horizontal_other",
+      "verified": "partly",
+      "kept": true
+    },
+    {
+      "id": "scene_pole_top",
+      "n": 24,
+      "length_px": 78.01214663844584,
+      "noise_px": 0.0908077638276986,
+      "med_strength": 21.834879206240252,
+      "vp_angles_deg": {
+        "80X": 74.26,
+        "80Y": 4.9,
+        "80Z": 1.15,
+        "310X": 87.95,
+        "310Y": 14.77,
+        "310Z": 1.28
+      },
+      "angle_to_nadir_deg": 1.15,
+      "undist_rms_class_lens": 0.19828998631339986,
+      "kind": "edge",
+      "direction": "world_vertical",
+      "verified": "partly",
+      "kept": true
+    },
+    {
+      "id": "scene_pole_bottom",
+      "n": 19,
+      "length_px": 74.6116096757836,
+      "noise_px": 0.06906145991645639,
+      "med_strength": 14.387987136559216,
+      "vp_angles_deg": {
+        "80X": 77.02,
+        "80Y": 2.11,
+        "80Z": 1.53,
+        "310X": 85.02,
+        "310Y": 17.4,
+        "310Z": 1.65
+      },
+      "angle_to_nadir_deg": 1.53,
+      "undist_rms_class_lens": 0.11253821277456239,
+      "kind": "edge",
+      "direction": "world_vertical",
+      "verified": "partly",
+      "kept": true
+    },
+    {
+      "id": "scene_frame_br",
+      "n": 135,
+      "length_px": 271.0042595281677,
+      "noise_px": 0.10929665542653326,
+      "med_strength": 48.003919804957185,
+      "vp_angles_deg": {
+        "80X": 5.3,
+        "80Y": 75.48,
+        "80Z": 66.72,
+        "310X": 17.0,
+        "310Y": 60.58,
+        "310Z": 66.59
+      },
+      "angle_to_nadir_deg": 66.59,
+      "undist_rms_class_lens": 0.5056241371707414,
+      "kind": "edge",
+      "direction": "horizontal_other",
+      "verified": "yes",
+      "kept": true
+    },
+    {
+      "id": "scene_wall_railA",
+      "n": 150,
+      "length_px": 320.981320972331,
+      "noise_px": 0.19473807142266966,
+      "med_strength": 33.87595792589727,
+      "vp_angles_deg": {
+        "80X": 0.7,
+        "80Y": 80.46,
+        "80Z": 73.06,
+        "310X": 19.21,
+        "310Y": 62.66,
+        "310Z": 72.92
+      },
+      "angle_to_nadir_deg": 72.92,
+      "undist_rms_class_lens": 0.2516319748452595,
+      "kind": "edge",
+      "direction": "horizontal_other",
+      "verified": "partly",
+      "kept": true
+    },
+    {
+      "id": "scene_wall_railB",
+      "n": 161,
+      "length_px": 322.14030970769534,
+      "noise_px": 0.12940553410124855,
+      "med_strength": 58.526921868019215,
+      "vp_angles_deg": {
+        "80X": 5.26,
+        "80Y": 84.33,
+        "80Z": 65.27,
+        "310X": 15.04,
+        "310Y": 66.92,
+        "310Z": 65.1
+      },
+      "angle_to_nadir_deg": 65.1,
+      "undist_rms_class_lens": 0.20840780117266994,
+      "kind": "bright_line",
+      "direction": "horizontal_other",
+      "verified": "yes",
+      "kept": true
+    }
+  ],
+  "rejected": [
+    {
+      "id": "scene_jointB_H",
+      "what": "floor joint near the bottom at y~970 (x 770-1095): centre of the dark band",
+      "reason": "diffuse wide dark band (y~970), no sharp edge; traced points scatter ~1 px"
+    },
+    {
+      "id": "scene_blue_face",
+      "what": "long blue box-shaped object bottom-left: fold between the darker top face and the lighter side face",
+      "reason": "fold between the dark top face and the lighter side face: very low contrast (strength ~4), local systematic deviations up to 0.7 px along the trace"
+    },
+    {
+      "id": "scene_rack_base",
+      "what": "tall wire rack far left: thin dark tube at the bottom of the rack side (x 130-330), centre line",
+      "reason": "thin dark line at the bottom of the rack side: a kink/step visible in the zoomed window, cannot be verified as one straight member"
+    },
+    {
+      "id": "scene_beam_upper",
+      "what": "right top: long light grey bar (column): UPPER edge against the concrete wall (x 1630-1760 only; further right it crosses the conveyor plate and rollers); a bolt head at (1728,288) excluded",
+      "reason": "upper edge of the same bar against the concrete wall x 1632-1762: low contrast (strength ~10), a bump at the bolt head, and it stays curved by ~1 px rms after a k1,k2 straightening that fits the other scene edges to ~0.2 px -> not reliable"
+    },
+    {
+      "id": "scene_roller_1",
+      "what": "top right roller conveyor: silhouette edge of one roller (cylinder generator line)",
+      "reason": "roller of the curved conveyor top right: the traced boundary is a highlight boundary on a dark roller, not a silhouette"
+    },
+    {
+      "id": "scene_roller_2",
+      "what": "top right roller conveyor: silhouette edge of one roller (cylinder generator line)",
+      "reason": "roller top right: trace jumps between the highlight and the silhouette (step in the strip)"
+    }
+  ]
+}

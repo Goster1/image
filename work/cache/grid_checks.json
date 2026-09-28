@@ -1,0 +1,640 @@
+{
+  "model_lines": [
+    {
+      "id": "cart310_board0_outer",
+      "cart": 310,
+      "fixed": {
+        "X": 0,
+        "Z": 0
+      },
+      "free": "Y",
+      "exact": true,
+      "n": 124,
+      "median_px": -24.487473977617825,
+      "end_a_px": -27.75196070651886,
+      "end_b_px": -21.108621565243926,
+      "rms_px": 24.55941003886411,
+      "mm_per_px": 1.6699630829470666,
+      "median_mm": -40.89317753724873,
+      "note": "outer end edge of the top plate at the X=0 end (drawing: X=0, Z=0); edge slightly rounded. Check: a plane homography fro"
+    },
+    {
+      "id": "cart310_board1600_outer",
+      "cart": 310,
+      "fixed": {
+        "X": 1600,
+        "Z": 0
+      },
+      "free": "Y",
+      "exact": false,
+      "n": 95,
+      "median_px": 17.31007055194264,
+      "end_a_px": 19.618992676277912,
+      "end_b_px": 15.34755113469795,
+      "rms_px": 17.52815500693418,
+      "mm_per_px": 1.3633665110022544,
+      "median_mm": 23.599970493604904,
+      "note": "nominal outer end edge of the top plate (drawing X=1600, Z=0) - NOT used as exact: a plane homography from the valid edg"
+    },
+    {
+      "id": "cart310_board1600_inner",
+      "cart": 310,
+      "fixed": {
+        "X": 1435,
+        "Z": 0
+      },
+      "free": "Y",
+      "exact": false,
+      "n": 102,
+      "median_px": 1.7367492078549254,
+      "end_a_px": 2.292065026274422,
+      "end_b_px": 1.0029131332396362,
+      "rms_px": 1.8051873186555631,
+      "mm_per_px": 1.394984282484063,
+      "median_mm": 2.4227378475742682,
+      "note": "board width is not in the drawing (165 mm only assumed from the centred markers at X=1517.5); the camera (X~1414) sees t"
+    },
+    {
+      "id": "cart310_board0_inner_top",
+      "cart": 310,
+      "fixed": {
+        "X": 165,
+        "Z": 0
+      },
+      "free": "Y",
+      "exact": false,
+      "n": 133,
+      "median_px": -21.501810759217957,
+      "end_a_px": -21.326918191536517,
+      "end_b_px": -22.438109826026036,
+      "rms_px": 21.60908898051031,
+      "mm_per_px": 1.6383453114652575,
+      "median_mm": -35.22739084537797,
+      "note": "board width not in the drawing (165 mm assumed from the centred markers at X=82.5) [review: homography of the board's st"
+    },
+    {
+      "id": "cart310_x_A_front_fall",
+      "cart": 310,
+      "fixed": {
+        "Y": 0,
+        "Z": -195
+      },
+      "free": "X",
+      "exact": false,
+      "n": 158,
+      "median_px": -1.6963645888753387,
+      "end_a_px": -2.1688824096745734,
+      "end_b_px": -0.8433708924987076,
+      "rms_px": 1.6725910397778716,
+      "mm_per_px": 1.6301891576130594,
+      "median_mm": -2.765395160143312,
+      "note": "front edge line of the shelf plate (Y~0); the height of the visible outline relative to the nominal shelf surface is unk"
+    },
+    {
+      "id": "cart310_x_B_front_fall",
+      "cart": 310,
+      "fixed": {
+        "Y": 0,
+        "Z": -595
+      },
+      "free": "X",
+      "exact": false,
+      "n": 153,
+      "median_px": -4.673911364806345,
+      "end_a_px": -4.118698715012078,
+      "end_b_px": -4.8924975400616555,
+      "rms_px": 4.678361044210673,
+      "mm_per_px": 1.8904625881110129,
+      "median_mm": -8.83585457531328,
+      "note": "front edge line of the shelf plate (Y~0); the height of the visible outline relative to the nominal shelf surface is unk"
+    },
+    {
+      "id": "cart310_x_B_front_rise",
+      "cart": 310,
+      "fixed": {
+        "Y": 0,
+        "Z": -595
+      },
+      "free": "X",
+      "exact": false,
+      "n": 95,
+      "median_px": -1.9987018930371576,
+      "end_a_px": -1.3428348558705594,
+      "end_b_px": -2.228290798153867,
+      "rms_px": 1.9768937763501078,
+      "mm_per_px": 1.8904625881110129,
+      "median_mm": -3.778471153573406,
+      "note": "front edge line of the shelf plate (Y~0); the height of the visible outline relative to the nominal shelf surface is unk"
+    },
+    {
+      "id": "cart310_x_C_front_fall",
+      "cart": 310,
+      "fixed": {
+        "Y": 0,
+        "Z": -995
+      },
+      "free": "X",
+      "exact": false,
+      "n": 103,
+      "median_px": -1.5731694468364097,
+      "end_a_px": -2.6175013606847077,
+      "end_b_px": -0.5768011734433864,
+      "rms_px": 1.5905999602135688,
+      "mm_per_px": 2.1507360186089666,
+      "median_mm": -3.3834721926862095,
+      "note": "front edge line of the shelf plate (Y~0); the height of the visible outline relative to the nominal shelf surface is unk"
+    },
+    {
+      "id": "cart310_x_C_front_rise",
+      "cart": 310,
+      "fixed": {
+        "Y": 0,
+        "Z": -995
+      },
+      "free": "X",
+      "exact": false,
+      "n": 47,
+      "median_px": 0.023219055727735048,
+      "end_a_px": -0.2738954676379335,
+      "end_b_px": 1.6464819679700429,
+      "rms_px": 0.8101450014116961,
+      "mm_per_px": 2.1507360186089666,
+      "median_mm": 0.049938059471728594,
+      "note": "front edge line of the shelf plate (Y~0); the height of the visible outline relative to the nominal shelf surface is unk"
+    },
+    {
+      "id": "cart310_x_D_front_fall",
+      "cart": 310,
+      "fixed": {
+        "Y": 0,
+        "Z": -1300
+      },
+      "free": "X",
+      "exact": false,
+      "n": 122,
+      "median_px": -2.556430520187914,
+      "end_a_px": -2.1318163799066467,
+      "end_b_px": -2.732494550542455,
+      "rms_px": 2.555765310586451,
+      "mm_per_px": 2.349194509363656,
+      "median_mm": -6.005552541595121,
+      "note": "front edge line of the shelf plate (Y~0); the height of the visible outline relative to the nominal shelf surface is unk"
+    },
+    {
+      "id": "cart310_x_E_front_fall",
+      "cart": 310,
+      "fixed": {
+        "Y": 0,
+        "Z": -1605
+      },
+      "free": "X",
+      "exact": false,
+      "n": 120,
+      "median_px": 1.9870478899971395,
+      "end_a_px": 3.3405735434403856,
+      "end_b_px": 1.4249608222814256,
+      "rms_px": 2.230388020208874,
+      "mm_per_px": 2.5476530001183453,
+      "median_mm": 5.06230851833004,
+      "note": "front edge line of the shelf plate (Y~0); the height of the visible outline relative to the nominal shelf surface is unk"
+    },
+    {
+      "id": "cart310_z_post_front_left_right",
+      "cart": 310,
+      "fixed": {
+        "X": 0,
+        "Y": 0
+      },
+      "free": "Z",
+      "exact": false,
+      "n": 86,
+      "median_px": -0.4161369683068657,
+      "end_a_px": -0.4069383198162384,
+      "end_b_px": -0.24343649118790575,
+      "rms_px": 0.45232692683001524,
+      "mm_per_px": 2.242219364838108,
+      "median_mm": -0.9330703687626765,
+      "note": "outer corner line of the post; post section / inset relative to the drawing box unknown"
+    },
+    {
+      "id": "cart310_z_post_front_right",
+      "cart": 310,
+      "fixed": {
+        "X": 1600,
+        "Y": 0
+      },
+      "free": "Z",
+      "exact": false,
+      "n": 52,
+      "median_px": -4.322037508727887,
+      "end_a_px": -3.781834751988646,
+      "end_b_px": -4.909405452190877,
+      "rms_px": 4.337091890525084,
+      "mm_per_px": 1.9356227928932963,
+      "median_mm": -8.365834313633457,
+      "note": "identification inferred from its end points (board corner -> castor) and from its direction pointing at the nadir (~(930"
+    },
+    {
+      "id": "cart80_x_A_front_out",
+      "cart": 80,
+      "fixed": {
+        "Y": 0,
+        "Z": -195
+      },
+      "free": "X",
+      "exact": false,
+      "n": 273,
+      "median_px": 4.691566558746394,
+      "end_a_px": 4.488374639604114,
+      "end_b_px": 5.311410030930886,
+      "rms_px": 4.730798668582322,
+      "mm_per_px": 1.6529184169134645,
+      "median_mm": 7.75477676912724,
+      "note": "front lip / front outline of the shelf at this level; the height of the visible outline above the nominal shelf surface "
+    },
+    {
+      "id": "cart80_x_A_front_in",
+      "cart": 80,
+      "fixed": {
+        "Y": 0,
+        "Z": -195
+      },
+      "free": "X",
+      "exact": false,
+      "n": 175,
+      "median_px": -2.0855348114614376,
+      "end_a_px": -1.254233952729415,
+      "end_b_px": -1.9049484064677098,
+      "rms_px": 2.130765729496364,
+      "mm_per_px": 1.6529184169134645,
+      "median_mm": -3.4472188989787598,
+      "note": "front lip / front outline of the shelf at this level; the height of the visible outline above the nominal shelf surface "
+    },
+    {
+      "id": "cart80_x_B_front",
+      "cart": 80,
+      "fixed": {
+        "Y": 0,
+        "Z": -595
+      },
+      "free": "X",
+      "exact": false,
+      "n": 149,
+      "median_px": 8.889498075302344,
+      "end_a_px": 9.773827786543782,
+      "end_b_px": 7.775649147043448,
+      "rms_px": 8.819858405596946,
+      "mm_per_px": 1.9140204325813708,
+      "median_mm": 17.014680951521456,
+      "note": "front lip / front outline of the shelf at this level; the height of the visible outline above the nominal shelf surface "
+    },
+    {
+      "id": "cart80_x_C_front",
+      "cart": 80,
+      "fixed": {
+        "Y": 0,
+        "Z": -995
+      },
+      "free": "X",
+      "exact": false,
+      "n": 162,
+      "median_px": 4.1561286868928855,
+      "end_a_px": 3.898254634703872,
+      "end_b_px": 4.157349791534581,
+      "rms_px": 4.123874010981878,
+      "mm_per_px": 2.175122448249277,
+      "median_mm": 9.040088804673506,
+      "note": "front lip / front outline of the shelf at this level; the height of the visible outline above the nominal shelf surface "
+    },
+    {
+      "id": "cart80_x_D_front",
+      "cart": 80,
+      "fixed": {
+        "Y": 0,
+        "Z": -1300
+      },
+      "free": "X",
+      "exact": false,
+      "n": 201,
+      "median_px": 3.517904378432867,
+      "end_a_px": 4.124679423497408,
+      "end_b_px": 2.9301297374009994,
+      "rms_px": 3.528439366018309,
+      "mm_per_px": 2.374212735196055,
+      "median_mm": 8.352253376477275,
+      "note": "front lip / front outline of the shelf at this level; the height of the visible outline above the nominal shelf surface "
+    },
+    {
+      "id": "cart80_x_E_front",
+      "cart": 80,
+      "fixed": {
+        "Y": 0,
+        "Z": -1605
+      },
+      "free": "X",
+      "exact": false,
+      "n": 226,
+      "median_px": 8.7502409654093,
+      "end_a_px": 9.279417346724182,
+      "end_b_px": 8.794844554323838,
+      "rms_px": 8.790371787108453,
+      "mm_per_px": 2.5733030221428335,
+      "median_mm": 22.517021520765777,
+      "note": "front lip / front outline of the shelf at this level; the height of the visible outline above the nominal shelf surface "
+    },
+    {
+      "id": "cart80_x_E_front_in",
+      "cart": 80,
+      "fixed": {
+        "Y": 0,
+        "Z": -1605
+      },
+      "free": "X",
+      "exact": false,
+      "n": 207,
+      "median_px": 6.002582275754072,
+      "end_a_px": 6.5782158709491245,
+      "end_b_px": 6.069329700789624,
+      "rms_px": 6.024215905461774,
+      "mm_per_px": 2.5733030221428335,
+      "median_mm": 15.44646311085896,
+      "note": "front lip / front outline of the shelf at this level; the height of the visible outline above the nominal shelf surface "
+    },
+    {
+      "id": "cart80_x_back_rail_out",
+      "cart": 80,
+      "fixed": {
+        "Y": 450,
+        "Z": 0
+      },
+      "free": "X",
+      "exact": false,
+      "n": 299,
+      "median_px": 2.5570539635887473,
+      "end_a_px": 2.4587791197670685,
+      "end_b_px": 1.801482411528295,
+      "rms_px": 2.576503343155239,
+      "mm_per_px": 1.5289309478666486,
+      "median_mm": 3.909558940295914,
+      "note": "longitudinal member on the back (Y~450) side; its exact Y/Z (profile size, offset from the outline) is not in the drawin"
+    },
+    {
+      "id": "cart80_x_back_rail_in",
+      "cart": 80,
+      "fixed": {
+        "Y": 450,
+        "Z": 0
+      },
+      "free": "X",
+      "exact": false,
+      "n": 179,
+      "median_px": 15.369937916442417,
+      "end_a_px": 15.792649320978747,
+      "end_b_px": 14.707286025604406,
+      "rms_px": 15.322709078375425,
+      "mm_per_px": 1.5289309478666486,
+      "median_mm": 23.499573747237847,
+      "note": "longitudinal member on the back (Y~450) side; its exact Y/Z (profile size, offset from the outline) is not in the drawin"
+    },
+    {
+      "id": "cart80_x_back_low",
+      "cart": 80,
+      "fixed": {
+        "Y": 450,
+        "Z": -300
+      },
+      "free": "X",
+      "exact": false,
+      "n": 196,
+      "median_px": -10.447630841401672,
+      "end_a_px": -11.789461357732383,
+      "end_b_px": -9.63749217763526,
+      "rms_px": 10.502410680411353,
+      "mm_per_px": 1.7247574596175783,
+      "median_mm": -18.01962922903821,
+      "note": "longitudinal member on the back (Y~450) side; its exact Y/Z (profile size, offset from the outline) is not in the drawin"
+    },
+    {
+      "id": "cart80_x_board0_front",
+      "cart": 80,
+      "fixed": {
+        "Y": 0,
+        "Z": 0
+      },
+      "free": "X",
+      "exact": true,
+      "n": 48,
+      "median_px": -6.147583518077028,
+      "end_a_px": -8.95782744303537,
+      "end_b_px": -3.527771052661839,
+      "rms_px": 6.496489782549423,
+      "mm_per_px": 1.3871892292213048,
+      "median_mm": -8.527861642014871,
+      "note": "front side of the top plate at the X=0 end (drawing Y=0, Z=0), X ~0..175; check: homography from markers 0/92 gives Y = "
+    },
+    {
+      "id": "cart80_x_board1600_front",
+      "cart": 80,
+      "fixed": {
+        "Y": 0,
+        "Z": 0
+      },
+      "free": "X",
+      "exact": true,
+      "n": 37,
+      "median_px": -6.022312898040442,
+      "end_a_px": -4.6007510132639835,
+      "end_b_px": -7.905242064693945,
+      "rms_px": 6.169678689186699,
+      "mm_per_px": 1.6645572021093251,
+      "median_mm": -10.0244843077891,
+      "note": "front side of the top plate at the X=1600 end (drawing Y=0, Z=0), X ~1445..1600; check: homography from markers 1/2 give"
+    },
+    {
+      "id": "cart80_y_board0_outer",
+      "cart": 80,
+      "fixed": {
+        "X": 0,
+        "Z": 0
+      },
+      "free": "Y",
+      "exact": false,
+      "n": 64,
+      "median_px": -18.61045595628701,
+      "end_a_px": -16.822870203114753,
+      "end_b_px": -19.99483905047249,
+      "rms_px": 18.5466572231598,
+      "mm_per_px": 1.3723809765000337,
+      "median_mm": -25.540635718400033,
+      "note": "nominally the outer end edge of the top plate at X=0 (drawing X=0, Z=0), but a plane homography from the 8 corners of ma"
+    },
+    {
+      "id": "cart80_y_board1600_outer",
+      "cart": 80,
+      "fixed": {
+        "X": 1600,
+        "Z": 0
+      },
+      "free": "Y",
+      "exact": false,
+      "n": 100,
+      "median_px": 28.19055924687462,
+      "end_a_px": 30.306820750432724,
+      "end_b_px": 26.729868155911973,
+      "rms_px": 28.459930875429333,
+      "mm_per_px": 1.6821811556419757,
+      "median_mm": 47.42162753210113,
+      "note": "nominal outer end edge of the top plate at X=1600 (drawing X=1600, Z=0) - NOT used as exact: plane homographies from the"
+    },
+    {
+      "id": "cart80_z_post1600_sil",
+      "cart": 80,
+      "fixed": {
+        "X": 1600,
+        "Y": 0
+      },
+      "free": "Z",
+      "exact": false,
+      "n": 41,
+      "median_px": 5.768593309778328,
+      "end_a_px": 5.373510177463979,
+      "end_b_px": 6.3109756326433475,
+      "rms_px": 5.849041165742957,
+      "mm_per_px": 2.26801080909912,
+      "median_mm": 13.083231979874117,
+      "note": "silhouette = outer corner (X=1600, Y=0) of the post only if the post is flush with the cart outline; post profile not in"
+    }
+  ],
+  "floor": {
+    "per_edge": {
+      "scene_tapeV_left": {
+        "n": 157,
+        "length_mm": 1271.39825927011,
+        "straightness_rms_mm": 0.40508405208382864,
+        "straightness_max_mm": 1.1479804431663843,
+        "direction_deg": 164.1552296803453
+      },
+      "scene_tapeV_right": {
+        "n": 176,
+        "length_mm": 1355.9918464968343,
+        "straightness_rms_mm": 0.39486717547666333,
+        "straightness_max_mm": 1.1324199190614352,
+        "direction_deg": 164.15934472828977
+      },
+      "scene_tapeH_top": {
+        "n": 128,
+        "length_mm": 774.5875309439663,
+        "straightness_rms_mm": 0.4410964298265265,
+        "straightness_max_mm": 1.2873351017504517,
+        "direction_deg": -105.63499840100947
+      },
+      "scene_tapeH_bottom": {
+        "n": 57,
+        "length_mm": 445.1988417773754,
+        "straightness_rms_mm": 0.5159042901113807,
+        "straightness_max_mm": 1.4778416581733826,
+        "direction_deg": -105.40635187663703
+      },
+      "scene_blueH_top": {
+        "n": 36,
+        "length_mm": 217.99803889830497,
+        "straightness_rms_mm": 0.4140443111746289,
+        "straightness_max_mm": 1.076500544264293,
+        "direction_deg": -105.4964927155502
+      },
+      "scene_blueL_top": {
+        "n": 117,
+        "length_mm": 940.8065859963119,
+        "straightness_rms_mm": 0.605967533670289,
+        "straightness_max_mm": 2.095519946949005,
+        "direction_deg": -105.63726775830295
+      },
+      "scene_blueL_bottom": {
+        "n": 129,
+        "length_mm": 948.6354546188903,
+        "straightness_rms_mm": 0.7679839174222022,
+        "straightness_max_mm": 1.9633911689930892,
+        "direction_deg": -105.58839229612919
+      }
+    },
+    "width_white_V": {
+      "median_mm": 49.97659382892742,
+      "profile_mm": [
+        49.87727627436,
+        49.93231552153312,
+        50.11052647702401,
+        49.956966455864304,
+        50.0183129275456,
+        49.99996050910012
+      ],
+      "span_mm": 1355.991835887804
+    },
+    "width_white_H": {
+      "median_mm": 50.85217179291718,
+      "profile_mm": [
+        51.5538891183555,
+        51.577724689119236,
+        50.84325456434151,
+        50.24606543776188,
+        50.24709172529745
+      ],
+      "span_mm": 445.19897765097124
+    },
+    "width_blue_L": {
+      "median_mm": 48.0762121685536,
+      "profile_mm": [
+        47.612324736150285,
+        49.03341016949233,
+        48.25358852908241,
+        48.986923533709756,
+        47.96038738844538,
+        47.024178253730305
+      ],
+      "span_mm": 948.6356986880509
+    },
+    "angle_whiteV_whiteH_deg": 89.79022808135475,
+    "angle_whiteV_left_right_deg": 0.004115048065326701,
+    "angle_whiteH_blueH_deg": 0.13850568545758807,
+    "angle_whiteH_blueL_deg": 0.002269357172681983,
+    "note": "angles between floor groups: the white tape V group and the H group (white tape + blue lines) have separate direction parameters in the fit, so their mutual angle is NOT imposed; parallelism inside a group IS imposed by the fit"
+  },
+  "two_carts": {
+    "cart80_footprint_z_in_cart310_mm": [
+      -1833.3426484417412,
+      -1831.6897585640718,
+      -1816.773529512941,
+      -1815.1206396352725
+    ],
+    "angle_between_cart_Z_axes_deg": 0.6295681206159749,
+    "camera_height_above_floor_mm": {
+      "310": 3912.295756962,
+      "80": 3946.479138149202
+    }
+  },
+  "lens": {
+    "K": [
+      [
+        1468.6305267212908,
+        0.0,
+        928.208880561814
+      ],
+      [
+        0.0,
+        1468.6305267212908,
+        503.23267209749196
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "dist": [
+      -0.3515649467682102,
+      0.09938428401533507,
+      0.0,
+      0.0,
+      0.0
+    ]
+  }
+}

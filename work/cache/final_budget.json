@@ -1,0 +1,74 @@
+{
+  "regions": {
+    "centre": {
+      "stat_median": 3.1234464548402285,
+      "sys_median": 2.479366241967949,
+      "sens": 0.0,
+      "total_median": 4.028340913293676,
+      "total_max": 5.412604691055713,
+      "jackknife_cv": 2.887652214843392,
+      "jackknife_cv_max": 4.464182528039346,
+      "synthetic_rmse": 1.6270759105682373,
+      "budget_median": 4.028340913293676
+    },
+    "cart_band": {
+      "stat_median": 13.559470360919406,
+      "sys_median": 7.090627925734486,
+      "sens": 0.0,
+      "total_median": 15.282795379699945,
+      "total_max": 22.77312919256965,
+      "jackknife_cv": 11.708346340643828,
+      "jackknife_cv_max": 16.177173750868377,
+      "synthetic_rmse": 6.975308418273926,
+      "budget_median": 15.282795379699945
+    },
+    "corners": {
+      "stat_median": 18.639661031554535,
+      "sys_median": 10.72775159779314,
+      "sens": 0.0,
+      "total_median": 21.561712668005935,
+      "total_max": 23.555931367403215,
+      "jackknife_cv": 16.57549938884698,
+      "jackknife_cv_max": 17.858611020614227,
+      "synthetic_rmse": 10.034910202026367,
+      "budget_median": 21.561712668005935
+    }
+  },
+  "alternatives": [
+    "lines_joint_indep",
+    "lines_joint_lc",
+    "vanishing_indep",
+    "lines_joint_indep_mergedfloor",
+    "alt_brown_k1k2_joint",
+    "alt_brown_k1k2k3_joint",
+    "alt_division_l1l2",
+    "combined_k1k2_robust",
+    "combined_k1k2k3",
+    "combined_k1k2_ppfixed",
+    "combined_k1k2_common_vertical",
+    "combined_k1k2_rowblocks",
+    "combined_k1k2_no_80_3_7_sides",
+    "combined_k1k2_no_bent_lip",
+    "combined_k1k2_floor_straight_only"
+  ],
+  "params": {
+    "f": 1468.6305267212908,
+    "cx": 928.208880561814,
+    "cy": 503.23267209749196,
+    "k1": -0.3515649467682102,
+    "k2": 0.09938428401533507,
+    "p1": 0.0,
+    "p2": 0.0,
+    "k3": 0.0
+  },
+  "sigma_total": {
+    "f": 46.60099244989342,
+    "cx": 18.813682752660373,
+    "cy": 29.1397165456165,
+    "k1": 0.020887571804298965,
+    "k2": 0.0221932613190193,
+    "p1": 6.7696175642252286e-09,
+    "p2": 2.6537601771358955e-09,
+    "k3": 0.012262396604959433
+  }
+}
