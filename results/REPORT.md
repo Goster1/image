@@ -595,6 +595,47 @@ nálepiek: oprava by posunula f o −3,5 px a zobrazenie o ≤ 1,5 px. Hlavný v
 bez tejto opravy (merané rovnako; pri rohoch oprava nemení nič), rozdiel je hlboko pod celkovou neistotou.
 Pri samotných nálepkách sú citlivosti väčšie (až 2–3 px zobrazenia v páse, desiatky px v rohoch).
 
+### 9.6 Vizuálna kontrola: mriežka lokácií, model vozíkov a rovné čiary (`work/70_render_grid.py`, `work/71_grid_checks.py`)
+
+S hlavným objektívom a pózami vozíkov z hlavného fitu som do fotky vykreslil:
+* **mriežku lokácií na podlahe** po 0,5 m v rovine podlahy vozíkov (`results/grid_overview.png`). Mriežka je zarovnaná na
+  bielu pásku: stredové čiary oboch pások sú osi (červené) a začiatok je v ich krížení;
+* **drôtený model oboch vozíkov podľa výkresu** (vrchná doska, police A–E, stĺpiky, pôdorys) a predpovedané nálepky;
+* **predĺženia rovných hrán** (`results/grid_lines.png`): každou overenou hranou vedie priamka v 3D, ktorá je vykreslená
+  cez objektív a predĺžená o 1,2-násobok dĺžky hrany na obe strany;
+* **obraz po odstránení skreslenia** s tou istou mriežkou (`results/grid_undistorted.png`) a zväčšené výrezy
+  (`results/grid_crops.png`).
+
+**Čo ukazuje vizuálna kontrola:**
+* Predĺžené rovné čiary ležia na hranách v celej dĺžke, aj pri silno zakrivených hranách na okrajoch obrazu. Príklady:
+  tyč regálu na ľavom okraji (~600 px), koľajnice a stĺpik vpravo, pásky na podlahe, lemy políc. Tam, kde hrana
+  pokračuje mimo sledovaného úseku (napríklad modrá čiara vľavo dole), predĺženie pokračuje presne po nej.
+  Odchýlka bodov hrany od krivky je v mediáne 0,45 px, najviac 2,1 px (vzorkovanie krivky pridáva ~0,3 px).
+* Os mriežky ide po bielej páske od kríženia až po spodný okraj obrazu. Priečna os ide po priečnej páske a vľavo
+  pokračuje rovnobežne s modrou čiarou. Mriežka sa k okrajom zakrivuje presne podľa skreslenia.
+* Model vozíkov z výkresu: lemy políc a stĺpiky sedia do ±5 px (lemy vozíka 80 v radoch B a E +9 px). Koncové dosky
+  (vrchná doska) sú mimo o 17–28 px a predpovedané top-nálepky o 5–15 px. Je to nesúlad geometrie z kap. 5, nie chyba
+  objektívu (rovné čiary v tých istých miestach sedia).
+
+**Číselné kontroly, ktoré fit nevynucuje** (spätné premietnutie na podlahu, `work/cache/grid_checks.json`, citlivosť na f
+v `work/cache/grid_fsens.json`):
+* **Šírka bielej pásky** na podlahe vychádza 50,0 mm a je rovnaká po celej dĺžke 1356 mm
+  (profil 49,9 / 49,9 / 50,1 / 50,0 / 50,0 / 50,0 mm). Priečna páska má 50,9 mm, modrá čiara 48,1 mm. Bežná páska
+  má 50 mm. Absolútnu šírku fit nevynucuje, vychádza z objektívu a z mierky vozíkov podľa výkresu. Na f je však citlivá
+  len slabo: pri pevnom f 1400 / 1540 px (ostatné dofitované) vychádza 51,3 / 48,8 mm, teda
+  ~1,8 mm na 100 px. Nominálnu šírku pásky nepoznám, preto je to len kontrola konzistencie, nie meranie f.
+* **Uhol medzi dvoma smermi bielej pásky** je 89,8°. Oba smery majú vo fite vlastné parametre, takže kolmosť
+  nie je vynútená. Pásky tak potvrdzujú konzistenciu objektívu a roviny podlahy, na f je však uhol takmer necitlivý
+  (89,70° pri f 1400 px, 89,91° pri 1540 px).
+* **Oba vozíky na jednej podlahe:** pôdorys vozíka 80 vychádza v súradniciach vozíka 310 o 15 až 33 mm
+  nižšie a osi Z vozíkov zvierajú 0,63°. Výška kamery nad podlahou je 3,91 m (z vozíka 310) a 3,95 m
+  (z vozíka 80).
+
+**Záver:** objektív so zobrazenými parametrami k obrazu vizuálne aj číselne sedí. Rovné čiary sú rovné v celom obraze
+vrátane okrajov, čo potvrdzuje skreslenie. Mriežka na podlahe drží tvar aj mierku pásky a pásky sú na seba kolmé.
+Kontroly na podlahe však f nespresnia; ohnisko ostáva určené na ± 47 px (kap. 1). Viditeľné odchýlky sú na
+koncových doskách vozíkov a zodpovedajú známemu nesúladu geometrie s výkresom.
+
 ## 10. Neistota zobrazenia
 
 `results/mapping_uncertainty.png` ukazuje mapu 1σ posunu priemetu po celom obraze v troch zložkách: štatistická
@@ -693,6 +734,7 @@ sa necommitujú a vytvoria sa znova v krokoch 1–3).
 | 10 | `run_combined.sh` (= `50_combined.py fit`, 4× `boot` po 25 replík, `finalize`; `run_combined_boot.sh` len bootstrap), `51_combined_cv.py all` | hlavná metóda M6, varianty, vplyv blokov, krížová validácia |
 | 11 | `SYNTH_T2=1400,935,410,-0.32,0.08` + `44_synth_{a_setup,b_roundtrip,c_sensitivity,d_report}.py` (štúdia všetkých metód); `SYNTH_SETUP=cache/synthetic_setup_main.json python3 44_synth_a_setup.py`, potom `45_synth_main.py 30 4` a `46_sensitivity_main.py` (hlavný odhad) | syntetický test a citlivosti |
 | 11b | `60_top_tilt_scan_fixed.py all`, `61_top_sticker_orientation_fixed.py`, `62_top_tilt_methods.py` (what-if so sklonom top-nálepiek; `*_fixed.py` sú skontrolované a opravené kópie, ktoré vytvorili výstupy) | kap. 5.1, `top_tilt_*`, `top_sticker_orientation.*` |
+| 11c | `70_render_grid.py`, `71_grid_checks.py`, `72_grid_fsens.py` | vizuálna kontrola: `grid_*.png`, `cache/grid_checks.json` |
 | 12 | `92_extract_alternatives.py`, `95_final.py`, `96_plots.py`, `98_finalize_json.py`, `90_compare_methods.py`, `97_report_tables.py`, `99_assemble_report.py` | `results/lens_result.json`, `lens_alternatives.json`, `lens_by_method.json`, grafy, `REPORT.md` |
 
 Zdieľané moduly: `common.py` (model kamery, špecifikácia, kontrola prehnutia), `calib.py` (BA), `edgelib.py` (sub-pixelové hrany),
@@ -730,6 +772,7 @@ Zdieľané moduly: `common.py` (model kamery, špecifikácia, kontrola prehnutia
   - neistota a porovnanie: `mapping_uncertainty.png`, `methods_comparison.png`, `undistorted_mean.png`;
   - diagnostika geometrie: `geomdiag_*.png`, `cuboid_*.png` (`cuboid_overlay.png` je s objektívom metódy M5, nie hlavným);
   - sklon top-nálepiek (kap. 5.1): `top_sticker_orientation.png`, `top_tilt_scan.png`;
+  - vizuálna kontrola objektívu (kap. 9.6): `grid_overview.png`, `grid_lines.png`, `grid_undistorted.png`, `grid_crops.png`;
   - čiarové metódy (nezávislá implementácia): `40_lines_indep_*.png`;
   - modely objektívu: `altmodels_*.png`;
   - syntetický test a citlivosti (štúdia všetkých metód): `synthetic_*.png`.

@@ -383,6 +383,26 @@ t.append(trow("zmerané sklony dosiek, pánt 55 mm", rh))
 t.append(trow("sklony dosiek nafitované na rohy (okolo stredu)", TJ["per_plate"]["Y"]["steps"][-1]["combined_record"]))
 T["TABLE_TILT_SCAN"] = "\n".join(t)
 
+# ---------------- visual grid check (chapter 9.6)
+GC = load_json(f"{CACHE}/grid_checks.json")
+GR = load_json(f"{CACHE}/grid_render.json")
+fl_ = GC["floor"]
+lr_ = np.array([q["rms"] for q in GR["edge_line_residuals"]])
+V.update(grid_line_med=num(float(np.median(lr_)), 2), grid_line_max=num(max(q["max"] for q in GR["edge_line_residuals"]), 1),
+         grid_tape_w_V=num(fl_["width_white_V"]["median_mm"], 1), grid_tape_len_V=num(fl_["width_white_V"]["span_mm"], 0),
+         grid_tape_prof_V=" / ".join(num(x, 1) for x in fl_["width_white_V"]["profile_mm"]),
+         grid_tape_w_H=num(fl_["width_white_H"]["median_mm"], 1), grid_blue_w=num(fl_["width_blue_L"]["median_mm"], 1),
+         grid_angle=num(fl_["angle_whiteV_whiteH_deg"], 1))
+z80 = [-1800.0 - z for z in GC["two_carts"]["cart80_footprint_z_in_cart310_mm"]]
+V.update(grid_z80_min=num(min(z80), 0), grid_z80_max=num(max(z80), 0), grid_zz=num(GC["two_carts"]["angle_between_cart_Z_axes_deg"], 2),
+         grid_h310=num(GC["two_carts"]["camera_height_above_floor_mm"]["310"] / 1000, 2), grid_h80=num(GC["two_carts"]["camera_height_above_floor_mm"]["80"] / 1000, 2))
+
+FS = load_json(f"{CACHE}/grid_fsens.json")["rows"]
+fs_lo, fs_hi = FS[0], FS[-1]
+V.update(fs_f_lo=num(fs_lo["f"], 0), fs_f_hi=num(fs_hi["f"], 0), fs_w_lo=num(fs_lo["width_V_mm"], 1), fs_w_hi=num(fs_hi["width_V_mm"], 1),
+         fs_w_slope=num(abs(fs_hi["width_V_mm"] - fs_lo["width_V_mm"]) / (fs_hi["f"] - fs_lo["f"]) * 100, 1),
+         fs_a_lo=num(fs_lo["angle_deg"], 2), fs_a_hi=num(fs_hi["angle_deg"], 2))
+
 # ---------------- methods table
 mt = open(f"{CACHE}/report_tables.md").read().split("\n")
 T["TABLE_METHODS"] = "\n".join(re.sub(r"(?<![\w/:])-(?=\d)", "−", re.sub(r"(?<=\d)\.(?=\d)", ",", x)) for x in mt if x.startswith("|"))
@@ -406,6 +426,7 @@ FILES = f"""## 14. Súbory vo `results/`
   - neistota a porovnanie: `mapping_uncertainty.png`, `methods_comparison.png`, `undistorted_mean.png`;
   - diagnostika geometrie: `geomdiag_*.png`, `cuboid_*.png` (`cuboid_overlay.png` je s objektívom metódy M5, nie hlavným);
   - sklon top-nálepiek (kap. 5.1): `top_sticker_orientation.png`, `top_tilt_scan.png`;
+  - vizuálna kontrola objektívu (kap. 9.6): `grid_overview.png`, `grid_lines.png`, `grid_undistorted.png`, `grid_crops.png`;
   - čiarové metódy (nezávislá implementácia): `40_lines_indep_*.png`;
   - modely objektívu: `altmodels_*.png`;
   - syntetický test a citlivosti (štúdia všetkých metód): `synthetic_*.png`.

@@ -154,6 +154,47 @@ nálepiek: oprava by posunula f o {{sens_sides_df}} px a zobrazenie o ≤ 1,5 px
 bez tejto opravy (merané rovnako; pri rohoch oprava nemení nič), rozdiel je hlboko pod celkovou neistotou.
 Pri samotných nálepkách sú citlivosti väčšie (až 2–3 px zobrazenia v páse, desiatky px v rohoch).
 
+### 9.6 Vizuálna kontrola: mriežka lokácií, model vozíkov a rovné čiary (`work/70_render_grid.py`, `work/71_grid_checks.py`)
+
+S hlavným objektívom a pózami vozíkov z hlavného fitu som do fotky vykreslil:
+* **mriežku lokácií na podlahe** po 0,5 m v rovine podlahy vozíkov (`results/grid_overview.png`). Mriežka je zarovnaná na
+  bielu pásku: stredové čiary oboch pások sú osi (červené) a začiatok je v ich krížení;
+* **drôtený model oboch vozíkov podľa výkresu** (vrchná doska, police A–E, stĺpiky, pôdorys) a predpovedané nálepky;
+* **predĺženia rovných hrán** (`results/grid_lines.png`): každou overenou hranou vedie priamka v 3D, ktorá je vykreslená
+  cez objektív a predĺžená o 1,2-násobok dĺžky hrany na obe strany;
+* **obraz po odstránení skreslenia** s tou istou mriežkou (`results/grid_undistorted.png`) a zväčšené výrezy
+  (`results/grid_crops.png`).
+
+**Čo ukazuje vizuálna kontrola:**
+* Predĺžené rovné čiary ležia na hranách v celej dĺžke, aj pri silno zakrivených hranách na okrajoch obrazu. Príklady:
+  tyč regálu na ľavom okraji (~600 px), koľajnice a stĺpik vpravo, pásky na podlahe, lemy políc. Tam, kde hrana
+  pokračuje mimo sledovaného úseku (napríklad modrá čiara vľavo dole), predĺženie pokračuje presne po nej.
+  Odchýlka bodov hrany od krivky je v mediáne {{grid_line_med}} px, najviac {{grid_line_max}} px (vzorkovanie krivky pridáva ~0,3 px).
+* Os mriežky ide po bielej páske od kríženia až po spodný okraj obrazu. Priečna os ide po priečnej páske a vľavo
+  pokračuje rovnobežne s modrou čiarou. Mriežka sa k okrajom zakrivuje presne podľa skreslenia.
+* Model vozíkov z výkresu: lemy políc a stĺpiky sedia do ±5 px (lemy vozíka 80 v radoch B a E +9 px). Koncové dosky
+  (vrchná doska) sú mimo o 17–28 px a predpovedané top-nálepky o 5–15 px. Je to nesúlad geometrie z kap. 5, nie chyba
+  objektívu (rovné čiary v tých istých miestach sedia).
+
+**Číselné kontroly, ktoré fit nevynucuje** (spätné premietnutie na podlahu, `work/cache/grid_checks.json`, citlivosť na f
+v `work/cache/grid_fsens.json`):
+* **Šírka bielej pásky** na podlahe vychádza {{grid_tape_w_V}} mm a je rovnaká po celej dĺžke {{grid_tape_len_V}} mm
+  (profil {{grid_tape_prof_V}} mm). Priečna páska má {{grid_tape_w_H}} mm, modrá čiara {{grid_blue_w}} mm. Bežná páska
+  má 50 mm. Absolútnu šírku fit nevynucuje, vychádza z objektívu a z mierky vozíkov podľa výkresu. Na f je však citlivá
+  len slabo: pri pevnom f {{fs_f_lo}} / {{fs_f_hi}} px (ostatné dofitované) vychádza {{fs_w_lo}} / {{fs_w_hi}} mm, teda
+  ~{{fs_w_slope}} mm na 100 px. Nominálnu šírku pásky nepoznám, preto je to len kontrola konzistencie, nie meranie f.
+* **Uhol medzi dvoma smermi bielej pásky** je {{grid_angle}}°. Oba smery majú vo fite vlastné parametre, takže kolmosť
+  nie je vynútená. Pásky tak potvrdzujú konzistenciu objektívu a roviny podlahy, na f je však uhol takmer necitlivý
+  ({{fs_a_lo}}° pri f {{fs_f_lo}} px, {{fs_a_hi}}° pri {{fs_f_hi}} px).
+* **Oba vozíky na jednej podlahe:** pôdorys vozíka 80 vychádza v súradniciach vozíka 310 o {{grid_z80_min}} až {{grid_z80_max}} mm
+  nižšie a osi Z vozíkov zvierajú {{grid_zz}}°. Výška kamery nad podlahou je {{grid_h310}} m (z vozíka 310) a {{grid_h80}} m
+  (z vozíka 80).
+
+**Záver:** objektív so zobrazenými parametrami k obrazu vizuálne aj číselne sedí. Rovné čiary sú rovné v celom obraze
+vrátane okrajov, čo potvrdzuje skreslenie. Mriežka na podlahe drží tvar aj mierku pásky a pásky sú na seba kolmé.
+Kontroly na podlahe však f nespresnia; ohnisko ostáva určené na ± {{sf0}} px (kap. 1). Viditeľné odchýlky sú na
+koncových doskách vozíkov a zodpovedajú známemu nesúladu geometrie s výkresom.
+
 ## 10. Neistota zobrazenia
 
 `results/mapping_uncertainty.png` ukazuje mapu 1σ posunu priemetu po celom obraze v troch zložkách: štatistická

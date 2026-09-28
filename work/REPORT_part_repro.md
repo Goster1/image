@@ -18,6 +18,7 @@ sa necommitujú a vytvoria sa znova v krokoch 1–3).
 | 10 | `run_combined.sh` (= `50_combined.py fit`, 4× `boot` po 25 replík, `finalize`; `run_combined_boot.sh` len bootstrap), `51_combined_cv.py all` | hlavná metóda M6, varianty, vplyv blokov, krížová validácia |
 | 11 | `SYNTH_T2=1400,935,410,-0.32,0.08` + `44_synth_{a_setup,b_roundtrip,c_sensitivity,d_report}.py` (štúdia všetkých metód); `SYNTH_SETUP=cache/synthetic_setup_main.json python3 44_synth_a_setup.py`, potom `45_synth_main.py 30 4` a `46_sensitivity_main.py` (hlavný odhad) | syntetický test a citlivosti |
 | 11b | `60_top_tilt_scan_fixed.py all`, `61_top_sticker_orientation_fixed.py`, `62_top_tilt_methods.py` (what-if so sklonom top-nálepiek; `*_fixed.py` sú skontrolované a opravené kópie, ktoré vytvorili výstupy) | kap. 5.1, `top_tilt_*`, `top_sticker_orientation.*` |
+| 11c | `70_render_grid.py`, `71_grid_checks.py`, `72_grid_fsens.py` | vizuálna kontrola: `grid_*.png`, `cache/grid_checks.json` |
 | 12 | `92_extract_alternatives.py`, `95_final.py`, `96_plots.py`, `98_finalize_json.py`, `90_compare_methods.py`, `97_report_tables.py`, `99_assemble_report.py` | `results/lens_result.json`, `lens_alternatives.json`, `lens_by_method.json`, grafy, `REPORT.md` |
 
 Zdieľané moduly: `common.py` (model kamery, špecifikácia, kontrola prehnutia), `calib.py` (BA), `edgelib.py` (sub-pixelové hrany),
